@@ -6,7 +6,7 @@ loginModule.controller('LoginController', function($scope){
     loginFailed = function () {
         $("#login-failed").modal('show');
     }
-  
+
     // fruits
     $scope.fruits = ["loading..."];
     angular.element(document).ready(function () {
@@ -16,8 +16,8 @@ loginModule.controller('LoginController', function($scope){
     $scope.update=function(){
         $scope.fruits = ["loading..."];
 
-        fruitsService.loadFruits(function(data){
-            $scope.fruits = data;
+        loginService.loadBranches(function(data){
+            $scope.branches = data;
             $scope.$apply();
         });
     }

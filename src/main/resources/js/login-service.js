@@ -3,4 +3,4 @@
 // object before any subsequent javascript files are executed,
 // such as angular controllers. This sentence must be called
 // before any other script which will use fruitsService
-alert("__CONNECT__BACKEND__fruitsService");
+alert("__CONNECT__BACKEND__loginService");

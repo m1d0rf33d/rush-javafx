@@ -1,13 +1,11 @@
 package com.yondu;
 
-import com.yondu.service.FruitsService;
 import com.yondu.service.LoginService;
 import com.yondu.utils.Java2JavascriptUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.event.EventHandler;
-import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
@@ -18,11 +16,6 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
-import org.w3c.dom.Document;
-
-import javax.inject.Inject;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 /**
  * Created by aomine on 9/19/16.
@@ -39,10 +32,11 @@ public class Browser extends Region{
     public Browser() {
         //Retrieve local html resource
         String indexPage = App.class.getResource(INDEX_PAGE_PATH).toExternalForm();
+
         // Add a Java callback object to a WebEngine document once it has loaded.
         Java2JavascriptUtils.connectBackendObject(
                 webEngine,
-                "fruitsService", new FruitsService());
+                "loginService", new LoginService());
 
 
         webEngine.getLoadWorker().stateProperty().addListener(

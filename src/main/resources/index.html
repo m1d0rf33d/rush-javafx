@@ -11,21 +11,15 @@
 		<div class="left-block center">
 			<div class="paddingTop150"></div>
 			<img src="images/rush_logo.png" class="rush_logo" alt="">
-			<table class="table table-striped">
-				<thead>
-				<tr><th>Name</th></tr>
-				</thead>
-				<tbody>
-				<tr ng-repeat="fruit in fruits">
-					<td>{{fruit}}</td>
-				</tr>
-				</tbody>
-			</table>
 			<h4 class="employee-login-label">EMPLOYEE LOGIN</h4>
 			<form action="" id="login-form" >
 				<input placeholder="INPUT EMPLOYEE ID" type="text">
 				<select name="" id="login-branches">
-					<option selected="selected" value="">Select Branch</option>
+					<option
+							ng-repeat="branch in branches"
+							value="{{branch.id}}">
+						{{branch.name}}
+					</option>
 				</select>
 				<input value="LOGIN" type="button" onclick="indexBridge.login();">
 			</form>
@@ -83,7 +77,7 @@
 		</div>
 
 	</main>
-	<script src="js/fruits-service.js" type="text/javascript"></script>
+	<script src="js/login-service.js" type="text/javascript"></script>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.js"></script>
 	<script src="js/angular.min.js"></script>

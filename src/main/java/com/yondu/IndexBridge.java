@@ -16,7 +16,7 @@ public class IndexBridge {
     public void login() {
         //Call rush api
         String x = "";
-        webEngine.executeScript("failed()");
+        webEngine.executeScript("loginFailed()");
     }
 
 

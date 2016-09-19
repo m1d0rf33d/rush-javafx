@@ -1,8 +1,13 @@
 package com.yondu;
 
+import com.yondu.service.FruitsService;
+import com.yondu.service.LoginService;
+import com.yondu.utils.Java2JavascriptUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
+import javafx.event.EventHandler;
+import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
@@ -10,14 +15,21 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import org.w3c.dom.Document;
 
+import javax.inject.Inject;
+import java.net.URL;
+import java.util.ResourceBundle;
+
 /**
  * Created by aomine on 9/19/16.
  */
-public class Browser extends Region {
+public class Browser extends Region{
+
+    private LoginService loginService = new LoginService();
 
     private static final String INDEX_PAGE_PATH = "/index.html";
 
@@ -28,16 +40,32 @@ public class Browser extends Region {
         //Retrieve local html resource
         String indexPage = App.class.getResource(INDEX_PAGE_PATH).toExternalForm();
         // Add a Java callback object to a WebEngine document once it has loaded.
+        Java2JavascriptUtils.connectBackendObject(
+                webEngine,
+                "fruitsService", new FruitsService());
+
+
         webEngine.getLoadWorker().stateProperty().addListener(
                 new ChangeListener<Worker.State>() {
                     @Override public void changed(ObservableValue<? extends Worker.State> ov, Worker.State oldState, Worker.State newState) {
 
                         JSObject window = (JSObject) webEngine.executeScript("window");
-                        window.setMember("indexBridge", new IndexBridge(webEngine));
+                        if (webEngine.getLocation().contains("index")) {
+
+
+                            //inject javascript - java bridge
+                            window.setMember("indexBridge", new IndexBridge(webEngine));
+
+                        }
                     }
                 }
         );
-
+        webView.getEngine().setOnAlert(new EventHandler<WebEvent<String>>(){
+            @Override
+            public void handle(WebEvent<String> arg0) {
+                System.err.println("alertwb1: " + arg0.getData());
+            }
+        });
         webEngine.load(indexPage);
         getChildren().add(webView);
     }
@@ -62,4 +90,5 @@ public class Browser extends Region {
     @Override protected double computePrefHeight(double width) {
         return 500;
     }
+
 }

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="UTF-8">
+	<title>Rush POS</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+	<main class="">
+		<div class="left-block center">
+			<div class="paddingTop150"></div>
+			<img src="images/rush_logo.png" class="rush_logo" alt="">
+			<h4 class="employee-login-label">EMPLOYEE LOGIN</h4>
+			<form action="" id="login-form" >
+				<input placeholder="INPUT EMPLOYEE ID" type="text">
+				<select name="" id="">
+					<option selected="selected" value="">Select Branch</option>
+				</select>
+				<input value="LOGIN" type="button" onclick="indexBridge.login();">
+			</form>
+		</div>
+		<div class="right-block">
+			<br>
+			<section id="number-pad-wrapper">
+				<ul>
+					<li>
+						<button>1</button>
+					</li>
+					<li>
+						<button>2</button>
+					</li>
+					<li>
+						<button>3</button>
+					</li>
+					<li>
+						<button>4</button>
+					</li>
+					<li>
+						<button>5</button>
+					</li>
+					<li>
+						<button>6</button>
+					</li>
+					<li>
+						<button>7</button>
+					</li>
+					<li>
+						<button>8</button>
+					</li>
+					<li>
+						<button>9</button>
+					</li>
+					<li>
+						<button><img src="images/remove.png" alt="remove"></button>
+					</li>
+					<li>
+						<button>0</button>
+					</li>
+					<li>
+						<button><img src="images/dot.png" alt="dot"></button>
+					</li>
+				</ul>
+			</section>
+		</div>
+		<!-- Modals -->
+		<div class="modal modal-transparent fade trans-overlay" id="login-failed" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="trans-content">
+					<h1>Invalid login</h1>
+				</div>
+			</div>
+		</div>
+
+	</main>
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<script src="js/index.js"></script>
+<script>
+$("#number-pad-wrapper button").mouseup(function(){
+	$(this).blur();
+})
+function failed() {
+	$("#login-failed").modal('show');
+}
+</script>
+<!-- For development only-->
+	<script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>
+
+</body></html>

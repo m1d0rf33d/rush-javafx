@@ -5,6 +5,7 @@
 	{ 
 		"angular": "",
 		"bootstrap": "",
-		"jquery": ""
+		"jquery": "",
+		"angular-ui-router": ""
 	}
 }

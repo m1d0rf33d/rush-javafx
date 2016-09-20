@@ -52,6 +52,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/log4j.properties</exclude>
+                        <exclude>**/node_modules/**</exclude>
                     </excludes>
                     <archive>
                         <!-- Manifest file that we need to create executable jar -->

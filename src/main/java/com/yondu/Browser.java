@@ -14,7 +14,7 @@ import javafx.scene.web.WebView;
 
 public class Browser extends Region{
 
-    private static final String LOGIN_PAGE = "/app/login/login.html";
+    private static final String LOGIN_PAGE = "/app/login.html";
 
     final WebView webView     = new WebView();
     final WebEngine webEngine = webView.getEngine();

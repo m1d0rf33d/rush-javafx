@@ -52,7 +52,6 @@ public class LoginService {
         Account account;
         try {
             apiResponse = mapper.readValue(result, ApiResponse.class);
-            account = (Account) apiResponse.getData();
         } catch (Exception e) {
             e.printStackTrace();
         }

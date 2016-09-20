@@ -26,6 +26,6 @@ function loginFailed() {
 }
 
 function loginSuccess() {
-    location.href = "../home/home.html";
+    location.href = "home.html#/ocr-view";
 }
 

@@ -12,19 +12,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Utilities to connect Java objects as javascript objects in a WebEngine.
- * 
- * It also allows to call callback functions.
- * 
- * @author lipido
+/** Utility class that will handle binding of java services
+ *  that will be accessed in javascript.
+ *
  */
 public class Java2JavascriptUtils {
 	
-	private static Map<WebEngine, Map<String, Object>> 
-		backendObjects = new HashMap<>();
-	private static Set<WebEngine> 
-		webEnginesWithAlertChangeListener =	new HashSet<>();
+	private static Map<WebEngine, Map<String, Object>> backendObjects = new HashMap<>();
+	private static Set<WebEngine> webEnginesWithAlertChangeListener =	new HashSet<>();
 	
 	private static boolean changing = false;
 	
@@ -48,44 +43,21 @@ public class Java2JavascriptUtils {
 			final Object backend) {
 		
 		registerBackendObject(webEngine, varname, backend);
-		
-		// create a onAlertChangeListener. We always want to listen
-		// to onAlert events, since via this event, the javascript front-end
-		// will send us an special "alert" message asking to connect the 
-		// backend object as soon as possible(*). 
-		// However, if the programmer also wants to set
-		// his own onAlert handler for this web engine, 
-		// we will create a handlerwrapper with our
-		// behavior plus the programmer's one.
-		
-		// (*) It was impossible for me to re-connect the backend object
-		// when the users navigates from one page to another page where the
-		// backend object was also needed. The navigation erases any javascript
-		// variables, so the backend has to be reconnected. However,
-		// The recommended state change listeners on
-		// webEngine were executed too late, after javascript code asking for the
-		// backend object is executed, so it was not a solution.
-		// The only way I found is to place a custom javacript "signaling" 
-		// code to ask Java to reconnect the backend object.
-		// The solution was "alert", because we can listen to alert calls from
-		// javascript, so via an special "alert" message, we can connect the
-		// backend object again.
-		// It is not a bad solution, because the programmer has only to inlude
-		// a simple additional script (such as "mybackend.js") in the page 
-		// before any other scripts uses the backend variable.
+
+		//Set on alert listener to webEngine
 		if (!webEnginesWithAlertChangeListener.contains(webEngine)) {
 			if (webEngine.getOnAlert() == null) {
 				webEngine.setOnAlert(new AlertEventHandlerWrapper(webEngine,
 						null));
 			}
-			
+
 			webEngine.onAlertProperty().addListener(
 				new ChangeListener<EventHandler<WebEvent<String>>>() {
 
 					@Override
 					public void changed(
 							ObservableValue
-							<? extends EventHandler<WebEvent<String>>> arg0,										
+							<? extends EventHandler<WebEvent<String>>> arg0,
 							EventHandler<WebEvent<String>> previous,
 							final EventHandler<WebEvent<String>> newHandler) {
 
@@ -93,7 +65,7 @@ public class Java2JavascriptUtils {
 							changing = true;
 							webEngine.setOnAlert(
 								new AlertEventHandlerWrapper(
-										webEngine, 
+										webEngine,
 										newHandler));
 							changing = false;
 						}
@@ -105,6 +77,7 @@ public class Java2JavascriptUtils {
 
 	private static void registerBackendObject(final WebEngine webEngine,
 			final String varname, final Object backend) {
+
 		Map<String, Object> webEngineBridges = backendObjects.get(webEngine);
 		if (webEngineBridges == null){
 			webEngineBridges = new HashMap<>();
@@ -130,11 +103,9 @@ public class Java2JavascriptUtils {
 			((JSObject)callback).eval("this("+argument.toString()+")");
 	}
 	
-	private final static class AlertEventHandlerWrapper 
-		implements EventHandler<WebEvent<String>> {
+	private final static class AlertEventHandlerWrapper implements EventHandler<WebEvent<String>> {
 		
-		private static final 
-			String CONNECT_BACKEND_MAGIC_WORD = "__CONNECT__BACKEND__";
+		private static final String CONNECT_BACKEND_MAGIC_WORD = "__CONNECT__BACKEND__";
 		private final EventHandler<WebEvent<String>> wrappedHandler;
 		private WebEngine engine;
 

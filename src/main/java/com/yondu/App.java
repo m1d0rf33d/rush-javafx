@@ -17,14 +17,8 @@ public class App extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-       //FXML approach
-        /* Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
-        primaryStage.setTitle("RUSH POS");
-        primaryStage.setScene(new Scene(root, 300, 275));
-        primaryStage.show();*/
 
-        //Web View approach
-        primaryStage.setTitle("Web View");
+        primaryStage.setTitle("RUSH POS - SYNC");
         primaryStage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
         primaryStage.show();
     }

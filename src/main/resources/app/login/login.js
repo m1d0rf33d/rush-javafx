@@ -1,3 +1,5 @@
+alert("__CONNECT__BACKEND__loginService");
+
 var loginModule = angular.module('LoginModule',[]);
 
 loginModule.controller('LoginController', function($scope){
@@ -29,6 +31,6 @@ function loginFailed() {
 }
 
 function loginSuccess() {
-    location.href = "ocr-view.html";
+    location.href = "../../ocr-view.html";
 }
 

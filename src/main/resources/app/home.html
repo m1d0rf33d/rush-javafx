@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="custom.css">
 </head>
-<body>
+<body ng-controller="HomeController">
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -96,7 +96,7 @@
             <a href="">
                 <li>OFFLINE TRANSACTIONS</li>
             </a>
-            <a href="#/ocr-view">
+            <a href="#/ocr-view" ng-click="clickTest()">
                 <li class="yellow-bg">SETUP (OCR)</li>
             </a>
             <a href="">
@@ -105,7 +105,13 @@
         </ul>
     </div>
     <div id="content-wrapper" ui-view>
-
+        <select name="" id="branchId">
+            <option
+                    ng-repeat="branch in branches"
+                    value="{{branch.id}}">
+                {{branch.name}}
+            </option>
+        </select>
     </div>
 </main>
 

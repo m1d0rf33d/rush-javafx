@@ -5,12 +5,14 @@ import com.yondu.model.Account;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.Branch;
 import com.yondu.utils.Java2JavascriptUtils;
+import javafx.application.Platform;
 import javafx.scene.web.WebEngine;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.parser.JSONParser;
 import org.w3c.dom.html.HTMLInputElement;
 import org.w3c.dom.html.HTMLSelectElement;
+import org.apache.http.HttpEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +25,22 @@ import static org.json.simple.JSONValue.toJSONString;
  *
  */
 public class LoginService {
+/*    private ApiService apiService = new ApiService();
+    private WebEngine webEngine;*/
     //TODO: Try to implement dependency injection via com.airhackes.igniter
-    private ApiService apiService = new ApiService();
+/*    private ApiService apiService = new ApiService();
     private WebEngine webEngine;
 
     public LoginService(WebEngine webEngine) {
         this.webEngine = webEngine;
-    }
+    }*/
 
-    public void login() {
+    public LoginService() {}
+
+    public void exit() {
+        Platform.exit();
+    }
+    /*public void login() {
         ApiResponse<Account> apiResponse = new ApiResponse();
         HTMLInputElement employeeField = (HTMLInputElement) this.webEngine.getDocument().getElementById("employeeId");
         HTMLSelectElement selectField = (HTMLSelectElement) this.webEngine.getDocument().getElementById("branchId");
@@ -61,6 +70,33 @@ public class LoginService {
 
     public void loadBranches(final Object callbackfunction) {
 
+        ApiResponse apiResponse = new ApiResponse();
+
+        String url = "http://52.74.203.202/api/dev/loyalty/merchantapp/merchant/branches";
+        List<NameValuePair> params = new ArrayList<>();
+        String result = apiService.call(url, params, "get");
+
+        ObjectMapper mapper = new ObjectMapper();
+        JSONParser parser = new JSONParser();
+        try {
+            apiResponse = mapper.readValue(result, ApiResponse.class);
+        }  catch (Exception e) {
+            e.printStackTrace();
+        }
+        final List<Branch> data = (List<Branch>) apiResponse.getData();
+        // launch a background thread (async)
+        new Thread( () -> {
+            try {
+                sleep(1000); //add some processing simulation...
+                runLater( () ->
+                        Java2JavascriptUtils.call(callbackfunction, toJSONString(data))
+                );
+            } catch (InterruptedException e) {	}
+        }
+        ).start();
+    }*/
+    public void loadBranches(final Object callbackfunction) {
+        ApiService apiService = new ApiService();
         ApiResponse apiResponse = new ApiResponse();
 
         String url = "http://52.74.203.202/api/dev/loyalty/merchantapp/merchant/branches";

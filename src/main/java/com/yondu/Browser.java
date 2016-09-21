@@ -10,6 +10,10 @@ import javafx.geometry.VPos;
 import javafx.scene.layout.Region;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import netscape.javascript.JSObject;
+import org.json.simple.JSONObject;
+
+import java.io.*;
 
 
 public class Browser extends Region{
@@ -22,11 +26,15 @@ public class Browser extends Region{
     public Browser() {
         //Retrieve local html resource
         String indexPage = App.class.getResource(LOGIN_PAGE).toExternalForm();
-
+        File file = new File("C:\\Users\\erwin\\Desktop\\rushlogs.txt");
         webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
             @Override
             public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
-                Java2JavascriptUtils.connectBackendObject(webEngine, "loginService", new LoginService(webEngine));
+             //   Java2JavascriptUtils.connectBackendObject(webEngine, "loginService", new LoginService(webEngine));
+
+                JSObject jsobj = (JSObject) webEngine.executeScript("window");
+                jsobj.setMember("java", new LoginService());
+
             }
         });
         webEngine.load(indexPage);

@@ -1,27 +1,19 @@
 package com.yondu.service;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yondu.model.ApiResponse;
 import com.yondu.model.Token;
 import com.yondu.utils.TokenUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +30,9 @@ public class ApiService {
             }
 
             HttpResponse response = null;
-            CloseableHttpClient client = HttpClients.createDefault();
+            DefaultHttpClient client = new DefaultHttpClient();
+
+
             //POST request
             if (method.equalsIgnoreCase("post")) {
                 HttpPost httpPost = new HttpPost(url);
@@ -63,7 +57,6 @@ public class ApiService {
             while ((line = rd.readLine()) != null) {
                 result.append(line);
             }
-            client.close();
             return result.toString();
         } catch (IOException e) {
             e.printStackTrace();
@@ -74,7 +67,7 @@ public class ApiService {
 
     private String getToken() {
         try {
-            CloseableHttpClient client = HttpClients.createDefault();
+            DefaultHttpClient client = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost("http://52.74.203.202/api/dev/token");
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("app_key", "IBVAkQ8GmVpJ"));

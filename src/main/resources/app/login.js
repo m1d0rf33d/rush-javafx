@@ -1,5 +1,5 @@
 //Trigger the alert listener on our backend to bind loginService
-alert("__CONNECT__BACKEND__loginService");
+//alert("__CONNECT__BACKEND__loginService");
 
 //Create our angular login module
 var loginModule = angular.module('LoginModule',[]);
@@ -10,9 +10,9 @@ loginModule.controller('LoginController', function($scope){
         $scope.update();
     });
 
-    $scope.update=function(){
+   $scope.update=function(){
         //This is a java service (magic motherfucker!)
-        loginService.loadBranches(function(data){
+        java.loadBranches(function(data){
             $scope.branches = data;
             $scope.$apply();
         });

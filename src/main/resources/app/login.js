@@ -1,5 +1,5 @@
 //Trigger the alert listener on our backend to bind loginService
-//alert("__CONNECT__BACKEND__loginService");
+alert("__CONNECT__BACKEND__loginService");
 
 //Create our angular login module
 var loginModule = angular.module('LoginModule',[]);
@@ -12,7 +12,7 @@ loginModule.controller('LoginController', function($scope){
 
    $scope.update=function(){
         //This is a java service (magic motherfucker!)
-        java.loadBranches(function(data){
+       loginService.loadBranches(function(data){
             $scope.branches = data;
             $scope.$apply();
         });
@@ -26,6 +26,6 @@ function loginFailed() {
 }
 
 function loginSuccess() {
-    location.href = "home.html#/ocr-view";
+    location.href = "home.html";
 }
 

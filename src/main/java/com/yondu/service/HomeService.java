@@ -38,6 +38,7 @@ public class HomeService {
 
     private String baseUrl;
     private String registerEndpoint;
+    private String memberLoginEndpoint;
 
     public HomeService(WebEngine webEngine) {
         this.webEngine = webEngine;
@@ -51,6 +52,7 @@ public class HomeService {
             }
             this.baseUrl = prop.getProperty("base_url");
             this.registerEndpoint = prop.getProperty("register_endpoint");
+            this.memberLoginEndpoint = prop.getProperty("member_login_endpoint");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -73,13 +75,8 @@ public class HomeService {
         }
         final String jsonData =  data;
         new Thread( () -> {
-
-                runLater( () ->
-                        Java2JavascriptUtils.call(callbackfunction, jsonData)
-                );
-
-            }
-        ).start();
+            Java2JavascriptUtils.call(callbackfunction, jsonData);
+        }).start();
     }
 
     public void register(final Object callbackfunction) {
@@ -97,29 +94,26 @@ public class HomeService {
         params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_PIN, pinField.getValue()));
 
         String url = baseUrl + registerEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
-        String result = apiService.call(url, params, "post");
-
-        //Validate errors
-        if (result.contains(String.valueOf(ApiError.x10))) {
-            //Call javascript function that will notify user
-            webEngine.executeScript("registerFailed()");
-            return;
-        }
-        ApiResponse apiResponse = null;
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            apiResponse = mapper.readValue(result, ApiResponse.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         new Thread( () -> {
-            try {
-                sleep(1000); //add some processing simulation...
-                runLater( () ->
-                        Java2JavascriptUtils.call(callbackfunction, result)
-                );
-            } catch (InterruptedException e) {	}
+            Java2JavascriptUtils.call(callbackfunction, apiService.call(url, params, "post"));
+        }
+        ).start();
+    }
+
+    public void memberLogin(final Object callbackfunction) {
+        //Read html form values
+        HTMLInputElement mobileField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_MOBILE);
+
+        //Build request body
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getValue()));
+
+        String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
+        String result = apiService.call(url, params, "post");
+
+        new Thread( () -> {
+            Java2JavascriptUtils.call(callbackfunction, result);
         }
         ).start();
     }

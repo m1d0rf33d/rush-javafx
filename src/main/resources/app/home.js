@@ -14,12 +14,23 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
             url: '/register-view',
             templateUrl: 'register.html'
         })
+        .state('member-login-view', {
+            url: '/member-login-view',
+            templateUrl: 'member-login.html'
+        })
+        .state('member-profile-view', {
+            url: '/member-profile-view',
+            templateUrl: 'member-profile.html'
+        })
 
 })
 .controller('HomeController', function($scope, $state){
     $scope.branches = [];
     $scope.account = {};
-    $scope.modalMessage = "test";
+    $scope.modalMessage = "";
+
+    $scope.memberProfle = {};
+
     angular.element(document).ready(function () {
         $scope.update();
     });
@@ -34,12 +45,15 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
          /*  $scope.apply();*/
        })
     }
-
+    //Load view
     $scope.goToOcrVIew = function() {
         $state.go('ocr-view');
     }
     $scope.goToRegisterView = function() {
         $state.go('register-view');
+    }
+    $scope.goToMemberLoginView = function() {
+        $state.go('member-login-view');
     }
     //register member
     $scope.register = function() {
@@ -55,8 +69,18 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
                 $("#home-modal-message").text(response.message);
             }
             $("#home-modal").modal('show');
-        })
+        });
 
+    }
+
+    //member login
+    $scope.memberLogin = function() {
+        homeService.memberLogin(function(response) {
+            this.goToMemberProfile(response);
+        });
+    }
+    $scope.goToMemberProfile = function(response) {
+        console.log(response);
     }
 });
 

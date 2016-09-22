@@ -8,6 +8,15 @@ import java.util.LinkedHashMap;
 public class ApiResponse<T> {
     private T data;
     private String error_code;
+    private String message;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public T getData() {
         return data;

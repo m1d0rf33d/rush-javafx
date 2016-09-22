@@ -5,6 +5,12 @@
     <title>Rush - Register User</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-ui-router.min.js"></script>
+    <script src="home.js"></script>
 </head>
 <body ng-controller="HomeController">
 <nav class="navbar navbar-default">
@@ -69,7 +75,7 @@
 <main>
     <div id="sidebar">
         <ul id="sidebar-links">
-            <a href="">
+            <a href="" ng-click="goToRegisterView()">
                 <li>REGISTRATION</li>
             </a>
             <a href="">
@@ -96,7 +102,7 @@
             <a href="">
                 <li>OFFLINE TRANSACTIONS</li>
             </a>
-            <a href="#/ocr-view" ng-click="clickTest()">
+            <a href="#/ocr-view" ng-click="goToOcrVIew()">
                 <li class="yellow-bg">SETUP (OCR)</li>
             </a>
             <a href="">
@@ -107,13 +113,18 @@
     <div id="content-wrapper" ui-view>
 
     </div>
+
+    <!-- Modals -->
+    <div class="modal modal-transparent fade trans-overlay" id="home-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="trans-content">
+                <h1><span id="home-modal-message">default</span></h1>
+            </div>
+        </div>
+    </div>
 </main>
 
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.js"></script>
-<script src="js/angular.min.js"></script>
-<script src="js/angular-ui-router.min.js"></script>
-<script src="home.js"></script>
+
 <script>
     $("#number-pad-wrapper button").mouseup(function(){
         $(this).blur();

@@ -8,17 +8,19 @@ import com.yondu.model.ApiResponse;
 import com.yondu.model.Branch;
 import com.yondu.model.enums.ApiError;
 import com.yondu.utils.Java2JavascriptUtils;
-import com.yondu.utils.ResourcePropertyUtil;
 import javafx.scene.web.WebEngine;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.simple.parser.JSONParser;
 import org.w3c.dom.html.HTMLInputElement;
 import org.w3c.dom.html.HTMLSelectElement;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Properties;
 
 import static java.lang.Thread.sleep;
 import static javafx.application.Platform.runLater;
@@ -35,13 +37,25 @@ public class LoginService {
     private WebEngine webEngine;
 
     private String baseUrl;
-    private String loginApi;
+    private String loginEndpoint;
 
     public LoginService(WebEngine webEngine) {
         this.webEngine = webEngine;
-        //Load property values
-        this.baseUrl = ResourcePropertyUtil.getProperty("api.properties", "base_url", this.getClass());
-        this.loginApi = ResourcePropertyUtil.getProperty("api.properties", "login_api", this.getClass());
+        try {
+            Properties prop = new Properties();
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
+            if (inputStream != null) {
+                prop.load(inputStream);
+            } else {
+                throw new FileNotFoundException("property file api.properties not found in the classpath");
+            }
+            this.baseUrl = prop.getProperty("base_url");
+            this.loginEndpoint = prop.getProperty("login_endpoint");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void login() {
@@ -53,7 +67,7 @@ public class LoginService {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, employeeField.getValue()));
         params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, selectField.getValue()));
-        String result = apiService.call((baseUrl + loginApi), params, "post");
+        String result = apiService.call((baseUrl + loginEndpoint), params, "post");
 
         //Validate errors
         if (result.contains(String.valueOf(ApiError.x10))) {
@@ -72,6 +86,7 @@ public class LoginService {
         //Set logged in employee in application context
         LinkedHashMap map = (LinkedHashMap) apiResponse.getData();
         App.appContextHolder.setEmployeeName(((String) map.get("name")));
+        App.appContextHolder.setEmployeeId((String) map.get("id"));
         webEngine.executeScript("loginSuccess()");
     }
 

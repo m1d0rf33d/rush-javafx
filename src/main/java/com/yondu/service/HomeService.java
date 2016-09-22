@@ -4,8 +4,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yondu.App;
 import com.yondu.model.Account;
+import com.yondu.model.ApiFieldContants;
+import com.yondu.model.ApiResponse;
+import com.yondu.model.enums.ApiError;
 import com.yondu.utils.Java2JavascriptUtils;
 import javafx.scene.web.WebEngine;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.w3c.dom.html.HTMLInputElement;
+import org.w3c.dom.html.HTMLSelectElement;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Properties;
 
 import static java.lang.Thread.sleep;
 import static javafx.application.Platform.runLater;
@@ -19,9 +34,28 @@ import static org.json.simple.JSONValue.toJSONString;
 public class HomeService {
 
     private WebEngine webEngine;
+    private ApiService apiService = new ApiService();
+
+    private String baseUrl;
+    private String registerEndpoint;
 
     public HomeService(WebEngine webEngine) {
         this.webEngine = webEngine;
+        try {
+            Properties prop = new Properties();
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
+            if (inputStream != null) {
+                prop.load(inputStream);
+            } else {
+                throw new FileNotFoundException("property file api.properties not found in the classpath");
+            }
+            this.baseUrl = prop.getProperty("base_url");
+            this.registerEndpoint = prop.getProperty("register_endpoint");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void loadEmployeeData(final Object callbackfunction) {
@@ -45,6 +79,48 @@ public class HomeService {
                 );
 
             }
+        ).start();
+    }
+
+    public void register(final Object callbackfunction) {
+        //Read html form values
+        HTMLInputElement nameField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_NAME);
+        HTMLInputElement emailField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_EMAIL);
+        HTMLInputElement mobileField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_MOBILE);
+        HTMLInputElement pinField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_PIN);
+
+        //Build request body
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_NAME, nameField.getValue()));
+        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_EMAIL, emailField.getValue()));
+        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getValue()));
+        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_PIN, pinField.getValue()));
+
+        String url = baseUrl + registerEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
+        String result = apiService.call(url, params, "post");
+
+        //Validate errors
+        if (result.contains(String.valueOf(ApiError.x10))) {
+            //Call javascript function that will notify user
+            webEngine.executeScript("registerFailed()");
+            return;
+        }
+        ApiResponse apiResponse = null;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            apiResponse = mapper.readValue(result, ApiResponse.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        new Thread( () -> {
+            try {
+                sleep(1000); //add some processing simulation...
+                runLater( () ->
+                        Java2JavascriptUtils.call(callbackfunction, result)
+                );
+            } catch (InterruptedException e) {	}
+        }
         ).start();
     }
 }

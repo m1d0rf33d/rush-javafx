@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-sm-6">
+        <h4 class="content-title">REGISTER NEW MEMBER</h4>
+        <h5 class="sub-content-title">General Information</h5>
+        <hr>
+    </div>
+</div>
+<div class="row">
+    <form action="http://54.169.103.206/design/rush-pos/register.html" class="form">
+        <div class="col-sm-6">
+            <label>Member Name</label>
+            <input type="text" class="w100" id="name">
+            <label>EMAIL</label>
+            <input type="text" class="w100" id="email">
+            <label>GENDER</label>
+            <select name="" id="" class="w100">
+                <option value="">Select Gender</option>
+            </select>
+        </div>
+        <div class="col-sm-6">
+            <label>Mobile Numbers</label>
+            <input type="text" class="w100" id="mobile_no">
+            <label>Birthdate</label>
+            <input type="text" placeholder="MM/DD/YY" class="w100 date-field">
+            <label>4-Digit M-Pin (App Password)</label>
+            <input type="text" class="w100" id="pin">
+        </div>
+    </form>
+</div>
+<div class="row">
+    <div class="col-md-12 center">
+        <button class="btn-clear" type="button">Clear All</button>
+        <button class="btn-send" type="button" ng-click="register();">Send</button>
+    </div>
+</div>

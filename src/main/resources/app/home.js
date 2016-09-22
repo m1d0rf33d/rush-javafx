@@ -1,5 +1,5 @@
 //Trigger the alert listener on our backend to bind loginService
-alert("__CONNECT__BACKEND__loginService");
+alert("__CONNECT__BACKEND__homeService");
 
 
 var homeModule = angular.module('HomeModule', ['ui.router'])
@@ -14,6 +14,7 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
 })
 .controller('HomeController', function($scope, $state){
     $scope.branches = [];
+    $scope.account = {};
     angular.element(document).ready(function () {
         $scope.update();
     });
@@ -24,6 +25,14 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
             $scope.branches = data;
             $scope.$apply();
         });*/
+       homeService.loadEmployeeData(function(data) {
+           console.log(data);
+           $scope.account = {
+               id: data.name
+           }
+           console.log($scope.account);
+           $scope.apply();
+       })
     }
 
     $scope.clickTest = function() {

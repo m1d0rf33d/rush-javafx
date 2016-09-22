@@ -1,11 +1,14 @@
 package com.yondu.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yondu.model.*;
+import com.yondu.App;
+import com.yondu.model.Account;
+import com.yondu.model.ApiFieldContants;
+import com.yondu.model.ApiResponse;
+import com.yondu.model.Branch;
 import com.yondu.model.enums.ApiError;
 import com.yondu.utils.Java2JavascriptUtils;
 import com.yondu.utils.ResourcePropertyUtil;
-import javafx.fxml.Initializable;
 import javafx.scene.web.WebEngine;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -13,20 +16,20 @@ import org.json.simple.parser.JSONParser;
 import org.w3c.dom.html.HTMLInputElement;
 import org.w3c.dom.html.HTMLSelectElement;
 
-import javax.inject.Inject;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import static java.lang.Thread.sleep;
 import static javafx.application.Platform.runLater;
 import static org.json.simple.JSONValue.toJSONString;
 
-/** Service for Login Module
+/** Service for Login Module / Java2Javascript Bridge
+ *  Methods inside this class can be invoked in javascript using alert("__CONNECT__BACKEND__loginService")
  *
+ *  @author m1d0rf33d
  */
-public class LoginService implements Initializable {
+public class LoginService {
 
     private ApiService apiService = new ApiService();
     private WebEngine webEngine;
@@ -42,7 +45,7 @@ public class LoginService implements Initializable {
     }
 
     public void login() {
-        ApiResponse<Account> apiResponse = new ApiResponse();
+        ApiResponse apiResponse = new ApiResponse();
         //Read html form values
         HTMLInputElement employeeField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.EMPLOYEE_ID);
         HTMLSelectElement selectField = (HTMLSelectElement) this.webEngine.getDocument().getElementById(ApiFieldContants.BRANCH_ID);
@@ -66,6 +69,9 @@ public class LoginService implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        //Set logged in employee in application context
+        LinkedHashMap map = (LinkedHashMap) apiResponse.getData();
+        App.appContextHolder.setEmployeeName(((String) map.get("name")));
         webEngine.executeScript("loginSuccess()");
     }
 
@@ -78,7 +84,6 @@ public class LoginService implements Initializable {
         String result = apiService.call(url, params, "get");
 
         ObjectMapper mapper = new ObjectMapper();
-        JSONParser parser = new JSONParser();
         try {
             apiResponse = mapper.readValue(result, ApiResponse.class);
         }  catch (Exception e) {
@@ -97,8 +102,4 @@ public class LoginService implements Initializable {
         ).start();
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-    }
 }

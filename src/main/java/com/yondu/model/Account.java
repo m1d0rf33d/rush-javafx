@@ -1,7 +1,8 @@
 package com.yondu.model;
 
-/**
- * Created by aomine on 9/19/16.
+/** Employee / Customer model
+ *
+ *  @author - m1d0rf33d
  */
 public class Account {
     private String id;

@@ -1,8 +1,8 @@
 package com.yondu.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yondu.App;
 import com.yondu.model.Token;
-import com.yondu.utils.TokenUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -27,8 +27,8 @@ public class ApiService {
 
     public String call(String url, List<NameValuePair> params, String method) {
         //Validate token
-        if (TokenUtil.API_TOKEN == null) {
-            TokenUtil.API_TOKEN = getToken();
+        if (App.appContextHolder.getAuthorizationToken() == null) {
+            App.appContextHolder.setAuthorizationToken(getToken());
         }
 
         HttpResponse response = null;
@@ -38,14 +38,14 @@ public class ApiService {
             if (method.equalsIgnoreCase("post")) {
                 HttpPost httpPost = new HttpPost(url);
                 httpPost.setEntity(new UrlEncodedFormEntity(params));
-                httpPost.addHeader("Authorization", "Bearer "+ TokenUtil.API_TOKEN);
+                httpPost.addHeader("Authorization", "Bearer "+ App.appContextHolder.getAuthorizationToken());
                 response = client.execute(httpPost);
             }
             //GET request
             if (method.equalsIgnoreCase("get")) {
                 HttpGet request = new HttpGet(url);
                 request.addHeader("content-type", "application/json");
-                request.addHeader("Authorization", "Bearer "+ TokenUtil.API_TOKEN);
+                request.addHeader("Authorization", "Bearer "+ App.appContextHolder.getAuthorizationToken());
                 response = client.execute(request);
             }
             // use httpClient (no need to close it explicitly)

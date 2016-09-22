@@ -26,7 +26,6 @@ public class Browser extends Region{
     public Browser() {
         //Retrieve local html resource
         String indexPage = App.class.getResource(LOGIN_PAGE).toExternalForm();
-        File file = new File("C:\\Users\\erwin\\Desktop\\rushlogs.txt");
         webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
             @Override
             public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {

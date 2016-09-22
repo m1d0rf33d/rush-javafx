@@ -27,18 +27,25 @@
             <artifactId>jersey-client</artifactId>
             <version>1.8</version>
         </dependency>
+
+        <!-- Enable MVP approach -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.6.3</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.airhacks</groupId>
+            <artifactId>afterburner.fx</artifactId>
+            <version>1.7.0</version>
+        </dependency>
     </dependencies>
 
     <!-- Build Phase -->
@@ -52,6 +59,8 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+
+            <!-- Make an uber-jar because java loader cannot read packed jars so sad :( -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -72,8 +81,9 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- End of uber-jar generator -->
 
-            <!-- Copy project dependency -->
+            <!-- Copy project dependencies to targets/classes folder or else it won't be included upon jar creation -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -93,6 +103,8 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- End of copy dependencies -->
+
         </plugins>
 
     </build>

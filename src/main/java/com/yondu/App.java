@@ -1,5 +1,6 @@
 package com.yondu;
 
+import com.yondu.model.Account;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +13,8 @@ import java.io.*;
 
 
 public class App extends Application{
+
+    public static final AppContextHolder appContextHolder = new AppContextHolder();
 
     public static void main(String[] args) {
         try {

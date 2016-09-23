@@ -9,8 +9,10 @@ import com.yondu.model.ApiResponse;
 import com.yondu.model.enums.ApiError;
 import com.yondu.utils.Java2JavascriptUtils;
 import javafx.scene.web.WebEngine;
+import netscape.javascript.JSObject;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.simple.JSONObject;
 import org.w3c.dom.html.HTMLInputElement;
 import org.w3c.dom.html.HTMLSelectElement;
 
@@ -79,26 +81,36 @@ public class HomeService {
         }).start();
     }
 
-    public void register(final Object callbackfunction) {
+    public void register() {
         //Read html form values
         HTMLInputElement nameField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_NAME);
         HTMLInputElement emailField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_EMAIL);
         HTMLInputElement mobileField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_MOBILE);
         HTMLInputElement pinField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_PIN);
 
-        //Build request body
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_NAME, nameField.getValue()));
-        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_EMAIL, emailField.getValue()));
-        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getValue()));
-        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_PIN, pinField.getValue()));
-
-        String url = baseUrl + registerEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
-
-        new Thread( () -> {
-            Java2JavascriptUtils.call(callbackfunction, apiService.call(url, params, "post"));
+        String jsonResponse = "";
+        //Validate fields
+        if (nameField.getValue() == null || emailField.getValue() == null
+                || mobileField.getValue() == null || pinField.getValue() == null) {
+            ApiResponse apiResponse = new ApiResponse();
+            apiResponse.setMessage("Please fill up all fields.");
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                jsonResponse = mapper.writeValueAsString(apiResponse);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        } else {
+            //Build request body
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_NAME, nameField.getValue()));
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_EMAIL, emailField.getValue()));
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getValue()));
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_PIN, pinField.getValue()));
+            String url = baseUrl + registerEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
+            jsonResponse = apiService.call(url, params, "post");
         }
-        ).start();
+        this.webEngine.executeScript("registerResponseHandler('"+jsonResponse+"')");
     }
 
     public void memberLogin(final Object callbackfunction) {

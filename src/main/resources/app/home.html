@@ -13,6 +13,8 @@
     <script src="home.js"></script>
 </head>
 <body ng-controller="HomeController">
+
+
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -72,6 +74,8 @@
         </div>
     </div>
 </nav>
+
+
 <main>
     <div id="sidebar">
         <ul id="sidebar-links">
@@ -113,13 +117,20 @@
     <div id="content-wrapper" ui-view>
 
     </div>
-
-    <!-- Modals -->
-    <div class="modal modal-transparent fade trans-overlay" id="home-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
-            <div class="trans-content">
-                <h1><span id="home-modal-message">default</span></h1>
+
+            <!-- Modal content-->
+            <div class="modal-content" style="background: white !important;height: 200px;">
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <strong>Registration Failed</strong>
+                    </div>
+                    <p><span id="home-modal-message" style="font-size: 20px;"></span></p>
+                </div>
             </div>
+
         </div>
     </div>
 </main>
@@ -128,6 +139,6 @@
 <script>
     $("#number-pad-wrapper button").mouseup(function(){
         $(this).blur();
-    })</script>
-<script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>
+    })</script><!--
+<script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>-->
 </body></html>

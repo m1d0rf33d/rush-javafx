@@ -21,7 +21,7 @@ loginModule.controller('LoginController', function($scope){
 
 //Functions that are outside the angular context and will be executed by our java backend service
 function loginFailed() {
-    $("#login-failed").modal('show');
+    $("#myModal").modal('show');
 
 }
 

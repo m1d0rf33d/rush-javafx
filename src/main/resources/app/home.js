@@ -25,27 +25,28 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
 
 })
 .controller('HomeController', function($scope, $state){
-    $scope.branches = [];
+    //Logged in employee data
     $scope.account = {};
+    //Selected member data
+    $scope.memberProfile = {};
+
     $scope.modalMessage = "";
 
-    $scope.memberProfle = {};
-
     angular.element(document).ready(function () {
+
         $scope.update();
     });
 
     $scope.update=function(){
+        //Load logged in employee data
        homeService.loadEmployeeData(function(data) {
            console.log(data);
            $scope.account = {
                id: data.name
            }
-           console.log($scope.account);
-         /*  $scope.apply();*/
        })
     }
-    //Load view
+    //Load views
     $scope.goToOcrVIew = function() {
         $state.go('ocr-view');
     }
@@ -55,32 +56,38 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     $scope.goToMemberLoginView = function() {
         $state.go('member-login-view');
     }
-    //register member
-    $scope.register = function() {
-        homeService.register(function(response) {
-            if (response.error_code == '0x0') {
-                $("#home-modal-message").text('Register Successful');
-                //Clear fields
-                $("#name").modal('show');
-                $("#email").modal('show');
-                $("#mobile_no").modal('show');
-                $("#pin").modal('show');
-            } else {
-                $("#home-modal-message").text(response.message);
-            }
-            $("#home-modal").modal('show');
-        });
-
+    $scope.goToMemberProfileView = function() {
+        $state.go('member-profile-view');
     }
 
     //member login
     $scope.memberLogin = function() {
-        homeService.memberLogin(function(response) {
-            this.goToMemberProfile(response);
+        console.log('memberlogin');
+        $state.go('member-profile-view');
+        homeService.memberLogin(function(resp) {
+            $scope.memberProfile = {
+                id: resp.data.id,
+                name: resp.data.name
+            }
         });
     }
-    $scope.goToMemberProfile = function(response) {
-        console.log(response);
-    }
+
 });
 
+function registerResponseHandler(jsonResponse) {
+    var resp = JSON.parse(jsonResponse);
+    if (jsonResponse.message != 'undefined') {
+        //registration failed
+        console.log(resp.message);
+        $("#home-modal-message").text(resp.message);
+    } else {
+        $("#home-modal-message").text('Registration Successful.');
+        //Clear fields
+        $("#name").val('');
+        $("#email").val('');
+        $("#mobile_no").val('');
+        $("#pin").val('');
+    }
+
+    $("#myModal").modal('show');
+}

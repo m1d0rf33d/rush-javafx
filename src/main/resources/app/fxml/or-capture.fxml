@@ -5,12 +5,17 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.OrCaptureController">
+<Pane fx:id="capturePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: #222;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.OrCaptureController">
    <children>
-      <Button fx:id="captureButton" mnemonicParsing="false" onAction="#captureOrDimension" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: #F5A91B;" text="Drag to screen area and press" textFill="#f8f4f4">
+      <Button fx:id="captureButton" layoutX="15.0" layoutY="11.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="275.0" style="-fx-background-color: #F5A91B; -fx-background-radius: 0;" text="Capture" textFill="#f8f4f4">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
+      <Label layoutX="38.0" layoutY="64.0" prefHeight="20.0" prefWidth="251.0" text="Drag to target screen area" textFill="#fffefe">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </Label>
    </children>
 </Pane>

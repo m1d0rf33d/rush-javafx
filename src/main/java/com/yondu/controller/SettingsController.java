@@ -1,6 +1,7 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -9,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.image.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -173,6 +175,8 @@ public class SettingsController implements Initializable{
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
     }
 
     public void loadNewSalesDimension() {
@@ -369,4 +373,6 @@ public class SettingsController implements Initializable{
     public void exit() {
         ((Stage)this.previewText.getScene().getWindow()).close();
     }
+
+
 }

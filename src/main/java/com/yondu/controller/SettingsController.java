@@ -146,6 +146,7 @@ public class SettingsController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         //Load ocr-properties saved config
         try {
             Properties prop = new Properties();

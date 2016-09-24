@@ -8,15 +8,11 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.SettingsController">
    <children>
-      <SplitPane dividerPositions="0.21739130434782608" prefHeight="400.0" prefWidth="600.0">
+      <SplitPane dividerPositions="0.2391304347826087" prefHeight="400.0" prefWidth="600.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="284.0" style="-fx-background-color: #38383E;">
                <children>
-                  <Button alignment="TOP_LEFT" layoutY="2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="142.0" style="-fx-background-color: transparent;" text="OCR" textFill="#fcfafa">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Button>
+                  <Button alignment="TOP_LEFT" layoutY="2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="142.0" style="-fx-background-color: transparent;" text="OCR Configuration" textFill="#fcfafa" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="396.0" style="-fx-background-color: #222;">

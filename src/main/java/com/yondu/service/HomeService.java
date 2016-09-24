@@ -345,12 +345,13 @@ public class HomeService {
             ocrConfigStage.setScene(new Scene(root, 600,400));
             //ocrConfigStage.getScene().getStylesheets().add(App.class.getResource("/app/css/fxml.css").toExternalForm());
             ocrConfigStage.setTitle("Settings");
+            ocrConfigStage.getScene().getStylesheets().add(App.class.getResource("/app/css/fxml.css").toExternalForm());
             ocrConfigStage.resizableProperty().setValue(Boolean.FALSE);
             ocrConfigStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
+    //test
 
 }

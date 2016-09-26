@@ -1,139 +1,145 @@
-<div class="row">
-    <div class="col-sm-12">
-        <h4 class="content-title">VIEW MEMBER'S PROFILE <img src="images/sample_user.png" class="profile-picture-thumb pull-right" alt=""></h4>
-        <hr>
+<div ng-if="memberProfile.id">
+    <div class="row">
+        <div class="col-sm-12">
+            <h4 class="content-title">VIEW MEMBER'S PROFILE <img src="images/sample_user.png" class="profile-picture-thumb pull-right" alt=""></h4>
+            <hr>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-12">
+            <h5 class="sub-title">BASIC INFORMATION</h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="d-label">Member ID</label>
+            <span class="d-value">{{memberProfile.id}}</span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Name</label>
+            <span class="d-value">{{memberProfile.name}}</span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Mobile Number</label>
+            <span class="d-value">{{memberProfile.mobile_no}}</span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Email</label>
+            <span class="d-value">{{memberProfile.email}}</span>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="d-label">Date of Birth</label>
+            <span class="d-value"></span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Gender</label>
+            <span class="d-value"></span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Member Since</label>
+            <span class="d-value"></span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Available Points</label>
+            <span class="d-value"></span>
+        </div>
+    </div>
+    <br><br><br>
+    <div class="row">
+        <div class="col-sm-12">
+            <h5 class="sub-title"></h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="d-label">Card Expiry</label>
+            <span class="d-value red-text"></span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Card Status</label>
+            <span class="d-value green-text"></span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Last Outlet Visited</label>
+            <span class="d-value"></span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Total Visit Count</label>
+            <span class="d-value"></span>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="d-label">Spent This month</label>
+            <span class="d-value"></span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Spent on January</label>
+            <span class="d-value"></span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Spent on February</label>
+            <span class="d-value"></span>
+        </div>
+    </div>
+    <br><br><br>
+    <div class="row">
+        <div class="col-sm-12">
+            <h5 class="sub-title">ACTIVE VOUCHER</h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-stripped active-table">
+                <thead>
+                <tr>
+                    <th>Reward Name</th>
+                    <th>Description</th>
+                    <th>Points Cost</th>
+                    <th>Date Redeemed</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Free Manicure 1</td>
+                    <td>Description Here</td>
+                    <td>25</td>
+                    <td>06/12/2016</td>
+                </tr>
+                <tr>
+                    <td>Free Manicure 2</td>
+                    <td>Description Here</td>
+                    <td>25</td>
+                    <td>06/12/2016</td>
+                </tr>
+                <tr>
+                    <td>Free Manicure 3</td>
+                    <td>Description Here</td>
+                    <td>25</td>
+                    <td>06/12/2016</td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="4" align="right">
+                        <input type="button" value="FIRST" class="table-btn" disabled="">
+                        <input type="button" value="PREVIOUS" class="table-btn" disabled="">
+                        <input type="text" readonly="" value="1/1" class="page-indicator">
+                        <input type="button" value="NEXT" class="table-btn">
+                        <input type="button" value="LAST" class="table-btn">
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
 </div>
-<br>
-<div class="row">
-    <div class="col-sm-12">
-        <h5 class="sub-title">BASIC INFORMATION</h5>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-3">
-        <label class="d-label">Member ID</label>
-        <span class="d-value">{{memberProfile.id}}</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Name</label>
-        <span class="d-value">{{memberProfile.name}}</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Mobile Number</label>
-        <span class="d-value">+6391234567</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Email</label>
-        <span class="d-value">rmcolonel@gmail.com</span>
-    </div>
-</div>
-<br>
-<div class="row">
-    <div class="col-sm-3">
-        <label class="d-label">Date of Birth</label>
-        <span class="d-value">01-01-2001</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Gender</label>
-        <span class="d-value">Male</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Member Since</label>
-        <span class="d-value">05-23-2016</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Available Points</label>
-        <span class="d-value">519</span>
-    </div>
-</div>
-<br><br><br>
-<div class="row">
-    <div class="col-sm-12">
-        <h5 class="sub-title">MEMBERSHIP INFORMATION</h5>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-3">
-        <label class="d-label">Card Expiry</label>
-        <span class="d-value red-text">01-01-2001</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Card Status</label>
-        <span class="d-value green-text">(Status)</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Last Outlet Visited</label>
-        <span class="d-value">101980</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Total Visit Count</label>
-        <span class="d-value">101</span>
-    </div>
-</div>
-<br>
-<div class="row">
-    <div class="col-sm-3">
-        <label class="d-label">Spent This month</label>
-        <span class="d-value">Php 200.00</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Spent on January</label>
-        <span class="d-value">Php 100.00</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Spent on February</label>
-        <span class="d-value">Php 0.00</span>
-    </div>
-</div>
-<br><br><br>
-<div class="row">
-    <div class="col-sm-12">
-        <h5 class="sub-title">ACTIVE VOUCHER</h5>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-12">
-        <table class="table table-stripped active-table">
-            <thead>
-            <tr>
-                <th>Reward Name</th>
-                <th>Description</th>
-                <th>Points Cost</th>
-                <th>Date Redeemed</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Free Manicure 1</td>
-                <td>Description Here</td>
-                <td>25</td>
-                <td>06/12/2016</td>
-            </tr>
-            <tr>
-                <td>Free Manicure 2</td>
-                <td>Description Here</td>
-                <td>25</td>
-                <td>06/12/2016</td>
-            </tr>
-            <tr>
-                <td>Free Manicure 3</td>
-                <td>Description Here</td>
-                <td>25</td>
-                <td>06/12/2016</td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td colspan="4" align="right">
-                    <input type="button" value="FIRST" class="table-btn" disabled="">
-                    <input type="button" value="PREVIOUS" class="table-btn" disabled="">
-                    <input type="text" readonly="" value="1/1" class="page-indicator">
-                    <input type="button" value="NEXT" class="table-btn">
-                    <input type="button" value="LAST" class="table-btn">
-                </td>
-            </tr>
-            </tfoot>
-        </table>
-    </div>
+
+<div ng-if="!memberProfile.id">
+    {{message}}
 </div>

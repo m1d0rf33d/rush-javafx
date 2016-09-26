@@ -11,6 +11,7 @@ public class AppContextHolder {
     private String authorizationToken;
     private String employeeId;
     private String employeeName;
+    private String customerId;
 
     public String getEmployeeName() {
         return employeeName;
@@ -34,5 +35,13 @@ public class AppContextHolder {
 
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 }

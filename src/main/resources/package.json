@@ -6,6 +6,8 @@
 		"angular": "",
 		"bootstrap": "",
 		"jquery": "",
-		"angular-ui-router": ""
+		"angular-ui-router": "",
+		"angular-bootstrap": "",
+		"angular-modal-service": ""
 	}
 }

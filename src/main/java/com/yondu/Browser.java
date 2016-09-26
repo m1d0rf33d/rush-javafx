@@ -32,9 +32,6 @@ public class Browser extends Region{
             public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
                 Java2JavascriptUtils.connectBackendObject(webEngine, "loginService", new LoginService(webEngine));
                 Java2JavascriptUtils.connectBackendObject(webEngine, "homeService", new HomeService(webEngine));
-              /*  JSObject jsobj = (JSObject) webEngine.executeScript("window");
-                jsobj.setMember("java", new LoginService(webEngine));*/
-
             }
         });
         webEngine.load(indexPage);

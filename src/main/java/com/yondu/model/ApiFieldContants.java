@@ -14,4 +14,9 @@ public class ApiFieldContants {
     public static final String MEMBER_EMAIL = "email";
     public static final String MEMBER_MOBILE = "mobile_no";
     public static final String MEMBER_PIN = "pin";
+
+    public static final String AMOUNT = "amount";
+    public static final String OR_NUMBER = "or_no";
+
+    public static final String EMPLOYEE_UUID = "employee_uuid";
 }

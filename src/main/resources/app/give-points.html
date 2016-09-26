@@ -1,0 +1,89 @@
+<div class="row">
+    <div class="col-sm-12">
+        <h4 class="content-title">PAYMENT DETAILS <img src="images/sample_user.png" class="profile-picture-thumb pull-right" alt=""></h4>
+        <hr>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <h5 class="sub-title">BASIC INFORMATION</h5>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3">
+        <label class="d-label">Member ID</label>
+        <span class="d-value">{{memberProfile.id}}</span>
+    </div>
+    <div class="col-sm-3">
+        <label class="d-label">Name</label>
+        <span class="d-value">{{memberProfile.name}}</span>
+    </div>
+    <div class="col-sm-3">
+        <label class="d-label">Mobile Number</label>
+        <span class="d-value">{{memberProfile.mobile_no}}</span>
+    </div>
+    <div class="col-sm-3">
+        <label class="d-label">Email</label>
+        <span class="d-value">{{memberProfile.email}}</span>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-sm-3">
+        <label class="d-label">Date of Birth</label>
+        <span class="d-value"></span>
+    </div>
+    <div class="col-sm-3">
+        <label class="d-label">Gender</label>
+        <span class="d-value"></span>
+    </div>
+    <div class="col-sm-3">
+        <label class="d-label">Member Since</label>
+        <span class="d-value"></span>
+    </div>
+    <div class="col-sm-3">
+        <label class="d-label">Available Points</label>
+        <span class="d-value"></span>
+    </div>
+</div>
+<br><br><br>
+<form action="http://54.169.103.206/design/rush-pos/sales.html" class="form">
+    <div class="row">
+        <div class="col-sm-4">
+            <label>Receipt No.</label>
+            <input id="or_no" type="text" class="w100" value="">
+        </div>
+        <div class="col-sm-4">
+            <label>Total Sales</label>
+            <input id="amount" ng-model="totalSales" ng-keyup="pointsToEarn = (totalSales / pointsRule.earning_peso)" type="text" class="w100" value="1000">
+        </div>
+        <div class="col-sm-4">
+            <label>Points to Earn</label>
+            <input ng-model="pointsToEarn" type="text" class="w100" disabled="" value="1">
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-6">
+            <label>Sales to Calculate</label>
+            <input type="text" class="w100" value="1000" disabled="">
+        </div>
+        <div class="col-sm-6">
+            <label>Current Points</label>
+            <input type="text" class="w100" value="520">
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-12">
+            <label>Remarks</label>
+            <textarea name="" class="w100" id=""></textarea>
+        </div>
+    </div>
+</form>
+<div class="row">
+    <div class="col-md-12 center">
+        <button class="btn-clear" type="button">Reset</button>
+        <button class="btn-send" type="button" ng-click="givePointsToCustomer()">Submit</button>
+    </div>
+</div>

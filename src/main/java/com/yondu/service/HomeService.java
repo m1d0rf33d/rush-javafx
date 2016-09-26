@@ -3,6 +3,7 @@ package com.yondu.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yondu.App;
+import com.yondu.AppContextHolder;
 import com.yondu.model.Account;
 import com.yondu.model.ApiFieldContants;
 import com.yondu.model.ApiResponse;
@@ -13,6 +14,8 @@ import netscape.javascript.JSObject;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.w3c.dom.html.HTMLInputElement;
 import org.w3c.dom.html.HTMLSelectElement;
 
@@ -41,6 +44,9 @@ public class HomeService {
     private String baseUrl;
     private String registerEndpoint;
     private String memberLoginEndpoint;
+    private String pointsConversionEndpoint;
+    private String givePointsEndpoint;
+    private String getPointsEndpoint;
 
     public HomeService(WebEngine webEngine) {
         this.webEngine = webEngine;
@@ -55,6 +61,9 @@ public class HomeService {
             this.baseUrl = prop.getProperty("base_url");
             this.registerEndpoint = prop.getProperty("register_endpoint");
             this.memberLoginEndpoint = prop.getProperty("member_login_endpoint");
+            this.pointsConversionEndpoint = prop.getProperty("points_conversion_endpoint");
+            this.givePointsEndpoint = prop.getProperty("give_points_endpoint");
+            this.getPointsEndpoint = prop.getProperty("get_points_endpoint");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -65,7 +74,7 @@ public class HomeService {
     public void loadEmployeeData(final Object callbackfunction) {
 
         Account account = new Account();
-        account.setId("");
+        account.setId(App.appContextHolder.getEmployeeId());
         account.setName(App.appContextHolder.getEmployeeName());
 
         ObjectMapper mapper = new ObjectMapper();
@@ -113,7 +122,7 @@ public class HomeService {
         this.webEngine.executeScript("registerResponseHandler('"+jsonResponse+"')");
     }
 
-    public void memberLogin(final Object callbackfunction) {
+    public void loginMember(final Object callbackfunction) {
         //Read html form values
         HTMLInputElement mobileField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_MOBILE);
 
@@ -124,9 +133,75 @@ public class HomeService {
         String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
         String result = apiService.call(url, params, "post");
 
+        JSONParser parser = new JSONParser();
+        try {
+            JSONObject jsonObject = (JSONObject) parser.parse(result);
+            String error =  (String) jsonObject.get("error_code");
+            if (error.equals("0x0")) {
+                JSONObject data =  (JSONObject) jsonObject.get("data");
+                App.appContextHolder.setCustomerId( (String) data.get("id"));
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         new Thread( () -> {
             Java2JavascriptUtils.call(callbackfunction, result);
         }
         ).start();
     }
+
+    public void loadPointsRule(final Object callbackfunction) {
+
+        String url = baseUrl + pointsConversionEndpoint;
+        String result = apiService.call(url, new ArrayList<>(), "get");
+
+        new Thread( () -> {
+            try {
+                sleep(5000); //add some processing simulation...
+                runLater( () ->
+                        Java2JavascriptUtils.call(callbackfunction, result)
+                );
+            } catch (InterruptedException e) {	}
+
+        }).start();
+    }
+    public void givePointsToCustomer() {
+        //Read html form values
+        HTMLInputElement amountField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.AMOUNT);
+        HTMLInputElement orNumberField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.OR_NUMBER);
+
+        String jsonResponse = "";
+        //Validate fields
+        if (amountField.getValue() == null || orNumberField.getValue() == null) {
+            ApiResponse apiResponse = new ApiResponse();
+            apiResponse.setMessage("Please fill up all fields.");
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                jsonResponse = mapper.writeValueAsString(apiResponse);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        } else {
+            //Build request body
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
+            params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberField.getValue()));
+            params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amountField.getValue()));
+            String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
+            jsonResponse = apiService.call(url, params, "post");
+        }
+        this.webEngine.executeScript("givePointsResponseHandler('"+jsonResponse+"')");
+    }
+
+    public void getPoints() {
+        String jsonResponse = "";
+        //Build request body
+        List<NameValuePair> params = new ArrayList<>();
+        String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
+        jsonResponse = apiService.call(url, params, "get");
+        this.webEngine.executeScript("getPointsHandler('"+jsonResponse+"')");
+    }
+
 }

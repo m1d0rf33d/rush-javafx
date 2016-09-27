@@ -70,9 +70,6 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     $scope.goToRegisterView = function() {
         $state.go('register-view');
     }
-    $scope.goToMemberLoginView = function() {
-        $state.go('member-login-view');
-    }
 
     $scope.goToGivePointsView = function() {
 
@@ -110,6 +107,18 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
         } else {
             $state.go('member-login-view');
         }
+    }
+
+    $scope.goToPayWithPointsView = function() {
+        if ($scope.memberProfile.id == undefined) {
+            $(".alert").remove();
+            $(".modal-body").prepend('<div><p>No customer is logged in</p></div>');
+            $(".modal-body").prepend('<div class="alert alert-warning"> <strong>Unable to give points</strong> </div>');
+            $("#myModal").modal('show');
+            return;
+        }
+
+        $state.go('pay-points-view');
     }
 
     //member login
@@ -194,4 +203,22 @@ function getPointsHandler(jsonResponse) {
     $(".modal-body").prepend('<div><p> Customer total points is '+resp.data+'</p></div>');
     $(".modal-body").prepend('<div class="alert alert-success"> <strong>Give Points Successful</strong> </div>');
     $("#myModal").modal('show');
+}
+
+
+function payPointsResponseHandler(jsonResponse) {
+    var resp = JSON.parse(jsonResponse);
+    if (resp.error_code != '0x0') {
+        //Show errors messages
+        if (resp.errors.or_no != undefined) {
+            $(".modal-body").prepend('<div><p>'+resp.errors.or_no[0]+'</p></div>');
+        }
+        if (resp.errors.amount != undefined) {
+            $(".modal-body").prepend('<div><p>'+resp.errors.amount[0]+'</p></div>');
+        }
+        $(".modal-body").prepend('<div class="alert alert-warning"> <strong>Pay with points failed</strong> </div>');
+        $("#myModal").modal('show');
+    } else {
+        homeService.getPoints();
+    }
 }

@@ -51,15 +51,15 @@
     <div class="row">
         <div class="col-sm-4">
             <label>Receipt No.</label>
-            <input type="text" class="w100" value="">
+            <input id="or_no" type="text" class="w100" value="">
         </div>
         <div class="col-sm-4">
             <label>Purchase Amount</label>
-            <input type="text" class="w100" value="">
+            <input id="amount" type="text" class="w100" value="">
         </div>
         <div class="col-sm-4">
             <label>Total Points to Pay</label>
-            <input type="text" class="w100" value="">
+            <input id="points" type="text" class="w100" value="">
         </div>
     </div>
     <br>
@@ -77,6 +77,6 @@
 <div class="row">
     <div class="col-md-12 center">
         <button class="btn-clear" type="button">Reset</button>
-        <button class="btn-send" type="button">Submit</button>
+        <button class="btn-send" type="button" onClick="homeService.payWithPoints()">Submit</button>
     </div>
 </div>

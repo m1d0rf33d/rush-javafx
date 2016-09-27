@@ -190,7 +190,7 @@ public class HomeService {
         String jsonResponse = "";
         //Build request body
         List<NameValuePair> params = new ArrayList<>();
-        String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
+        String url = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
         jsonResponse = apiService.call(url, params, "get");
         this.webEngine.executeScript("getPointsHandler('"+jsonResponse+"')");
     }
@@ -220,7 +220,7 @@ public class HomeService {
             params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberField.getValue()));
             params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amountField.getValue()));
             params.add(new BasicNameValuePair(ApiFieldContants.POINTS, pointsField.getValue()));
-            String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
+            String url = baseUrl + payWithPoints.replace(":customer_uuid",App.appContextHolder.getCustomerId());
             jsonResponse = apiService.call(url, params, "post");
         }
         this.webEngine.executeScript("givePointsResponseHandler('"+jsonResponse+"')");

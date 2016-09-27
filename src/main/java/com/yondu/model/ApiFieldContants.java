@@ -17,6 +17,6 @@ public class ApiFieldContants {
 
     public static final String AMOUNT = "amount";
     public static final String OR_NUMBER = "or_no";
-
+    public static final String POINTS = "points";
     public static final String EMPLOYEE_UUID = "employee_uuid";
 }

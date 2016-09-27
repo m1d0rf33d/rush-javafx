@@ -47,6 +47,7 @@ public class HomeService {
     private String pointsConversionEndpoint;
     private String givePointsEndpoint;
     private String getPointsEndpoint;
+    private String payWithPoints;
 
     public HomeService(WebEngine webEngine) {
         this.webEngine = webEngine;
@@ -64,6 +65,7 @@ public class HomeService {
             this.pointsConversionEndpoint = prop.getProperty("points_conversion_endpoint");
             this.givePointsEndpoint = prop.getProperty("give_points_endpoint");
             this.getPointsEndpoint = prop.getProperty("get_points_endpoint");
+            this.payWithPoints = prop.getProperty("pay_points_endpoint");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -202,6 +204,37 @@ public class HomeService {
         String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
         jsonResponse = apiService.call(url, params, "get");
         this.webEngine.executeScript("getPointsHandler('"+jsonResponse+"')");
+    }
+
+    public void payWithPoints() {
+        //Read html form values
+        HTMLInputElement pointsField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.POINTS);
+        HTMLInputElement orNumberField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.OR_NUMBER);
+        HTMLInputElement amountField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.AMOUNT);
+
+        String jsonResponse = "";
+        //Validate fields
+        if (pointsField.getValue() == null || orNumberField.getValue() == null
+                || amountField.getValue() == null) {
+            ApiResponse apiResponse = new ApiResponse();
+            apiResponse.setMessage("Please fill up all fields.");
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                jsonResponse = mapper.writeValueAsString(apiResponse);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        } else {
+            //Build request body
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
+            params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberField.getValue()));
+            params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amountField.getValue()));
+            params.add(new BasicNameValuePair(ApiFieldContants.POINTS, pointsField.getValue()));
+            String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
+            jsonResponse = apiService.call(url, params, "post");
+        }
+        this.webEngine.executeScript("givePointsResponseHandler('"+jsonResponse+"')");
     }
 
 }

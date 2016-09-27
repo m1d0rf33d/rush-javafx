@@ -26,6 +26,10 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
             url: '/give-points-view',
             templateUrl: 'give-points.html'
         })
+        .state('pay-points-view', {
+            url: '/pay-points-view',
+            templateUrl: 'pay-with-points.html'
+        })
 
 })
 .controller('HomeController', function($scope, $state){
@@ -55,7 +59,7 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
        homeService.loadEmployeeData(function(data) {
            console.log(data);
            $scope.account = {
-               id: data.id
+               name: data.name
            }
        })
     }
@@ -69,6 +73,7 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     $scope.goToMemberLoginView = function() {
         $state.go('member-login-view');
     }
+
     $scope.goToGivePointsView = function() {
 
         if ($scope.memberProfile.id == undefined) {
@@ -99,6 +104,9 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
         $state.go('give-points-view');
     }
 
+    $scope.goToMemberLoginView = function() {
+        $state.go('member-login-view');
+    }
 
     //member login
     $scope.loginMember = function() {
@@ -169,6 +177,13 @@ function givePointsResponseHandler(jsonResponse) {
         homeService.getPoints();
     }
 
+    $("#myModal").modal('show');
+}
+
+function getPointsHandler(jsonResponse) {
+    var resp = JSON.parse(jsonResponse);
+    $(".modal-body").prepend('<div class="alert alert-success"> <strong>Give Points Successful</strong> </div>');
+    $("#home-modal-message").text('Customer earned points. Total points is ' + resp.data);
     $("#myModal").modal('show');
 }
 

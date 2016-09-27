@@ -30,6 +30,15 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
             url: '/pay-points-view',
             templateUrl: 'pay-with-points.html'
         })
+        .state('voucher-redemption-view', {
+            url: '/voucher-redemption-view',
+            templateUrl: 'voucher-redemption.html'
+        })
+        .state('issue-rewards-view', {
+            url: '/issue-rewards-view',
+            templateUrl: 'issue-rewards.html'
+        })
+
 
 })
 .controller('HomeController', function($scope, $state){
@@ -48,6 +57,11 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     $scope.pointsToEarn = 0;
     $scope.totalSales = 0;
 
+    $scope.items = [];
+
+    $scope.modalStyle = {
+        "background" : "white",
+    }
 
     angular.element(document).ready(function () {
         $scope.update();
@@ -63,7 +77,8 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
            }
        })
     }
-    //Load views
+
+    //VIEWS TRANSITION
     $scope.goToOcrVIew = function() {
         $state.go('ocr-view');
     }
@@ -121,6 +136,28 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
         $state.go('pay-points-view');
     }
 
+    $scope.goToVoucherRedemptionView = function() {
+        if ($scope.memberProfile.id == undefined) {
+            $(".alert").remove();
+            $(".modal-body").prepend('<div><p>No customer is logged in</p></div>');
+            $(".modal-body").prepend('<div class="alert alert-warning"> <strong>Not allowed</strong> </div>');
+            $("#myModal").modal('show');
+            return;
+        }
+
+        homeService.loadRewards(function(resp){
+            console.log(resp);
+            $scope.items = resp.data;
+        });
+
+        $state.go('voucher-redemption-view');
+    }
+
+    $scope.goToIssueRewardsView = function() {
+        $state.go('issue-rewards-view');
+    }
+    // END OF VIEWS
+
     //member login
     $scope.loginMember = function() {
         $scope.message = 'Searching customer information';
@@ -156,7 +193,15 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     }
 
 });
-
+homeModule.directive('backImg', function(){
+    return function(scope, element, attrs){
+        var url = attrs.backImg;
+        element.css({
+            'background-image': 'url(' + url +')',
+            'background-size' : 'cover'
+        });
+    };
+});
 // FUNCTIONS CALLED BY JAVA BACKEND METHODS AKA AS RESPONSEHANDLERS
 
 function registerResponseHandler(jsonResponse) {

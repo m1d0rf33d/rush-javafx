@@ -48,7 +48,9 @@ public class HomeService {
     private String pointsConversionEndpoint;
     private String givePointsEndpoint;
     private String getPointsEndpoint;
-    private String payWithPoints;
+    private String payWithPointsEndpoint;
+    private String getRewardsEndpoint;
+    private String redeemRewardsEndpoint;
 
     public HomeService(WebEngine webEngine) {
         this.webEngine = webEngine;
@@ -66,7 +68,9 @@ public class HomeService {
             this.pointsConversionEndpoint = prop.getProperty("points_conversion_endpoint");
             this.givePointsEndpoint = prop.getProperty("give_points_endpoint");
             this.getPointsEndpoint = prop.getProperty("get_points_endpoint");
-            this.payWithPoints = prop.getProperty("pay_points_endpoint");
+            this.payWithPointsEndpoint = prop.getProperty("pay_points_endpoint");
+            this.getRewardsEndpoint = prop.getProperty("get_rewards_endpoint");
+            this.redeemRewardsEndpoint = prop.getProperty("redeem_rewards_endpoint");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -220,11 +224,33 @@ public class HomeService {
             params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberField.getValue()));
             params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amountField.getValue()));
             params.add(new BasicNameValuePair(ApiFieldContants.POINTS, pointsField.getValue()));
-            String url = baseUrl + payWithPoints.replace(":customer_uuid",App.appContextHolder.getCustomerId());
+            String url = baseUrl + payWithPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
             jsonResponse = apiService.call(url, params, "post");
         }
         this.webEngine.executeScript("givePointsResponseHandler('"+jsonResponse+"')");
     }
 
+    public void loadRewards(final Object callbackfunction) {
 
+
+        String url = baseUrl + getRewardsEndpoint;
+        String jsonResponse = apiService.call(url, new ArrayList<>(), "get");
+
+        final String data = jsonResponse;
+        new Thread( () -> {
+            Java2JavascriptUtils.call(callbackfunction, data);
+        }).start();
+    }
+
+    public void redeemRewards(String rewardId, String pin) {
+
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin));
+        String url = baseUrl + redeemRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerId());
+        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+        url = url.replace(":reward_id", rewardId);
+        String jsonResponse = apiService.call(url, params, "post");
+
+        this.webEngine.executeScript("redeemRewardsResponseHandler('"+jsonResponse+"')");
+    }
 }

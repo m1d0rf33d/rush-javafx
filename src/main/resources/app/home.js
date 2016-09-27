@@ -151,6 +151,19 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     }
 
     $scope.goToIssueRewardsView = function() {
+
+        if ($scope.memberProfile.id == undefined) {
+            $(".alert").remove();
+            $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
+            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Not allowed</strong> </div>');
+            $("#myModal").modal('show');
+            return;
+        }
+
+        homeService.loadCustomerRewards(function(resp){
+            console.log(resp);
+            $scope.items = resp.data.reward;
+        });
         $state.go('issue-rewards-view');
     }
     // END OF VIEWS
@@ -283,4 +296,6 @@ function redeemRewardsResponseHandler (jsonResponse) {
         $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>Redeem item successful</strong> </div>');
     }
     $("#myModal").modal('show');
-}  
+}
+
+

@@ -3,34 +3,27 @@ package com.yondu.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yondu.App;
-import com.yondu.AppContextHolder;
 import com.yondu.model.Account;
 import com.yondu.model.ApiFieldContants;
 import com.yondu.model.ApiResponse;
-import com.yondu.model.enums.ApiError;
-import com.yondu.utils.FieldValidator;
 import com.yondu.utils.Java2JavascriptUtils;
 import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.w3c.dom.html.HTMLInputElement;
-import org.w3c.dom.html.HTMLSelectElement;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 
 import static java.lang.Thread.sleep;
 import static javafx.application.Platform.runLater;
-import static org.json.simple.JSONValue.toJSONString;
 
 /** Home Module services / Java2Javascript bridge
  *  Methods inside this class can be invoked inside a javascript using alert("__CONNECT__BACKEND__homeService")
@@ -51,6 +44,8 @@ public class HomeService {
     private String payWithPointsEndpoint;
     private String getRewardsEndpoint;
     private String redeemRewardsEndpoint;
+    private String unclaimedRewardsEndpoint;
+    private String claimRewardsEndpoint;
 
     public HomeService(WebEngine webEngine) {
         this.webEngine = webEngine;
@@ -71,6 +66,8 @@ public class HomeService {
             this.payWithPointsEndpoint = prop.getProperty("pay_points_endpoint");
             this.getRewardsEndpoint = prop.getProperty("get_rewards_endpoint");
             this.redeemRewardsEndpoint = prop.getProperty("redeem_rewards_endpoint");
+            this.unclaimedRewardsEndpoint = prop.getProperty("unclaimed_rewards_endpoint");
+            this.claimRewardsEndpoint = prop.getProperty("claim_rewards_endpoint");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -253,4 +250,30 @@ public class HomeService {
 
         this.webEngine.executeScript("redeemRewardsResponseHandler('"+jsonResponse+"')");
     }
+
+    public void loadCustomerRewards(final Object callbackfunction) {
+
+
+        String url = baseUrl + unclaimedRewardsEndpoint;
+        String jsonResponse = apiService.call(url, new ArrayList<>(), "get");
+
+        final String data = jsonResponse;
+        new Thread( () -> {
+            Java2JavascriptUtils.call(callbackfunction, data);
+        }).start();
+    }
+
+
+    public void issueRewards(String rewardId, String pin) {
+
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin));
+        String url = baseUrl + claimRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerId());
+        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+        url = url.replace(":reward_id", rewardId);
+        String jsonResponse = apiService.call(url, params, "post");
+
+        this.webEngine.executeScript("redeemRewardsResponseHandler('"+jsonResponse+"')");
+    }
+
 }

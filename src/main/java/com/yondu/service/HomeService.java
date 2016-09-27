@@ -276,4 +276,8 @@ public class HomeService {
         this.webEngine.executeScript("redeemRewardsResponseHandler('"+jsonResponse+"')");
     }
 
+    public void test() {
+        
+    }
+
 }

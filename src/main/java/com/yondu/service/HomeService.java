@@ -8,6 +8,7 @@ import com.yondu.model.Account;
 import com.yondu.model.ApiFieldContants;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.enums.ApiError;
+import com.yondu.utils.FieldValidator;
 import com.yondu.utils.Java2JavascriptUtils;
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
@@ -175,25 +176,13 @@ public class HomeService {
         HTMLInputElement orNumberField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.OR_NUMBER);
 
         String jsonResponse = "";
-        //Validate fields
-        if (amountField.getValue() == null || orNumberField.getValue() == null) {
-            ApiResponse apiResponse = new ApiResponse();
-            apiResponse.setMessage("Please fill up all fields.");
-            ObjectMapper mapper = new ObjectMapper();
-            try {
-                jsonResponse = mapper.writeValueAsString(apiResponse);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        } else {
-            //Build request body
-            List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
-            params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberField.getValue()));
-            params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amountField.getValue()));
-            String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
-            jsonResponse = apiService.call(url, params, "post");
-        }
+        //Build request body
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
+        params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberField.getValue()));
+        params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amountField.getValue()));
+        String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
+        jsonResponse = apiService.call(url, params, "post");
         this.webEngine.executeScript("givePointsResponseHandler('"+jsonResponse+"')");
     }
 
@@ -236,5 +225,6 @@ public class HomeService {
         }
         this.webEngine.executeScript("givePointsResponseHandler('"+jsonResponse+"')");
     }
+
 
 }

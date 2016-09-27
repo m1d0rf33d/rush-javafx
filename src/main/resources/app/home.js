@@ -78,8 +78,8 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
 
         if ($scope.memberProfile.id == undefined) {
             $(".alert").remove();
+            $(".modal-body").prepend('<div><p>No customer is logged in</p></div>');
             $(".modal-body").prepend('<div class="alert alert-warning"> <strong>Unable to give points</strong> </div>');
-            $("#home-modal-message").text('No customer is logged in.');
             $("#myModal").modal('show');
             return;
         }
@@ -88,7 +88,7 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
         homeService.loadPointsRule(function(resp) {
             if (resp.message != undefined) {
                 $(".alert").remove();
-                $("#home-modal-message").text('Unable to retrieve points conversion. Try to reload page.');
+                $(".modal-body").prepend('<div><p>Unable to retrieve point conversion</p></div>');
                 $(".modal-body").prepend('<div class="alert alert-warning"> <strong>Something went wrong</strong> </div>');
                 $("#mymodal").modal('show');
             } else {
@@ -105,7 +105,11 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     }
 
     $scope.goToMemberLoginView = function() {
-        $state.go('member-login-view');
+        if ($scope.memberProfile.id != undefined) {
+            $state.go('member-profile-view');
+        } else {
+            $state.go('member-login-view');
+        }
     }
 
     //member login
@@ -137,24 +141,26 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
         homeService.givePointsToCustomer();
     }
 
-});
-homeModule.controller('ModalController', function($scope, close) {
+    $scope.logoutMember = function() {
+        $scope.memberProfile = {};
+        $scope.go('member-login-view');
+    }
 
-    $scope.close = function(result) {
-        close(result, 500); // close, but give 500ms for bootstrap to animate
-    };
 });
+
+// FUNCTIONS CALLED BY JAVA BACKEND METHODS AKA AS RESPONSEHANDLERS
 
 function registerResponseHandler(jsonResponse) {
     $(".alert").remove();
     var resp = JSON.parse(jsonResponse);
     if (resp.message != undefined) {
         //registration failed
-        $("#home-modal-message").text(resp.message);
+        $(".modal-body").prepend('<div><p>'+resp.message+'</p></div>');
         $(".modal-body").prepend('<div class="alert alert-warning"> <strong>Registration Failed</strong> </div>');
     } else {
+        $(".modal-body").prepend('<div><p>Customer registered.</p></div>');
         $(".modal-body").prepend('<div class="alert alert-success"> <strong>Registration Successful</strong> </div>');
-        $("#home-modal-message").text('Customer has been registered.');
+
         //Clear fields
         $("#name").val('');
         $("#email").val('');
@@ -168,28 +174,24 @@ function registerResponseHandler(jsonResponse) {
 function givePointsResponseHandler(jsonResponse) {
     $(".alert").remove();
     var resp = JSON.parse(jsonResponse);
-    if (resp.message != undefined) {
-        //registration failed
-        $("#home-modal-message").text(resp.message);
+    if (resp.error_code != '0x0') {
+        //Show errors messages
+        if (resp.errors.or_no != undefined) {
+            $(".modal-body").prepend('<div><p>'+resp.errors.or_no[0]+'</p></div>');
+        }
+        if (resp.errors.amount != undefined) {
+            $(".modal-body").prepend('<div><p>'+resp.errors.amount[0]+'</p></div>');
+        }
         $(".modal-body").prepend('<div class="alert alert-warning"> <strong>Give Points Failed</strong> </div>');
+        $("#myModal").modal('show');
     } else {
-        //Update available points
         homeService.getPoints();
     }
-
-    $("#myModal").modal('show');
 }
 
 function getPointsHandler(jsonResponse) {
     var resp = JSON.parse(jsonResponse);
+    $(".modal-body").prepend('<div><p> Customer total points is '+resp.data+'</p></div>');
     $(".modal-body").prepend('<div class="alert alert-success"> <strong>Give Points Successful</strong> </div>');
-    $("#home-modal-message").text('Customer earned points. Total points is ' + resp.data);
-    $("#myModal").modal('show');
-}
-
-function getPointsHandler(jsonResponse) {
-    var resp = JSON.parse(jsonResponse);
-    $(".modal-body").prepend('<div class="alert alert-success"> <strong>Give Points Successful</strong> </div>');
-    $("#home-modal-message").text('Customer earned points. Total points is ' + resp.data);
     $("#myModal").modal('show');
 }

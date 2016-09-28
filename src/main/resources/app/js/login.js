@@ -14,18 +14,23 @@ loginModule.controller('LoginController', function($scope){
         //This is a java service (magic motherfucker!)
        loginService.loadBranches(function(data){
             $scope.branches = data;
+            $scope.defaultBranch = $scope.branches[0].id;
             $scope.$apply();
         });
     }
 });
 
 //Functions that are outside the angular context and will be executed by our java backend service
-function loginFailed() {
-    $("#myModal").modal('show');
+function loginResponseHandler(jsonResponse) {
+    var resp = JSON.parse(jsonResponse);
 
-}
-
-function loginSuccess() {
-    location.href = "home.html";
+    if (resp.error_code != '0x0') {
+        $(".temp").remove();
+        $(".login-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
+        $(".login-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Unable to give points</strong> </div>');
+        $("#loginModal").modal('show');
+    } else {
+        location.href = "home.html";
+    }
 }
 

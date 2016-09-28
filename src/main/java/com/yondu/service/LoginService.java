@@ -11,6 +11,8 @@ import com.yondu.utils.Java2JavascriptUtils;
 import javafx.scene.web.WebEngine;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.w3c.dom.html.HTMLInputElement;
 import org.w3c.dom.html.HTMLSelectElement;
 
@@ -24,6 +26,7 @@ import java.util.Properties;
 
 import static java.lang.Thread.sleep;
 import static javafx.application.Platform.runLater;
+import static org.json.simple.JSONValue.parse;
 import static org.json.simple.JSONValue.toJSONString;
 
 /** Service for Login Module / Java2Javascript Bridge
@@ -67,27 +70,17 @@ public class LoginService {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, employeeField.getValue()));
         params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, selectField.getValue()));
-        String result = apiService.call((baseUrl + loginEndpoint), params, "post");
+        String jsonResponse = apiService.call((baseUrl + loginEndpoint), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
-        //Validate errors
-        if (result.contains(String.valueOf(ApiError.x10))) {
-            //Call javascript function that will notify user
-            webEngine.executeScript("loginFailed()");
-            return;
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parse(jsonResponse);
+        if (jsonObject.get("data") != null) {
+            JSONObject data = (JSONObject) jsonObject.get("data");
+            App.appContextHolder.setEmployeeName(((String) data.get("name")));
+            App.appContextHolder.setEmployeeId((String) data.get("id"));
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        Account account;
-        try {
-            apiResponse = mapper.readValue(result, ApiResponse.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //Set logged in employee in application context
-        LinkedHashMap map = (LinkedHashMap) apiResponse.getData();
-        App.appContextHolder.setEmployeeName(((String) map.get("name")));
-        App.appContextHolder.setEmployeeId((String) map.get("id"));
-        webEngine.executeScript("loginSuccess()");
+        webEngine.executeScript("loginResponseHandler('"+jsonResponse+"')");
     }
 
     public void loadBranches(final Object callbackfunction) {
@@ -96,7 +89,7 @@ public class LoginService {
 
         String url = "http://52.74.203.202/api/dev/loyalty/merchantapp/merchant/branches";
         List<NameValuePair> params = new ArrayList<>();
-        String result = apiService.call(url, params, "get");
+        String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
         ObjectMapper mapper = new ObjectMapper();
         try {

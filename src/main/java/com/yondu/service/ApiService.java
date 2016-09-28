@@ -2,6 +2,7 @@ package com.yondu.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yondu.App;
+import com.yondu.model.ApiFieldContants;
 import com.yondu.model.Token;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -27,6 +28,8 @@ public class ApiService {
     private String authorizationEndpoint;
     private String appKey;
     private String appSecret;
+    private String customerAppKey;
+    private String customerAppSecret;
 
     public ApiService() {
         try {
@@ -41,6 +44,8 @@ public class ApiService {
             this.authorizationEndpoint = prop.getProperty("authorization_endpoint");
             this.appKey = prop.getProperty("app_key");
             this.appSecret = prop.getProperty("app_secret");
+            this.customerAppKey = prop.getProperty("customer_app_key");
+            this.customerAppSecret = prop.getProperty("customer_app_secret");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -48,11 +53,21 @@ public class ApiService {
         }
     }
 
-    public String call(String url, List<NameValuePair> params, String method) {
+    public String call(String url, List<NameValuePair> params, String method, String resourceOwner) {
         //Validate token
-        if (App.appContextHolder.getAuthorizationToken() == null) {
-            App.appContextHolder.setAuthorizationToken(getToken());
+        String token = "";
+        if (resourceOwner.equals(ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER)) {
+            if (App.appContextHolder.getAuthorizationToken() == null) {
+                App.appContextHolder.setAuthorizationToken(getToken(resourceOwner));
+            }
+            token = App.appContextHolder.getAuthorizationToken();
+        } else {
+            if (App.appContextHolder.getCustomerAppAuthToken() == null) {
+                App.appContextHolder.setCustomerAppAuthToken(getToken(resourceOwner));
+            }
+            token = App.appContextHolder.getCustomerAppAuthToken();
         }
+
 
         HttpResponse response = null;
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
@@ -60,7 +75,7 @@ public class ApiService {
             if (method.equalsIgnoreCase("post")) {
                 HttpPost httpPost = new HttpPost(url);
                 httpPost.setEntity(new UrlEncodedFormEntity(params));
-                httpPost.addHeader("Authorization", "Bearer "+ App.appContextHolder.getAuthorizationToken());
+                httpPost.addHeader("Authorization", "Bearer "+ token);
                 response = httpClient.execute(httpPost);
             }
             //GET request
@@ -88,13 +103,22 @@ public class ApiService {
     }
 
 
-    private String getToken() {
+    public String getToken(String resourceOwner) {
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+
+            String appKey = "", appSecret = "";
+            if (resourceOwner.equals(ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER)) {
+                appKey = this.appKey;
+                appSecret = this.appSecret;
+            } else {
+                appKey = this.customerAppKey;
+                appSecret = this.customerAppSecret;
+            }
 
             HttpPost httpPost = new HttpPost((this.baseUrl + this.authorizationEndpoint));
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("app_key", this.appKey));
-            params.add(new BasicNameValuePair("app_secret", this.appSecret));
+            params.add(new BasicNameValuePair("app_key", appKey));
+            params.add(new BasicNameValuePair("app_secret", appSecret));
             httpPost.setEntity(new UrlEncodedFormEntity(params));
 
             HttpResponse response = httpClient.execute(httpPost);

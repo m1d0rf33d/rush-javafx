@@ -12,6 +12,15 @@ public class AppContextHolder {
     private String employeeId;
     private String employeeName;
     private String customerId;
+    private String customerAppAuthToken;
+
+    public String getCustomerAppAuthToken() {
+        return customerAppAuthToken;
+    }
+
+    public void setCustomerAppAuthToken(String customerAppAuthToken) {
+        this.customerAppAuthToken = customerAppAuthToken;
+    }
 
     public String getEmployeeName() {
         return employeeName;

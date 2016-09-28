@@ -20,4 +20,11 @@ public class ApiFieldContants {
     public static final String POINTS = "points";
     public static final String EMPLOYEE_UUID = "employee_uuid";
     public static final String PIN = "pin";
+
+    public static final String MPIN = "mpin";
+    public static final String BIRTHDATE = "birthdate";
+    public static final String GENDER = "gender";
+
+    public static final String CUSTOMER_APP_RESOUCE_OWNER = "customer_app";
+    public static final String MERCHANT_APP_RESOURCE_OWNER = "merchant_app";
 }

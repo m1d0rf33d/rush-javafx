@@ -14,6 +14,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.w3c.dom.html.HTMLInputElement;
+import org.w3c.dom.html.HTMLSelectElement;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -99,30 +100,27 @@ public class HomeService {
         HTMLInputElement nameField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_NAME);
         HTMLInputElement emailField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_EMAIL);
         HTMLInputElement mobileField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_MOBILE);
-        HTMLInputElement pinField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_PIN);
+        HTMLInputElement mpinField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MPIN);
+        HTMLInputElement birthdateField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.BIRTHDATE);
+        HTMLSelectElement genderField = (HTMLSelectElement) this.webEngine.getDocument().getElementById(ApiFieldContants.GENDER);
 
-        String jsonResponse = "";
-        //Validate fields
-        if (nameField.getValue() == null || emailField.getValue() == null
-                || mobileField.getValue() == null || pinField.getValue() == null) {
-            ApiResponse apiResponse = new ApiResponse();
-            apiResponse.setMessage("Please fill up all fields.");
-            ObjectMapper mapper = new ObjectMapper();
-            try {
-                jsonResponse = mapper.writeValueAsString(apiResponse);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        } else {
-            //Build request body
-            List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_NAME, nameField.getValue()));
-            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_EMAIL, emailField.getValue()));
-            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getValue()));
-            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_PIN, pinField.getValue()));
-            String url = baseUrl + registerEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
-            jsonResponse = apiService.call(url, params, "post");
+        //Build request body
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_NAME, nameField.getValue()));
+        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_EMAIL, emailField.getValue()));
+        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getValue()));
+        params.add(new BasicNameValuePair(ApiFieldContants.MPIN, mpinField.getValue()));
+        //Optional fields
+        if (birthdateField.getValue() != null && !birthdateField.getValue().isEmpty()) {
+            params.add(new BasicNameValuePair(ApiFieldContants.BIRTHDATE, birthdateField.getValue()));
         }
+        if (genderField.getValue() != null && !genderField.getValue().isEmpty()) {
+            params.add(new BasicNameValuePair(ApiFieldContants.GENDER, genderField.getValue()));
+        }
+
+
+        String url = baseUrl + registerEndpoint;
+        String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
         this.webEngine.executeScript("registerResponseHandler('"+jsonResponse+"')");
     }
 
@@ -135,7 +133,7 @@ public class HomeService {
         params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getValue()));
 
         String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
-        String result = apiService.call(url, params, "post");
+        String result = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
         JSONParser parser = new JSONParser();
         try {
@@ -159,7 +157,7 @@ public class HomeService {
     public void loadPointsRule(final Object callbackfunction) {
 
         String url = baseUrl + pointsConversionEndpoint;
-        String result = apiService.call(url, new ArrayList<>(), "get");
+        String result = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
         new Thread( () -> {
             try {
@@ -183,7 +181,7 @@ public class HomeService {
         params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberField.getValue()));
         params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amountField.getValue()));
         String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
-        jsonResponse = apiService.call(url, params, "post");
+        jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
         this.webEngine.executeScript("givePointsResponseHandler('"+jsonResponse+"')");
     }
 
@@ -192,7 +190,7 @@ public class HomeService {
         //Build request body
         List<NameValuePair> params = new ArrayList<>();
         String url = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
-        jsonResponse = apiService.call(url, params, "get");
+        jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
         this.webEngine.executeScript("getPointsHandler('"+jsonResponse+"')");
     }
 
@@ -222,7 +220,7 @@ public class HomeService {
             params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amountField.getValue()));
             params.add(new BasicNameValuePair(ApiFieldContants.POINTS, pointsField.getValue()));
             String url = baseUrl + payWithPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
-            jsonResponse = apiService.call(url, params, "post");
+            jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
         }
         this.webEngine.executeScript("givePointsResponseHandler('"+jsonResponse+"')");
     }
@@ -231,7 +229,7 @@ public class HomeService {
 
 
         String url = baseUrl + getRewardsEndpoint;
-        String jsonResponse = apiService.call(url, new ArrayList<>(), "get");
+        String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
         final String data = jsonResponse;
         new Thread( () -> {
@@ -246,8 +244,8 @@ public class HomeService {
         String url = baseUrl + redeemRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerId());
         url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
         url = url.replace(":reward_id", rewardId);
-        String jsonResponse = apiService.call(url, params, "post");
-
+        String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        jsonResponse  = jsonResponse.replace("'","");
         this.webEngine.executeScript("redeemRewardsResponseHandler('"+jsonResponse+"')");
     }
 
@@ -255,7 +253,7 @@ public class HomeService {
 
 
         String url = baseUrl + unclaimedRewardsEndpoint;
-        String jsonResponse = apiService.call(url, new ArrayList<>(), "get");
+        String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
         final String data = jsonResponse;
         new Thread( () -> {
@@ -271,7 +269,7 @@ public class HomeService {
         String url = baseUrl + claimRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerId());
         url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
         url = url.replace(":reward_id", rewardId);
-        String jsonResponse = apiService.call(url, params, "post");
+        String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
         this.webEngine.executeScript("redeemRewardsResponseHandler('"+jsonResponse+"')");
     }

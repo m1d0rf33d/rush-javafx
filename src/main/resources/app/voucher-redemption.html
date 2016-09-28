@@ -71,7 +71,7 @@
                         <h4 class="modal-header-h4 red-text">{{item.points_required}} Points</h4>
                         <p>{{item.details}}</p>
                         <div class="modal-buttons">
-                            <button data-toggle="modal" data-target="#errorModal" type="button" class="btn btn-default orange-btn btn-lg">Redeem Voucher</button>
+                            <button data-target="#{{item.id}}_pin_modal" data-toggle="modal" type="button" class="btn btn-default orange-btn btn-lg">Redeem Voucher</button>
                         </div>
                     </div>
                     <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="redemption_files/close.png" alt=""></a>
@@ -79,26 +79,20 @@
             </div>
         </div>
 
-        <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModal">
-            <div class="modal-dialog modal-sm" role="document">
+        <div class="modal fade" id="{{item.id}}_pin_modal" tabindex="-1" role="dialog" aria-labelledby="myModal2">
+            <div class="modal-dialog" role="document">
                 <div class="modal-content row">
-                    <div class="col-md-12  col-sm-12 modal-notif no-padding">
-                        <div class="error center">
-                            <img src="redemption_files/error-icon.png" alt="">
-                            <h4 class="red-text">Redeem Unsuccessful!</h4>
-                            <div class="arrow-down"></div>
-                        </div>
-                        <div class=" center notif-action">
-                            One Large NY Style Super Supreme Pizza
-                            <br>
-                            <br>
-                            <button type="button" class="btn btn-default btn-lg">Try again?</button>
-                        </div>
+
+                    <label class="d-label">Enter PIN</label>
+                    <input type="text" class="w80" id="{{item.id}}_pin">
+                    <div class="modal-buttons">
+                        <button ng-click="redeemRewards(item.id)" type="button" class="btn btn-default orange-btn btn-lg">Proceed</button>
                     </div>
                     <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="redemption_files/close.png" alt=""></a>
                 </div>
             </div>
         </div>
+
         <!-- END MODAL -->
     </div>
 </div>

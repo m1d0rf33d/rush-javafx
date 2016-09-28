@@ -59,9 +59,6 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
 
     $scope.items = [];
 
-    $scope.modalStyle = {
-        "background" : "white",
-    }
 
     angular.element(document).ready(function () {
         $scope.update();
@@ -90,8 +87,8 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
 
         if ($scope.memberProfile.id == undefined) {
             $(".alert").remove();
-            $(".modal-body").prepend('<div><p>No customer is logged in</p></div>');
-            $(".modal-body").prepend('<div class="alert alert-warning"> <strong>Unable to give points</strong> </div>');
+            $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
+            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Unable to give points</strong> </div>');
             $("#myModal").modal('show');
             return;
         }
@@ -100,8 +97,8 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
         homeService.loadPointsRule(function(resp) {
             if (resp.message != undefined) {
                 $(".alert").remove();
-                $(".modal-body").prepend('<div><p>Unable to retrieve point conversion</p></div>');
-                $(".modal-body").prepend('<div class="alert alert-warning"> <strong>Something went wrong</strong> </div>');
+                $(".home-modal-body").prepend('<div class="temp"><p>Unable to retrieve point conversion</p></div>');
+                $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Something went wrong</strong> </div>');
                 $("#mymodal").modal('show');
             } else {
                 $scope.pointsRule = {
@@ -127,8 +124,8 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     $scope.goToPayWithPointsView = function() {
         if ($scope.memberProfile.id == undefined) {
             $(".alert").remove();
-            $(".modal-body").prepend('<div><p>No customer is logged in</p></div>');
-            $(".modal-body").prepend('<div class="alert alert-warning"> <strong>Unable to give points</strong> </div>');
+            $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
+            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Unable to give points</strong> </div>');
             $("#myModal").modal('show');
             return;
         }
@@ -139,8 +136,8 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     $scope.goToVoucherRedemptionView = function() {
         if ($scope.memberProfile.id == undefined) {
             $(".alert").remove();
-            $(".modal-body").prepend('<div><p>No customer is logged in</p></div>');
-            $(".modal-body").prepend('<div class="alert alert-warning"> <strong>Not allowed</strong> </div>');
+            $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
+            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Not allowed</strong> </div>');
             $("#myModal").modal('show');
             return;
         }
@@ -191,6 +188,12 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
         $scope.memberProfile = {};
         $scope.go('member-login-view');
     }
+    $scope.redeemRewards = function(rewardId) {
+        var pin = angular.element("#"+rewardId+"_pin").val();
+        homeService.redeemRewards(rewardId, pin);
+
+        angular.element("#"+rewardId+"_pin").val('');
+    }
 
 });
 homeModule.directive('backImg', function(){
@@ -209,11 +212,11 @@ function registerResponseHandler(jsonResponse) {
     var resp = JSON.parse(jsonResponse);
     if (resp.message != undefined) {
         //registration failed
-        $(".modal-body").prepend('<div><p>'+resp.message+'</p></div>');
-        $(".modal-body").prepend('<div class="alert alert-warning"> <strong>Registration Failed</strong> </div>');
+        $(".home-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
+        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Registration Failed</strong> </div>');
     } else {
-        $(".modal-body").prepend('<div><p>Customer registered.</p></div>');
-        $(".modal-body").prepend('<div class="alert alert-success"> <strong>Registration Successful</strong> </div>');
+        $(".home-modal-body").prepend('<div class="temp"><p>Customer registered.</p></div>');
+        $(".home-modal-body").prepend('<div class="alert alert-success"> <strong>Registration Successful</strong> </div>');
 
         //Clear fields
         $("#name").val('');
@@ -231,12 +234,12 @@ function givePointsResponseHandler(jsonResponse) {
     if (resp.error_code != '0x0') {
         //Show errors messages
         if (resp.errors.or_no != undefined) {
-            $(".modal-body").prepend('<div><p>'+resp.errors.or_no[0]+'</p></div>');
+            $(".home-modal-body").prepend('<div class="temp"><p>'+resp.errors.or_no[0]+'</p></div>');
         }
         if (resp.errors.amount != undefined) {
-            $(".modal-body").prepend('<div><p>'+resp.errors.amount[0]+'</p></div>');
+            $(".home-modal-body").prepend('<div class="temp"><p>'+resp.errors.amount[0]+'</p></div>');
         }
-        $(".modal-body").prepend('<div class="alert alert-warning"> <strong>Give Points Failed</strong> </div>');
+        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Give Points Failed</strong> </div>');
         $("#myModal").modal('show');
     } else {
         homeService.getPoints();
@@ -245,8 +248,8 @@ function givePointsResponseHandler(jsonResponse) {
 
 function getPointsHandler(jsonResponse) {
     var resp = JSON.parse(jsonResponse);
-    $(".modal-body").prepend('<div><p> Customer total points is '+resp.data+'</p></div>');
-    $(".modal-body").prepend('<div class="alert alert-success"> <strong>Give Points Successful</strong> </div>');
+    $(".home-modal-body").prepend('<div class="temp"><p> Customer total points is '+resp.data+'</p></div>');
+    $(".home-modal-body").prepend('<div class="alert alert-success"> <strong>Give Points Successful</strong> </div>');
     $("#myModal").modal('show');
 }
 
@@ -256,14 +259,28 @@ function payPointsResponseHandler(jsonResponse) {
     if (resp.error_code != '0x0') {
         //Show errors messages
         if (resp.errors.or_no != undefined) {
-            $(".modal-body").prepend('<div><p>'+resp.errors.or_no[0]+'</p></div>');
+            $(".home-modal-body").prepend('<div class="temp"><p>'+resp.errors.or_no[0]+'</p></div>');
         }
         if (resp.errors.amount != undefined) {
-            $(".modal-body").prepend('<div><p>'+resp.errors.amount[0]+'</p></div>');
+            $(".home-modal-body").prepend('<div class="temp"><p>'+resp.errors.amount[0]+'</p></div>');
         }
-        $(".modal-body").prepend('<div class="alert alert-warning"> <strong>Pay with points failed</strong> </div>');
+        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Pay with points failed</strong> </div>');
         $("#myModal").modal('show');
     } else {
         homeService.getPoints();
     }
 }
+
+function redeemRewardsResponseHandler (jsonResponse) {
+    $(".modal").modal('hide');
+    $(".temp").remove();
+    var resp = JSON.parse(jsonResponse);
+    if (resp.error_code != '0x0') {
+        $(".home-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
+        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Redeem item failed</strong> </div>');
+    } else {
+        $(".home-modal-body").prepend('<div class="temp"><p> Redeem item successful</p></div>');
+        $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>Redeem item successful</strong> </div>');
+    }
+    $("#myModal").modal('show');
+}  

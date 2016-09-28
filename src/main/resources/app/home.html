@@ -87,10 +87,10 @@
             </a>
             <a href="" ng-click="goToGivePointsView()" >
                 <li>GIVE POINTS</li>
-            </a>
+            </a><!--
             <a href="" ng-disabled="!memberProfile.id" >
-                <li>GIVE POINTS (OCR) - PHASE2</li>
-            </a>
+                <li>GIVE POINTS (OCR)</li>
+            </a>-->
             <a href="" ng-click="goToPayWithPointsView()">
                 <li>PAY WITH POINTS</li>
             </a>
@@ -99,16 +99,16 @@
             </a>
             <a href="" ng-disabled="!memberProfile.id">
                 <li>ISSUE REWARDS</li>
-            </a>
+            </a><!--
             <a href="">
                 <li>TRANSACTION VIEW</li>
-            </a>
+            </a>-->
             <a href="">
                 <li>OFFLINE TRANSACTIONS</li>
-            </a>
+            </a><!--
             <a href="#/ocr-view" ng-click="goToOcrVIew()">
                 <li class="yellow-bg">SETUP (OCR) PHASE2</li>
-            </a>
+            </a>-->
             <a href="" ng-click="logoutMember()">
                 <li class="red-bg">EXIT MEMBER DETAILS</li>
             </a>
@@ -118,12 +118,12 @@
 
     </div>
     <!-- Modal -->
-    <div id="myModal" class="modal fade" role="dialog">
+    <div id="myModal" class="modal fade" role="dialog"  tabindex="-1">
         <div class="modal-dialog">
 
             <!-- Modal content-->
             <div class="modal-content" style="background: white !important;height: 200px;">
-                <div class="modal-body">
+                <div class="modal-body home-modal-body">
                 </div>
             </div>
 
@@ -136,6 +136,6 @@
     $("#number-pad-wrapper button").mouseup(function(){
         $(this).blur();
     })
-</script>
+</script><!--
 <script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>-->
 </body></html>

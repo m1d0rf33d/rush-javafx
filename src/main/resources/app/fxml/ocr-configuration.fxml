@@ -8,7 +8,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="600.0" style="-fx-background-color: #222;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.OcrConfigController">
    <children>
-      <Button layoutX="166.0" layoutY="235.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="130.0" style="-fx-background-color: #F5920B;" text="Save" textFill="#fdfffd">
+      <Button layoutX="166.0" layoutY="235.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="130.0" style="-fx-background-color: #F5920B;" text="Save" textFill="#fdfffd" onAction="#saveDimensions">
          <font>
             <Font name="Droid Sans Mono" size="19.0" />
          </font>
@@ -33,7 +33,7 @@
             <Font name="Ubuntu" size="13.0" />
          </font>
       </Button>
-      <Button layoutX="347.0" layoutY="163.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="110.0" style="-fx-background-color: #1054C4;" text="Capture" textFill="#f2ecec">
+      <Button layoutX="347.0" layoutY="163.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="110.0" style="-fx-background-color: #1054C4;" text="Capture" textFill="#f2ecec" onAction="#loadOrCaptureArea">
          <font>
             <Font name="Ubuntu" size="13.0" />
          </font>
@@ -53,9 +53,9 @@
             <Font name="Droid Sans Mono" size="19.0" />
          </font>
       </Button>
-      <Button layoutX="146.0" layoutY="73.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" style="-fx-background-color: #6C6B68;" text="Load new values" textFill="#fcf7f7" />
-      <Button layoutX="26.0" layoutY="72.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" style="-fx-background-color: #6C6B68;" text="Reset" textFill="#fcf7f7" />
-      <Label layoutX="163.0" layoutY="121.0" prefHeight="30.0" prefWidth="163.0" style="-fx-background-color: #FCFBFA;" />
-      <Label layoutX="164.0" layoutY="164.0" prefHeight="30.0" prefWidth="163.0" style="-fx-background-color: #FCFBFA;" />
+      <Button layoutX="146.0" layoutY="73.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" style="-fx-background-color: #6C6B68;" text="Load new values" textFill="#fcf7f7" id="loadButton" onAction="#loadNewSalesDimension"/>
+      <Button layoutX="26.0" layoutY="72.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" style="-fx-background-color: #6C6B68;" text="Reset" textFill="#fcf7f7" onAction="#resetSalesDimension"/>
+      <Label layoutX="163.0" layoutY="121.0" prefHeight="30.0" prefWidth="163.0" style="-fx-background-color: #FCFBFA;" fx:id="salesDimensionLabel" />
+      <Label layoutX="164.0" layoutY="164.0" prefHeight="30.0" prefWidth="163.0" style="-fx-background-color: #FCFBFA;" fx:id="ornumberDimensionLabel"/>
    </children>
 </Pane>

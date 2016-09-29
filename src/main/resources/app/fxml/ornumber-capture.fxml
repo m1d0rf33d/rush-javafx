@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.OrCaptureController">
+   <children>
+      <Button mnemonicParsing="false" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: #F5A91B;" text="Capture" textFill="#f8f4f4" onAction="#captureOrDimension" fx:id="captureButton">
+         <font>
+            <Font size="44.0" />
+         </font>
+      </Button>
+   </children>
+</Pane>

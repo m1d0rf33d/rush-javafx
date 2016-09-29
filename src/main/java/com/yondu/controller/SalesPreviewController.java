@@ -87,7 +87,6 @@ public class SalesPreviewController implements Initializable {
             // Get OCR result
             outText = api.GetUTF8Text();
             String string = outText.getString();
-            assertTrue(!string.isEmpty());
 
             this.salesPreviewText.setText(string);
             // Destroy used object and release memory

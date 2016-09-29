@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 /**
  * Created by aomine on 9/29/16.
  */
-public class SalesCaptureResultController {
+public class CaptureResultController {
 
 
     public Button okayButton;

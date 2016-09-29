@@ -1,7 +1,12 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -14,7 +19,12 @@ import java.io.PrintWriter;
  */
 public class SalesCaptureController {
 
+    private static final String CAPTURE_RESULT_FXML = "/app/fxml/capture-result.fxml";
+
+    @FXML
     public Button previewButton;
+
+    private Stage resultStage;
 
     public void captureSalesArea() {
         Stage stage = (Stage) this.previewButton.getScene().getWindow();
@@ -45,6 +55,18 @@ public class SalesCaptureController {
             e.printStackTrace();
         }
 */
+        Stage resultStage = new Stage();
+        Parent root = null;
+        try {
+            root = FXMLLoader.load(App.class.getResource(CAPTURE_RESULT_FXML));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        resultStage.setScene(new Scene(root, 400,150));
+        resultStage.setX(400);
+        resultStage.setY(400);
+        resultStage.resizableProperty().setValue(false);
+        resultStage.show();
 
         ((Stage) this.previewButton.getScene().getWindow()).close();
     }

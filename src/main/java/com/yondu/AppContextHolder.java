@@ -19,6 +19,43 @@ public class AppContextHolder {
     private Integer salesWidth;
     private Integer salesHeight;
 
+    private Integer orNumberPosX;
+    private Integer orNumberPosY;
+    private Integer orNumberWidth;
+    private Integer orNumberHeight;
+
+    public Integer getOrNumberPosX() {
+        return orNumberPosX;
+    }
+
+    public void setOrNumberPosX(Integer orNumberPosX) {
+        this.orNumberPosX = orNumberPosX;
+    }
+
+    public Integer getOrNumberPosY() {
+        return orNumberPosY;
+    }
+
+    public void setOrNumberPosY(Integer orNumberPosY) {
+        this.orNumberPosY = orNumberPosY;
+    }
+
+    public Integer getOrNumberWidth() {
+        return orNumberWidth;
+    }
+
+    public void setOrNumberWidth(Integer orNumberWidth) {
+        this.orNumberWidth = orNumberWidth;
+    }
+
+    public Integer getOrNumberHeight() {
+        return orNumberHeight;
+    }
+
+    public void setOrNumberHeight(Integer orNumberHeight) {
+        this.orNumberHeight = orNumberHeight;
+    }
+
     public Integer getSalesPosX() {
         return salesPosX;
     }

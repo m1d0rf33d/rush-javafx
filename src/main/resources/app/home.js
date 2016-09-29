@@ -208,6 +208,10 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
         angular.element("#"+rewardId+"_pin").val('');
     }
 
+    $scope.test = function() {
+        homeService.setupOcr();
+    }
+
 });
 homeModule.directive('backImg', function(){
     return function(scope, element, attrs){
@@ -251,6 +255,9 @@ function givePointsResponseHandler(jsonResponse) {
         }
         if (resp.errors.amount != undefined) {
             $(".home-modal-body").prepend('<div class="temp"><p>'+resp.errors.amount[0]+'</p></div>');
+        }
+        if (resp.message != undefined) {
+            $(".home-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
         }
         $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Give Points Failed</strong> </div>');
         $("#myModal").modal('show');
@@ -299,3 +306,8 @@ function redeemRewardsResponseHandler (jsonResponse) {
 }
 
 
+$(document).ready(function() {
+    $('#myModal').on('hidden.bs.modal', function () {
+        $(".temp").remove();
+    })
+});

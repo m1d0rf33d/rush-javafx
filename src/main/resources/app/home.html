@@ -12,6 +12,17 @@
     <script src="js/angular-ui-router.min.js"></script>
     <script src="js/ui-bootstrap.min.js"></script>
     <script src="home.js"></script>
+
+    <style>
+       /*Hack to avoid width expansion caused by modals*/
+        body {
+            padding-right: 0px !important
+        }
+
+        .modal-open {
+            overflow-y: auto;
+        }
+    </style>
 </head>
 <body ng-controller="HomeController">
 
@@ -32,7 +43,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Member <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="http://54.169.103.206/design/rush-pos/register.html">Member's Registration</a></li>
+                        <li><a href="#" ng-click="goToRegisterView()">Member's Registration</a></li>
                         <li><a href="#">Member's Inquiry</a></li>
                         <li><a href="#">Exit Member Details</a></li>
                     </ul>
@@ -103,12 +114,12 @@
             <a href="">
                 <li>TRANSACTION VIEW</li>
             </a>-->
-            <a href="">
+            <!--<a href="">
                 <li>OFFLINE TRANSACTIONS</li>
-            </a><!--
-            <a href="#/ocr-view" ng-click="goToOcrVIew()">
-                <li class="yellow-bg">SETUP (OCR) PHASE2</li>
             </a>-->
+            <a href="#/ocr-view" ng-click="test()">
+                <li class="yellow-bg">SETUP (OCR) PHASE2</li>
+            </a>
             <a href="" ng-click="logoutMember()">
                 <li class="red-bg">EXIT MEMBER DETAILS</li>
             </a>

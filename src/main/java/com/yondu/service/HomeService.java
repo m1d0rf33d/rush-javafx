@@ -7,15 +7,29 @@ import com.yondu.model.Account;
 import com.yondu.model.ApiFieldContants;
 import com.yondu.model.ApiResponse;
 import com.yondu.utils.Java2JavascriptUtils;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
+import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.web.WebEngine;
+import javafx.stage.Stage;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.bytedeco.javacpp.BytePointer;
+import org.bytedeco.javacpp.lept;
+import org.bytedeco.javacpp.tesseract;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.w3c.dom.html.HTMLInputElement;
 import org.w3c.dom.html.HTMLSelectElement;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +39,9 @@ import java.util.Properties;
 
 import static java.lang.Thread.sleep;
 import static javafx.application.Platform.runLater;
+import static org.bytedeco.javacpp.lept.pixDestroy;
+import static org.bytedeco.javacpp.lept.pixRead;
+import static org.junit.Assert.assertTrue;
 
 /** Home Module services / Java2Javascript bridge
  *  Methods inside this class can be invoked inside a javascript using alert("__CONNECT__BACKEND__homeService")
@@ -221,6 +238,7 @@ public class HomeService {
             params.add(new BasicNameValuePair(ApiFieldContants.POINTS, pointsField.getValue()));
             String url = baseUrl + payWithPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
             jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            jsonResponse = jsonResponse.replace("'","");
         }
         this.webEngine.executeScript("givePointsResponseHandler('"+jsonResponse+"')");
     }
@@ -252,8 +270,8 @@ public class HomeService {
     public void loadCustomerRewards(final Object callbackfunction) {
 
 
-        String url = baseUrl + unclaimedRewardsEndpoint;
-        String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        String url = baseUrl + unclaimedRewardsEndpoint.replace(":id", App.appContextHolder.getCustomerId());
+        String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
 
         final String data = jsonResponse;
         new Thread( () -> {
@@ -275,7 +293,59 @@ public class HomeService {
     }
 
     public void test() {
-        
+
+        //create screenshot
+
+        try {
+            Robot robot = new Robot();
+
+            Toolkit myToolkit = Toolkit.getDefaultToolkit();
+            Dimension screenSize = myToolkit.getScreenSize();
+
+            Rectangle screen = new Rectangle(600, 400, 600,200);
+
+            BufferedImage screenFullImage = robot.createScreenCapture(screen);
+            ImageIO.write(screenFullImage, "jpg", new File("/home/aomine/Desktop/ss.jpg"));
+
+        } catch (AWTException | IOException ex) {
+            ex.printStackTrace();
+        }
+
+        BytePointer outText;
+
+        tesseract.TessBaseAPI api = new tesseract.TessBaseAPI();
+        // Initialize tesseract-ocr with English, without specifying tessdata path
+        if (api.Init("/usr/share/tesseract-ocr/", "eng") != 0) {
+            System.err.println("Could not initialize tesseract.");
+            System.exit(1);
+        }
+
+
+        // Open input image with leptonica library
+        lept.PIX image = pixRead("/home/aomine/Desktop/ss.jpg");
+        api.SetImage(image);
+        // Get OCR result
+        outText = api.GetUTF8Text();
+        String string = outText.getString();
+        assertTrue(!string.isEmpty());
+        System.out.println("OCR output:\n" + string);
+
+        // Destroy used object and release memory
+        api.End();
+        outText.deallocate();
+        pixDestroy(image);
     }
+
+    public void setupOcr() {
+        try {
+            Stage stage = new Stage();
+            Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/ocr.fxml"));
+            stage.setScene(new Scene(root, 600,300));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
 
 }

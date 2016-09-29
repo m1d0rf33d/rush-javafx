@@ -52,36 +52,50 @@
 <br><br><br>
 <div class="row">
     <div class="col-sm-4" ng-repeat="item in items" >
-        <div class="item"  data-toggle="modal" data-target="#{{item.id}}_modal">
+        <div class="item"  data-toggle="modal" data-target="#{{item.id}}">
             <figure>
                 <img ng-src="{{item.image_url}}"/>
             </figure>
             <figcaption>
                 {{item.details}}
-                <span class="red-text clearfix">{{item.points_required}} Points</span>
+                <span class="red-text clearfix">{{item.points}} Points</span>
             </figcaption>
         </div>
         <!-- MODAL -->
 
-        <div class="modal fade" id="{{item.id}}_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;">
+        <div class="modal fade" id="{{item.id}}" tabindex="-1" role="dialog" aria-labelledby="myModal2">
             <div class="modal-dialog" role="document">
                 <div class="modal-content row">
-                    <div class="col-md-5 col-sm-5 modal-image"  back-img="{{item.image_url}}">
+                    <div class="col-md-5 col-sm-5 modal-image" back-img="{{item.image_url}}">
 
                     </div>
                     <div class="col-md-7  col-sm-7 details">
                         <h3 class="modal-header-h3">{{item.name}}</h3>
-                        <h4 class="modal-header-h4 red-text">{{item.points_required}} Points</h4>
+                        <h4 class="modal-header-h4 red-text">{{item.points}} Points</h4>
                         <p>{{item.details}}</p>
                         <div class="modal-buttons">
-                            <button data-toggle="modal" data-target="#successModal" type="button" class="btn btn-default orange-btn btn-lg">Issue Voucher</button>
+                            <button data-target="#{{item.id}}_pin_modal" data-toggle="modal" type="button" class="btn btn-default orange-btn btn-lg">Redeem Voucher</button>
                         </div>
                     </div>
-                    <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="issue_files/close.png" alt=""></a>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="redemption_files/close.png" alt=""></a>
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="{{item.id}}_pin_modal" tabindex="-2" role="dialog" aria-labelledby="myModal2">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content row" style="background: white;">
+
+                    <label class="d-label">Enter PIN</label>
+                    <input type="text" class="w80" id="{{item.id}}_pin">
+                    <div class="modal-buttons">
+                        <button ng-click="redeemRewards(item.id)" type="button" class="btn btn-default orange-btn btn-lg">Proceed</button>
+                    </div>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="redemption_files/close.png" alt=""></a>
+                </div>
+            </div>
+        </div>
+
         <!-- END MODAL -->
     </div>
-
 </div>

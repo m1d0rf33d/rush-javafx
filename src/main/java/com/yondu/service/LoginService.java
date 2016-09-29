@@ -41,6 +41,7 @@ public class LoginService {
 
     private String baseUrl;
     private String loginEndpoint;
+    private String getBranchesEndpoint;
 
     public LoginService(WebEngine webEngine) {
         this.webEngine = webEngine;
@@ -54,6 +55,7 @@ public class LoginService {
             }
             this.baseUrl = prop.getProperty("base_url");
             this.loginEndpoint = prop.getProperty("login_endpoint");
+            this.getBranchesEndpoint = prop.getProperty("get_branches_endpoint");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -87,7 +89,7 @@ public class LoginService {
         ApiService apiService = new ApiService();
         ApiResponse apiResponse = new ApiResponse();
 
-        String url = "http://52.74.203.202/api/dev/loyalty/merchantapp/merchant/branches";
+        String url = this.baseUrl + this.getBranchesEndpoint;
         List<NameValuePair> params = new ArrayList<>();
         String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
@@ -100,14 +102,8 @@ public class LoginService {
         final List<Branch> data = (List<Branch>) apiResponse.getData();
         // launch a background thread (async)
         new Thread( () -> {
-            try {
-                sleep(1000); //add some processing simulation...
-                runLater( () ->
-                        Java2JavascriptUtils.call(callbackfunction, toJSONString(data))
-                );
-            } catch (InterruptedException e) {	}
-        }
-        ).start();
+            Java2JavascriptUtils.call(callbackfunction, toJSONString(data));
+        }).start();
     }
 
 }

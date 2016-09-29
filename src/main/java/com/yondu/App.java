@@ -35,8 +35,6 @@ public class App extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-
-
         primaryStage.setTitle("RUSH POS - SYNC");
         primaryStage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
         primaryStage.show();

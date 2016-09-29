@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="400.0" style="-fx-background-color: #222;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.SalesCaptureResultController">
+   <children>
+      <Button layoutX="143.0" layoutY="95.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="121.0" style="-fx-background-color: F5920B;" text="Okay" textFill="#ebe8e8" fx:id="okayButton">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Button>
+      <Label layoutX="30.0" layoutY="36.0" text="Total sales position captured." textFill="#f2ecec">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>

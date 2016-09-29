@@ -1,5 +1,6 @@
 package com.yondu.controller;
 
+import com.yondu.App;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
@@ -14,19 +15,20 @@ import java.io.PrintWriter;
 public class SalesCaptureController {
 
     public Button previewButton;
-    private Double x;
-    private Double y;
-    private Double width;
-    private Double height;
 
     public void captureSalesArea() {
         Stage stage = (Stage) this.previewButton.getScene().getWindow();
-        this.x = stage.getX();
-        this.y = stage.getY();
-        this.width = stage.getWidth();
-        this.height = stage.getHeight();
+        Double salesPosX = stage.getX(),
+                salesPosY = stage.getY(),
+                salesWidth = stage.getWidth(),
+                salesHeight = stage.getHeight();
 
-        try {
+        App.appContextHolder.setSalesPosX(salesPosX.intValue());
+        App.appContextHolder.setSalesPosY(salesPosY.intValue());
+        App.appContextHolder.setSalesWidth(salesWidth.intValue());
+        App.appContextHolder.setSalesHeight(salesHeight.intValue());
+
+        /*try {
 
             File file = new File("/home/aomine/Desktop/ocr-config.properties");
             if (!file.exists()) {
@@ -42,6 +44,7 @@ public class SalesCaptureController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+*/
 
         ((Stage) this.previewButton.getScene().getWindow()).close();
     }

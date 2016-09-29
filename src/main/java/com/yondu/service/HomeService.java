@@ -311,7 +311,6 @@ public class HomeService {
         }
 
         BytePointer outText;
-
         tesseract.TessBaseAPI api = new tesseract.TessBaseAPI();
         // Initialize tesseract-ocr with English, without specifying tessdata path
         if (api.Init("/usr/share/tesseract-ocr/", "eng") != 0) {

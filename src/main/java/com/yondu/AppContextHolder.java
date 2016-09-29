@@ -14,6 +14,43 @@ public class AppContextHolder {
     private String customerId;
     private String customerAppAuthToken;
 
+    private Integer salesPosX;
+    private Integer salesPosY;
+    private Integer salesWidth;
+    private Integer salesHeight;
+
+    public Integer getSalesPosX() {
+        return salesPosX;
+    }
+
+    public void setSalesPosX(Integer salesPosX) {
+        this.salesPosX = salesPosX;
+    }
+
+    public Integer getSalesPosY() {
+        return salesPosY;
+    }
+
+    public void setSalesPosY(Integer salesPosY) {
+        this.salesPosY = salesPosY;
+    }
+
+    public Integer getSalesWidth() {
+        return salesWidth;
+    }
+
+    public void setSalesWidth(Integer salesWidth) {
+        this.salesWidth = salesWidth;
+    }
+
+    public Integer getSalesHeight() {
+        return salesHeight;
+    }
+
+    public void setSalesHeight(Integer salesHeight) {
+        this.salesHeight = salesHeight;
+    }
+
     public String getCustomerAppAuthToken() {
         return customerAppAuthToken;
     }

@@ -209,7 +209,7 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     }
 
     $scope.test = function() {
-        homeService.setupOcr();
+        homeService.showSetupOcrView();
     }
 
 });

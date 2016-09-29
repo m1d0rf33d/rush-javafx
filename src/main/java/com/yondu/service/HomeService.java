@@ -10,9 +10,6 @@ import com.yondu.utils.Java2JavascriptUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.image.WritableImage;
-import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
 import org.apache.http.NameValuePair;
@@ -64,6 +61,8 @@ public class HomeService {
     private String redeemRewardsEndpoint;
     private String unclaimedRewardsEndpoint;
     private String claimRewardsEndpoint;
+
+    private Stage ocrConfigStage;
 
     public HomeService(WebEngine webEngine) {
         this.webEngine = webEngine;
@@ -336,16 +335,20 @@ public class HomeService {
         pixDestroy(image);
     }
 
-    public void setupOcr() {
+    public void showSetupOcrView() {
         try {
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/ocr.fxml"));
-            stage.setScene(new Scene(root, 600,300));
-            stage.show();
+            if (ocrConfigStage != null) {
+                ocrConfigStage.close();
+            }
+            ocrConfigStage = new Stage();
+            Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/ocr-configuration.fxml"));
+            ocrConfigStage.setScene(new Scene(root, 600,300));
+            ocrConfigStage.resizableProperty().setValue(Boolean.FALSE);
+            ocrConfigStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
+
 
 }

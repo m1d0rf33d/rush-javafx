@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="600.0" style="-fx-background-color: #222;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.OcrConfigController">
+   <children>
+      <Button layoutX="175.0" layoutY="171.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="130.0" style="-fx-background-color: #F5920B;" text="Save" textFill="#fdfffd">
+         <font>
+            <Font name="Droid Sans Mono" size="19.0" />
+         </font>
+      </Button>
+      <Label layoutX="18.0" layoutY="9.0" prefHeight="35.0" prefWidth="232.0" text="OCR Configuration" textFill="#f8efef">
+         <font>
+            <Font name="Ubuntu" size="24.0" />
+         </font>
+      </Label>
+      <TextField disable="true" layoutX="165.0" layoutY="67.0" prefHeight="30.0" prefWidth="170.0" />
+      <TextField disable="true" layoutX="165.0" layoutY="114.0" prefHeight="30.0" prefWidth="170.0" />
+      <Label layoutX="32.0" layoutY="115.0" prefHeight="25.0" prefWidth="134.0" text="TOTAL SALES" textFill="#fcf3f3">
+         <font>
+            <Font name="Ubuntu" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="32.0" layoutY="67.0" prefHeight="25.0" prefWidth="134.0" text="OR NUMBER" textFill="#f8f7f7">
+         <font>
+            <Font name="Ubuntu" size="18.0" />
+         </font>
+      </Label>
+      <Button layoutX="357.0" layoutY="65.0" mnemonicParsing="false" onAction="#loadSalesCaptureArea" prefHeight="30.0" prefWidth="110.0" style="-fx-background-color: #1054C4;" text="Configure" textFill="#f2ecec">
+         <font>
+            <Font name="Ubuntu" size="13.0" />
+         </font>
+      </Button>
+      <Button layoutX="358.0" layoutY="114.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="110.0" style="-fx-background-color: #1054C4;" text="Configure" textFill="#f2ecec">
+         <font>
+            <Font name="Ubuntu" size="13.0" />
+         </font>
+      </Button>
+      <Button layoutX="472.0" layoutY="65.0" mnemonicParsing="false" onAction="#previewSalesCaptureArea" prefHeight="30.0" prefWidth="110.0" style="-fx-background-color: #1054C4;" text="Preview" textFill="#f2ecec">
+         <font>
+            <Font name="Ubuntu" size="13.0" />
+         </font>
+      </Button>
+      <Button layoutX="473.0" layoutY="113.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="110.0" style="-fx-background-color: #1054C4;" text="Preview" textFill="#f2ecec">
+         <font>
+            <Font name="Ubuntu" size="13.0" />
+         </font>
+      </Button>
+      <Button layoutX="314.0" layoutY="171.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="130.0" style="-fx-background-color: #F5920B;" text="Cancel" textFill="#f8f5f5">
+         <font>
+            <Font name="Droid Sans Mono" size="19.0" />
+         </font>
+      </Button>
+   </children>
+</Pane>

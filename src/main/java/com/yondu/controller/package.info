@@ -1,1 +1,2 @@
-#JavaFx fxml controllers
+Contains JavaFx controllers which are mapped to JavaFx fxml to bind controls.
+This is not the MVC web application controller. LUL

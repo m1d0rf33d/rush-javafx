@@ -1,5 +1,6 @@
 package com.yondu.controller;
 
+import com.yondu.App;
 import com.yondu.Browser;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -10,14 +11,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * Created by aomine on 9/30/16.
+/** Splash Stage/Screen Controller mapped to splash.xml
+ *
+ *  @author m1d0rf33d
  */
 public class SplashController implements Initializable{
 
@@ -25,9 +29,12 @@ public class SplashController implements Initializable{
     public  ProgressBar myProgressBar;
     @FXML
     public Label progressStatus;
+    @FXML
+    public ImageView rushLogoImage;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.rushLogoImage.setImage(new Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
 
         MyService myService = new MyService();
         myService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -35,6 +42,7 @@ public class SplashController implements Initializable{
             public void handle(WorkerStateEvent t) {
                 Stage stage = new Stage();
                 stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
+                stage.setMaximized(true);
                 stage.show();
 
                 ((Stage) myProgressBar.getScene().getWindow()).close();

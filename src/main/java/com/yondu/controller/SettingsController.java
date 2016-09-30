@@ -8,7 +8,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.image.*;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import org.bytedeco.javacpp.BytePointer;
+import org.bytedeco.javacpp.lept;
+import org.bytedeco.javacpp.tesseract;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -18,21 +24,27 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-/**
- * Created by aomine on 9/29/16.
- */
-public class OcrConfigController implements Initializable{
+import static com.yondu.model.AppConfigConstants.*;
+import static com.yondu.model.AppConfigConstants.OCR_CONFIG_LOCATION;
+import static org.bytedeco.javacpp.lept.pixDestroy;
+import static org.bytedeco.javacpp.lept.pixRead;
 
-    private static final String SALES_CAPTURE_FXML = "/app/fxml/sales-capture.fxml";
-    private static final String PREVIEW_SALES_FXML = "/app/fxml/sales-preview.fxml";
-    private static final String OR_CAPTURE_FXML = "/app/fxml/ornumber-capture.fxml";
+/**
+ * Created by aomine on 9/30/16.
+ */
+public class SettingsController implements Initializable{
+
     private Stage salesCaptureStage;
-    private Stage previewSalesStage;
     private Stage orCaptureStage;
+
     @FXML
-    public javafx.scene.control.Label salesDimensionLabel;
+    public javafx.scene.control.Label salesAreaLbl;
     @FXML
-    public javafx.scene.control.Label ornumberDimensionLabel;
+    public javafx.scene.control.Label orAreaLbl;
+    @FXML
+    public javafx.scene.control.TextArea previewText;
+    @FXML
+    public ImageView previewImage;
 
     public void loadSalesCaptureArea() {
         try {
@@ -57,6 +69,7 @@ public class OcrConfigController implements Initializable{
             }
             orCaptureStage = new Stage();
             Parent root = FXMLLoader.load(App.class.getResource(OR_CAPTURE_FXML));
+            orCaptureStage.initStyle(StageStyle.UNDECORATED);
             orCaptureStage.setScene(new Scene(root, 300,100));
             orCaptureStage.setMaxHeight(100);
             orCaptureStage.setMaxWidth(300);
@@ -68,18 +81,63 @@ public class OcrConfigController implements Initializable{
 
     public void previewSalesCaptureArea() {
 
-        try {
-            if (previewSalesStage != null) {
-                previewSalesStage.close();
+        Integer salesX = null, salesY = null, salesWidth = null, salesHeight = null;
+
+        //Check if user captured temporary values if not get configuration from config file
+        if (App.appContextHolder.getSalesPosX() != null) {
+            //Create image based from temporary ocr config
+            salesX = App.appContextHolder.getSalesPosX();
+            salesY = App.appContextHolder.getSalesPosY();
+            salesWidth = App.appContextHolder.getSalesWidth();
+            salesHeight = App.appContextHolder.getSalesHeight();
+        } else {
+            try {
+                Properties prop = new Properties();
+                InputStream inputStream = new FileInputStream(new File(OCR_CONFIG_LOCATION));
+                prop.load(inputStream);
+                salesX = ((Double)Double.parseDouble(prop.getProperty("sales_pos_x"))).intValue();
+                salesY =((Double) Double.parseDouble(prop.getProperty("sales_pos_y"))).intValue();
+                salesWidth = ((Double)Double.parseDouble(prop.getProperty("sales_width"))).intValue();
+                salesHeight = ((Double)Double.parseDouble(prop.getProperty("sales_height"))).intValue();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            previewSalesStage = new Stage();
-            Parent root = null;
-            root = FXMLLoader.load(App.class.getResource(PREVIEW_SALES_FXML));
-            previewSalesStage.setScene(new Scene(root, 600,400));
-            previewSalesStage.resizableProperty().setValue(false);
-            previewSalesStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+        //Now that we got the screen dimensions for sales we will create an image file
+        //then read the text using tesseract
+        try {
+            Robot robot = new Robot();
+            Toolkit myToolkit = Toolkit.getDefaultToolkit();
+            Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
+
+            BufferedImage screenFullImage = robot.createScreenCapture(screen);
+            File imageFile = new File(CAPTURE_IMAGE_FILE);
+            ImageIO.write(screenFullImage, "jpg", imageFile);
+            this.previewImage.setImage(new javafx.scene.image.Image(new FileInputStream(imageFile)));
+
+            BytePointer outText;
+            tesseract.TessBaseAPI api = new tesseract.TessBaseAPI();
+            // Initialize tesseract-ocr with English, without specifying tessdata path
+            if (api.Init(TESSERACT_LOCATION, "eng") != 0) {
+                System.err.println("Could not initialize tesseract.");
+                System.exit(1);
+            }
+            // Open input image with leptonica library
+            lept.PIX image = pixRead(CAPTURE_IMAGE_FILE);
+            api.SetImage(image);
+            // Get OCR result
+            outText = api.GetUTF8Text();
+            String string = outText.getString();
+            this.previewText.setText(string);
+            // Destroy used object and release memory
+            api.End();
+            outText.deallocate();
+            pixDestroy(image);
+
+        } catch (AWTException | IOException ex) {
+            ex.printStackTrace();
         }
 
     }
@@ -89,7 +147,7 @@ public class OcrConfigController implements Initializable{
         //Load ocr-properties saved config
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(new File("C:\\Users\\erwin\\Desktop\\ocr.properties"));
+            InputStream inputStream = new FileInputStream(new File(OCR_CONFIG_LOCATION));
             prop.load(inputStream);
             StringBuilder sb = new StringBuilder();
             sb.append(prop.getProperty("sales_pos_x"));
@@ -99,7 +157,7 @@ public class OcrConfigController implements Initializable{
             sb.append(prop.getProperty("sales_width"));
             sb.append(", ");
             sb.append(prop.getProperty("sales_height"));
-            this.salesDimensionLabel.setText(sb.toString());
+            this.salesAreaLbl.setText(sb.toString());
 
             sb = new StringBuilder();
             sb.append(prop.getProperty("or_pos_x"));
@@ -109,7 +167,7 @@ public class OcrConfigController implements Initializable{
             sb.append(prop.getProperty("or_width"));
             sb.append(", ");
             sb.append(prop.getProperty("or_height"));
-            this.ornumberDimensionLabel.setText(sb.toString());
+            this.orAreaLbl.setText(sb.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -128,7 +186,7 @@ public class OcrConfigController implements Initializable{
             sb.append(App.appContextHolder.getSalesWidth());
             sb.append(", ");
             sb.append(App.appContextHolder.getSalesHeight());
-            this.salesDimensionLabel.setText(sb.toString());
+            this.salesAreaLbl.setText(sb.toString());
         }
 
         if (App.appContextHolder.getOrNumberPosX() != null) {
@@ -141,7 +199,7 @@ public class OcrConfigController implements Initializable{
             sb.append(App.appContextHolder.getOrNumberWidth());
             sb.append(", ");
             sb.append(App.appContextHolder.getOrNumberHeight());
-            this.ornumberDimensionLabel.setText(sb.toString());
+            this.orAreaLbl.setText(sb.toString());
         }
     }
 
@@ -160,7 +218,7 @@ public class OcrConfigController implements Initializable{
         //Load ocr-properties saved config
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(new File("C:\\Users\\erwin\\Desktop\\ocr.properties"));
+            InputStream inputStream = new FileInputStream(new File(OCR_CONFIG_LOCATION));
             prop.load(inputStream);
             StringBuilder sb = new StringBuilder();
             sb.append(prop.getProperty("sales_pos_x"));
@@ -170,7 +228,7 @@ public class OcrConfigController implements Initializable{
             sb.append(prop.getProperty("sales_width"));
             sb.append(", ");
             sb.append(prop.getProperty("sales_height"));
-            this.salesDimensionLabel.setText(sb.toString());
+            this.salesAreaLbl.setText(sb.toString());
 
             sb = new StringBuilder();
             sb.append(prop.getProperty("or_pos_x"));
@@ -180,7 +238,7 @@ public class OcrConfigController implements Initializable{
             sb.append(prop.getProperty("or_width"));
             sb.append(", ");
             sb.append(prop.getProperty("or_height"));
-            this.ornumberDimensionLabel.setText(sb.toString());
+            this.orAreaLbl.setText(sb.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -193,7 +251,7 @@ public class OcrConfigController implements Initializable{
             String salesPosX = "", salesPosY = "", salesWidth = "", salesHeight = "",
                     orPosX = "", orPosY = "", orWidth = "", orHeight = "";
 
-            File file = new File("C:\\Users\\erwin\\Desktop\\ocr.properties");
+            File file = new File(OCR_CONFIG_LOCATION);
             if (file.exists()) {
                 Properties prop = new Properties();
                 InputStream inputStream = new FileInputStream(file);
@@ -240,8 +298,75 @@ public class OcrConfigController implements Initializable{
             fstream.println("or_height=" + orHeight);
             fstream.flush();
             fstream.close();
+
+            ((Stage)this.previewText.getScene().getWindow()).close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public void previewOrArea() {
+
+        Integer salesX = null, salesY = null, salesWidth = null, salesHeight = null;
+
+        //Check if user captured temporary values if not get configuration from config file
+        if (App.appContextHolder.getOrNumberPosX() != null) {
+            //Create image based from temporary ocr config
+            salesX = App.appContextHolder.getOrNumberPosX();
+            salesY = App.appContextHolder.getOrNumberPosY();
+            salesWidth = App.appContextHolder.getOrNumberWidth();
+            salesHeight = App.appContextHolder.getOrNumberHeight();
+        } else {
+            try {
+                Properties prop = new Properties();
+                InputStream inputStream = new FileInputStream(new File(OCR_CONFIG_LOCATION));
+                prop.load(inputStream);
+                salesX = ((Double)Double.parseDouble(prop.getProperty("or_pos_x"))).intValue();
+                salesY =((Double) Double.parseDouble(prop.getProperty("or_pos_y"))).intValue();
+                salesWidth = ((Double)Double.parseDouble(prop.getProperty("or_width"))).intValue();
+                salesHeight = ((Double)Double.parseDouble(prop.getProperty("or_height"))).intValue();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        //Now that we got the screen dimensions for sales we will create an image file
+        //then read the text using tesseract
+        try {
+            Robot robot = new Robot();
+            Toolkit myToolkit = Toolkit.getDefaultToolkit();
+            Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
+
+            BufferedImage screenFullImage = robot.createScreenCapture(screen);
+            File imageFile = new File(CAPTURE_IMAGE_FILE);
+            ImageIO.write(screenFullImage, "jpg", imageFile);
+            this.previewImage.setImage(new javafx.scene.image.Image(new FileInputStream(imageFile)));
+
+            BytePointer outText;
+            tesseract.TessBaseAPI api = new tesseract.TessBaseAPI();
+            // Initialize tesseract-ocr with English, without specifying tessdata path
+            if (api.Init(TESSERACT_LOCATION, "eng") != 0) {
+                System.err.println("Could not initialize tesseract.");
+                System.exit(1);
+            }
+            // Open input image with leptonica library
+            lept.PIX image = pixRead(CAPTURE_IMAGE_FILE);
+            api.SetImage(image);
+            // Get OCR result
+            outText = api.GetUTF8Text();
+            String string = outText.getString();
+            this.previewText.setText(string);
+            // Destroy used object and release memory
+            api.End();
+            outText.deallocate();
+            pixDestroy(image);
+
+        } catch (AWTException | IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void exit() {
+        ((Stage)this.previewText.getScene().getWindow()).close();
     }
 }

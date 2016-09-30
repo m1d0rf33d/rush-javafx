@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.SettingsController">
+   <children>
+      <SplitPane dividerPositions="0.21739130434782608" prefHeight="400.0" prefWidth="600.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="284.0" style="-fx-background-color: #38383E;">
+               <children>
+                  <Button alignment="TOP_LEFT" layoutY="2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="142.0" style="-fx-background-color: transparent;" text="OCR" textFill="#fcfafa">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="396.0" style="-fx-background-color: #222;">
+               <children>
+                  <Button layoutX="79.0" layoutY="77.0" mnemonicParsing="false" onAction="#loadSalesCaptureArea" style="-fx-background-radius: 0; -fx-background-radius: 0; -fx-background-color: #38383E; -fx-border-color: white;" text="Capture" textFill="#f8f1f1" />
+                  <Label layoutX="15.0" layoutY="8.0" text="Set screen position of total sales and or number " textFill="#fffafa" />
+                  <Label layoutX="31.0" layoutY="146.0" prefHeight="15.0" prefWidth="185.0" text="OR number position:" textFill="#fffafa" />
+                  <Button layoutX="157.0" layoutY="77.0" mnemonicParsing="false" onAction="#previewSalesCaptureArea" style="-fx-background-radius: 0; -fx-background-radius: 0; -fx-background-color: #38383E; -fx-border-color: white;" text="Preview" textFill="#f8f1f1" />
+                  <Label layoutX="32.0" layoutY="51.0" prefHeight="15.0" prefWidth="185.0" text="Total sales position:" textFill="#fffafa" />
+                  <Button layoutX="79.0" layoutY="165.0" mnemonicParsing="false" onAction="#loadOrCaptureArea" style="-fx-background-radius: 0; -fx-background-radius: 0; -fx-background-color: #38383E; -fx-border-color: white;" text="Capture" textFill="#f8f1f1" />
+                  <Button layoutX="157.0" layoutY="165.0" mnemonicParsing="false" onAction="#previewOrArea" style="-fx-background-radius: 0; -fx-background-radius: 0; -fx-background-color: #38383E; -fx-border-color: white;" text="Preview" textFill="#f8f1f1" />
+                  <Button layoutX="272.0" layoutY="357.0" mnemonicParsing="false" onAction="#saveDimensions" prefHeight="25.0" prefWidth="78.0" style="-fx-background-radius: 0; -fx-background-radius: 0; -fx-background-color: #38383E; -fx-border-color: white;" text="Save" textFill="#f8f1f1" />
+                  <Button layoutX="356.0" layoutY="357.0" mnemonicParsing="false" onAction="#exit" prefHeight="25.0" prefWidth="78.0" style="-fx-background-radius: 0; -fx-background-radius: 0; -fx-background-color: #38383E; -fx-border-color: white;" text="Exit" textFill="#f8f1f1" />
+                  <ImageView fx:id="previewImage" fitHeight="130.0" fitWidth="185.0" layoutX="31.0" layoutY="226.0" pickOnBounds="true" preserveRatio="true" />
+                  <Label layoutX="237.0" layoutY="203.0" prefHeight="15.0" prefWidth="185.0" text="Text from image:" textFill="#fffafa" />
+                  <TextArea fx:id="previewText" editable="false" layoutX="237.0" layoutY="224.0" prefHeight="76.0" prefWidth="200.0" style="-fx-background-radius: 0;" />
+                  <Label fx:id="salesAreaLbl" layoutX="174.0" layoutY="51.0" prefHeight="15.0" prefWidth="191.0" />
+                  <Label fx:id="orAreaLbl" layoutX="174.0" layoutY="144.0" prefHeight="15.0" prefWidth="191.0" />
+                  <Label layoutX="32.0" layoutY="203.0" prefHeight="15.0" prefWidth="185.0" text="Preview Image:" textFill="#fffafa" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</Pane>

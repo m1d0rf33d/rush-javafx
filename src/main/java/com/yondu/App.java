@@ -22,11 +22,8 @@ public class App extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        //Launch splash screen
-        //primaryStage.setTitle("RUSH POS - SYNC");
-        //primaryStage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
-        Parent root = null;
-        root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
+        //Launch splash stage
+        Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
         primaryStage.setScene(new Scene(root, 600,400));
         primaryStage.resizableProperty().setValue(false);
         primaryStage.initStyle(StageStyle.UNDECORATED);

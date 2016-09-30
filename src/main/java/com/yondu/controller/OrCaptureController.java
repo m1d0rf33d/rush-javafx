@@ -9,13 +9,15 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import static com.yondu.model.AppConfigConstants.*;
 
-/**
- * Created by aomine on 9/29/16.
+/** JavaFx controller mapped to or-capture.fxml
+ *
+ *  @author m1d0rf33d
  */
 public class OrCaptureController {
 
-    private static final String CAPTURE_RESULT_FXML = "/app/fxml/capture-result.fxml";
+
     @FXML
     public Button captureButton;
 
@@ -39,9 +41,9 @@ public class OrCaptureController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        resultStage.setScene(new Scene(root, 400,150));
-        resultStage.setX(400);
-        resultStage.setY(400);
+        resultStage.setScene(new Scene(root, 300,200));
+        resultStage.setX(600);
+        resultStage.setY(200);
         resultStage.resizableProperty().setValue(false);
         resultStage.show();
 

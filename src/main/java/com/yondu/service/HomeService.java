@@ -39,6 +39,7 @@ import static javafx.application.Platform.runLater;
 import static org.bytedeco.javacpp.lept.pixDestroy;
 import static org.bytedeco.javacpp.lept.pixRead;
 import static org.junit.Assert.assertTrue;
+import static com.yondu.model.AppConfigConstants.*;
 
 /** Home Module services / Java2Javascript bridge
  *  Methods inside this class can be invoked inside a javascript using alert("__CONNECT__BACKEND__homeService")
@@ -334,14 +335,16 @@ public class HomeService {
         pixDestroy(image);
     }
 
-    public void showSetupOcrView() {
+    public void loadSettingsView() {
         try {
             if (ocrConfigStage != null) {
                 ocrConfigStage.close();
             }
             ocrConfigStage = new Stage();
-            Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/ocr-configuration.fxml"));
-            ocrConfigStage.setScene(new Scene(root, 600,300));
+            Parent root = FXMLLoader.load(App.class.getResource(SETTINGS_FXML));
+            ocrConfigStage.setScene(new Scene(root, 600,400));
+            //ocrConfigStage.getScene().getStylesheets().add(App.class.getResource("/app/css/fxml.css").toExternalForm());
+            ocrConfigStage.setTitle("Settings");
             ocrConfigStage.resizableProperty().setValue(Boolean.FALSE);
             ocrConfigStage.show();
         } catch (IOException e) {

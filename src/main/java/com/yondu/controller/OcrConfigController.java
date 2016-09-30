@@ -89,7 +89,7 @@ public class OcrConfigController implements Initializable{
         //Load ocr-properties saved config
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(new File("/home/aomine/Desktop/ocr-config.properties"));
+            InputStream inputStream = new FileInputStream(new File("C:\\Users\\erwin\\Desktop\\ocr.properties"));
             prop.load(inputStream);
             StringBuilder sb = new StringBuilder();
             sb.append(prop.getProperty("sales_pos_x"));
@@ -160,7 +160,7 @@ public class OcrConfigController implements Initializable{
         //Load ocr-properties saved config
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(new File("/home/aomine/Desktop/ocr-config.properties"));
+            InputStream inputStream = new FileInputStream(new File("C:\\Users\\erwin\\Desktop\\ocr.properties"));
             prop.load(inputStream);
             StringBuilder sb = new StringBuilder();
             sb.append(prop.getProperty("sales_pos_x"));
@@ -193,7 +193,7 @@ public class OcrConfigController implements Initializable{
             String salesPosX = "", salesPosY = "", salesWidth = "", salesHeight = "",
                     orPosX = "", orPosY = "", orWidth = "", orHeight = "";
 
-            File file = new File("/home/aomine/Desktop/ocr-config.properties");
+            File file = new File("C:\\Users\\erwin\\Desktop\\ocr.properties");
             if (file.exists()) {
                 Properties prop = new Properties();
                 InputStream inputStream = new FileInputStream(file);

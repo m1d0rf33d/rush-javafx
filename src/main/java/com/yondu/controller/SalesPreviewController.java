@@ -47,7 +47,7 @@ public class SalesPreviewController implements Initializable {
             try {
             //Create from ocr-config.properties
                 Properties prop = new Properties();
-                InputStream inputStream = new FileInputStream(new File("/home/aomine/Desktop/ocr-config.properties"));
+                InputStream inputStream = new FileInputStream(new File("/home/aomine/Desktop/ocr.properties"));
                 prop.load(inputStream);
                 salesX = ((Double)Double.parseDouble(prop.getProperty("sales_pos_x"))).intValue();
                 salesY =((Double) Double.parseDouble(prop.getProperty("sales_pos_y"))).intValue();
@@ -68,21 +68,21 @@ public class SalesPreviewController implements Initializable {
             Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
-            File imageFile = new File("/home/aomine/Desktop/captureSalesTest.jpg");
+            File imageFile = new File("C:\\Users\\erwin\\Desktop\\ocr.properties");
             ImageIO.write(screenFullImage, "jpg", imageFile);
             this.previewImage.setImage(new Image(new FileInputStream(imageFile)));
 
             BytePointer outText;
             tesseract.TessBaseAPI api = new tesseract.TessBaseAPI();
             // Initialize tesseract-ocr with English, without specifying tessdata path
-            if (api.Init("/usr/share/tesseract-ocr/", "eng") != 0) {
+            if (api.Init("C:\\Program Files (x86)\\Tesseract-OCR", "eng") != 0) {
                 System.err.println("Could not initialize tesseract.");
                 System.exit(1);
             }
 
 
             // Open input image with leptonica library
-            lept.PIX image = pixRead("/home/aomine/Desktop/captureSalesTest.jpg");
+            lept.PIX image = pixRead("C:\\Users\\erwin\\Desktop\\ocr.properties");
             api.SetImage(image);
             // Get OCR result
             outText = api.GetUTF8Text();

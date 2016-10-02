@@ -208,8 +208,12 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
         angular.element("#"+rewardId+"_pin").val('');
     }
 
-    $scope.test = function() {
+    $scope.loadSettingsView = function() {
         homeService.loadSettingsView();
+    }
+
+    $scope.loadGivePointsView = function() {
+       homeService.loadGivePointsView();
     }
 
 });
@@ -239,7 +243,9 @@ function registerResponseHandler(jsonResponse) {
         $("#name").val('');
         $("#email").val('');
         $("#mobile_no").val('');
-        $("#pin").val('');
+        $("#mpin").val('');
+        $("#birthdate").val('');
+        $("#gender").val('-1');
     }
 
     $("#myModal").modal('show');

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.GivePointsController">
+   <children>
+      <Button layoutX="128.0" layoutY="132.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="158.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600;" text="GIVE POINTS" fx:id="givePointsButton"/>
+      <Label layoutX="32.0" layoutY="78.0" prefHeight="47.0" prefWidth="44.0" text="+693">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <TextField layoutX="76.0" layoutY="80.0" prefHeight="41.0" prefWidth="276.0" style="-fx-background-radius: 0;" fx:id="mobileField"/>
+      <ImageView fx:id="rushLogoImageView" fitHeight="47.0" fitWidth="177.0" layoutX="121.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="homeImageView" fitHeight="33.0" fitWidth="51.0" layoutX="337.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+   </children>
+</Pane>

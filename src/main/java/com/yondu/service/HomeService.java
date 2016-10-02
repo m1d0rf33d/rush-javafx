@@ -30,7 +30,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -64,6 +67,7 @@ public class HomeService {
     private String claimRewardsEndpoint;
 
     private Stage ocrConfigStage;
+    private Stage givePointsStage;
 
     public HomeService(WebEngine webEngine) {
         this.webEngine = webEngine;
@@ -98,6 +102,9 @@ public class HomeService {
         Account account = new Account();
         account.setId(App.appContextHolder.getEmployeeId());
         account.setName(App.appContextHolder.getEmployeeName());
+
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-YYYY");
+        account.setDate(formatter.format(new Date()));
 
         ObjectMapper mapper = new ObjectMapper();
         String data = null;
@@ -159,6 +166,8 @@ public class HomeService {
             if (error.equals("0x0")) {
                 JSONObject data =  (JSONObject) jsonObject.get("data");
                 App.appContextHolder.setCustomerId( (String) data.get("id"));
+                App.appContextHolder.setCustomerName( (String) data.get("name"));
+                App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
             }
 
         } catch (ParseException e) {
@@ -292,49 +301,6 @@ public class HomeService {
         this.webEngine.executeScript("redeemRewardsResponseHandler('"+jsonResponse+"')");
     }
 
-    public void test() {
-
-        //create screenshot
-
-        try {
-            Robot robot = new Robot();
-
-            Toolkit myToolkit = Toolkit.getDefaultToolkit();
-            Dimension screenSize = myToolkit.getScreenSize();
-
-            Rectangle screen = new Rectangle(600, 400, 600,200);
-
-            BufferedImage screenFullImage = robot.createScreenCapture(screen);
-            ImageIO.write(screenFullImage, "jpg", new File("/home/aomine/Desktop/ss.jpg"));
-
-        } catch (AWTException | IOException ex) {
-            ex.printStackTrace();
-        }
-
-        BytePointer outText;
-        tesseract.TessBaseAPI api = new tesseract.TessBaseAPI();
-        // Initialize tesseract-ocr with English, without specifying tessdata path
-        if (api.Init("/usr/share/tesseract-ocr/", "eng") != 0) {
-            System.err.println("Could not initialize tesseract.");
-            System.exit(1);
-        }
-
-
-        // Open input image with leptonica library
-        lept.PIX image = pixRead("/home/aomine/Desktop/ss.jpg");
-        api.SetImage(image);
-        // Get OCR result
-        outText = api.GetUTF8Text();
-        String string = outText.getString();
-        assertTrue(!string.isEmpty());
-        System.out.println("OCR output:\n" + string);
-
-        // Destroy used object and release memory
-        api.End();
-        outText.deallocate();
-        pixDestroy(image);
-    }
-
     public void loadSettingsView() {
         try {
             if (ocrConfigStage != null) {
@@ -343,11 +309,29 @@ public class HomeService {
             ocrConfigStage = new Stage();
             Parent root = FXMLLoader.load(App.class.getResource(SETTINGS_FXML));
             ocrConfigStage.setScene(new Scene(root, 600,400));
-            //ocrConfigStage.getScene().getStylesheets().add(App.class.getResource("/app/css/fxml.css").toExternalForm());
             ocrConfigStage.setTitle("Settings");
             ocrConfigStage.getScene().getStylesheets().add(App.class.getResource("/app/css/fxml.css").toExternalForm());
             ocrConfigStage.resizableProperty().setValue(Boolean.FALSE);
             ocrConfigStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadGivePointsView() {
+        try {
+            if (givePointsStage != null) {
+                givePointsStage.close();
+            }
+            givePointsStage = new Stage();
+            Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+            givePointsStage.setScene(new Scene(root, 400,200));
+            givePointsStage.setTitle("Give Points");
+            givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+            givePointsStage.show();
+
+            App.appContextHolder.getHomeStage().close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

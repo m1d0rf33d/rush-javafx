@@ -39,7 +39,7 @@
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
+            <!--<ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Member <span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -51,7 +51,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Points <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">Give Points</a></li>
+                        <li><a href="#" ng-click="loadGivePointsView()">Give Points</a></li>
                         <li><a href="#">Give Points (OCR)</a></li>
                         <li><a href="http://54.169.103.206/design/rush-pos/pay-with-points.html">Pay with Points</a></li>
                     </ul>
@@ -70,12 +70,12 @@
                     </a><li><a href="http://54.169.103.206/design/rush-pos/voucher-issuance.html"></a><a href="http://54.169.103.206/design/rush-pos/voucher-redemption.html">View Offline Transactions</a></li>
                     </ul>
                 </li>
-            </ul>
+            </ul>-->
             <ul class="nav navbar-nav navbar-right">
-                <li class="notif-wrapper"><a href="#"><img src="images/bell.png" class="notif-icon" alt=""></a> <span class="notif-counter">1</span></li>
+               <!-- <li class="notif-wrapper"><a href="#"><img src="images/bell.png" class="notif-icon" alt=""></a> <span class="notif-counter">1</span></li>-->
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        <div class="p-info"><h3>Hi,<b>{{account.name}}</b><span class="caret"></span></h3>6-13-2016</div>
+                        <div class="p-info"><h3>Hi,<b>{{account.name}}</b><span class="caret"></span></h3>{{account.date}}</div>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#">Logout</a></li>
@@ -96,7 +96,7 @@
             <a href="" ng-click="goToMemberLoginView()">
                 <li>MEMBER INQUIRY</li>
             </a>
-            <a href="" ng-click="goToGivePointsView()" >
+            <a href="" ng-click="loadGivePointsView()" >
                 <li>GIVE POINTS</li>
             </a><!--
             <a href="" ng-disabled="!memberProfile.id" >
@@ -117,7 +117,7 @@
             <!--<a href="">
                 <li>OFFLINE TRANSACTIONS</li>
             </a>-->
-            <a href="#/ocr-view" ng-click="test()">
+            <a href="#/ocr-view" ng-click="loadSettingsView()">
                 <li class="yellow-bg">SETUP (OCR) PHASE2</li>
             </a>
             <a href="" ng-click="logoutMember()">

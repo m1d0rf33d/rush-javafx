@@ -26,7 +26,12 @@ public class Browser extends Region{
 
     public Browser() {
         //Retrieve local html resource
-        String indexPage = App.class.getResource(LOGIN_PAGE).toExternalForm();
+        String page = "";
+        if (App.appContextHolder.getEmployeeId() == null) {
+            page = App.class.getResource(LOGIN_PAGE).toExternalForm();
+        } else {
+            page = App.class.getResource("/app/home.html").toExternalForm();
+        }
         webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
             @Override
             public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
@@ -34,7 +39,7 @@ public class Browser extends Region{
                 Java2JavascriptUtils.connectBackendObject(webEngine, "homeService", new HomeService(webEngine));
             }
         });
-        webEngine.load(indexPage);
+        webEngine.load(page);
         getChildren().add(webView);
     }
 

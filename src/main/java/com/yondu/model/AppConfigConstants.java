@@ -19,4 +19,6 @@ public class AppConfigConstants {
     public static final String CAPTURE_RESULT_FXML = "/app/fxml/capture-result.fxml";
 
     public static final String SETTINGS_FXML = "/app/fxml/settings.fxml";
+    public static final String GIVE_POINTS_FXML = "/app/fxml/give-points.fxml";
+    public static final String GIVE_POINTS_DETAILS_FXML = "/app/fxml/give-points-details.fxml";
 }

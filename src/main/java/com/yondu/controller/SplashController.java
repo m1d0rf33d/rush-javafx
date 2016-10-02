@@ -24,9 +24,9 @@ import java.util.ResourceBundle;
  *  @author m1d0rf33d
  */
 public class SplashController implements Initializable{
-
+/*
     @FXML
-    public  ProgressBar myProgressBar;
+    public  ProgressBar myProgressBar;*/
     @FXML
     public Label progressStatus;
     @FXML
@@ -40,15 +40,16 @@ public class SplashController implements Initializable{
         myService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent t) {
+
                 Stage stage = new Stage();
                 stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
                 stage.setMaximized(true);
                 stage.show();
-
-                ((Stage) myProgressBar.getScene().getWindow()).close();
+                App.appContextHolder.setHomeStage(stage);
+                ((Stage) rushLogoImage.getScene().getWindow()).close();
             }
         });
-        myProgressBar.progressProperty().bind(myService.progressProperty());
+        //rushLogoImage.progressProperty().bind(myService.progressProperty());
         progressStatus.textProperty().bind(myService.messageProperty());
         myService.start();
     }
@@ -60,7 +61,9 @@ public class SplashController implements Initializable{
             return new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                    updateProgress(20, 100);
+                    //updateMessage("Checking system configuration..  ..");
+                    Thread.sleep(3000);
+                    /* updateProgress(20, 100);
                     updateMessage("Checking connectivity");
                     Thread.sleep(2000);
 
@@ -68,7 +71,7 @@ public class SplashController implements Initializable{
                     updateMessage("Checking accounts..");
                     Thread.sleep(2000);
                     updateProgress(2000, 100);
-                    updateMessage("Coompleted");
+                    updateMessage("Coompleted");*/
                     return null;
                 }
             };

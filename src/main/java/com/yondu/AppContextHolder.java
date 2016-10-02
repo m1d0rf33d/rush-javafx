@@ -1,5 +1,7 @@
 package com.yondu;
 
+import javafx.stage.Stage;
+
 /** This will serve as a single instance application context holder that
  *  contains shared data within the application.
  *
@@ -9,11 +11,18 @@ package com.yondu;
 public class AppContextHolder {
 
     private String authorizationToken;
-    private String employeeId;
-    private String employeeName;
-    private String customerId;
     private String customerAppAuthToken;
 
+    //logged in employee data
+    private String employeeId;
+    private String employeeName;
+
+    //logged in customer data
+    private String customerId;
+    private String customerName;
+    private String customerMobile;
+
+    //Temporary OCR configuration
     private Integer salesPosX;
     private Integer salesPosY;
     private Integer salesWidth;
@@ -23,6 +32,25 @@ public class AppContextHolder {
     private Integer orNumberPosY;
     private Integer orNumberWidth;
     private Integer orNumberHeight;
+
+    //Stage references
+    private Stage homeStage;
+
+    public String getCustomerMobile() {
+        return customerMobile;
+    }
+
+    public void setCustomerMobile(String customerMobile) {
+        this.customerMobile = customerMobile;
+    }
+
+    public Stage getHomeStage() {
+        return homeStage;
+    }
+
+    public void setHomeStage(Stage homeStage) {
+        this.homeStage = homeStage;
+    }
 
     public Integer getOrNumberPosX() {
         return orNumberPosX;
@@ -122,6 +150,14 @@ public class AppContextHolder {
 
     public String getCustomerId() {
         return customerId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public void setCustomerId(String customerId) {

@@ -11,7 +11,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-
+/** This is where the fun begins..
+ *
+ *  @author m1d0rf33d
+ */
 public class App extends Application{
 
     public static final AppContextHolder appContextHolder = new AppContextHolder();
@@ -22,7 +25,7 @@ public class App extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        //Launch splash stage
+        //Launch Splash stage
         Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
         primaryStage.setScene(new Scene(root, 600,400));
         primaryStage.resizableProperty().setValue(false);

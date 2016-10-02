@@ -1,19 +1,13 @@
 package com.yondu.controller;
 
 import com.yondu.App;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.image.*;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.lept;
 import org.bytedeco.javacpp.tesseract;
@@ -27,7 +21,6 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 import static com.yondu.model.AppConfigConstants.*;
-import static com.yondu.model.AppConfigConstants.OCR_CONFIG_LOCATION;
 import static org.bytedeco.javacpp.lept.pixDestroy;
 import static org.bytedeco.javacpp.lept.pixRead;
 
@@ -71,7 +64,6 @@ public class SettingsController implements Initializable{
             }
             orCaptureStage = new Stage();
             Parent root = FXMLLoader.load(App.class.getResource(OR_CAPTURE_FXML));
-            orCaptureStage.initStyle(StageStyle.UNDECORATED);
             orCaptureStage.setScene(new Scene(root, 300,100));
             orCaptureStage.setMaxHeight(100);
             orCaptureStage.setMaxWidth(300);

@@ -3,6 +3,9 @@ package com.yondu.controller;
 import com.yondu.App;
 import com.yondu.model.ApiFieldContants;
 import com.yondu.service.ApiService;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,8 +16,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.bytedeco.javacpp.BytePointer;
@@ -30,6 +35,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 import static com.yondu.model.AppConfigConstants.*;
 import static org.bytedeco.javacpp.lept.pixDestroy;
@@ -52,15 +58,40 @@ public class PointsDetailsController implements Initializable{
     public Label mobileLabel;
     @FXML
     public Button continueButton;
+    @FXML
+    public Button cancelButton;
+    @FXML
+    public Label convertedPointsLabel;
 
     private ApiService apiService;
+
+    private String orNumber;
+    private String totalAmount;
+    private String convertedPoints;
+
     private String baseUrl;
     private String givePointsEndpoint;
+
+    public PointsDetailsController(String orNumber, String totalAmount, String convertedPoints) {
+        this.orNumber = orNumber;
+        this.totalAmount = totalAmount;
+        this.convertedPoints = convertedPoints;
+    }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         apiService = new ApiService();
+        this.rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
+
+
+        this.nameLabel.setText(App.appContextHolder.getCustomerName());
+        this.mobileLabel.setText(App.appContextHolder.getCustomerMobile());
+        this.orLabel.setText(this.orNumber);
+        this.totalAmountLabel.setText(this.totalAmount);
+        this.convertedPointsLabel.setText(this.convertedPoints);
+
         try {
             Properties prop = new Properties();
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
@@ -70,12 +101,6 @@ public class PointsDetailsController implements Initializable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        this.rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
-        this.getTotalSales();
-        this.getOrNumber();
-        this.nameLabel.setText(App.appContextHolder.getCustomerName());
-        this.mobileLabel.setText(App.appContextHolder.getCustomerMobile());
 
         this.continueButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
@@ -105,7 +130,13 @@ public class PointsDetailsController implements Initializable{
                             ((Stage)rushLogoImageView.getScene().getWindow()).close();
                         }
                     } else {
-                        Alert alert = new Alert(Alert.AlertType.ERROR,(String) jsonResponse.get("message"), ButtonType.OK);
+                        JSONObject error = (JSONObject) jsonResponse.get("errors");
+                        String errorMessage = "";
+                        if (error.get("or_no") != null) {
+                           List<String> l = (ArrayList<String>) error.get("or_no");
+                           errorMessage = l.get(0);
+                        }
+                        Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
                         alert.showAndWait();
 
                         if (alert.getResult() == ButtonType.OK) {
@@ -119,114 +150,25 @@ public class PointsDetailsController implements Initializable{
                 }
             }
         });
-    }
 
-    private void getTotalSales() {
-        Integer salesX = null, salesY = null, salesWidth = null, salesHeight = null;
+        this.cancelButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Stage givePointsStage = new Stage();
+                Parent root = null;
+                try {
+                    root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                givePointsStage.setScene(new Scene(root, 400,200));
+                givePointsStage.setTitle("Give Points");
+                givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                givePointsStage.show();
 
-        try {
-            Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(new File(OCR_CONFIG_LOCATION));
-            prop.load(inputStream);
-            salesX = ((Double)Double.parseDouble(prop.getProperty("sales_pos_x"))).intValue();
-            salesY =((Double) Double.parseDouble(prop.getProperty("sales_pos_y"))).intValue();
-            salesWidth = ((Double)Double.parseDouble(prop.getProperty("sales_width"))).intValue();
-            salesHeight = ((Double)Double.parseDouble(prop.getProperty("sales_height"))).intValue();
-            inputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //Now that we got the screen dimensions for sales we will create an image file
-        //then read the text using tesseract
-        try {
-            Robot robot = new Robot();
-            Toolkit myToolkit = Toolkit.getDefaultToolkit();
-            Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
-
-            BufferedImage screenFullImage = robot.createScreenCapture(screen);
-            File imageFile = new File(CAPTURE_IMAGE_FILE);
-            ImageIO.write(screenFullImage, "jpg", imageFile);
-
-            BytePointer outText;
-            tesseract.TessBaseAPI api = new tesseract.TessBaseAPI();
-            // Initialize tesseract-ocr with English, without specifying tessdata path
-            if (api.Init(TESSERACT_LOCATION, "eng") != 0) {
-                System.err.println("Could not initialize tesseract.");
-                System.exit(1);
+                ((Stage)rushLogoImageView.getScene().getWindow()).close();
             }
-            // Open input image with leptonica library
-            lept.PIX image = pixRead(CAPTURE_IMAGE_FILE);
-            api.SetImage(image);
-            // Get OCR result
-            outText = api.GetUTF8Text();
-            String string = outText.getString();
-            totalAmountLabel.setText(string);
-           // this.previewText.setText(string);
-            // Destroy used object and release memory
-            api.End();
-            outText.deallocate();
-            pixDestroy(image);
-
-        } catch (AWTException | IOException ex) {
-            ex.printStackTrace();
-        }
+        });
     }
-
-    private void getOrNumber() {
-        Integer salesX = null, salesY = null, salesWidth = null, salesHeight = null;
-
-        try {
-            Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(new File(OCR_CONFIG_LOCATION));
-            prop.load(inputStream);
-            salesX = ((Double)Double.parseDouble(prop.getProperty("or_pos_x"))).intValue();
-            salesY =((Double) Double.parseDouble(prop.getProperty("or_pos_y"))).intValue();
-            salesWidth = ((Double)Double.parseDouble(prop.getProperty("or_width"))).intValue();
-            salesHeight = ((Double)Double.parseDouble(prop.getProperty("or_height"))).intValue();
-            inputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //Now that we got the screen dimensions for sales we will create an image file
-        //then read the text using tesseract
-        try {
-            Robot robot = new Robot();
-            Toolkit myToolkit = Toolkit.getDefaultToolkit();
-            Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
-
-            BufferedImage screenFullImage = robot.createScreenCapture(screen);
-            File imageFile = new File(CAPTURE_IMAGE_FILE);
-            ImageIO.write(screenFullImage, "jpg", imageFile);
-
-            BytePointer outText;
-            tesseract.TessBaseAPI api = new tesseract.TessBaseAPI();
-            // Initialize tesseract-ocr with English, without specifying tessdata path
-            if (api.Init(TESSERACT_LOCATION, "eng") != 0) {
-                System.err.println("Could not initialize tesseract.");
-                System.exit(1);
-            }
-            // Open input image with leptonica library
-            lept.PIX image = pixRead(CAPTURE_IMAGE_FILE);
-            api.SetImage(image);
-            // Get OCR result
-            outText = api.GetUTF8Text();
-            String string = outText.getString();
-            orLabel.setText(string);
-            // this.previewText.setText(string);
-            // Destroy used object and release memory
-            api.End();
-            outText.deallocate();
-            pixDestroy(image);
-
-        } catch (AWTException | IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-
 
 }

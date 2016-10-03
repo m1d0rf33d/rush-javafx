@@ -108,6 +108,9 @@ public class SettingsController implements Initializable{
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
             File imageFile = new File(CAPTURE_IMAGE_FILE);
+            if (!imageFile.exists()) {
+                imageFile.createNewFile();
+            }
             ImageIO.write(screenFullImage, "jpg", imageFile);
             this.previewImage.setImage(new javafx.scene.image.Image(new FileInputStream(imageFile)));
 
@@ -336,6 +339,9 @@ public class SettingsController implements Initializable{
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
             File imageFile = new File(CAPTURE_IMAGE_FILE);
+            if (!imageFile.exists()) {
+                imageFile.createNewFile();
+            }
             ImageIO.write(screenFullImage, "jpg", imageFile);
             this.previewImage.setImage(new javafx.scene.image.Image(new FileInputStream(imageFile)));
 

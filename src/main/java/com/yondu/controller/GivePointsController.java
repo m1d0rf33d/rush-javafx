@@ -19,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.bytedeco.javacpp.BytePointer;
@@ -60,7 +61,7 @@ public class GivePointsController implements Initializable {
     private String baseUrl;
     private String memberLoginEndpoint;
     private ApiService apiService;
-
+    private String givePointsEndpoint;
     private Stage givePointsDetailsStage;
 
     @Override
@@ -123,15 +124,18 @@ public class GivePointsController implements Initializable {
                             App.appContextHolder.setCustomerId((String)data.get("id"));
                             App.appContextHolder.setCustomerName((String)data.get("name"));
                             App.appContextHolder.setCustomerMobile((String)data.get("mobile_no"));
+                            ((Stage)givePointsButton.getScene().getWindow()).close();
                             loadGivePointsDetailsView();
+
                         }
 
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                 } else {
+                    ((Stage)givePointsButton.getScene().getWindow()).close();
                     loadGivePointsDetailsView();
-                    ((Stage)rushLogoImageView.getScene().getWindow()).close();
+
                 }
             }
         });
@@ -139,19 +143,14 @@ public class GivePointsController implements Initializable {
     }
 
     private  void loadGivePointsDetailsView() {
+        Stage loadingStage = new Stage();
         try {
-            if (givePointsDetailsStage != null) {
-                givePointsDetailsStage.close();
-            }
-            givePointsDetailsStage = new Stage();
-            Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_DETAILS_FXML));
-            givePointsDetailsStage.setScene(new Scene(root, 500,300));
-            givePointsDetailsStage.setTitle("Give Points");
-            givePointsDetailsStage.resizableProperty().setValue(Boolean.FALSE);
-            givePointsDetailsStage.show();
 
-            App.appContextHolder.getHomeStage().close();
-
+            Parent root = FXMLLoader.load(App.class.getResource(LOADING_FXML));
+            loadingStage.setScene(new Scene(root, 500,300));
+            loadingStage.initStyle(StageStyle.UNDECORATED);
+            loadingStage.resizableProperty().setValue(Boolean.FALSE);
+            loadingStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }

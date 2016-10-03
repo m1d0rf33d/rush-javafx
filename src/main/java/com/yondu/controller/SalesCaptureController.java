@@ -5,7 +5,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -34,18 +36,11 @@ public class SalesCaptureController {
         App.appContextHolder.setSalesWidth(salesWidth.intValue());
         App.appContextHolder.setSalesHeight(salesHeight.intValue());
 
-        Stage resultStage = new Stage();
-        Parent root = null;
-        try {
-            root = FXMLLoader.load(App.class.getResource(CAPTURE_RESULT_FXML));
-        } catch (IOException e) {
-            e.printStackTrace();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION,"Target screen area captured.", ButtonType.OK);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.OK) {
+            alert.close();
         }
-        resultStage.setScene(new Scene(root, 300,200));
-        resultStage.setX(600);
-        resultStage.setY(200);
-        resultStage.resizableProperty().setValue(false);
-        resultStage.show();
 
         ((Stage) this.previewButton.getScene().getWindow()).close();
     }

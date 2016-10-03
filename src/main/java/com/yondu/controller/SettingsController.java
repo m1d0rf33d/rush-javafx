@@ -8,6 +8,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.lept;
 import org.bytedeco.javacpp.tesseract;
@@ -121,9 +124,17 @@ public class SettingsController implements Initializable{
                 System.err.println("Could not initialize tesseract.");
                 System.exit(1);
             }
+
             // Open input image with leptonica library
             lept.PIX image = pixRead(CAPTURE_IMAGE_FILE);
             api.SetImage(image);
+            ITesseract instance = new Tesseract();
+            try {
+                String result = instance.doOCR(screenFullImage);
+                String x = "";
+            } catch (TesseractException e) {
+                e.printStackTrace();
+            }
             // Get OCR result
             outText = api.GetUTF8Text();
             String string = outText.getString();

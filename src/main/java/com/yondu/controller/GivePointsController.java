@@ -2,7 +2,7 @@ package com.yondu.controller;
 
 import com.yondu.App;
 import com.yondu.Browser;
-import com.yondu.model.ApiFieldContants;
+import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.service.ApiService;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -22,17 +22,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.bytedeco.javacpp.BytePointer;
-import org.bytedeco.javacpp.lept;
-import org.bytedeco.javacpp.tesseract;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.w3c.dom.html.HTMLInputElement;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,7 +33,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import static com.yondu.model.AppConfigConstants.*;
+import static com.yondu.model.constants.AppConfigConstants.*;
 import static org.bytedeco.javacpp.lept.pixDestroy;
 import static org.bytedeco.javacpp.lept.pixRead;
 
@@ -100,7 +93,7 @@ public class GivePointsController implements Initializable {
         this.givePointsButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if (App.appContextHolder.getCustomerId() == null) {
+                if (App.appContextHolder.getCustomerMobile() == null) {
                     //login member
                     List<NameValuePair> params = new ArrayList<>();
                     params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getText()));
@@ -121,9 +114,8 @@ public class GivePointsController implements Initializable {
                         } else {
                            //Load givepoints result
                             JSONObject data = (JSONObject) jsonResponse.get("data");
-                            App.appContextHolder.setCustomerId((String)data.get("id"));
-                            App.appContextHolder.setCustomerName((String)data.get("name"));
-                            App.appContextHolder.setCustomerMobile((String)data.get("mobile_no"));
+                            App.appContextHolder.setCustomerUUID((String)data.get("id"));
+                            App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
                             ((Stage)givePointsButton.getScene().getWindow()).close();
                             loadGivePointsDetailsView();
 

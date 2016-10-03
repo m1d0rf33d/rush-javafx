@@ -1,13 +1,10 @@
 package com.yondu;
 
-import com.yondu.model.AppConfigConstants;
+import com.yondu.model.constants.AppConfigConstants;
 import javafx.application.Application;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 

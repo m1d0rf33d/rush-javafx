@@ -3,35 +3,30 @@ package com.yondu.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yondu.App;
+import com.yondu.AppContextHolder;
+import com.yondu.Browser;
 import com.yondu.model.Account;
-import com.yondu.model.ApiFieldContants;
+import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.ApiResponse;
 import com.yondu.utils.Java2JavascriptUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.bytedeco.javacpp.BytePointer;
-import org.bytedeco.javacpp.lept;
-import org.bytedeco.javacpp.tesseract;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.w3c.dom.html.HTMLInputElement;
 import org.w3c.dom.html.HTMLSelectElement;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +37,7 @@ import static javafx.application.Platform.runLater;
 import static org.bytedeco.javacpp.lept.pixDestroy;
 import static org.bytedeco.javacpp.lept.pixRead;
 import static org.junit.Assert.assertTrue;
-import static com.yondu.model.AppConfigConstants.*;
+import static com.yondu.model.constants.AppConfigConstants.*;
 
 /** Home Module services / Java2Javascript bridge
  *  Methods inside this class can be invoked inside a javascript using alert("__CONNECT__BACKEND__homeService")
@@ -90,6 +85,7 @@ public class HomeService {
             this.redeemRewardsEndpoint = prop.getProperty("redeem_rewards_endpoint");
             this.unclaimedRewardsEndpoint = prop.getProperty("unclaimed_rewards_endpoint");
             this.claimRewardsEndpoint = prop.getProperty("claim_rewards_endpoint");
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -97,14 +93,17 @@ public class HomeService {
         }
     }
 
+    /** Load employee data that will be sent back to the calling javascript. Target page view-> home.html
+     *
+     * @param callbackfunction
+     */
     public void loadEmployeeData(final Object callbackfunction) {
-
         Account account = new Account();
         account.setId(App.appContextHolder.getEmployeeId());
         account.setName(App.appContextHolder.getEmployeeName());
 
         SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-YYYY");
-        account.setDate(formatter.format(new Date()));
+        account.setCurrentDate(formatter.format(new Date()));
 
         ObjectMapper mapper = new ObjectMapper();
         String data = null;
@@ -119,6 +118,9 @@ public class HomeService {
         }).start();
     }
 
+    /** Register new member, a javascript response handler function will be called to handle the result.
+     *
+     */
     public void register() {
         //Read html form values
         HTMLInputElement nameField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_NAME);
@@ -148,6 +150,10 @@ public class HomeService {
         this.webEngine.executeScript("registerResponseHandler('"+jsonResponse+"')");
     }
 
+    /** Login member
+     *
+     * @param callbackfunction
+     */
     public void loginMember(final Object callbackfunction) {
         //Read html form values
         HTMLInputElement mobileField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_MOBILE);
@@ -162,12 +168,11 @@ public class HomeService {
         JSONParser parser = new JSONParser();
         try {
             JSONObject jsonObject = (JSONObject) parser.parse(result);
-            String error =  (String) jsonObject.get("error_code");
-            if (error.equals("0x0")) {
-                JSONObject data =  (JSONObject) jsonObject.get("data");
-                App.appContextHolder.setCustomerId( (String) data.get("id"));
-                App.appContextHolder.setCustomerName( (String) data.get("name"));
+            String error =  (String) jsonObject.get(ApiFieldContants.ERROR_CODE);
+            if (error.equals(ApiFieldContants.NO_ERROR)) {
+                JSONObject data =  (JSONObject) jsonObject.get(ApiFieldContants.DATA);
                 App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
+                App.appContextHolder.setCustomerUUID((String) data.get("id"));
             }
 
         } catch (ParseException e) {
@@ -176,50 +181,37 @@ public class HomeService {
 
         new Thread( () -> {
             Java2JavascriptUtils.call(callbackfunction, result);
-        }
-        ).start();
+        }).start();
     }
 
+    /** Load points conversion rules
+     *
+     * @param callbackfunction
+     */
     public void loadPointsRule(final Object callbackfunction) {
 
         String url = baseUrl + pointsConversionEndpoint;
         String result = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
         new Thread( () -> {
-            try {
-                sleep(5000); //add some processing simulation...
-                runLater( () ->
-                        Java2JavascriptUtils.call(callbackfunction, result)
-                );
-            } catch (InterruptedException e) {	}
-
+            Java2JavascriptUtils.call(callbackfunction, result);
         }).start();
     }
-    public void givePointsToCustomer() {
-        //Read html form values
-        HTMLInputElement amountField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.AMOUNT);
-        HTMLInputElement orNumberField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.OR_NUMBER);
 
-        String jsonResponse = "";
-        //Build request body
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
-        params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberField.getValue()));
-        params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amountField.getValue()));
-        String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
-        jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-        this.webEngine.executeScript("givePointsResponseHandler('"+jsonResponse+"')");
-    }
-
+    /** Get member current points a javascript response handler function will handle the results.
+     *
+     */
     public void getPoints() {
-        String jsonResponse = "";
         //Build request body
         List<NameValuePair> params = new ArrayList<>();
-        String url = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
-        jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        String url = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+        String jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
         this.webEngine.executeScript("getPointsHandler('"+jsonResponse+"')");
     }
 
+    /** Pay using points
+     *
+     */
     public void payWithPoints() {
         //Read html form values
         HTMLInputElement pointsField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.POINTS);
@@ -245,13 +237,17 @@ public class HomeService {
             params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberField.getValue()));
             params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amountField.getValue()));
             params.add(new BasicNameValuePair(ApiFieldContants.POINTS, pointsField.getValue()));
-            String url = baseUrl + payWithPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
+            String url = baseUrl + payWithPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
             jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
             jsonResponse = jsonResponse.replace("'","");
         }
         this.webEngine.executeScript("givePointsResponseHandler('"+jsonResponse+"')");
     }
 
+    /** Load all merchant rewards
+     *
+     * @param callbackfunction
+     */
     public void loadRewards(final Object callbackfunction) {
 
 
@@ -264,11 +260,16 @@ public class HomeService {
         }).start();
     }
 
+    /** Redeeem member reward
+     *
+     * @param rewardId
+     * @param pin
+     */
     public void redeemRewards(String rewardId, String pin) {
 
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin));
-        String url = baseUrl + redeemRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerId());
+        String url = baseUrl + redeemRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerUUID());
         url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
         url = url.replace(":reward_id", rewardId);
         String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
@@ -279,7 +280,7 @@ public class HomeService {
     public void loadCustomerRewards(final Object callbackfunction) {
 
 
-        String url = baseUrl + unclaimedRewardsEndpoint.replace(":id", App.appContextHolder.getCustomerId());
+        String url = baseUrl + unclaimedRewardsEndpoint.replace(":id", App.appContextHolder.getCustomerUUID());
         String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
 
         final String data = jsonResponse;
@@ -293,7 +294,7 @@ public class HomeService {
 
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin));
-        String url = baseUrl + claimRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerId());
+        String url = baseUrl + claimRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerUUID());
         url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
         url = url.replace(":reward_id", rewardId);
         String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
@@ -335,5 +336,19 @@ public class HomeService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void logoutEmployee() {
+        //cleanr AppContextHolder
+        App.appContextHolder.setEmployeeId(null);
+        App.appContextHolder.setEmployeeName(null);
+        App.appContextHolder.setCustomerMobile(null);
+        //redirect to login page
+        Stage stage = new Stage();
+        stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
+        stage.setMaximized(true);
+        stage.show();
+        App.appContextHolder.getHomeStage().close();
+        App.appContextHolder.setHomeStage(stage);
     }
 }

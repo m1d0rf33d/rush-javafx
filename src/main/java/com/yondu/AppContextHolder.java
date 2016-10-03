@@ -1,5 +1,6 @@
 package com.yondu;
 
+import com.yondu.model.Account;
 import javafx.stage.Stage;
 
 /** This will serve as a single instance application context holder that
@@ -13,14 +14,13 @@ public class AppContextHolder {
     private String authorizationToken;
     private String customerAppAuthToken;
 
-    //logged in employee data
+    //Reference for logged in employee
     private String employeeId;
     private String employeeName;
 
-    //logged in customer data
-    private String customerId;
-    private String customerName;
+    //Reference for logged in customer
     private String customerMobile;
+    private String customerUUID;
 
     //Temporary OCR configuration
     private Integer salesPosX;
@@ -36,52 +36,44 @@ public class AppContextHolder {
     //Stage references
     private Stage homeStage;
 
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
+
+    public String getAuthorizationToken() {
+        return authorizationToken;
+    }
+
+    public void setAuthorizationToken(String authorizationToken) {
+        this.authorizationToken = authorizationToken;
+    }
+
+    public String getCustomerAppAuthToken() {
+        return customerAppAuthToken;
+    }
+
+    public void setCustomerAppAuthToken(String customerAppAuthToken) {
+        this.customerAppAuthToken = customerAppAuthToken;
+    }
+
+    public String getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
+    }
+
     public String getCustomerMobile() {
         return customerMobile;
     }
 
     public void setCustomerMobile(String customerMobile) {
         this.customerMobile = customerMobile;
-    }
-
-    public Stage getHomeStage() {
-        return homeStage;
-    }
-
-    public void setHomeStage(Stage homeStage) {
-        this.homeStage = homeStage;
-    }
-
-    public Integer getOrNumberPosX() {
-        return orNumberPosX;
-    }
-
-    public void setOrNumberPosX(Integer orNumberPosX) {
-        this.orNumberPosX = orNumberPosX;
-    }
-
-    public Integer getOrNumberPosY() {
-        return orNumberPosY;
-    }
-
-    public void setOrNumberPosY(Integer orNumberPosY) {
-        this.orNumberPosY = orNumberPosY;
-    }
-
-    public Integer getOrNumberWidth() {
-        return orNumberWidth;
-    }
-
-    public void setOrNumberWidth(Integer orNumberWidth) {
-        this.orNumberWidth = orNumberWidth;
-    }
-
-    public Integer getOrNumberHeight() {
-        return orNumberHeight;
-    }
-
-    public void setOrNumberHeight(Integer orNumberHeight) {
-        this.orNumberHeight = orNumberHeight;
     }
 
     public Integer getSalesPosX() {
@@ -116,51 +108,51 @@ public class AppContextHolder {
         this.salesHeight = salesHeight;
     }
 
-    public String getCustomerAppAuthToken() {
-        return customerAppAuthToken;
+    public Integer getOrNumberPosX() {
+        return orNumberPosX;
     }
 
-    public void setCustomerAppAuthToken(String customerAppAuthToken) {
-        this.customerAppAuthToken = customerAppAuthToken;
+    public void setOrNumberPosX(Integer orNumberPosX) {
+        this.orNumberPosX = orNumberPosX;
     }
 
-    public String getEmployeeName() {
-        return employeeName;
+    public Integer getOrNumberPosY() {
+        return orNumberPosY;
     }
 
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
+    public void setOrNumberPosY(Integer orNumberPosY) {
+        this.orNumberPosY = orNumberPosY;
     }
 
-    public String getAuthorizationToken() {
-        return authorizationToken;
+    public Integer getOrNumberWidth() {
+        return orNumberWidth;
     }
 
-    public void setAuthorizationToken(String authorizationToken) {
-        this.authorizationToken = authorizationToken;
+    public void setOrNumberWidth(Integer orNumberWidth) {
+        this.orNumberWidth = orNumberWidth;
     }
 
-    public String getEmployeeId() {
-        return employeeId;
+    public Integer getOrNumberHeight() {
+        return orNumberHeight;
     }
 
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
+    public void setOrNumberHeight(Integer orNumberHeight) {
+        this.orNumberHeight = orNumberHeight;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public Stage getHomeStage() {
+        return homeStage;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public void setHomeStage(Stage homeStage) {
+        this.homeStage = homeStage;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public String getCustomerUUID() {
+        return customerUUID;
     }
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
+    public void setCustomerUUID(String customerUUID) {
+        this.customerUUID = customerUUID;
     }
 }

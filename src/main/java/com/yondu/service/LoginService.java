@@ -2,11 +2,9 @@ package com.yondu.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yondu.App;
-import com.yondu.model.Account;
-import com.yondu.model.ApiFieldContants;
+import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.Branch;
-import com.yondu.model.enums.ApiError;
 import com.yondu.utils.Java2JavascriptUtils;
 import javafx.scene.web.WebEngine;
 import org.apache.http.NameValuePair;
@@ -20,7 +18,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 

@@ -75,10 +75,10 @@
                <!-- <li class="notif-wrapper"><a href="#"><img src="images/bell.png" class="notif-icon" alt=""></a> <span class="notif-counter">1</span></li>-->
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        <div class="p-info"><h3>Hi,<b>{{account.name}}</b><span class="caret"></span></h3>{{account.date}}</div>
+                        <div class="p-info"><h3>Hi,<b>{{account.name}}</b><span class="caret"></span></h3>{{account.currentDate}}</div>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">Logout</a></li>
+                        <li><a href="#" onclick="homeService.logoutEmployee()">Logout</a></li>
                     </ul>
                 </li>
             </ul>

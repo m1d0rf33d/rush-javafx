@@ -2,7 +2,7 @@ package com.yondu.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yondu.App;
-import com.yondu.model.ApiFieldContants;
+import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.Token;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;

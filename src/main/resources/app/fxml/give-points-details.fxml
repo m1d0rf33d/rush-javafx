@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="500.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="40.0" layoutY="77.0" text="Name:">
          <font>
@@ -18,61 +18,66 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="40.0" layoutY="239.0" prefHeight="21.0" prefWidth="108.0" text="OR Number:">
+      <Label layoutX="42.0" layoutY="276.0" prefHeight="21.0" prefWidth="108.0" text="OR Number:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="40.0" layoutY="199.0" text="Total Amount:">
+      <Label layoutX="42.0" layoutY="199.0" text="Total Amount:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="40.0" layoutY="158.0" prefHeight="21.0" prefWidth="122.0" text="Converted points:">
+      <Label layoutX="42.0" layoutY="237.0" prefHeight="21.0" prefWidth="122.0" text="Converted points:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Button fx:id="continueButton" layoutX="156.0" layoutY="298.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="86.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600;" text="Continue" textFill="#f5f2f2">
+      <Button fx:id="continueButton" layoutX="155.0" layoutY="344.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="86.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600;" text="Continue" textFill="#f5f2f2">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button fx:id="cancelButton" layoutX="265.0" layoutY="298.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="86.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600;" text="Cancel" textFill="#f5f2f2">
+      <Button fx:id="cancelButton" layoutX="263.0" layoutY="344.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="86.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600;" text="Cancel" textFill="#f5f2f2">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Label layoutX="165.0" layoutY="66.0" prefHeight="21.0" prefWidth="221.0">
+      <Label fx:id="nameLbl" layoutX="165.0" layoutY="76.0" prefHeight="21.0" prefWidth="221.0">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label fx:id="nameLabel" layoutX="175.0" layoutY="76.0" prefHeight="21.0" prefWidth="221.0">
+      <Label fx:id="currentPointsLbl" layoutX="165.0" layoutY="160.0" prefHeight="21.0" prefWidth="221.0">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label fx:id="mobileLabel" layoutX="175.0" layoutY="115.0" prefHeight="21.0" prefWidth="221.0">
+      <Label  fx:id="mobileNumberLbl" layoutX="165.0" layoutY="115.0" prefHeight="21.0" prefWidth="221.0">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="175.0" layoutY="157.0" prefHeight="21.0" prefWidth="221.0" fx:id="convertedPointsLabel">
+      <Label fx:id="convertedPointsLbl" layoutX="165.0" layoutY="236.0" prefHeight="21.0" prefWidth="221.0">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label fx:id="totalAmountLabel" layoutX="175.0" layoutY="198.0" prefHeight="21.0" prefWidth="221.0">
+      <Label fx:id="totalAmountLbl" layoutX="165.0" layoutY="198.0" prefHeight="21.0" prefWidth="221.0">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label fx:id="orLabel" layoutX="175.0" layoutY="238.0" prefHeight="21.0" prefWidth="221.0">
+      <Label  fx:id="orNumberLbl" layoutX="165.0" layoutY="275.0" prefHeight="21.0" prefWidth="221.0">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
       <ImageView fx:id="rushLogoImageView" fitHeight="38.0" fitWidth="145.0" layoutX="178.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="40.0" layoutY="161.0" text="Current Points:">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
    </children>
 </Pane>

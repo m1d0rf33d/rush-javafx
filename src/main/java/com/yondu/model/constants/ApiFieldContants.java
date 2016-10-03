@@ -1,4 +1,4 @@
-package com.yondu.model;
+package com.yondu.model.constants;
 
 /** Constant fields that matches Rush API fields.
  *  Values should match with @http://52.74.203.202/api/docs/loyalty/merchantapp/#api-Loyalty_Merchant_App
@@ -13,7 +13,6 @@ public class ApiFieldContants {
     public static final String MEMBER_NAME = "name";
     public static final String MEMBER_EMAIL = "email";
     public static final String MEMBER_MOBILE = "mobile_no";
-    public static final String MEMBER_PIN = "pin";
 
     public static final String AMOUNT = "amount";
     public static final String OR_NUMBER = "or_no";
@@ -27,4 +26,9 @@ public class ApiFieldContants {
 
     public static final String CUSTOMER_APP_RESOUCE_OWNER = "customer_app";
     public static final String MERCHANT_APP_RESOURCE_OWNER = "merchant_app";
+
+    public static final String ERROR_CODE = "error_code";
+    public static final String DATA = "data";
+    public static final String CUSTOMER_UUID = "customer_uuid";
+    public static final String NO_ERROR = "0x0";
 }

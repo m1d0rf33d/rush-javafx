@@ -70,7 +70,8 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
        homeService.loadEmployeeData(function(data) {
            console.log(data);
            $scope.account = {
-               name: data.name
+               name: data.name,
+               currentDate: data.currentDate
            }
        })
     }
@@ -249,27 +250,6 @@ function registerResponseHandler(jsonResponse) {
     }
 
     $("#myModal").modal('show');
-}
-
-function givePointsResponseHandler(jsonResponse) {
-    $(".alert").remove();
-    var resp = JSON.parse(jsonResponse);
-    if (resp.error_code != '0x0') {
-        //Show errors messages
-        if (resp.errors.or_no != undefined) {
-            $(".home-modal-body").prepend('<div class="temp"><p>'+resp.errors.or_no[0]+'</p></div>');
-        }
-        if (resp.errors.amount != undefined) {
-            $(".home-modal-body").prepend('<div class="temp"><p>'+resp.errors.amount[0]+'</p></div>');
-        }
-        if (resp.message != undefined) {
-            $(".home-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
-        }
-        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Give Points Failed</strong> </div>');
-        $("#myModal").modal('show');
-    } else {
-        homeService.getPoints();
-    }
 }
 
 function getPointsHandler(jsonResponse) {

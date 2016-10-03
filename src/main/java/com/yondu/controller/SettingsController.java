@@ -1,15 +1,17 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.stage.Stage;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.Tesseract1;
 import net.sourceforge.tess4j.TesseractException;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.lept;
@@ -17,13 +19,14 @@ import org.bytedeco.javacpp.tesseract;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import static com.yondu.model.AppConfigConstants.*;
+import static com.yondu.model.constants.AppConfigConstants.*;
 import static org.bytedeco.javacpp.lept.pixDestroy;
 import static org.bytedeco.javacpp.lept.pixRead;
 
@@ -110,41 +113,21 @@ public class SettingsController implements Initializable{
             Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
-            File imageFile = new File(CAPTURE_IMAGE_FILE);
-            if (!imageFile.exists()) {
-                imageFile.createNewFile();
-            }
-            ImageIO.write(screenFullImage, "jpg", imageFile);
-            this.previewImage.setImage(new javafx.scene.image.Image(new FileInputStream(imageFile)));
-
-            BytePointer outText;
-            tesseract.TessBaseAPI api = new tesseract.TessBaseAPI();
-            // Initialize tesseract-ocr with English, without specifying tessdata path
-            if (api.Init(TESSERACT_LOCATION, "eng") != 0) {
-                System.err.println("Could not initialize tesseract.");
-                System.exit(1);
-            }
-
-            // Open input image with leptonica library
-            lept.PIX image = pixRead(CAPTURE_IMAGE_FILE);
-            api.SetImage(image);
-            ITesseract instance = new Tesseract();
+            javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
+            this.previewImage.setImage(image);
+            ITesseract tesseract = new Tesseract1();
+            tesseract.setDatapath(TESSERACT_LOCATION);
+            tesseract.setLanguage("eng");
+            // Get OCR result
+            String outText = null;
             try {
-                String result = instance.doOCR(screenFullImage);
-                String x = "";
+                outText = tesseract.doOCR(screenFullImage);
             } catch (TesseractException e) {
                 e.printStackTrace();
             }
-            // Get OCR result
-            outText = api.GetUTF8Text();
-            String string = outText.getString();
-            this.previewText.setText(string);
-            // Destroy used object and release memory
-            api.End();
-            outText.deallocate();
-            pixDestroy(image);
+            this.previewText.setText(outText);
 
-        } catch (AWTException | IOException ex) {
+        } catch (AWTException ex) {
             ex.printStackTrace();
         }
 
@@ -349,33 +332,21 @@ public class SettingsController implements Initializable{
             Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
-            File imageFile = new File(CAPTURE_IMAGE_FILE);
-            if (!imageFile.exists()) {
-                imageFile.createNewFile();
-            }
-            ImageIO.write(screenFullImage, "jpg", imageFile);
-            this.previewImage.setImage(new javafx.scene.image.Image(new FileInputStream(imageFile)));
-
-            BytePointer outText;
-            tesseract.TessBaseAPI api = new tesseract.TessBaseAPI();
-            // Initialize tesseract-ocr with English, without specifying tessdata path
-            if (api.Init(TESSERACT_LOCATION, "eng") != 0) {
-                System.err.println("Could not initialize tesseract.");
-                System.exit(1);
-            }
-            // Open input image with leptonica library
-            lept.PIX image = pixRead(CAPTURE_IMAGE_FILE);
-            api.SetImage(image);
+            javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
+            this.previewImage.setImage(image);
+            ITesseract tesseract = new Tesseract1();
+            tesseract.setDatapath(TESSERACT_LOCATION);
+            tesseract.setLanguage("eng");
             // Get OCR result
-            outText = api.GetUTF8Text();
-            String string = outText.getString();
-            this.previewText.setText(string);
-            // Destroy used object and release memory
-            api.End();
-            outText.deallocate();
-            pixDestroy(image);
+            String outText = null;
+            try {
+                outText = tesseract.doOCR(screenFullImage);
+            } catch (TesseractException e) {
+                e.printStackTrace();
+            }
+            this.previewText.setText(outText);
 
-        } catch (AWTException | IOException ex) {
+        } catch (AWTException ex) {
             ex.printStackTrace();
         }
     }

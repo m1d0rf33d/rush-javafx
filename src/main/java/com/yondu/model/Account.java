@@ -7,14 +7,19 @@ package com.yondu.model;
 public class Account {
     private String id;
     private String name;
-    private String date;
+    private String dateRegistered;
+    private String birthdate;
+    private String gender;
+    private String mobileNumber;
+    private Double currentPoints;
+    private String currentDate;
 
-    public String getDate() {
-        return date;
+    public String getCurrentDate() {
+        return currentDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setCurrentDate(String currentDate) {
+        this.currentDate = currentDate;
     }
 
     public String getId() {
@@ -31,5 +36,45 @@ public class Account {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDateRegistered() {
+        return dateRegistered;
+    }
+
+    public void setDateRegistered(String dateRegistered) {
+        this.dateRegistered = dateRegistered;
+    }
+
+    public String getBirthdate() {
+        return birthdate;
+    }
+
+    public void setBirthdate(String birthdate) {
+        this.birthdate = birthdate;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
+    public Double getCurrentPoints() {
+        return currentPoints;
+    }
+
+    public void setCurrentPoints(Double currentPoints) {
+        this.currentPoints = currentPoints;
     }
 }

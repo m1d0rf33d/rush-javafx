@@ -1,7 +1,8 @@
 package com.yondu.controller;
 
 import com.yondu.App;
-import com.yondu.model.ApiFieldContants;
+import com.yondu.model.Account;
+import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.service.ApiService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -10,32 +11,27 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import net.sourceforge.tess4j.ITesseract;
-import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.Tesseract1;
 import net.sourceforge.tess4j.TesseractException;
-import org.bytedeco.javacpp.BytePointer;
-import org.bytedeco.javacpp.lept;
-import org.bytedeco.javacpp.tesseract;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.List;
 
-import static com.yondu.model.AppConfigConstants.*;
+import static com.yondu.model.constants.AppConfigConstants.*;
 import static org.bytedeco.javacpp.lept.pixDestroy;
 import static org.bytedeco.javacpp.lept.pixRead;
 
@@ -52,9 +48,13 @@ public class LoadingController implements Initializable{
     private String orStr;
     private String totalAmountStr;
     private String convertedPoints;
+    private Account customer;
     private String baseUrl;
 
     private String pointsConversionEndpoint;
+    private String memberLoginEndpoint;
+    private String getPointsEndpoint;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -72,9 +72,9 @@ public class LoadingController implements Initializable{
                 try {
                     Stage stage = new Stage();
                     FXMLLoader  loader  = new FXMLLoader(App.class.getResource(GIVE_POINTS_DETAILS_FXML));
-                    PointsDetailsController pointsDetailsController = new PointsDetailsController(orStr, totalAmountStr, convertedPoints);
+                    PointsDetailsController pointsDetailsController = new PointsDetailsController(orStr, totalAmountStr, convertedPoints, customer);
                     loader.setController(pointsDetailsController);
-                    stage.setScene(new Scene(loader.load(), 500,350));
+                    stage.setScene(new Scene(loader.load(), 500,400));
                     stage.resizableProperty().setValue(Boolean.FALSE);
                     stage.show();
 
@@ -198,6 +198,8 @@ public class LoadingController implements Initializable{
                         inputStream.close();
                         baseUrl = prop.getProperty("base_url");
                         pointsConversionEndpoint = prop.getProperty("points_conversion_endpoint");
+                        memberLoginEndpoint = prop.getProperty("member_login_endpoint");
+                        getPointsEndpoint = prop.getProperty("get_points_endpoint");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -205,9 +207,36 @@ public class LoadingController implements Initializable{
                     getTotalSales();
                     getOrNumber();
                     convertPoints();
+                    getCustomerInformation();
                     return null;
                 }
             };
+        }
+    }
+
+    private void getCustomerInformation() {
+        java.util.List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
+
+        String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
+        String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        JSONParser parser = new JSONParser();
+        try {
+            JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
+            JSONObject data = (JSONObject) jsonResponse.get("data");
+            customer = new Account();
+            customer.setName((String)data.get("name"));
+            customer.setMobileNumber((String) data.get("mobile_no"));
+            //get customer current points
+            params = new ArrayList<>();
+            url = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+            responseStr = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+            jsonResponse = (JSONObject) parser.parse(responseStr);
+            Double points = (Double) jsonResponse.get("data");
+            customer.setCurrentPoints(points);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 }

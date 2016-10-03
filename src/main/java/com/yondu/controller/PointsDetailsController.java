@@ -1,11 +1,9 @@
 package com.yondu.controller;
 
 import com.yondu.App;
-import com.yondu.model.ApiFieldContants;
+import com.yondu.model.Account;
+import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.service.ApiService;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,28 +14,20 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.*;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.bytedeco.javacpp.BytePointer;
-import org.bytedeco.javacpp.lept;
-import org.bytedeco.javacpp.tesseract;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
 
-import static com.yondu.model.AppConfigConstants.*;
+import static com.yondu.model.constants.AppConfigConstants.*;
 import static org.bytedeco.javacpp.lept.pixDestroy;
 import static org.bytedeco.javacpp.lept.pixRead;
 
@@ -49,33 +39,37 @@ public class PointsDetailsController implements Initializable{
     @FXML
     public ImageView rushLogoImageView;
     @FXML
-    public javafx.scene.control.Label totalAmountLabel;
+    public Label orNumberLbl;
     @FXML
-    public Label orLabel;
+    public Label nameLbl;
     @FXML
-    public Label nameLabel;
-    @FXML
-    public Label mobileLabel;
+    public Label mobileNumberLbl;
     @FXML
     public Button continueButton;
     @FXML
     public Button cancelButton;
     @FXML
-    public Label convertedPointsLabel;
+    public Label convertedPointsLbl;
+    @FXML
+    public Label totalAmountLbl;
+    @FXML
+    public Label currentPointsLbl;
 
     private ApiService apiService;
 
     private String orNumber;
     private String totalAmount;
     private String convertedPoints;
+    private Account customer;
 
     private String baseUrl;
     private String givePointsEndpoint;
 
-    public PointsDetailsController(String orNumber, String totalAmount, String convertedPoints) {
+    public PointsDetailsController(String orNumber, String totalAmount, String convertedPoints, Account customer) {
         this.orNumber = orNumber;
         this.totalAmount = totalAmount;
         this.convertedPoints = convertedPoints;
+        this.customer = customer;
     }
 
 
@@ -86,11 +80,13 @@ public class PointsDetailsController implements Initializable{
         this.rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
 
 
-        this.nameLabel.setText(App.appContextHolder.getCustomerName());
-        this.mobileLabel.setText(App.appContextHolder.getCustomerMobile());
-        this.orLabel.setText(this.orNumber);
-        this.totalAmountLabel.setText(this.totalAmount);
-        this.convertedPointsLabel.setText(this.convertedPoints);
+        this.nameLbl.setText(customer.getName());
+        this.mobileNumberLbl.setText(customer.getMobileNumber());
+        this.currentPointsLbl.setText(String.valueOf(customer.getCurrentPoints()));
+
+        this.orNumberLbl.setText(this.orNumber);
+        this.totalAmountLbl.setText(this.totalAmount);
+        this.convertedPointsLbl.setText(this.convertedPoints);
 
         try {
             Properties prop = new Properties();
@@ -107,9 +103,9 @@ public class PointsDetailsController implements Initializable{
             public void handle(MouseEvent event) {
                 java.util.List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
-                params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orLabel.getText().trim()));
-                params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmountLabel.getText().trim()));
-                String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerId());
+                params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberLbl.getText().trim()));
+                params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmountLbl.getText().trim()));
+                String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
                 String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                 JSONParser parser = new JSONParser();
                 try {

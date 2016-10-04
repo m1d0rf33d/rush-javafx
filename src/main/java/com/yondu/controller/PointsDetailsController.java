@@ -132,6 +132,10 @@ public class PointsDetailsController implements Initializable{
                            List<String> l = (ArrayList<String>) error.get("or_no");
                            errorMessage = l.get(0);
                         }
+                        if (error.get("amount") != null) {
+                            List<String> l = (ArrayList<String>) error.get("amount");
+                            errorMessage = l.get(0);
+                        }
                         Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
                         alert.showAndWait();
 

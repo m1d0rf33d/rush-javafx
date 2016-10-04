@@ -139,7 +139,7 @@ public class GivePointsController implements Initializable {
         try {
 
             Parent root = FXMLLoader.load(App.class.getResource(LOADING_FXML));
-            loadingStage.setScene(new Scene(root, 500,300));
+            loadingStage.setScene(new Scene(root, 300,100));
             loadingStage.initStyle(StageStyle.UNDECORATED);
             loadingStage.resizableProperty().setValue(Boolean.FALSE);
             loadingStage.show();

@@ -62,7 +62,7 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
 
     angular.element(document).ready(function () {
         $scope.update();
-        console.log($scope.memberProfile.id);
+
     });
 
     $scope.update=function(){
@@ -74,6 +74,21 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
                currentDate: data.currentDate
            }
        })
+        //Load logged in customer data
+        homeService.fetchCustomerData(function(resp) {
+            if (resp.data != undefined) {
+                $scope.memberProfile = {
+                    id: resp.data.id,
+                    name: resp.data.name,
+                    email: resp.data.email,
+                    mobile_no: resp.data.mobile_no,
+                    points: resp.data.points,
+                    birthdate: resp.data.birthdate,
+                    gender: resp.data.gender,
+                    registration_date: resp.data.registration_date
+                }
+            }
+        });
     }
 
     //VIEWS TRANSITION
@@ -117,6 +132,7 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     $scope.goToMemberLoginView = function() {
         if ($scope.memberProfile.id != undefined) {
             $state.go('member-profile-view');
+            $scope.update();
         } else {
             $state.go('member-login-view');
         }
@@ -142,7 +158,7 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
             $("#myModal").modal('show');
             return;
         }
-
+        $scope.update();
         homeService.loadRewards(function(resp){
             console.log(resp);
             $scope.items = resp.data;
@@ -183,7 +199,11 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
                     id: resp.data.id,
                     name: resp.data.name,
                     email: resp.data.email,
-                    mobile_no: resp.data.mobile_no
+                    mobile_no: resp.data.mobile_no,
+                    points: resp.data.points,
+                    birthdate: resp.data.birthdate,
+                    gender: resp.data.gender,
+                    registration_date: resp.data.registration_date
                 }
             }
         });
@@ -200,7 +220,8 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
 
     $scope.logoutMember = function() {
         $scope.memberProfile = {};
-        $scope.go('member-login-view');
+        homeService.logoutMember();
+        $state.go('member-login-view');
     }
     $scope.redeemRewards = function(rewardId) {
         var pin = angular.element("#"+rewardId+"_pin").val();
@@ -285,12 +306,22 @@ function redeemRewardsResponseHandler (jsonResponse) {
         $(".home-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
         $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Redeem item failed</strong> </div>');
     } else {
+        $("#points-span").text(resp.points);
         $(".home-modal-body").prepend('<div class="temp"><p> Redeem item successful</p></div>');
         $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>Redeem item successful</strong> </div>');
     }
     $("#myModal").modal('show');
 }
 
+function givePointsResponseHandler(jsonResponse) {
+    var resp = JSON.parse(jsonResponse);
+    if (resp.error_code == '0x0') {
+        $("#points").val('');
+        $("#or_no").val('');
+        $("#amount").val('');
+        $("#points-span").text(resp.points);
+    }
+}
 
 $(document).ready(function() {
     $('#myModal').on('hidden.bs.modal', function () {

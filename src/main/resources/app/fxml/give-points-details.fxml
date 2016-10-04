@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="40.0" layoutY="77.0" text="Name:">
          <font>
@@ -45,32 +45,32 @@
       </Button>
       <Label fx:id="nameLbl" layoutX="165.0" layoutY="76.0" prefHeight="21.0" prefWidth="221.0">
          <font>
-            <Font size="15.0" />
+            <Font name="System Bold" size="15.0" />
          </font>
       </Label>
       <Label fx:id="currentPointsLbl" layoutX="165.0" layoutY="160.0" prefHeight="21.0" prefWidth="221.0">
          <font>
-            <Font size="15.0" />
+            <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label  fx:id="mobileNumberLbl" layoutX="165.0" layoutY="115.0" prefHeight="21.0" prefWidth="221.0">
+      <Label fx:id="mobileNumberLbl" layoutX="165.0" layoutY="115.0" prefHeight="21.0" prefWidth="221.0">
          <font>
-            <Font size="15.0" />
+            <Font name="System Bold" size="15.0" />
          </font>
       </Label>
       <Label fx:id="convertedPointsLbl" layoutX="165.0" layoutY="236.0" prefHeight="21.0" prefWidth="221.0">
          <font>
-            <Font size="15.0" />
+            <Font name="System Bold" size="15.0" />
          </font>
       </Label>
       <Label fx:id="totalAmountLbl" layoutX="165.0" layoutY="198.0" prefHeight="21.0" prefWidth="221.0">
          <font>
-            <Font size="15.0" />
+            <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label  fx:id="orNumberLbl" layoutX="165.0" layoutY="275.0" prefHeight="21.0" prefWidth="221.0">
+      <Label fx:id="orNumberLbl" layoutX="165.0" layoutY="275.0" prefHeight="21.0" prefWidth="221.0">
          <font>
-            <Font size="15.0" />
+            <Font name="System Bold" size="15.0" />
          </font>
       </Label>
       <ImageView fx:id="rushLogoImageView" fitHeight="38.0" fitWidth="145.0" layoutX="178.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />

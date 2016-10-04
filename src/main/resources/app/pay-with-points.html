@@ -31,19 +31,19 @@
 <div class="row">
     <div class="col-sm-3">
         <label class="d-label">Date of Birth</label>
-        <span class="d-value"></span>
+        <span class="d-value">{{memberProfile.birthdate}}</span>
     </div>
     <div class="col-sm-3">
         <label class="d-label">Gender</label>
-        <span class="d-value"></span>
+        <span class="d-value">{{memberProfile.gender}}</span>
     </div>
     <div class="col-sm-3">
         <label class="d-label">Member Since</label>
-        <span class="d-value"></span>
+        <span class="d-value">{{memberProfile.registration_date}}</span>
     </div>
     <div class="col-sm-3">
         <label class="d-label">Available Points</label>
-        <span class="d-value"></span>
+        <span class="d-value" id="points-span">{{memberProfile.points}}</span>
     </div>
 </div>
 <br><br><br>
@@ -63,16 +63,6 @@
         </div>
     </div>
     <br>
-    <div class="row">
-        <div class="col-sm-6">
-            <label>Current Points</label>
-            <input type="text" class="w100" value="" disabled="">
-        </div>
-        <div class="col-sm-6">
-            <label>Amount to Pay in Cash</label>
-            <input type="text" class="w100" value="0" disabled="">
-        </div>
-    </div>
 </form>
 <div class="row">
     <div class="col-md-12 center">

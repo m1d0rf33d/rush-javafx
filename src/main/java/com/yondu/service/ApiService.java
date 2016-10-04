@@ -82,7 +82,7 @@ public class ApiService {
             if (method.equalsIgnoreCase("get")) {
                 HttpGet request = new HttpGet(url);
                 request.addHeader("content-type", "application/json");
-                request.addHeader("Authorization", "Bearer "+ App.appContextHolder.getAuthorizationToken());
+                request.addHeader("Authorization", "Bearer "+ token);
                 response = httpClient.execute(request);
             }
             // use httpClient (no need to close it explicitly)

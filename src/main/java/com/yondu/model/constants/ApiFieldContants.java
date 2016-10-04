@@ -26,6 +26,7 @@ public class ApiFieldContants {
 
     public static final String CUSTOMER_APP_RESOUCE_OWNER = "customer_app";
     public static final String MERCHANT_APP_RESOURCE_OWNER = "merchant_app";
+    public static final String REDEEM_ID = "redeem_id";
 
     public static final String ERROR_CODE = "error_code";
     public static final String DATA = "data";

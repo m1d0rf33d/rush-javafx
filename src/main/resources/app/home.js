@@ -66,9 +66,13 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     });
 
     $scope.update=function(){
+        homeService.loadCustomerRewards(function(resp){
+            console.log(resp);
+            $scope.items = resp.data;
+        });
         //Load logged in employee data
        homeService.loadEmployeeData(function(data) {
-           console.log(data);
+
            $scope.account = {
                name: data.name,
                currentDate: data.currentDate
@@ -179,7 +183,7 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
 
         homeService.loadCustomerRewards(function(resp){
             console.log(resp);
-            $scope.items = resp.data.reward;
+            $scope.items = resp.data;
         });
         $state.go('issue-rewards-view');
     }
@@ -237,7 +241,18 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     $scope.loadGivePointsView = function() {
        homeService.loadGivePointsView();
     }
+    $scope.payWithPointsReset = function() {
+        angular.element("#or_no").val('');
+        angular.element("#amount").val('');
+        angular.element("#points").val('');
+    }
 
+    $scope.issueReward = function(redeemId) {
+        var pin = angular.element("#"+redeemId+"_pin").val();
+        homeService.issueReward(redeemId);
+
+        angular.element("#"+redeemId+"_pin").val('');
+    }
 });
 homeModule.directive('backImg', function(){
     return function(scope, element, attrs){
@@ -311,6 +326,7 @@ function redeemRewardsResponseHandler (jsonResponse) {
         $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>Redeem item successful</strong> </div>');
     }
     $("#myModal").modal('show');
+    location.reload();
 }
 
 function givePointsResponseHandler(jsonResponse) {

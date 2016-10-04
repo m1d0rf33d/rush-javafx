@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.Tesseract1;
 import net.sourceforge.tess4j.TesseractException;
 import org.apache.http.NameValuePair;
@@ -114,7 +115,7 @@ public class LoadingController implements Initializable{
             Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
-            ITesseract tesseract = new Tesseract1();
+            ITesseract tesseract = new Tesseract();
             tesseract.setDatapath(TESSERACT_LOCATION);
             tesseract.setLanguage("eng");
             // Get OCR result
@@ -151,7 +152,7 @@ public class LoadingController implements Initializable{
             Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
-            ITesseract tesseract = new Tesseract1();
+            ITesseract tesseract = new Tesseract();
             tesseract.setDatapath(TESSERACT_LOCATION);
             tesseract.setLanguage("eng");
             // Get OCR result

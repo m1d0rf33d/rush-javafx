@@ -7,19 +7,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.*;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
-import net.sourceforge.tess4j.Tesseract1;
 import net.sourceforge.tess4j.TesseractException;
-import org.bytedeco.javacpp.BytePointer;
-import org.bytedeco.javacpp.lept;
-import org.bytedeco.javacpp.tesseract;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
@@ -27,8 +21,6 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 import static com.yondu.model.constants.AppConfigConstants.*;
-import static org.bytedeco.javacpp.lept.pixDestroy;
-import static org.bytedeco.javacpp.lept.pixRead;
 
 /**
  * Created by aomine on 9/30/16.
@@ -115,7 +107,7 @@ public class SettingsController implements Initializable{
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
             javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
             this.previewImage.setImage(image);
-            ITesseract tesseract = new Tesseract1();
+            ITesseract tesseract = new Tesseract();
             tesseract.setDatapath(TESSERACT_LOCATION);
             tesseract.setLanguage("eng");
             // Get OCR result
@@ -334,7 +326,7 @@ public class SettingsController implements Initializable{
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
             javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
             this.previewImage.setImage(image);
-            ITesseract tesseract = new Tesseract1();
+            ITesseract tesseract = new Tesseract();
             tesseract.setDatapath(TESSERACT_LOCATION);
             tesseract.setLanguage("eng");
             // Get OCR result

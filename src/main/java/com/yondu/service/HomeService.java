@@ -62,7 +62,6 @@ public class HomeService {
     private String redeemRewardsEndpoint;
     private String unclaimedRewardsEndpoint;
     private String claimRewardsEndpoint;
-    private String unclaimedRewardsEndpoint2;
 
     private Stage ocrConfigStage;
     private Stage givePointsStage;
@@ -247,17 +246,21 @@ public class HomeService {
                 String errorMessage = "";
                 JSONObject errors = (JSONObject) jsonObj.get("errors");
                 //Brace yourself fcked up API response model incoming LUL! askdjsakdjsalkdjlskajdl
-                if (errors.get("or_no") != null) {
-                    List<String> orList = (ArrayList) errors.get("or_no");
-                    errorMessage = orList.get(0);
-                }
-                if (errors.get("points") != null) {
-                    List<String> pointsList = (ArrayList) errors.get("points");
-                    errorMessage = pointsList.get(0);
-                }
-                if (errors.get("amount") != null) {
-                    List<String> amountList = (ArrayList) errors.get("amount");
-                    errorMessage = amountList.get(0);
+                if (errors != null) {
+                    if (errors.get("or_no") != null) {
+                        List<String> orList = (ArrayList) errors.get("or_no");
+                        errorMessage = orList.get(0);
+                    }
+                    if (errors.get("points") != null) {
+                        List<String> pointsList = (ArrayList) errors.get("points");
+                        errorMessage = pointsList.get(0);
+                    }
+                    if (errors.get("amount") != null) {
+                        List<String> amountList = (ArrayList) errors.get("amount");
+                        errorMessage = amountList.get(0);
+                    }
+                } else {
+                    errorMessage = (String) jsonObj.get("message");
                 }
                 Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
                 alert.showAndWait();
@@ -298,8 +301,8 @@ public class HomeService {
     public void loadRewards(final Object callbackfunction) {
 
 
-        String url = baseUrl + getRewardsEndpoint.replace(":id", App.appContextHolder.getCustomerUUID());
-        String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        String url = baseUrl + getRewardsEndpoint;
+        String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
 
         final String data = jsonResponse;
         new Thread( () -> {
@@ -341,62 +344,52 @@ public class HomeService {
     }
 
     public void loadCustomerRewards(final Object callbackfunction) {
-        //Get all rewards motherfck...
-        String rewardsUrl = baseUrl + getRewardsEndpoint.replace(":id", App.appContextHolder.getEmployeeId());
-        rewardsUrl = rewardsUrl.replace(":customer_id", App.appContextHolder.getCustomerUUID());
-        String allRewards = apiService.call(rewardsUrl, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+         String tempdata = "";
+        //Retrieve all rewards
+        String url = baseUrl + getRewardsEndpoint;
+        String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
         JSONParser parser = new JSONParser();
-        List<JSONObject> rewards = new ArrayList<>();
         try {
-            JSONObject json = (JSONObject) parser.parse(allRewards);
-            rewards = (ArrayList) json.get("data");
+            JSONObject rewardsJson = (JSONObject) parser.parse(jsonResponse);
+            List<JSONObject> rewardsDataList = (ArrayList) rewardsJson.get("data");
+            url = baseUrl + unclaimedRewardsEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
+            url = url.replace(":customer_id", App.appContextHolder.getCustomerUUID());
+            String responseStr = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        String url = baseUrl + unclaimedRewardsEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
-        url = url.replace(":customer_id", App.appContextHolder.getCustomerUUID());
-        String responseStr = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-        try {
-            JSONObject json = (JSONObject) parser.parse(responseStr);
-            List<JSONObject> data = (ArrayList) json.get("data");
-            if (!data.isEmpty()) {
-                for (int x = 0; x < data.size(); x++) {
-                    JSONObject rewardJson = (JSONObject) data.get(x).get("reward");
-                    String rewardId = (String) rewardJson.get("id");
-                    for (int y =0; y < rewards.size(); y++) {
-                        if (((String)rewards.get(y).get("id")).equals(rewardId)) {
-                            //inject needed details
-                            rewardJson.put("details", rewards.get(y).get("details"));
-                            rewardJson.put("image_url", rewards.get(y).get("image_url"));
-                            rewardJson.put("points_required", rewards.get(y).get("points_required"));
-                            break;
-                        }
+            JSONObject unclaimedJson = (JSONObject) parser.parse(responseStr);
+            List<JSONObject> unclaimedDataList = (ArrayList) unclaimedJson.get("data");
+            for (JSONObject unclaimedData : unclaimedDataList) {
+                JSONObject reward = (JSONObject) unclaimedData.get("reward");
+                String rewardName = (String) reward.get("name");
+                for (JSONObject rewardsData: rewardsDataList) {
+                    String rName = (String) rewardsData.get("name");
+                    if (rName.equals(rewardName)) {
+                        reward.put("details", (String) rewardsData.get("details"));
+                        reward.put("image_url", (String) rewardsData.get("image_url"));
+                        break;
                     }
                 }
             }
-            String completeResponse = json.toJSONString();
-
-            new Thread( () -> {
-                Java2JavascriptUtils.call(callbackfunction, completeResponse);
-            }).start();
+            tempdata = unclaimedJson.toJSONString();
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
+        final String finalData = tempdata;
+        new Thread( () -> {
+            Java2JavascriptUtils.call(callbackfunction, finalData);
+        }).start();
 
     }
 
 
-    public void issueRewards(String rewardId, String pin) {
+    public void issueReward(String redeemId) {
+
 
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin));
+        params.add(new BasicNameValuePair(ApiFieldContants.REDEEM_ID, redeemId));
         String url = baseUrl + claimRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerUUID());
         url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-        url = url.replace(":reward_id", rewardId);
         String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
         this.webEngine.executeScript("redeemRewardsResponseHandler('"+jsonResponse+"')");

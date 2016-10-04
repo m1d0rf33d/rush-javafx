@@ -11,13 +11,15 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
-import net.sourceforge.tess4j.Tesseract1;
 import net.sourceforge.tess4j.TesseractException;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -29,12 +31,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
-import java.util.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 import static com.yondu.model.constants.AppConfigConstants.*;
-import static org.bytedeco.javacpp.lept.pixDestroy;
-import static org.bytedeco.javacpp.lept.pixRead;
 
 /**
  * Created by erwin on 10/2/2016.
@@ -62,31 +63,86 @@ public class LoadingController implements Initializable{
         apiService = new ApiService();
         this.rushLogoImage.setImage(new Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
 
+        try {
+            Properties prop = new Properties();
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
+            prop.load(inputStream);
+            inputStream.close();
+            baseUrl = prop.getProperty("base_url");
+            pointsConversionEndpoint = prop.getProperty("points_conversion_endpoint");
+            memberLoginEndpoint = prop.getProperty("member_login_endpoint");
+            getPointsEndpoint = prop.getProperty("get_points_endpoint");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //Prepare data
-        MyService myService = new MyService();
-
-
+        SalesCaptureService myService = new SalesCaptureService();
         myService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
+                OrCaptureService orCaptureService = new OrCaptureService();
+                orCaptureService.setOnSucceeded((WorkerStateEvent a) ->{
+                    ConvertPointsService convertPointsService = new ConvertPointsService();
+                    convertPointsService.setOnSucceeded((WorkerStateEvent t) -> {
+                        CustomerInfoService customerInfoService = new CustomerInfoService();
+                        customerInfoService.setOnSucceeded((WorkerStateEvent e) -> {
+                            try{
+                                Stage stage = new Stage();
+                                FXMLLoader  loader  = new FXMLLoader(App.class.getResource(GIVE_POINTS_DETAILS_FXML));
+                                PointsDetailsController pointsDetailsController = new PointsDetailsController(orStr, totalAmountStr, convertedPoints, customer);
+                                loader.setController(pointsDetailsController);
+                                stage.setScene(new Scene(loader.load(), 500,400));
+                                stage.resizableProperty().setValue(Boolean.FALSE);
+                                stage.show();
 
-                try {
-                    Stage stage = new Stage();
-                    FXMLLoader  loader  = new FXMLLoader(App.class.getResource(GIVE_POINTS_DETAILS_FXML));
-                    PointsDetailsController pointsDetailsController = new PointsDetailsController(orStr, totalAmountStr, convertedPoints, customer);
-                    loader.setController(pointsDetailsController);
-                    stage.setScene(new Scene(loader.load(), 500,400));
-                    stage.resizableProperty().setValue(Boolean.FALSE);
-                    stage.show();
-
-                    ((Stage)rushLogoImage.getScene().getWindow()).close();
-                }catch (Exception e) {
-                    e.printStackTrace();
-                }
+                                ((Stage)rushLogoImage.getScene().getWindow()).close();
+                            }catch (Exception err){
+                                err.printStackTrace();
+                            }
+                        });
+                        customerInfoService.setOnFailed((WorkerStateEvent f) -> {
+                            handleError("Total sales captured value: '" + totalAmountStr + "' is not a valid number.");
+                        });
+                        customerInfoService.start();
+                    });
+                    convertPointsService.setOnFailed((WorkerStateEvent t) -> {
+                        handleError("Total sales captured value: '" + totalAmountStr + "' is not a valid number.");
+                    });
+                    convertPointsService.start();
+                });
+                orCaptureService.setOnFailed((WorkerStateEvent t) -> {
+                    handleError("Or failed");
+                });
+                orCaptureService.start();
             }
         });
+        myService.setOnFailed((WorkerStateEvent t) -> {
+            handleError("Sales failed");
+        });
+
         myService.start();
 
+    }
+
+    private void handleError(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION,message, ButtonType.OK);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.OK) {
+            alert.close();
+            Stage givePointsStage = new Stage();
+            Parent root = null;
+            try {
+                root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            givePointsStage.setScene(new Scene(root, 400,200));
+            givePointsStage.setTitle("Give Points");
+            givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+            givePointsStage.show();
+
+            ((Stage)rushLogoImage.getScene().getWindow()).close();
+        }
     }
 
 
@@ -120,8 +176,7 @@ public class LoadingController implements Initializable{
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = tesseract.doOCR(screenFullImage);
-            totalAmountStr  = outText;
-
+            totalAmountStr  = outText.trim();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -162,52 +217,73 @@ public class LoadingController implements Initializable{
             } catch (TesseractException e) {
                 e.printStackTrace();
             }
-            orStr  = outText;
+            orStr  = outText.trim();
 
         } catch (AWTException ex) {
             ex.printStackTrace();
         }
     }
-    public void convertPoints() {
+    public void convertPoints() throws ParseException {
         String url = baseUrl + pointsConversionEndpoint;
         String result = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
         JSONParser parser = new JSONParser();
-        try {
-            JSONObject jsonResponse = (JSONObject) parser.parse(result);
-            JSONObject data = (JSONObject) jsonResponse.get("data");
-            Long earningPeso = (Long) data.get("earning_peso");
-            Double totalAmount = Double.parseDouble(totalAmountStr);
-            Double points = totalAmount / earningPeso;
-            convertedPoints = String.valueOf(points);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        JSONObject jsonResponse = (JSONObject) parser.parse(result);
+        JSONObject data = (JSONObject) jsonResponse.get("data");
+        Long earningPeso = (Long) data.get("earning_peso");
+        Double totalAmount = Double.parseDouble(totalAmountStr);
+        Double points = totalAmount / earningPeso;
+        convertedPoints = String.valueOf(points);
     }
 
-    private class MyService extends Service<Void> {
+    private class SalesCaptureService extends Service<Void> {
 
         @Override
         protected Task<Void> createTask() {
             return new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                    try {
-                        Properties prop = new Properties();
-                        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
-                        prop.load(inputStream);
-                        inputStream.close();
-                        baseUrl = prop.getProperty("base_url");
-                        pointsConversionEndpoint = prop.getProperty("points_conversion_endpoint");
-                        memberLoginEndpoint = prop.getProperty("member_login_endpoint");
-                        getPointsEndpoint = prop.getProperty("get_points_endpoint");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
                     getTotalSales();
+                    return null;
+                }
+            };
+        }
+    }
+
+    private class OrCaptureService extends Service<Void> {
+
+        @Override
+        protected Task<Void> createTask() {
+            return new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
                     getOrNumber();
+                    return null;
+                }
+            };
+        }
+    }
+
+    private class ConvertPointsService extends Service<Void> {
+
+        @Override
+        protected Task<Void> createTask() {
+            return new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
                     convertPoints();
+                    return null;
+                }
+            };
+        }
+    }
+
+    private class CustomerInfoService extends Service<Void> {
+
+        @Override
+        protected Task<Void> createTask() {
+            return new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
                     getCustomerInformation();
                     return null;
                 }
@@ -234,7 +310,13 @@ public class LoadingController implements Initializable{
             responseStr = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
             jsonResponse = (JSONObject) parser.parse(responseStr);
-            Double points = (Double) jsonResponse.get("data");
+            Double points = null;
+            try {
+                points = (Double) jsonResponse.get("data");
+            }catch (Exception e) {
+                points = Double.parseDouble(String.valueOf((Long) jsonResponse.get("data")));
+            }
+
             customer.setCurrentPoints(points);
         } catch (ParseException e) {
             e.printStackTrace();

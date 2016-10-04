@@ -5,6 +5,7 @@ alert("__CONNECT__BACKEND__loginService");
 var loginModule = angular.module('LoginModule',[]);
 
 loginModule.controller('LoginController', function($scope){
+    $scope.employeeId = '';
     $scope.branches = [];
     angular.element(document).ready(function () {
         $scope.update();
@@ -18,6 +19,12 @@ loginModule.controller('LoginController', function($scope){
             $scope.$apply();
         });
     }
+    $scope.clearLoginField = function() {
+        $scope.employeeId = '';
+    }
+    $scope.addNumber = function(num) {
+        $scope.employeeId = $scope.employeeId + num;
+    }
 });
 
 //Functions that are outside the angular context and will be executed by our java backend service
@@ -26,8 +33,8 @@ function loginResponseHandler(jsonResponse) {
 
     if (resp.error_code != '0x0') {
         $(".temp").remove();
-        $(".login-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
-        $(".login-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Unable to give points</strong> </div>');
+        $(".login-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
+        $(".login-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Login Failed</strong> </div>');
         $("#loginModal").modal('show');
     } else {
         location.href = "home.html";

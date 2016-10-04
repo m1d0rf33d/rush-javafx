@@ -62,6 +62,7 @@ public class HomeService {
     private String redeemRewardsEndpoint;
     private String unclaimedRewardsEndpoint;
     private String claimRewardsEndpoint;
+    private String getRewardsMerchantEndpoint;
 
     private Stage ocrConfigStage;
     private Stage givePointsStage;
@@ -87,6 +88,7 @@ public class HomeService {
             this.redeemRewardsEndpoint = prop.getProperty("redeem_rewards_endpoint");
             this.unclaimedRewardsEndpoint = prop.getProperty("unclaimed_rewards_endpoint");
             this.claimRewardsEndpoint = prop.getProperty("claim_rewards_endpoint");
+            this.getRewardsMerchantEndpoint =prop.getProperty("get_rewards_merchant_endpoint");
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -301,8 +303,8 @@ public class HomeService {
     public void loadRewards(final Object callbackfunction) {
 
 
-        String url = baseUrl + getRewardsEndpoint;
-        String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+        String url = baseUrl + getRewardsMerchantEndpoint;
+        String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
         final String data = jsonResponse;
         new Thread( () -> {
@@ -392,7 +394,7 @@ public class HomeService {
         url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
         String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
-        this.webEngine.executeScript("redeemRewardsResponseHandler('"+jsonResponse+"')");
+        this.webEngine.executeScript("issueRewardsResponseHandler('"+jsonResponse+"')");
     }
 
     public void loadSettingsView() {

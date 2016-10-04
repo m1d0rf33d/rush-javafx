@@ -6,13 +6,13 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.SplashController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.SplashController">
    <children>
       <Label fx:id="progressStatus" layoutX="54.0" layoutY="179.0" prefHeight="20.0" prefWidth="502.0" textFill="#171717">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <ImageView fx:id="rushLogoImage" fitHeight="56.0" fitWidth="193.0" layoutX="54.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="rushLogoImage" fitHeight="56.0" fitWidth="193.0" layoutX="104.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </Pane>

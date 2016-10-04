@@ -58,7 +58,7 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     $scope.totalSales = 0;
 
     $scope.items = [];
-
+    $scope.allRewards = [];
 
     angular.element(document).ready(function () {
         $scope.update();
@@ -66,10 +66,6 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     });
 
     $scope.update=function(){
-        homeService.loadCustomerRewards(function(resp){
-            console.log(resp);
-            $scope.items = resp.data;
-        });
         //Load logged in employee data
        homeService.loadEmployeeData(function(data) {
 
@@ -91,6 +87,10 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
                     gender: resp.data.gender,
                     registration_date: resp.data.registration_date
                 }
+
+                homeService.loadCustomerRewards(function(resp){
+                    $scope.items = resp.data;
+                });
             }
         });
     }
@@ -164,8 +164,7 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
         }
         $scope.update();
         homeService.loadRewards(function(resp){
-            console.log(resp);
-            $scope.items = resp.data;
+            $scope.allRewards = resp.data;
         });
 
         $state.go('voucher-redemption-view');
@@ -181,10 +180,10 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
             return;
         }
 
-        homeService.loadCustomerRewards(function(resp){
+      /*  homeService.loadCustomerRewards(function(resp){
             console.log(resp);
             $scope.items = resp.data;
-        });
+        });*/
         $state.go('issue-rewards-view');
     }
     // END OF VIEWS
@@ -253,6 +252,12 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
 
         angular.element("#"+redeemId+"_pin").val('');
     }
+    $scope.clearLoginField = function() {
+        $scope.employeeId = '';
+    }
+    $scope.addNumber = function(num) {
+        $scope.employeeId = $scope.employeeId + num;
+    }
 });
 homeModule.directive('backImg', function(){
     return function(scope, element, attrs){
@@ -313,7 +318,7 @@ function payPointsResponseHandler(jsonResponse) {
     }
 }
 
-function redeemRewardsResponseHandler (jsonResponse) {
+function issueRewardsResponseHandler (jsonResponse) {
     $(".modal").modal('hide');
     $(".temp").remove();
     var resp = JSON.parse(jsonResponse);
@@ -327,6 +332,21 @@ function redeemRewardsResponseHandler (jsonResponse) {
     }
     $("#myModal").modal('show');
     location.reload();
+}
+
+function redeemRewardsResponseHandler (jsonResponse) {
+    $(".modal").modal('hide');
+    $(".temp").remove();
+    var resp = JSON.parse(jsonResponse);
+    if (resp.error_code != '0x0') {
+        $(".home-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
+        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Redeem item failed</strong> </div>');
+    } else {
+        $("#points-span").text(resp.points);
+        $(".home-modal-body").prepend('<div class="temp"><p> Redeem item successful</p></div>');
+        $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>Redeem item successful</strong> </div>');
+    }
+    $("#myModal").modal('show');
 }
 
 function givePointsResponseHandler(jsonResponse) {

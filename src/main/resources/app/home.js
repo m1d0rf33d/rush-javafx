@@ -54,7 +54,9 @@ function DataReloadWithPromiseCtrl($scope, DTOptionsBuilder, DTColumnBuilder, $q
 
     vm.dtOptions = DTOptionsBuilder.fromFnPromise(getTableData).withPaginationType('full_numbers');
     vm.dtColumns = [
-        DTColumnBuilder.newColumn('reward_name').withTitle('Reward'),
+        DTColumnBuilder.newColumn('name').withTitle('Reward'),
+        DTColumnBuilder.newColumn('details').withTitle('Details'),
+        DTColumnBuilder.newColumn('date').withTitle('Redemption Date')
     ];
     vm.dtInstance = {};
     vm.dtInstanceCallback = function(_dtInstance) {
@@ -64,7 +66,6 @@ function DataReloadWithPromiseCtrl($scope, DTOptionsBuilder, DTColumnBuilder, $q
     homeService.getCustomerRewards(function(resp){
         $scope.customerRewards = resp;
     })
-  
 }
 
 homeModule.controller('HomeController', function($scope, $state){

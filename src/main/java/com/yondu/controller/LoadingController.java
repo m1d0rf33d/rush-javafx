@@ -125,7 +125,7 @@ public class LoadingController implements Initializable{
     }
 
     private void handleError(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION,message, ButtonType.OK);
+        Alert alert = new Alert(Alert.AlertType.ERROR,message, ButtonType.OK);
         alert.showAndWait();
         if (alert.getResult() == ButtonType.OK) {
             alert.close();

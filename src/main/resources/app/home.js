@@ -180,10 +180,10 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
             return;
         }
 
-      /*  homeService.loadCustomerRewards(function(resp){
+        homeService.loadCustomerRewards(function(resp){
             console.log(resp);
             $scope.items = resp.data;
-        });*/
+        });
         $state.go('issue-rewards-view');
     }
     // END OF VIEWS

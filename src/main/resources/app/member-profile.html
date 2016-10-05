@@ -95,47 +95,10 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <table class="table table-stripped active-table">
-                <thead>
-                <tr>
-                    <th>Reward Name</th>
-                    <th>Description</th>
-                    <th>Points Cost</th>
-                    <th>Date Redeemed</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Free Manicure 1</td>
-                    <td>Description Here</td>
-                    <td>25</td>
-                    <td>06/12/2016</td>
-                </tr>
-                <tr>
-                    <td>Free Manicure 2</td>
-                    <td>Description Here</td>
-                    <td>25</td>
-                    <td>06/12/2016</td>
-                </tr>
-                <tr>
-                    <td>Free Manicure 3</td>
-                    <td>Description Here</td>
-                    <td>25</td>
-                    <td>06/12/2016</td>
-                </tr>
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td colspan="4" align="right">
-                        <input type="button" value="FIRST" class="table-btn" disabled="">
-                        <input type="button" value="PREVIOUS" class="table-btn" disabled="">
-                        <input type="text" readonly="" value="1/1" class="page-indicator">
-                        <input type="button" value="NEXT" class="table-btn">
-                        <input type="button" value="LAST" class="table-btn">
-                    </td>
-                </tr>
-                </tfoot>
-            </table>
+           <div ng-controller="DataReloadWithPromiseCtrl as showCase">
+                <br>
+               <table datatable dt-options="showCase.dtOptions" dt-columns="showCase.dtColumns" dt-instance="showCase.dtInstanceCallback" class="row-border hover"></table>
+            </div>
         </div>
     </div>
 </div>

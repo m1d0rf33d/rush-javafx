@@ -8,6 +8,7 @@
 		"jquery": "",
 		"angular-ui-router": "",
 		"angular-bootstrap": "",
-		"angular-modal-service": ""
+		"angular-modal-service": "",
+		"angular-datatables": ""
 	}
 }

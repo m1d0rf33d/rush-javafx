@@ -94,6 +94,7 @@
 <script>
     $("#number-pad-wrapper button").mouseup(function(){
         $(this).blur();
-    })
+    });
+    document.oncontextmenu = document.body.oncontextmenu = function() {return false;}
 </script>
 </body></html>

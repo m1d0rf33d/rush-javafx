@@ -2,6 +2,7 @@ package com.yondu.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.yondu.App;
 import com.yondu.AppContextHolder;
 import com.yondu.Browser;
@@ -63,6 +64,7 @@ public class HomeService {
     private String unclaimedRewardsEndpoint;
     private String claimRewardsEndpoint;
     private String getRewardsMerchantEndpoint;
+    private String customerRewardsEndpoint;
 
     private Stage ocrConfigStage;
     private Stage givePointsStage;
@@ -89,6 +91,7 @@ public class HomeService {
             this.unclaimedRewardsEndpoint = prop.getProperty("unclaimed_rewards_endpoint");
             this.claimRewardsEndpoint = prop.getProperty("claim_rewards_endpoint");
             this.getRewardsMerchantEndpoint =prop.getProperty("get_rewards_merchant_endpoint");
+            this.customerRewardsEndpoint = prop.getProperty("customer_rewards_endpoint");
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -481,6 +484,25 @@ public class HomeService {
             }).start();
         }
 
+    }
+
+    public void getCustomerRewards(Object callbackfunction) {
+        List params = new ArrayList<>();
+        String url = baseUrl + customerRewardsEndpoint.replace(":id",App.appContextHolder.getCustomerUUID());
+        String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+        JSONParser parser = new JSONParser();
+        try {
+            JSONObject jsonObject = (JSONObject) parser.parse(responseStr);
+            List<JSONObject> data = (ArrayList) jsonObject.get("data");
+            responseStr = new Gson().toJson(data);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        final String dataStr = responseStr;
+        new Thread( () -> {
+            Java2JavascriptUtils.call(callbackfunction, dataStr);
+        }).start();
     }
 
     public void logoutMember() {

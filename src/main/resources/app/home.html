@@ -5,10 +5,15 @@
     <title>Rush - Register User</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
-
+    <link rel="stylesheet" href="css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="css/angular-datatables.min.css">
+    <script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>
     <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.dataTables.min.js"></script>
     <script src="js/bootstrap.js"></script>
     <script src="js/angular.min.js"></script>
+    <script src="js/angular-datatables.min.js"></script>
+    <script src="js/angular-datatables.columnfilter.min.js"></script>
     <script src="js/angular-ui-router.min.js"></script>
     <script src="js/ui-bootstrap.min.js"></script>
     <script src="home.js"></script>
@@ -146,7 +151,9 @@
 <script>
     $("#number-pad-wrapper button").mouseup(function(){
         $(this).blur();
-    })
+    });
+
+    document.oncontextmenu = document.body.oncontextmenu = function() {return false;}
 </script>
-<!--<script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>-->
+
 </body></html>

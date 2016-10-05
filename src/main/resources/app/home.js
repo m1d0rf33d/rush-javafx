@@ -2,7 +2,7 @@
 alert("__CONNECT__BACKEND__homeService");
 
 
-var homeModule = angular.module('HomeModule', ['ui.router'])
+var homeModule = angular.module('HomeModule', ['ui.router','datatables','datatables.columnfilter'])
 .config(function($stateProvider) {
 
     $stateProvider
@@ -41,7 +41,33 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
 
 
 })
-.controller('HomeController', function($scope, $state){
+.controller('DataReloadWithPromiseCtrl', DataReloadWithPromiseCtrl);
+function DataReloadWithPromiseCtrl($scope, DTOptionsBuilder, DTColumnBuilder, $q) {
+    var vm = this;
+    $scope.customerRewards = [];
+    var getTableData = function() {
+        console.log($scope.customerRewards.length);
+        var deferred = $q.defer();
+        deferred.resolve($scope.customerRewards);
+        return deferred.promise;
+    };
+
+    vm.dtOptions = DTOptionsBuilder.fromFnPromise(getTableData).withPaginationType('full_numbers');
+    vm.dtColumns = [
+        DTColumnBuilder.newColumn('reward_name').withTitle('Reward'),
+    ];
+    vm.dtInstance = {};
+    vm.dtInstanceCallback = function(_dtInstance) {
+        vm.dtInstance = _dtInstance;
+        vm.dtInstance.reloadData(); //or something else....
+    }
+    homeService.getCustomerRewards(function(resp){
+        $scope.customerRewards = resp;
+    })
+  
+}
+
+homeModule.controller('HomeController', function($scope, $state){
     //Logged in employee data
     $scope.account = {};
     //Selected member data
@@ -59,7 +85,6 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
 
     $scope.items = [];
     $scope.allRewards = [];
-
     angular.element(document).ready(function () {
         $scope.update();
 
@@ -135,11 +160,16 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
 
     $scope.goToMemberLoginView = function() {
         if ($scope.memberProfile.id != undefined) {
-            $state.go('member-profile-view');
-            $scope.update();
+           $scope.goToMemberProfileView();
+
         } else {
             $state.go('member-login-view');
         }
+    }
+
+    $scope.goToMemberProfileView  = function() {
+        $state.go('member-profile-view');
+        $scope.update();
     }
 
     $scope.goToPayWithPointsView = function() {
@@ -258,6 +288,8 @@ var homeModule = angular.module('HomeModule', ['ui.router'])
     $scope.addNumber = function(num) {
         $scope.employeeId = $scope.employeeId + num;
     }
+
+
 });
 homeModule.directive('backImg', function(){
     return function(scope, element, attrs){

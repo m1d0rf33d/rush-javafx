@@ -54,9 +54,9 @@ function DataReloadWithPromiseCtrl($scope, DTOptionsBuilder, DTColumnBuilder, $q
 
     vm.dtOptions = DTOptionsBuilder.fromFnPromise(getTableData).withPaginationType('full_numbers');
     vm.dtColumns = [
-        DTColumnBuilder.newColumn('name').withTitle('Reward'),
-        DTColumnBuilder.newColumn('details').withTitle('Details'),
-        DTColumnBuilder.newColumn('date').withTitle('Redemption Date')
+        DTColumnBuilder.newColumn('name').withTitle('Reward').notSortable(),
+        DTColumnBuilder.newColumn('details').withTitle('Details').notSortable(),
+        DTColumnBuilder.newColumn('date').withTitle('Redemption Date').notSortable()
     ];
     vm.dtInstance = {};
     vm.dtInstanceCallback = function(_dtInstance) {

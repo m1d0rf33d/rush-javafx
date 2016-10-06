@@ -1,23 +1,24 @@
 angular.module('HomeModule')
-.controller('MemberLoginCtrl', function($scope, $state) {
+.controller('MemberLoginCtrl', function($scope, $state, $timeout) {
+
     $scope.loginMember = function() {
-        $scope.message = 'Searching customer information';
-        $scope.memberProfile = {};
-
-        var mobileNumber = angular.element("#mobile_no").val();
-        $state.go('member-profile-view', {mobileNumber: mobileNumber});
+        angular.element("#home-loading-modal").modal('show');
+        $timeout(function(){
+            var mobileNumber = angular.element('#mobile_no').val();
+            if(mobileNumber == '') {
+                mobileNumber = 'a';
+            }
+            $state.go('member-profile-view', {mobileNumber: mobileNumber});
+        }, 1000);
     }
-
 })
-.controller('MemberProfileCtrl', function($scope, $stateParams, DTOptionsBuilder, DTColumnBuilder, $q) {
+.controller('MemberProfileCtrl', function($scope, $stateParams, DTOptionsBuilder, DTColumnBuilder, $q, $rootScope) {
+
     var vm = this;
-    $scope.member = {
-        activeVouchers: []
-    }
+    $scope.activeVouchers = [];
     var getTableData = function() {
-        console.log($scope.member.activeVouchers);
         var deferred = $q.defer();
-        deferred.resolve($scope.member.activeVouchers);
+        deferred.resolve($scope.activeVouchers);
         return deferred.promise;
     };
 
@@ -32,22 +33,44 @@ angular.module('HomeModule')
         vm.dtInstance = _dtInstance;
         vm.dtInstance.reloadData(); //or something else....
     }
-
-    homeService.loginMember($stateParams.mobileNumber, function(resp) {
-        if (resp.message != undefined) {
-            $scope.message = 'Customer not found';
-        } else {
-            $scope.member = {
-                id: resp.data.id,
-                name: resp.data.name,
-                email: resp.data.email,
-                mobile_no: resp.data.mobile_no,
-                points: resp.data.points,
-                birthdate: resp.data.birthdate,
-                gender: resp.data.gender,
-                registration_date: resp.data.registration_date,
-                activeVouchers: JSON.parse(resp.data.activeVouchers)
+    if ($stateParams.mobileNumber === null) {
+        homeService.fetchCustomerData(function(resp) {
+            if (resp.message != undefined) {
+                $scope.message = 'Customer not found';
+            } else {
+                $scope.member = {
+                    id: resp.data.id,
+                    name:  resp.data.name,
+                    email:  resp.data.email,
+                    mobile_no:  resp.data.mobile_no,
+                    points:  resp.data.points,
+                    birthdate:  resp.data.birthdate,
+                    gender: resp.data.gender,
+                    registration_date:  resp.data.registration_date
+                }
+                $scope.activeVouchers = JSON.parse(resp.data.activeVouchers);
+                $rootScope.memberId = resp.data.id;
             }
-        }
-    });
-})
+        });
+    } else {
+        homeService.loginMember($stateParams.mobileNumber, function(resp) {
+            if (resp.message != undefined) {
+                $scope.message = 'Customer not found';
+            } else {
+                $scope.member = {
+                    id: resp.data.id,
+                    name:  resp.data.name,
+                    email:  resp.data.email,
+                    mobile_no:  resp.data.mobile_no,
+                    points:  resp.data.points,
+                    birthdate:  resp.data.birthdate,
+                    gender: resp.data.gender,
+                    registration_date:  resp.data.registration_date
+                }
+                $scope.activeVouchers = JSON.parse(resp.data.activeVouchers);
+                $rootScope.memberId = resp.data.id;
+            }
+        });
+    }
+});
+

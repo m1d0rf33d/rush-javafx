@@ -3,6 +3,9 @@ alert("__CONNECT__BACKEND__homeService");
 
 
 var homeModule = angular.module('HomeModule', ['ui.router','datatables','datatables.columnfilter'])
+    .run(function($rootScope){
+        $rootScope.memberId = undefined;
+    })
 .config(function($stateProvider) {
 
     $stateProvider
@@ -43,42 +46,9 @@ var homeModule = angular.module('HomeModule', ['ui.router','datatables','datatab
 
 
 })
-.controller('DataReloadWithPromiseCtrl', DataReloadWithPromiseCtrl);
-function DataReloadWithPromiseCtrl($scope, DTOptionsBuilder, DTColumnBuilder, $q) {
-    var vm = this;
-    $scope.customerRewards = [];
-    var getTableData = function() {
-        console.log($scope.customerRewards.length);
-        var deferred = $q.defer();
-        deferred.resolve($scope.customerRewards);
-        return deferred.promise;
-    };
-
-    vm.dtOptions = DTOptionsBuilder.fromFnPromise(getTableData).withPaginationType('full_numbers');
-    vm.dtColumns = [
-        DTColumnBuilder.newColumn('name').withTitle('Reward').notSortable(),
-        DTColumnBuilder.newColumn('details').withTitle('Details').notSortable(),
-        DTColumnBuilder.newColumn('date').withTitle('Redemption Date').notSortable()
-    ];
-    vm.dtInstance = {};
-    vm.dtInstanceCallback = function(_dtInstance) {
-        vm.dtInstance = _dtInstance;
-        vm.dtInstance.reloadData(); //or something else....
-    }
-    homeService.getCustomerRewards(function(resp){
-        $scope.customerRewards = resp;
-    })
-}
-
-homeModule.controller('HomeController', function($scope, $state){
+homeModule.controller('HomeController', function($scope, $state, $rootScope, $timeout){
     //Logged in employee data
     $scope.account = {};
-    //Selected member data
-    $scope.memberProfile = {};
-
-    //Prompt messages
-    $scope.showModal = true;
-    $scope.modalMessage = "";
 
     //Merchant points conversion
     $scope.pointsRule = {};
@@ -88,6 +58,7 @@ homeModule.controller('HomeController', function($scope, $state){
 
     $scope.items = [];
     $scope.allRewards = [];
+
     angular.element(document).ready(function () {
         $scope.update();
 
@@ -102,110 +73,58 @@ homeModule.controller('HomeController', function($scope, $state){
                currentDate: data.currentDate
            }
        })
-        //Load logged in customer data
-        homeService.fetchCustomerData(function(resp) {
-            if (resp.data != undefined) {
-                $scope.memberProfile = {
-                    id: resp.data.id,
-                    name: resp.data.name,
-                    email: resp.data.email,
-                    mobile_no: resp.data.mobile_no,
-                    points: resp.data.points,
-                    birthdate: resp.data.birthdate,
-                    gender: resp.data.gender,
-                    registration_date: resp.data.registration_date
-                }
-
-                homeService.loadCustomerRewards(function(resp){
-                    $scope.items = resp.data;
-                });
-            }
-        });
     }
 
-    //VIEWS TRANSITION
+   //State transition bindings because a href binding is not working wtf..
     $scope.goToOcrVIew = function() {
         $state.go('ocr-view');
     }
     $scope.goToRegisterView = function() {
         $state.go('register-view');
     }
-
-    $scope.goToGivePointsView = function() {
-
-        if ($scope.memberProfile.id == undefined) {
-            $(".alert").remove();
-            $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
-            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Unable to give points</strong> </div>');
-            $("#myModal").modal('show');
-            return;
-        }
-
-        //Load merchant points conversion rules
-        homeService.loadPointsRule(function(resp) {
-            if (resp.message != undefined) {
-                $(".alert").remove();
-                $(".home-modal-body").prepend('<div class="temp"><p>Unable to retrieve point conversion</p></div>');
-                $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Something went wrong</strong> </div>');
-                $("#mymodal").modal('show');
-            } else {
-                $scope.pointsRule = {
-                    redemption_points: resp.data.redemption_points,
-                    redemption_peso: resp.data.redemption_peso,
-                    earning_points: resp.data.earning_points,
-                    earning_peso: resp.data.earning_peso
-                }
-            }
-
-        })
-        $state.go('give-points-view');
-    }
-
     $scope.goToMemberLoginView = function() {
-        if ($scope.memberProfile.id != undefined) {
-           $scope.goToMemberProfileView();
 
+        if ($rootScope.memberId != undefined) {
+            angular.element("#home-loading-modal").modal('show');
+            $timeout(function(){
+                $scope.goToMemberProfileView();
+            }, 1000);
         } else {
             $state.go('member-login-view');
         }
     }
-
     $scope.goToMemberProfileView  = function() {
         $state.go('member-profile-view');
-        $scope.update();
     }
 
     $scope.goToPayWithPointsView = function() {
-        if ($scope.memberProfile.id == undefined) {
+        if ($rootScope.memberId == undefined) {
             $(".alert").remove();
             $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
             $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Unable to give points</strong> </div>');
             $("#myModal").modal('show');
             return;
         }
-
         $state.go('pay-points-view');
     }
 
     $scope.goToVoucherRedemptionView = function() {
-        if ($scope.memberProfile.id == undefined) {
+        if ($rootScope.memberId == undefined) {
             $(".alert").remove();
             $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
             $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Not allowed</strong> </div>');
             $("#myModal").modal('show');
             return;
         }
-        $scope.update();
-        homeService.loadRewards(function(resp){
-            $scope.allRewards = resp.data;
-        });
-
-        $state.go('voucher-redemption-view');
+        angular.element("#home-loading-modal").modal('show');
+        $timeout(function(){
+            $state.go('voucher-redemption-view');
+        }, 1000);
     }
 
     $scope.goToIssueRewardsView = function() {
 
-        if ($scope.memberProfile.id == undefined) {
+        if ($rootScope.memberId == undefined) {
             $(".alert").remove();
             $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
             $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Not allowed</strong> </div>');
@@ -393,6 +312,12 @@ function givePointsResponseHandler(jsonResponse) {
         $("#points-span").text(resp.points);
     }
 }
+
+function closeLoadingModal() {
+    console.log('closss');
+    $("#home-loading-modal").modal('hide');
+}
+
 
 $(document).ready(function() {
     $('#myModal').on('hidden.bs.modal', function () {

@@ -1,97 +1,99 @@
-<div class="row">
-    <div class="col-sm-12">
-        <h4 class="content-title">REDEEM REWARDS <img src="voucher-redemption_files/sample_user.png" class="profile-picture-thumb pull-right" alt=""></h4>
-        <hr>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-12">
-        <h5 class="sub-title">BASIC INFORMATION</h5>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-3">
-        <label class="d-label">Member ID</label>
-        <span class="d-value">{{memberProfile.id}}</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Name</label>
-        <span class="d-value">{{memberProfile.name}}</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Mobile Number</label>
-        <span class="d-value">{{memberProfile.mobile_no}}</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Email</label>
-        <span class="d-value">{{memberProfile.email}}</span>
-    </div>
-</div>
-<br>
-<div class="row">
-    <div class="col-sm-3">
-        <label class="d-label">Date of Birth</label>
-        <span class="d-value">{{memberProfile.birthdate}}</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Gender</label>
-        <span class="d-value">{{memberProfile.gender}}</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Member Since</label>
-        <span class="d-value">{{memberProfile.registration_date}}</span>
-    </div>
-    <div class="col-sm-3">
-        <label class="d-label">Available Points</label>
-        <span class="d-value" id="points-span">{{memberProfile.points}}</span>
-    </div>
-</div>
-<br><br><br>
-<div class="row">
-    <div class="col-sm-4" ng-repeat="item in allRewards" >
-        <div class="item"  data-toggle="modal" data-target="#{{item.id}}">
-            <figure>
-                <img ng-src="{{item.image_url}}"/>
-            </figure>
-            <figcaption>
-                {{item.details}}
-                <span class="red-text clearfix">{{item.points_required}} Points</span>
-            </figcaption>
+<div ng-controller="RedeemRewardsCtrl">
+    <div class="row">
+        <div class="col-sm-12">
+            <h4 class="content-title">REDEEM REWARDS <img src="voucher-redemption_files/sample_user.png" class="profile-picture-thumb pull-right" alt=""></h4>
+            <hr>
         </div>
-        <!-- MODAL -->
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <h5 class="sub-title">BASIC INFORMATION</h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="d-label">Member ID</label>
+            <span class="d-value">{{member.id}}</span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Name</label>
+            <span class="d-value">{{member.name}}</span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Mobile Number</label>
+            <span class="d-value">{{member.mobile_no}}</span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Email</label>
+            <span class="d-value">{{member.email}}</span>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="d-label">Date of Birth</label>
+            <span class="d-value">{{member.birthdate}}</span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Gender</label>
+            <span class="d-value">{{member.gender}}</span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Member Since</label>
+            <span class="d-value">{{member.registration_date}}</span>
+        </div>
+        <div class="col-sm-3">
+            <label class="d-label">Available Points</label>
+            <span class="d-value" id="points-span">{{member.points}}</span>
+        </div>
+    </div>
+    <br><br><br>
+    <div class="row">
+        <div class="col-sm-4" ng-repeat="item in merchantRewards" >
+            <div class="item"  data-toggle="modal" data-target="#{{item.id}}">
+                <figure>
+                    <img ng-src="{{item.image_url}}"/>
+                </figure>
+                <figcaption>
+                    {{item.details}}
+                    <span class="red-text clearfix">{{item.points_required}} Points</span>
+                </figcaption>
+            </div>
+            <!-- MODAL -->
 
-        <div class="modal fade" id="{{item.id}}" tabindex="-1" role="dialog" aria-labelledby="myModal2">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content row">
-                    <div class="col-md-5 col-sm-5 modal-image" back-img="{{item.image_url}}">
+            <div class="modal fade" id="{{item.id}}" tabindex="-1" role="dialog" aria-labelledby="myModal2">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content row">
+                        <div class="col-md-5 col-sm-5 modal-image" back-img="{{item.image_url}}">
 
-                    </div>
-                    <div class="col-md-7  col-sm-7 details">
-                        <h3 class="modal-header-h3">{{item.name}}</h3>
-                        <h4 class="modal-header-h4 red-text">{{item.points_required}} Points</h4>
-                        <p>{{item.details}}</p>
-                        <div class="modal-buttons">
-                            <button data-target="#{{item.id}}_pin_modal" data-toggle="modal" type="button" class="btn btn-default orange-btn btn-lg">Redeem Voucher</button>
                         </div>
+                        <div class="col-md-7  col-sm-7 details">
+                            <h3 class="modal-header-h3">{{item.name}}</h3>
+                            <h4 class="modal-header-h4 red-text">{{item.points_required}} Points</h4>
+                            <p>{{item.details}}</p>
+                            <div class="modal-buttons">
+                                <button data-target="#{{item.id}}_pin_modal" data-toggle="modal" type="button" class="btn btn-default orange-btn btn-lg">Redeem Voucher</button>
+                            </div>
+                        </div>
+                        <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="redemption_files/close.png" alt=""></a>
                     </div>
-                    <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="redemption_files/close.png" alt=""></a>
                 </div>
             </div>
-        </div>
 
-        <div class="modal fade" id="{{item.id}}_pin_modal" tabindex="-2" role="dialog" aria-labelledby="myModal2">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content row" style="background: white;text-align: center;padding: 20px;">
-                    <h1>Enter 4-Digit M-Pin</h1>
-                    <input type="password" class="w80" id="{{item.id}}_pin">
-                    <div class="modal-buttons">
-                        <button ng-click="redeemRewards(item.id)" type="button" class="btn btn-default orange-btn btn-lg">Proceed</button>
+            <div class="modal fade" id="{{item.id}}_pin_modal" tabindex="-2" role="dialog" aria-labelledby="myModal2">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content row" style="background: white;text-align: center;padding: 20px;">
+                        <h1>Enter 4-Digit M-Pin</h1>
+                        <input type="password" class="w80" id="{{item.id}}_pin">
+                        <div class="modal-buttons">
+                            <button ng-click="redeemRewards(item.id)" type="button" class="btn btn-default orange-btn btn-lg">Proceed</button>
+                        </div>
+                        <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="images/close.png" alt=""></a>
                     </div>
-                    <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="images/close.png" alt=""></a>
                 </div>
             </div>
-        </div>
 
-        <!-- END MODAL -->
+            <!-- END MODAL -->
+        </div>
     </div>
 </div>

@@ -194,9 +194,8 @@ public class HomeService {
                 responseStr = new Gson().toJson(d);
                 data.put("activeVouchers", responseStr);
                 result = jsonObject.toJSONString();
-
             }
-
+            webEngine.executeScript("closeLoadingModal()");
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -234,76 +233,17 @@ public class HomeService {
     /** Pay using points
      *
      */
-    public void payWithPoints() {
-        //Read html form values
-        HTMLInputElement pointsField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.POINTS);
-        HTMLInputElement orNumberField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.OR_NUMBER);
-        HTMLInputElement amountField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.AMOUNT);
-
-        //Build request body
+    public void payWithPoints(String points, String orNumber, String amount) {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
-        params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberField.getValue()));
-        params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amountField.getValue()));
-        params.add(new BasicNameValuePair(ApiFieldContants.POINTS, pointsField.getValue()));
+        params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, amount));
+        params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, orNumber));
+        params.add(new BasicNameValuePair(ApiFieldContants.POINTS, points));
         String url = baseUrl + payWithPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
         String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
         jsonResponse = jsonResponse.replace("'","");
 
-        JSONParser parser = new JSONParser();
-        try {
-            JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
-            String errorCode = (String)jsonObj.get("error_code");
-            if (!errorCode.equals(ApiFieldContants.NO_ERROR)) {
-                String errorMessage = "";
-                JSONObject errors = (JSONObject) jsonObj.get("errors");
-                //Brace yourself fcked up API response model incoming LUL! askdjsakdjsalkdjlskajdl
-                if (errors != null) {
-                    if (errors.get("or_no") != null) {
-                        List<String> orList = (ArrayList) errors.get("or_no");
-                        errorMessage = orList.get(0);
-                    }
-                    if (errors.get("points") != null) {
-                        List<String> pointsList = (ArrayList) errors.get("points");
-                        errorMessage = pointsList.get(0);
-                    }
-                    if (errors.get("amount") != null) {
-                        List<String> amountList = (ArrayList) errors.get("amount");
-                        errorMessage = amountList.get(0);
-                    }
-                } else {
-                    errorMessage = (String) jsonObj.get("message");
-                }
-                Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
-                alert.showAndWait();
-                if (alert.getResult() == ButtonType.OK) {
-                    alert.close();
-                }
-            } else {
-                //Get current points
-                params = new ArrayList<>();
-                String getPointsUrl = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-                String res = apiService.call(getPointsUrl, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-                JSONObject json = (JSONObject) parser.parse(res);
-                jsonObj.put("points",  json.get("data"));
-                jsonResponse = jsonObj.toJSONString();
-
-                String message = "Pay with with points successful.\n\nOR Number: " +
-                        orNumberField.getValue() + "\nTotal amount: " + amountField.getValue() +
-                        "\nPoints consumed: " + pointsField.getValue();
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
-                alert.showAndWait();
-                if (alert.getResult() == ButtonType.OK) {
-                    alert.close();
-                }
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
-        this.webEngine.executeScript("givePointsResponseHandler('"+jsonResponse+"')");
+        webEngine.executeScript("payWithPointsResponse('"+jsonResponse+"')");
     }
 
     /** Load all merchant rewards
@@ -478,7 +418,15 @@ public class HomeService {
 
                 JSONObject json = (JSONObject) parser.parse(result);
                 data.put("points",  json.get("data"));
+                //get member rewards
+                url = baseUrl + customerRewardsEndpoint.replace(":id",App.appContextHolder.getCustomerUUID());
+                String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+                JSONObject j = (JSONObject) parser.parse(responseStr);
+                List<JSONObject> d = (ArrayList) j.get("data");
+                responseStr = new Gson().toJson(d);
+                data.put("activeVouchers", responseStr);
                 result = jsonResponse.toJSONString();
+                webEngine.executeScript("closeLoadingModal()");
             } catch (ParseException e) {
                 e.printStackTrace();
             }

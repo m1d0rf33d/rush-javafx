@@ -20,7 +20,9 @@ var homeModule = angular.module('HomeModule', ['ui.router','datatables','datatab
         })
         .state('member-profile-view', {
             url: '/member-profile-view',
-            templateUrl: 'member-profile.html'
+            templateUrl: 'member-profile.html',
+            controller: 'MemberProfileCtrl',
+            params: {mobileNumber: null}
         })
         .state('give-points-view', {
             url: '/give-points-view',
@@ -220,7 +222,7 @@ homeModule.controller('HomeController', function($scope, $state){
     // END OF VIEWS
 
     //member login
-    $scope.loginMember = function() {
+   /* $scope.loginMember = function() {
         $scope.message = 'Searching customer information';
         $scope.memberProfile = {};
 
@@ -241,7 +243,7 @@ homeModule.controller('HomeController', function($scope, $state){
                 }
             }
         });
-    }
+    }*/
 
     $scope.givePointsToCustomer = function() {
         console.log('asd');

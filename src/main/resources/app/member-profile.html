@@ -1,108 +1,112 @@
-<div ng-if="memberProfile.id">
-    <div class="row">
-        <div class="col-sm-12">
-            <h4 class="content-title">VIEW MEMBER'S PROFILE<!-- <img src="images/sample_user.png" class="profile-picture-thumb pull-right" alt="">--></h4>
-            <hr>
+<div ng-controller="MemberProfileCtrl">
+    <div ng-if="member.id">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4 class="content-title">VIEW MEMBER'S PROFILE<!-- <img src="images/sample_user.png" class="profile-picture-thumb pull-right" alt="">--></h4>
+                <hr>
+            </div>
         </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-sm-12">
-            <h5 class="sub-title">BASIC INFORMATION</h5>
+        <br>
+        <div class="row">
+            <div class="col-sm-12">
+                <h5 class="sub-title">BASIC INFORMATION</h5>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-3">
-            <label class="d-label">Member ID</label>
-            <span class="d-value">{{memberProfile.id}}</span>
+        <div class="row">
+            <div class="col-sm-3">
+                <label class="d-label">Member ID</label>
+                <span class="d-value">{{member.id}}</span>
+            </div>
+            <div class="col-sm-3">
+                <label class="d-label">Name</label>
+                <span class="d-value">{{member.name}}</span>
+            </div>
+            <div class="col-sm-3">
+                <label class="d-label">Mobile Number</label>
+                <span class="d-value">{{member.mobile_no}}</span>
+            </div>
+            <div class="col-sm-3">
+                <label class="d-label">Email</label>
+                <span class="d-value">{{member.email}}</span>
+            </div>
         </div>
-        <div class="col-sm-3">
-            <label class="d-label">Name</label>
-            <span class="d-value">{{memberProfile.name}}</span>
+        <br>
+        <div class="row">
+            <div class="col-sm-3">
+                <label class="d-label">Date of Birth</label>
+                <span class="d-value">{{member.birthdate}}</span>
+            </div>
+            <div class="col-sm-3">
+                <label class="d-label">Gender</label>
+                <span class="d-value">{{member.gender}}</span>
+            </div>
+            <div class="col-sm-3">
+                <label class="d-label">Member Since</label>
+                <span class="d-value">{{member.registration_date}}</span>
+            </div>
+            <div class="col-sm-3">
+                <label class="d-label">Available Points</label>
+                <span class="d-value">{{member.points}}</span>
+            </div>
         </div>
-        <div class="col-sm-3">
-            <label class="d-label">Mobile Number</label>
-            <span class="d-value">{{memberProfile.mobile_no}}</span>
+        <br><br><br>
+        <div class="row">
+            <div class="col-sm-12">
+                <h5 class="sub-title"></h5>
+            </div>
         </div>
-        <div class="col-sm-3">
-            <label class="d-label">Email</label>
-            <span class="d-value">{{memberProfile.email}}</span>
+        <!--  <div class="row">
+              <div class="col-sm-3">
+                  <label class="d-label">Card Expiry</label>
+                  <span class="d-value red-text"></span>
+              </div>
+              <div class="col-sm-3">
+                  <label class="d-label">Card Status</label>
+                  <span class="d-value green-text"></span>
+              </div>
+              <div class="col-sm-3">
+                  <label class="d-label">Last Outlet Visited</label>
+                  <span class="d-value"></span>
+              </div>
+              <div class="col-sm-3">
+                  <label class="d-label">Total Visit Count</label>
+                  <span class="d-value"></span>
+              </div>
+          </div>
+          <br>
+          <div class="row">
+              <div class="col-sm-3">
+                  <label class="d-label">Spent This month</label>
+                  <span class="d-value"></span>
+              </div>
+              <div class="col-sm-3">
+                  <label class="d-label">Spent on January</label>
+                  <span class="d-value"></span>
+              </div>
+              <div class="col-sm-3">
+                  <label class="d-label">Spent on February</label>
+                  <span class="d-value"></span>
+              </div>
+          </div>-->
+        <br><br><br>
+        <div class="row">
+            <div class="col-sm-12">
+                <h5 class="sub-title">ACTIVE VOUCHER</h5>
+            </div>
         </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-sm-3">
-            <label class="d-label">Date of Birth</label>
-            <span class="d-value">{{memberProfile.birthdate}}</span>
-        </div>
-        <div class="col-sm-3">
-            <label class="d-label">Gender</label>
-            <span class="d-value">{{memberProfile.gender}}</span>
-        </div>
-        <div class="col-sm-3">
-            <label class="d-label">Member Since</label>
-            <span class="d-value">{{memberProfile.registration_date}}</span>
-        </div>
-        <div class="col-sm-3">
-            <label class="d-label">Available Points</label>
-            <span class="d-value">{{memberProfile.points}}</span>
-        </div>
-    </div>
-    <br><br><br>
-    <div class="row">
-        <div class="col-sm-12">
-            <h5 class="sub-title"></h5>
-        </div>
-    </div>
-  <!--  <div class="row">
-        <div class="col-sm-3">
-            <label class="d-label">Card Expiry</label>
-            <span class="d-value red-text"></span>
-        </div>
-        <div class="col-sm-3">
-            <label class="d-label">Card Status</label>
-            <span class="d-value green-text"></span>
-        </div>
-        <div class="col-sm-3">
-            <label class="d-label">Last Outlet Visited</label>
-            <span class="d-value"></span>
-        </div>
-        <div class="col-sm-3">
-            <label class="d-label">Total Visit Count</label>
-            <span class="d-value"></span>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-sm-3">
-            <label class="d-label">Spent This month</label>
-            <span class="d-value"></span>
-        </div>
-        <div class="col-sm-3">
-            <label class="d-label">Spent on January</label>
-            <span class="d-value"></span>
-        </div>
-        <div class="col-sm-3">
-            <label class="d-label">Spent on February</label>
-            <span class="d-value"></span>
-        </div>
-    </div>-->
-    <br><br><br>
-    <div class="row">
-        <div class="col-sm-12">
-            <h5 class="sub-title">ACTIVE VOUCHER</h5>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12">
-           <div ng-controller="DataReloadWithPromiseCtrl as showCase">
-                <br>
-               <table  class="table table-stripped active-table" datatable dt-options="showCase.dtOptions" dt-columns="showCase.dtColumns" dt-instance="showCase.dtInstanceCallback" class="row-border hover"></table>
+        <div class="row">
+            <div class="col-sm-12">
+
             </div>
         </div>
     </div>
+
+    <div ng-if="!member.id" style="text-align: center">
+        <h1>{{message}}</h1>
+    </div>
 </div>
 
-<div ng-if="!memberProfile.id" style="text-align: center">
-    <h1>{{message}}</h1>
+<div ng-controller="MemberProfileCtrl as showCase">
+    <br>
+    <table  class="table table-stripped active-table" datatable dt-options="showCase.dtOptions" dt-columns="showCase.dtColumns" dt-instance="showCase.dtInstanceCallback" class="row-border hover"></table>
 </div>

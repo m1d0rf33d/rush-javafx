@@ -161,13 +161,11 @@ public class HomeService {
      *
      * @param callbackfunction
      */
-    public void loginMember(final Object callbackfunction) {
-        //Read html form values
-        HTMLInputElement mobileField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_MOBILE);
+    public void loginMember(String mobileNumber, final Object callbackfunction) {
 
         //Build request body
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getValue()));
+        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileNumber));
 
         String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
         String result = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
@@ -187,7 +185,16 @@ public class HomeService {
                 String jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                 JSONObject json = (JSONObject) parser.parse(jsonResponse);
                 data.put("points",  json.get("data"));
+
+                //get member rewards
+                url = baseUrl + customerRewardsEndpoint.replace(":id",App.appContextHolder.getCustomerUUID());
+                String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+                JSONObject j = (JSONObject) parser.parse(responseStr);
+                List<JSONObject> d = (ArrayList) j.get("data");
+                responseStr = new Gson().toJson(d);
+                data.put("activeVouchers", responseStr);
                 result = jsonObject.toJSONString();
+
             }
 
         } catch (ParseException e) {

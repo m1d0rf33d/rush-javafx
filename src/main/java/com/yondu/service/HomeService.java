@@ -343,7 +343,14 @@ public class HomeService {
         String url = baseUrl + claimRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerUUID());
         url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
         String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
+        JSONParser parser = new JSONParser();
+        try {
+            JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
+            jsonObj.put("redeemId", redeemId);
+            jsonResponse = jsonObj.toJSONString();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         this.webEngine.executeScript("issueRewardsResponseHandler('"+jsonResponse+"')");
     }
 

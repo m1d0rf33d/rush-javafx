@@ -1,14 +1,7 @@
 
 angular.module('HomeModule')
-.controller('RedeemRewardsCtrl', function($scope, $rootScope) {
-
-    $scope.merchantRewards = [];
-    //Load merchant rewards
-    homeService.loadRewards(function(resp){
-        $scope.merchantRewards = resp.data;
-    });
-
-    //load customer data
+.controller('IssueRewardsCtrl', function($scope, $rootScope){
+    $scope.activeVouchers = [];
     homeService.fetchCustomerData(function(resp) {
         if (resp.message != undefined) {
             $scope.message = 'Customer not found';
@@ -27,17 +20,22 @@ angular.module('HomeModule')
             $rootScope.memberId = resp.data.id;
         }
     });
-    $scope.redeemRewards = function(rewardId) {
-        var pin = angular.element("#"+rewardId+"_pin").val();
-        homeService.redeemRewards(rewardId, pin);
 
-        angular.element("#"+rewardId+"_pin").val('');
+    homeService.loadCustomerRewards(function(resp){
+        $scope.activeVouchers = resp.data;
+    });
+
+    $scope.issueReward = function(redeemId) {
+        var pin = angular.element("#"+redeemId+"_pin").val();
+        angular.element("#"+redeemId+"_pin").val('');
+        $(".modal").modal('hide');
+        homeService.issueReward(redeemId);
     }
 });
 
-function redeemRewardsResponseHandler (jsonResponse) {
-    $(".modal").modal('hide');
+function issueRewardsResponseHandler (jsonResponse) {
     $(".temp").remove();
+
     var resp = JSON.parse(jsonResponse);
     if (resp.error_code != '0x0') {
         $(".home-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
@@ -46,7 +44,7 @@ function redeemRewardsResponseHandler (jsonResponse) {
         $("#points-span").text(resp.points);
         $(".home-modal-body").prepend('<div class="temp"><p> Redeem item successful</p></div>');
         $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>Redeem item successful</strong> </div>');
-
+        $("#"+resp.redeemId+"_div").hide();
     }
     $("#myModal").modal('show');
 }

@@ -27,6 +27,12 @@ angular.module('HomeModule')
         //Call java method
        homeService.payWithPoints(points, orNumber, amount);
     }
+    $scope.payWithPointsReset = function() {
+        angular.element("#or_no").val('');
+        angular.element("#amount").val('');
+        angular.element("#points").val('');
+    }
+
 });
 
 function payWithPointsResponse (jsonResponse){

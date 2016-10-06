@@ -61,13 +61,11 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
 
     angular.element(document).ready(function () {
         $scope.update();
-
     });
 
     $scope.update=function(){
         //Load logged in employee data
        homeService.loadEmployeeData(function(data) {
-
            $scope.account = {
                name: data.name,
                currentDate: data.currentDate
@@ -76,9 +74,6 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     }
 
    //State transition bindings because a href binding is not working wtf..
-    $scope.goToOcrVIew = function() {
-        $state.go('ocr-view');
-    }
     $scope.goToRegisterView = function() {
         $state.go('register-view');
     }
@@ -87,14 +82,11 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
         if ($rootScope.memberId != undefined) {
             angular.element("#home-loading-modal").modal('show');
             $timeout(function(){
-                $scope.goToMemberProfileView();
+                $state.go('member-profile-view');
             }, 1000);
         } else {
             $state.go('member-login-view');
         }
-    }
-    $scope.goToMemberProfileView  = function() {
-        $state.go('member-profile-view');
     }
 
     $scope.goToPayWithPointsView = function() {
@@ -105,7 +97,10 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
             $("#myModal").modal('show');
             return;
         }
-        $state.go('pay-points-view');
+        $timeout(function(){
+            $state.go('pay-points-view');
+        }, 1000);
+
     }
 
     $scope.goToVoucherRedemptionView = function() {
@@ -118,7 +113,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
         }
         angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
-            $state.go('voucher-redemption-view');
+            $state.go('voucher-redemption-view',{},{reload:true});
         }, 1000);
     }
 
@@ -131,58 +126,16 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
             $("#myModal").modal('show');
             return;
         }
-
-        homeService.loadCustomerRewards(function(resp){
-            console.log(resp);
-            $scope.items = resp.data;
-        });
-        $state.go('issue-rewards-view');
-    }
-    // END OF VIEWS
-
-    //member login
-   /* $scope.loginMember = function() {
-        $scope.message = 'Searching customer information';
-        $scope.memberProfile = {};
-
-        $state.go('member-profile-view');
-        homeService.loginMember(function(resp) {
-            if (resp.message != undefined) {
-                $scope.message = 'Customer not found';
-            } else {
-                $scope.memberProfile = {
-                    id: resp.data.id,
-                    name: resp.data.name,
-                    email: resp.data.email,
-                    mobile_no: resp.data.mobile_no,
-                    points: resp.data.points,
-                    birthdate: resp.data.birthdate,
-                    gender: resp.data.gender,
-                    registration_date: resp.data.registration_date
-                }
-            }
-        });
-    }*/
-
-    $scope.givePointsToCustomer = function() {
-        console.log('asd');
-        //open modal
-        angular.element(".alert").remove();
-        angular.element("#home-modal-message").text('Loading..');
-        angular.element("#myModal").modal('show');
-        homeService.givePointsToCustomer();
+        angular.element("#home-loading-modal").modal('show');
+        $timeout(function(){
+            $state.go('issue-rewards-view',{},{reload:true});
+        }, 1000);
     }
 
     $scope.logoutMember = function() {
-        $scope.memberProfile = {};
+        $rootScope.memberId = undefined;
         homeService.logoutMember();
         $state.go('member-login-view');
-    }
-    $scope.redeemRewards = function(rewardId) {
-        var pin = angular.element("#"+rewardId+"_pin").val();
-        homeService.redeemRewards(rewardId, pin);
-
-        angular.element("#"+rewardId+"_pin").val('');
     }
 
     $scope.loadSettingsView = function() {
@@ -192,26 +145,12 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     $scope.loadGivePointsView = function() {
        homeService.loadGivePointsView();
     }
-    $scope.payWithPointsReset = function() {
-        angular.element("#or_no").val('');
-        angular.element("#amount").val('');
-        angular.element("#points").val('');
-    }
-
-    $scope.issueReward = function(redeemId) {
-        var pin = angular.element("#"+redeemId+"_pin").val();
-        homeService.issueReward(redeemId);
-
-        angular.element("#"+redeemId+"_pin").val('');
-    }
     $scope.clearLoginField = function() {
         $scope.employeeId = '';
     }
     $scope.addNumber = function(num) {
         $scope.employeeId = $scope.employeeId + num;
     }
-
-
 });
 homeModule.directive('backImg', function(){
     return function(scope, element, attrs){
@@ -224,94 +163,6 @@ homeModule.directive('backImg', function(){
 });
 // FUNCTIONS CALLED BY JAVA BACKEND METHODS AKA AS RESPONSEHANDLERS
 
-function registerResponseHandler(jsonResponse) {
-    $(".alert").remove();
-    var resp = JSON.parse(jsonResponse);
-    if (resp.message != undefined) {
-        //registration failed
-        $(".home-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
-        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Registration Failed</strong> </div>');
-    } else {
-        $(".home-modal-body").prepend('<div class="temp"><p>Customer registered.</p></div>');
-        $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>Registration Successful</strong> </div>');
-
-        //Clear fields
-        $("#name").val('');
-        $("#email").val('');
-        $("#mobile_no").val('');
-        $("#mpin").val('');
-        $("#birthdate").val('');
-        $("#gender").val('-1');
-    }
-
-    $("#myModal").modal('show');
-}
-
-function getPointsHandler(jsonResponse) {
-    var resp = JSON.parse(jsonResponse);
-    $(".home-modal-body").prepend('<div class="temp"><p> Customer total points is '+resp.data+'</p></div>');
-    $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>Give Points Successful</strong> </div>');
-    $("#myModal").modal('show');
-}
-
-
-function payPointsResponseHandler(jsonResponse) {
-    var resp = JSON.parse(jsonResponse);
-    if (resp.error_code != '0x0') {
-        //Show errors messages
-        if (resp.errors.or_no != undefined) {
-            $(".home-modal-body").prepend('<div class="temp"><p>'+resp.errors.or_no[0]+'</p></div>');
-        }
-        if (resp.errors.amount != undefined) {
-            $(".home-modal-body").prepend('<div class="temp"><p>'+resp.errors.amount[0]+'</p></div>');
-        }
-        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Pay with points failed</strong> </div>');
-        $("#myModal").modal('show');
-    } else {
-        homeService.getPoints();
-    }
-}
-
-function issueRewardsResponseHandler (jsonResponse) {
-    $(".modal").modal('hide');
-    $(".temp").remove();
-    var resp = JSON.parse(jsonResponse);
-    if (resp.error_code != '0x0') {
-        $(".home-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
-        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Redeem item failed</strong> </div>');
-    } else {
-        $("#points-span").text(resp.points);
-        $(".home-modal-body").prepend('<div class="temp"><p> Redeem item successful</p></div>');
-        $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>Redeem item successful</strong> </div>');
-    }
-    $("#myModal").modal('show');
-    location.reload();
-}
-
-function redeemRewardsResponseHandler (jsonResponse) {
-    $(".modal").modal('hide');
-    $(".temp").remove();
-    var resp = JSON.parse(jsonResponse);
-    if (resp.error_code != '0x0') {
-        $(".home-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
-        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Redeem item failed</strong> </div>');
-    } else {
-        $("#points-span").text(resp.points);
-        $(".home-modal-body").prepend('<div class="temp"><p> Redeem item successful</p></div>');
-        $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>Redeem item successful</strong> </div>');
-    }
-    $("#myModal").modal('show');
-}
-
-function givePointsResponseHandler(jsonResponse) {
-    var resp = JSON.parse(jsonResponse);
-    if (resp.error_code == '0x0') {
-        $("#points").val('');
-        $("#or_no").val('');
-        $("#amount").val('');
-        $("#points-span").text(resp.points);
-    }
-}
 
 function closeLoadingModal() {
     console.log('closss');

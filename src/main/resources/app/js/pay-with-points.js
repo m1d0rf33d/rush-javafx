@@ -18,14 +18,15 @@ angular.module('HomeModule')
         }
     });
     $scope.payWithPoints = function() {
-       //show loading modal
-        $("#paypoints-loading-modal").modal('show');
+        angular.element("#home-loading-modal").modal('show');
+        $timeout(function(){
+            var points = angular.element("#points").val(),
+                orNumber = angular.element("#or_no").val(),
+                amount = angular.element("#amount").val();
+            //Call java method
+            homeService.payWithPoints(points, orNumber, amount);
+        },1000);
 
-       var points = angular.element("#points").val(),
-            orNumber = angular.element("#or_no").val(),
-            amount = angular.element("#amount").val();
-        //Call java method
-       homeService.payWithPoints(points, orNumber, amount);
     }
     $scope.payWithPointsReset = function() {
         angular.element("#or_no").val('');
@@ -37,8 +38,7 @@ angular.module('HomeModule')
 
 function payWithPointsResponse (jsonResponse){
     $(".temp").remove();
-    $("#paypoints-loading-modal").modal('hide');
-
+    angular.element("#home-loading-modal").modal('hide');
     var resp = JSON.parse(jsonResponse);
     if (resp.error_code != '0x0') {
         var errorMessage = '';
@@ -55,8 +55,9 @@ function payWithPointsResponse (jsonResponse){
         $(".paypoints-result-body").prepend('<div class="alert alert-warning temp"> <strong>Failed to pay with points.</strong> </div>');
         $("#paypoints-result-modal").modal('show');
     } else {
-        $(".paypoints-result-body").prepend('<div class="temp"><p>Success</p></div>');
+        $(".paypoints-result-body").prepend('<div class="temp"><p>Member points remaining '+ resp.points +'</p></div>');
         $(".paypoints-result-body").prepend('<div class="alert alert-success temp"> <strong>Pay with points successful.</strong> </div>');
         $("#paypoints-result-modal").modal('show');
+        $("#points-span").text(resp.points);
     }
 }

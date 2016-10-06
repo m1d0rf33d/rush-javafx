@@ -47,6 +47,10 @@ var homeModule = angular.module('HomeModule', ['ui.router','datatables','datatab
 
 })
 homeModule.controller('HomeController', function($scope, $state, $rootScope, $timeout){
+
+    angular.element("#home-loading-modal").modal('show');
+    setTimeout(function(){},1000);
+
     //Logged in employee data
     $scope.account = {};
 
@@ -71,6 +75,14 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
                currentDate: data.currentDate
            }
        })
+
+        homeService.fetchCustomerData(function(resp) {
+            if (resp.message != undefined) {
+                $scope.message = 'Customer not found';
+            } else {
+                $rootScope.memberId = resp.data.id;
+            }
+        });
     }
 
    //State transition bindings because a href binding is not working wtf..
@@ -97,6 +109,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
             $("#myModal").modal('show');
             return;
         }
+        angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
             $state.go('pay-points-view');
         }, 1000);

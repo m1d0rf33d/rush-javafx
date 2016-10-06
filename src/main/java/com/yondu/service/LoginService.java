@@ -97,6 +97,7 @@ public class LoginService {
             e.printStackTrace();
         }
         final List<Branch> data = (List<Branch>) apiResponse.getData();
+        webEngine.executeScript("closeLoadingModal()");
         // launch a background thread (async)
         new Thread( () -> {
                        try {

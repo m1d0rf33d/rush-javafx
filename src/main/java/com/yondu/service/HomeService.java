@@ -236,12 +236,31 @@ public class HomeService {
     public void payWithPoints(String points, String orNumber, String amount) {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
-        params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, amount));
-        params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, orNumber));
+        params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
+        params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount));
         params.add(new BasicNameValuePair(ApiFieldContants.POINTS, points));
         String url = baseUrl + payWithPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
         String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
         jsonResponse = jsonResponse.replace("'","");
+
+        JSONParser parser = new JSONParser();
+        try {
+            JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
+            String error =  (String) jsonObj.get(ApiFieldContants.ERROR_CODE);
+            if (error.equals(ApiFieldContants.NO_ERROR)) {
+                //get current points
+                params = new ArrayList<>();
+                url = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+                String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                JSONObject resultJson = (JSONObject) parser.parse(result);
+                jsonObj.put("points", resultJson.get("data"));
+                jsonResponse = jsonObj.toJSONString();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
 
         webEngine.executeScript("payWithPointsResponse('"+jsonResponse+"')");
     }
@@ -433,12 +452,12 @@ public class HomeService {
                 responseStr = new Gson().toJson(d);
                 data.put("activeVouchers", responseStr);
                 result = jsonResponse.toJSONString();
-                webEngine.executeScript("closeLoadingModal()");
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
-
+        webEngine.executeScript("closeLoadingModal()");
         final String responseStr = result;
         if (!responseStr.isEmpty()) {
             new Thread( () -> {

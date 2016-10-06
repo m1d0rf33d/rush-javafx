@@ -62,7 +62,7 @@ public class SplashController implements Initializable{
                 @Override
                 protected Void call() throws Exception {
                     //updateMessage("Checking system configuration..  ..");
-                    Thread.sleep(3000);
+                    Thread.sleep(1000);
                     /* updateProgress(20, 100);
                     updateMessage("Checking connectivity");
                     Thread.sleep(2000);

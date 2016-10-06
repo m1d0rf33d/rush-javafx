@@ -5,6 +5,7 @@ alert("__CONNECT__BACKEND__loginService");
 var loginModule = angular.module('LoginModule',[]);
 
 loginModule.controller('LoginController', function($scope){
+    angular.element("#login-loading-modal").modal('show');
     $scope.employeeId = '';
     $scope.branches = [];
     angular.element(document).ready(function () {
@@ -39,5 +40,9 @@ function loginResponseHandler(jsonResponse) {
     } else {
         location.href = "home.html";
     }
+}
+
+function closeLoadingModal() {
+    $("#login-loading-modal").modal('hide');
 }
 

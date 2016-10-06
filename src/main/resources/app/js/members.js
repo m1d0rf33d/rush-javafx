@@ -11,11 +11,13 @@ angular.module('HomeModule')
 })
 .controller('MemberProfileCtrl', function($scope, $stateParams, DTOptionsBuilder, DTColumnBuilder, $q) {
     var vm = this;
-    $scope.activeVouchers = [];
+    $scope.member = {
+        activeVouchers: []
+    }
     var getTableData = function() {
-        console.log($scope.activeVouchers);
+        console.log($scope.member.activeVouchers);
         var deferred = $q.defer();
-        deferred.resolve($scope.activeVouchers);
+        deferred.resolve($scope.member.activeVouchers);
         return deferred.promise;
     };
 
@@ -43,9 +45,9 @@ angular.module('HomeModule')
                 points: resp.data.points,
                 birthdate: resp.data.birthdate,
                 gender: resp.data.gender,
-                registration_date: resp.data.registration_date
+                registration_date: resp.data.registration_date,
+                activeVouchers: JSON.parse(resp.data.activeVouchers)
             }
-            $scope.activeVouchers = resp.data.activeVouchers;
         }
     });
 })

@@ -35,6 +35,15 @@ public class AppContextHolder {
 
     //Stage references
     private Stage homeStage;
+    private boolean onlineMode;
+
+    public boolean isOnlineMode() {
+        return onlineMode;
+    }
+
+    public void setOnlineMode(boolean onlineMode) {
+        this.onlineMode = onlineMode;
+    }
 
     public String getEmployeeName() {
         return employeeName;

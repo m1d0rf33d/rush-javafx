@@ -4,7 +4,7 @@ package com.yondu.model.constants;
  * Created by erwin on 9/30/2016.
  */
 public class AppConfigConstants {
-    public static final String OCR_CONFIG_LOCATION = "C:\\Program Files (x86)\\Rush-POS-Sync\\ocr.properties";
+    public static final String OCR_CONFIG_LOCATION = "\\Rush-POS-Sync\\ocr.properties";
     //public static final String OCR_CONFIG_LOCATION = "/home/aomine/Desktop/ocr.properties";
     //public static final String OCR_CONFIG_LOCATION = "C:\\Users\\erwin\\Desktop\\ocr.properties";
 

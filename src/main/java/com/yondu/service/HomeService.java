@@ -156,7 +156,10 @@ public class HomeService {
 
         String url = baseUrl + registerEndpoint;
         String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
-        this.webEngine.executeScript("registerResponseHandler('"+jsonResponse+"')");
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
+        if (jsonResponse != null) {
+            this.webEngine.executeScript("registerResponseHandler('"+jsonResponse+"')");
+        }
     }
 
     /** Login member
@@ -171,6 +174,7 @@ public class HomeService {
 
         String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
         String result = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
 
         JSONParser parser = new JSONParser();
         try {
@@ -197,14 +201,18 @@ public class HomeService {
                 data.put("activeVouchers", responseStr);
                 result = jsonObject.toJSONString();
             }
-            webEngine.executeScript("closeLoadingModal()");
-        } catch (ParseException e) {
+        } catch (Exception e) {
+            result = null;
             e.printStackTrace();
         }
         final String responseStr = result;
-        new Thread( () -> {
-            Java2JavascriptUtils.call(callbackfunction, responseStr);
-        }).start();
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
+
+        if (responseStr != null) {
+            new Thread( () -> {
+                Java2JavascriptUtils.call(callbackfunction, responseStr);
+            }).start();
+        }
     }
 
     /** Load points conversion rules

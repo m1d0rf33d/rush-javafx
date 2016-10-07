@@ -149,6 +149,13 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     }
 
      $scope.goToTransactionsView = function() {
+         if ($rootScope.memberId == undefined) {
+             $(".alert").remove();
+             $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
+             $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Not allowed</strong> </div>');
+             $("#myModal").modal('show');
+             return;
+         }
          angular.element("#home-loading-modal").modal('show');
          $timeout(function(){
              $state.go('transactions-view',{},{reload:true});
@@ -187,8 +194,14 @@ homeModule.directive('backImg', function(){
 // FUNCTIONS CALLED BY JAVA BACKEND METHODS AKA AS RESPONSEHANDLERS
 
 
-function closeLoadingModal() {
-    console.log('closss');
+function closeLoadingModal(resp) {
+    $(".temp").remove();
+    if (resp == 'false') {
+        $("#mode").text("OFFLINE");
+        $(".home-modal-body").prepend('<div class="temp"><p>You are currently in offline mode, only feature available is Give Points. </p></div>');
+        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Network connection error</strong> </div>');
+        $("#myModal").modal('show');
+    }
     $("#home-loading-modal").modal('hide');
 }
 

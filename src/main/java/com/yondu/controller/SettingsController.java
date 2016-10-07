@@ -1,6 +1,7 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import com.yondu.model.constants.AppConfigConstants;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -85,7 +86,7 @@ public class SettingsController implements Initializable{
         } else {
             try {
                 Properties prop = new Properties();
-                InputStream inputStream = new FileInputStream(new File(OCR_CONFIG_LOCATION));
+                InputStream inputStream = new FileInputStream(new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION));
                 prop.load(inputStream);
                 salesX = ((Double)Double.parseDouble(prop.getProperty("sales_pos_x"))).intValue();
                 salesY =((Double) Double.parseDouble(prop.getProperty("sales_pos_y"))).intValue();
@@ -131,7 +132,7 @@ public class SettingsController implements Initializable{
         //Load ocr-properties saved config
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(new File(OCR_CONFIG_LOCATION));
+            InputStream inputStream = new FileInputStream(new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION));
             prop.load(inputStream);
             StringBuilder sb = new StringBuilder();
             sb.append(prop.getProperty("sales_pos_x"));
@@ -204,7 +205,7 @@ public class SettingsController implements Initializable{
         //Load ocr-properties saved config
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(new File(OCR_CONFIG_LOCATION));
+            InputStream inputStream = new FileInputStream(new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION));
             prop.load(inputStream);
             StringBuilder sb = new StringBuilder();
             sb.append(prop.getProperty("sales_pos_x"));
@@ -237,7 +238,7 @@ public class SettingsController implements Initializable{
             String salesPosX = "", salesPosY = "", salesWidth = "", salesHeight = "",
                     orPosX = "", orPosY = "", orWidth = "", orHeight = "";
 
-            File file = new File(OCR_CONFIG_LOCATION);
+            File file = new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION);
             if (file.exists()) {
                 Properties prop = new Properties();
                 InputStream inputStream = new FileInputStream(file);
@@ -304,7 +305,7 @@ public class SettingsController implements Initializable{
         } else {
             try {
                 Properties prop = new Properties();
-                InputStream inputStream = new FileInputStream(new File(OCR_CONFIG_LOCATION));
+                InputStream inputStream = new FileInputStream(new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION));
                 prop.load(inputStream);
                 salesX = ((Double)Double.parseDouble(prop.getProperty("or_pos_x"))).intValue();
                 salesY =((Double) Double.parseDouble(prop.getProperty("or_pos_y"))).intValue();

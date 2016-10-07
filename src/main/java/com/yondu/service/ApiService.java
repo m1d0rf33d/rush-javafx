@@ -2,6 +2,7 @@ package com.yondu.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yondu.App;
+import com.yondu.AppContextHolder;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.Token;
 import org.apache.http.HttpResponse;
@@ -94,9 +95,11 @@ public class ApiService {
             while ((line = rd.readLine()) != null) {
                 result.append(line);
             }
+            App.appContextHolder.setOnlineMode(true);
             return result.toString();
         } catch (IOException e) {
             e.printStackTrace();
+            App.appContextHolder.setOnlineMode(false);
         }
 
         return null;

@@ -3,6 +3,7 @@ package com.yondu.controller;
 import com.yondu.App;
 import com.yondu.model.Account;
 import com.yondu.model.constants.ApiFieldContants;
+import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.service.ApiService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -151,7 +152,7 @@ public class LoadingController implements Initializable{
 
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(new File(OCR_CONFIG_LOCATION));
+            InputStream inputStream = new FileInputStream(new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION));
             prop.load(inputStream);
             salesX = ((Double)Double.parseDouble(prop.getProperty("sales_pos_x"))).intValue();
             salesY =((Double) Double.parseDouble(prop.getProperty("sales_pos_y"))).intValue();
@@ -187,7 +188,7 @@ public class LoadingController implements Initializable{
 
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(new File(OCR_CONFIG_LOCATION));
+            InputStream inputStream = new FileInputStream(new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION));
             prop.load(inputStream);
             salesX = ((Double)Double.parseDouble(prop.getProperty("or_pos_x"))).intValue();
             salesY =((Double) Double.parseDouble(prop.getProperty("or_pos_y"))).intValue();

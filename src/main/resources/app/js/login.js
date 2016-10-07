@@ -15,9 +15,11 @@ loginModule.controller('LoginController', function($scope){
    $scope.update=function(){
         //This is a java service (magic motherfucker!)
        loginService.loadBranches(function(data){
-            $scope.branches = data;
-            $scope.defaultBranch = $scope.branches[0].id;
-            $scope.$apply();
+           if (data != null) {
+               $scope.branches = data;
+               $scope.defaultBranch = $scope.branches[0].id;
+               $scope.$apply();
+           }
         });
     }
     $scope.clearLoginField = function() {
@@ -42,7 +44,13 @@ function loginResponseHandler(jsonResponse) {
     }
 }
 
-function closeLoadingModal() {
+function closeLoadingModal(resp) {
+    if (resp == 'false') {
+        $("#mode").text("(OFFLINE MODE)");
+        $(".login-modal-body").prepend('<div class="temp"><p>You are currently in offline mode, only available feature is Give Points.</p></div>');
+        $(".login-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Network connection error</strong> </div>');
+        $("#loginModal").modal('show');
+    }
     $("#login-loading-modal").modal('hide');
 }
 

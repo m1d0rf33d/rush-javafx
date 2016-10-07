@@ -78,44 +78,41 @@ public class LoadingController implements Initializable{
         }
         //Prepare data
         SalesCaptureService myService = new SalesCaptureService();
-        myService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                OrCaptureService orCaptureService = new OrCaptureService();
-                orCaptureService.setOnSucceeded((WorkerStateEvent a) ->{
-                    ConvertPointsService convertPointsService = new ConvertPointsService();
-                    convertPointsService.setOnSucceeded((WorkerStateEvent t) -> {
-                        CustomerInfoService customerInfoService = new CustomerInfoService();
-                        customerInfoService.setOnSucceeded((WorkerStateEvent e) -> {
-                            try{
-                                Stage stage = new Stage();
-                                FXMLLoader  loader  = new FXMLLoader(App.class.getResource(GIVE_POINTS_DETAILS_FXML));
-                                PointsDetailsController pointsDetailsController = new PointsDetailsController(orStr, totalAmountStr, convertedPoints, customer);
-                                loader.setController(pointsDetailsController);
-                                stage.setScene(new Scene(loader.load(), 500,400));
-                                stage.resizableProperty().setValue(Boolean.FALSE);
-                                stage.show();
+        myService.setOnSucceeded((WorkerStateEvent t) ->{
+            OrCaptureService orCaptureService = new OrCaptureService();
+            orCaptureService.setOnSucceeded((WorkerStateEvent a) ->{
+                ConvertPointsService convertPointsService = new ConvertPointsService();
+                convertPointsService.setOnSucceeded((WorkerStateEvent c) -> {
+                    CustomerInfoService customerInfoService = new CustomerInfoService();
+                    customerInfoService.setOnSucceeded((WorkerStateEvent e) -> {
+                        try{
+                            Stage stage = new Stage();
+                            FXMLLoader  loader  = new FXMLLoader(App.class.getResource(GIVE_POINTS_DETAILS_FXML));
+                            PointsDetailsController pointsDetailsController = new PointsDetailsController(orStr, totalAmountStr, convertedPoints, customer);
+                            loader.setController(pointsDetailsController);
+                            stage.setScene(new Scene(loader.load(), 500,400));
+                            stage.resizableProperty().setValue(Boolean.FALSE);
+                            stage.show();
 
-                                ((Stage)rushLogoImage.getScene().getWindow()).close();
-                            }catch (Exception err){
-                                err.printStackTrace();
-                            }
-                        });
-                        customerInfoService.setOnFailed((WorkerStateEvent f) -> {
-                            handleError("Total sales captured value: '" + totalAmountStr + "' is not a valid number.");
-                        });
-                        customerInfoService.start();
+                            ((Stage)rushLogoImage.getScene().getWindow()).close();
+                        }catch (Exception err){
+                            err.printStackTrace();
+                        }
                     });
-                    convertPointsService.setOnFailed((WorkerStateEvent t) -> {
-                        handleError("Total sales captured value: '" + totalAmountStr + "' is not a valid number.");
+                    customerInfoService.setOnFailed((WorkerStateEvent f) -> {
+                        handleError("Customer info captured value: '" + totalAmountStr + "' is not a valid number.");
                     });
-                    convertPointsService.start();
+                    customerInfoService.start();
                 });
-                orCaptureService.setOnFailed((WorkerStateEvent t) -> {
-                    handleError("Or failed");
+                convertPointsService.setOnFailed((WorkerStateEvent x) -> {
+                    handleError("Convert captured value: '" + totalAmountStr + "' is not a valid number.");
                 });
-                orCaptureService.start();
-            }
+                convertPointsService.start();
+            });
+            orCaptureService.setOnFailed((WorkerStateEvent d) -> {
+                handleError("Or failed");
+            });
+            orCaptureService.start();
         });
         myService.setOnFailed((WorkerStateEvent t) -> {
             handleError("Sales failed");
@@ -271,7 +268,11 @@ public class LoadingController implements Initializable{
             return new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                    convertPoints();
+                   if (App.appContextHolder.isOnlineMode()) {
+                       convertPoints();
+                   } else {
+                       convertedPoints = "";
+                   }
                     return null;
                 }
             };
@@ -285,7 +286,14 @@ public class LoadingController implements Initializable{
             return new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                    getCustomerInformation();
+                   if (App.appContextHolder.isOnlineMode()) {
+                       getCustomerInformation();
+                   } else {
+                       customer = new Account();
+                       customer.setMobileNumber(App.appContextHolder.getCustomerMobile());
+                       customer.setCurrentPoints(0d);
+                       customer.setName("");
+                   }
                     return null;
                 }
             };

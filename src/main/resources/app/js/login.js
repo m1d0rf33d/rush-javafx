@@ -1,6 +1,6 @@
 //Trigger the alert listener on our backend to bind loginService
 alert("__CONNECT__BACKEND__loginService");
-
+alert("__CONNECT__BACKEND__homeService");
 //Create our angular login module
 var loginModule = angular.module('LoginModule',[]);
 
@@ -46,10 +46,12 @@ function loginResponseHandler(jsonResponse) {
 
 function closeLoadingModal(resp) {
     if (resp == 'false') {
-        $("#mode").text("(OFFLINE MODE)");
+
         $(".login-modal-body").prepend('<div class="temp"><p>You are currently in offline mode, only available feature is Give Points.</p></div>');
         $(".login-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Network connection error</strong> </div>');
         $("#loginModal").modal('show');
+        $(".online-element").hide();
+        $(".offline-element").show();
     }
     $("#login-loading-modal").modal('hide');
 }

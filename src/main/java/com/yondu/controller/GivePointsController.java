@@ -94,6 +94,7 @@ public class GivePointsController implements Initializable {
             @Override
             public void handle(MouseEvent event) {
                 if (App.appContextHolder.getCustomerMobile() == null) {
+                    try {
                     //login member
                     List<NameValuePair> params = new ArrayList<>();
                     params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getText()));
@@ -102,7 +103,7 @@ public class GivePointsController implements Initializable {
                     String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
                     JSONParser parser = new JSONParser();
-                    try {
+
                         JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
                         if (!((String)jsonResponse.get("error_code")).equals("0x0")) {
                             Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) jsonResponse.get("message"), ButtonType.OK);
@@ -121,13 +122,19 @@ public class GivePointsController implements Initializable {
 
                         }
 
-                    } catch (ParseException e) {
+                    } catch (Exception e) {
+                        //Offline mode
                         e.printStackTrace();
+                        App.appContextHolder.setOnlineMode(false);
+                        App.appContextHolder.setCustomerMobile(mobileField.getText());
+                        App.appContextHolder.setEmployeeId(null);
+                        App.appContextHolder.setCustomerUUID(null);
+                        ((Stage)givePointsButton.getScene().getWindow()).close();
+                        loadGivePointsDetailsView();
                     }
                 } else {
                     ((Stage)givePointsButton.getScene().getWindow()).close();
                     loadGivePointsDetailsView();
-
                 }
             }
         });

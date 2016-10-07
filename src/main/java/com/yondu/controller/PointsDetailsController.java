@@ -3,6 +3,7 @@ package com.yondu.controller;
 import com.yondu.App;
 import com.yondu.model.Account;
 import com.yondu.model.constants.ApiFieldContants;
+import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.service.ApiService;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -101,17 +102,67 @@ public class PointsDetailsController implements Initializable{
         this.continueButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                java.util.List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
-                params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberLbl.getText().trim()));
-                params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmountLbl.getText().trim()));
-                String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-                String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-                JSONParser parser = new JSONParser();
-                try {
-                    JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
-                    if (jsonResponse.get("error_code").equals("0x0")) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION,"Give points successful", ButtonType.OK);
+                if (App.appContextHolder.isOnlineMode()) {
+                    java.util.List<NameValuePair> params = new ArrayList<>();
+                    params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
+                    params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberLbl.getText().trim()));
+                    params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmountLbl.getText().trim()));
+                    String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+                    String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                    JSONParser parser = new JSONParser();
+                    try {
+                        JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
+                        if (jsonResponse.get("error_code").equals("0x0")) {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION,"Give points successful", ButtonType.OK);
+                            alert.showAndWait();
+
+                            if (alert.getResult() == ButtonType.OK) {
+                                alert.close();
+                                Stage givePointsStage = new Stage();
+                                Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+                                givePointsStage.setScene(new Scene(root, 400,200));
+                                givePointsStage.setTitle("Give Points");
+                                givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                                givePointsStage.show();
+
+                                ((Stage)rushLogoImageView.getScene().getWindow()).close();
+                            }
+                        } else {
+                            JSONObject error = (JSONObject) jsonResponse.get("errors");
+                            String errorMessage = "";
+                            if (error.get("or_no") != null) {
+                                List<String> l = (ArrayList<String>) error.get("or_no");
+                                errorMessage = l.get(0);
+                            }
+                            if (error.get("amount") != null) {
+                                List<String> l = (ArrayList<String>) error.get("amount");
+                                errorMessage = l.get(0);
+                            }
+                            Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
+                            alert.showAndWait();
+
+                            if (alert.getResult() == ButtonType.OK) {
+                                alert.close();
+                            }
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    //write to file
+                    try {
+                        File file = new File(System.getProperty("user.home") + "\\Rush-POS-Sync\\offline.txt");
+                        if (!file.exists()) {
+                            file.createNewFile();
+                        }
+                        PrintWriter fstream = new PrintWriter(new FileWriter(file,true));
+                        fstream.println("mobileNumber=" + customer.getMobileNumber()+ ",totalAmount=" + totalAmount + ", orNumber=" + orNumber);
+                        fstream.flush();
+                        fstream.close();
+
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,"Give points saved to offline transactions", ButtonType.OK);
                         alert.showAndWait();
 
                         if (alert.getResult() == ButtonType.OK) {
@@ -125,28 +176,9 @@ public class PointsDetailsController implements Initializable{
 
                             ((Stage)rushLogoImageView.getScene().getWindow()).close();
                         }
-                    } else {
-                        JSONObject error = (JSONObject) jsonResponse.get("errors");
-                        String errorMessage = "";
-                        if (error.get("or_no") != null) {
-                           List<String> l = (ArrayList<String>) error.get("or_no");
-                           errorMessage = l.get(0);
-                        }
-                        if (error.get("amount") != null) {
-                            List<String> l = (ArrayList<String>) error.get("amount");
-                            errorMessage = l.get(0);
-                        }
-                        Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
-                        alert.showAndWait();
-
-                        if (alert.getResult() == ButtonType.OK) {
-                            alert.close();
-                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
         });

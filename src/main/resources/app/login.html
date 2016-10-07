@@ -19,9 +19,12 @@
     <div class="left-block center">
         <div class="paddingTop150"></div>
         <img src="images/rush_logo.png" class="rush_logo" alt="">
-        <h4 class="employee-login-label">EMPLOYEE LOGIN </h4>
-        <h4 class="employee-login-label"><span id="mode" style="color: red"></span></h4>
-        <form action="" id="login-form" >
+        <h4 class="employee-login-label online-element">EMPLOYEE LOGIN </h4>
+        <h4 hidden class="employee-login-label offline-element"><span id="mode" style="color: red">(OFFLINE MODE)</span></h4>
+        <div hidden class="offline-element">
+            <a onClick="homeService.loadGivePointsView()" href=""  style="margin-left:150px;display:block;padding: 15px;background-color:#ffb600;border-radius: 30px;color: white;width: 400px;">GIVE POINTS</a>
+        </div>
+        <form action="" id="login-form" class="online-element">
             <input placeholder="INPUT EMPLOYEE ID" type="text" id="employee_id" ng-model="employeeId">
             <select name="" id="branch_id" ng-model="account.branchId">
                 <option ng-selected="{{defaultBranch == branch.id}}"

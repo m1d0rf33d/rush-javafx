@@ -2,13 +2,17 @@ package com.yondu.controller;
 
 import com.yondu.App;
 import com.yondu.Browser;
+import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.service.ApiService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -16,12 +20,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.apache.http.NameValuePair;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 import java.util.ResourceBundle;
+
+import static com.yondu.model.constants.AppConfigConstants.GIVE_POINTS_FXML;
 
 /** Splash Stage/Screen Controller mapped to splash.xml
  *
@@ -36,21 +44,40 @@ public class SplashController implements Initializable{
     @FXML
     public ImageView rushLogoImage;
 
+    private ApiService apiService;
+    private String baseUrl;
+    private String getBranchesEndpoint;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        apiService = new ApiService();
         this.rushLogoImage.setImage(new Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
 
         MyService myService = new MyService();
         myService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent t) {
+                if (App.appContextHolder.isOnlineMode()) {
+                    Stage stage = new Stage();
+                    stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
+                    stage.setMaximized(true);
+                    stage.show();
+                    App.appContextHolder.setHomeStage(stage);
+                    ((Stage) rushLogoImage.getScene().getWindow()).close();
+                } else {
 
-                Stage stage = new Stage();
-                stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
-                stage.setMaximized(true);
-                stage.show();
-                App.appContextHolder.setHomeStage(stage);
-                ((Stage) rushLogoImage.getScene().getWindow()).close();
+                    try {
+                        Stage givePointsStage = new Stage();
+                        Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+                        givePointsStage.setScene(new Scene(root, 400,200));
+                        givePointsStage.setTitle("Give Points");
+                        givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                        givePointsStage.show();
+                        ((Stage) rushLogoImage.getScene().getWindow()).close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
         });
         //rushLogoImage.progressProperty().bind(myService.progressProperty());
@@ -65,8 +92,7 @@ public class SplashController implements Initializable{
             return new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                    //updateMessage("Checking system configuration..  ..");
-                    //create ocr folder
+                    //Prepare configuration files
                     File dir = new File(System.getProperty("user.home") + "\\Rush-POS-Sync");
                     if (!dir.exists()) {
                         dir.mkdir();
@@ -86,16 +112,32 @@ public class SplashController implements Initializable{
                         fstream.flush();
                         fstream.close();
                     }
-                    Thread.sleep(1000);
-                    /* updateProgress(20, 100);
-                    updateMessage("Checking connectivity");
-                    Thread.sleep(2000);
+                    //Check connection
+                    try {
+                        Properties prop = new Properties();
+                        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
+                        if (inputStream != null) {
+                            prop.load(inputStream);
+                        } else {
+                            throw new FileNotFoundException("property file api.properties not found in the classpath");
+                        }
+                        baseUrl = prop.getProperty("base_url");
+                        getBranchesEndpoint = prop.getProperty("get_branches_endpoint");
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    String url = baseUrl + getBranchesEndpoint;
+                    List<NameValuePair> params = new ArrayList<>();
+                    String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                    if (result == null) {
+                        App.appContextHolder.setOnlineMode(false);
+                    } else {
+                        App.appContextHolder.setOnlineMode(true);
+                    }
 
-                    updateProgress(60, 100);
-                    updateMessage("Checking accounts..");
-                    Thread.sleep(2000);
-                    updateProgress(2000, 100);
-                    updateMessage("Coompleted");*/
+                    Thread.sleep(1000);
                     return null;
                 }
             };

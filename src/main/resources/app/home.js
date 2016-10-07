@@ -47,12 +47,16 @@ var homeModule = angular.module('HomeModule', ['ui.router','datatables','datatab
             url: '/transactions-view',
             templateUrl: 'transactions.html'
         })
+        .state('offline-transactions-view', {
+            url: '/offline-transactions-view',
+            templateUrl: 'offline-transactions.html'
+        })
 
 })
 homeModule.controller('HomeController', function($scope, $state, $rootScope, $timeout){
 
     angular.element("#home-loading-modal").modal('show');
-    setTimeout(function(){},1000);
+    setTimeout(function(){},500);
 
     //Logged in employee data
     $scope.account = {};
@@ -99,7 +103,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
             angular.element("#home-loading-modal").modal('show');
             $timeout(function(){
                 $state.go('member-profile-view');
-            }, 1000);
+            }, 500);
         } else {
             $state.go('member-login-view');
         }
@@ -116,7 +120,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
         angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
             $state.go('pay-points-view');
-        }, 1000);
+        }, 500);
 
     }
 
@@ -131,7 +135,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
         angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
             $state.go('voucher-redemption-view',{},{reload:true});
-        }, 1000);
+        }, 500);
     }
 
     $scope.goToIssueRewardsView = function() {
@@ -146,7 +150,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
         angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
             $state.go('issue-rewards-view',{},{reload:true});
-        }, 1000);
+        }, 500);
     }
 
      $scope.goToTransactionsView = function() {
@@ -160,7 +164,13 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
          angular.element("#home-loading-modal").modal('show');
          $timeout(function(){
              $state.go('transactions-view',{},{reload:true});
-         }, 1000);
+         }, 500);
+     }
+     $scope.goToOfflineTransactionsView = function() {
+         angular.element("#home-loading-modal").modal('show');
+         $timeout(function(){
+             $state.go('offline-transactions-view',{},{reload:true});
+         }, 500);
      }
 
     $scope.logoutMember = function() {

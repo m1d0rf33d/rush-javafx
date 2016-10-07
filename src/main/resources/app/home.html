@@ -26,6 +26,7 @@
     <script src="js/issue-rewards.js"></script>
     <script src="js/register.js"></script>
     <script src="js/transactions.js"></script>
+    <script src="js/offline-transactions.js"></script>
 
     <style>
        /*Hack to avoid width expansion caused by modals*/
@@ -131,7 +132,7 @@
             <a href="" ng-click="goToTransactionsView()">
                 <li>TRANSACTION VIEW</li>
             </a>
-            <a href="">
+            <a href="" ng-click="goToOfflineTransactionsView()">
                 <li>OFFLINE TRANSACTIONS</li>
             </a>
             <a href="" ng-click="loadSettingsView()">

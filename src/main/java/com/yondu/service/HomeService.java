@@ -16,15 +16,14 @@ import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.w3c.dom.html.HTMLInputElement;
 import org.w3c.dom.html.HTMLSelectElement;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -511,4 +510,31 @@ public class HomeService {
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
 
+    public void getOfflineTransactions(Object callbackFunction) {
+        File file = new File(System.getProperty("user.home") + "\\Rush-POS-Sync\\offline.txt");
+        if (file.exists()) {
+            JSONArray jsonArray = new JSONArray();
+            //Read file
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String[] arr = line.split(",");
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("mobileNumber", arr[0].split("=")[1]);
+                    jsonObject.put("totalAmount", arr[1].split("=")[1]);
+                    jsonObject.put("orNumber", arr[2].split("=")[1]);
+                    jsonArray.add(jsonObject);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            final String finalData = jsonArray.toJSONString();
+            new Thread( () -> {
+                Java2JavascriptUtils.call(callbackFunction, finalData);
+            }).start();
+        }
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
+    }
 }

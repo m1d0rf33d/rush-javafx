@@ -54,7 +54,7 @@ public class ApiService {
         }
     }
 
-    public String call(String url, List<NameValuePair> params, String method, String resourceOwner) {
+    public String call(String url, List<NameValuePair> params, String method, String resourceOwner) throws IOException {
         //Validate token
         String token = "";
         if (resourceOwner.equals(ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER)) {
@@ -71,7 +71,7 @@ public class ApiService {
 
 
         HttpResponse response = null;
-        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
             //POST request
             if (method.equalsIgnoreCase("post")) {
                 HttpPost httpPost = new HttpPost(url);
@@ -95,51 +95,40 @@ public class ApiService {
             while ((line = rd.readLine()) != null) {
                 result.append(line);
             }
+            //Set application state to online
             App.appContextHolder.setOnlineMode(true);
             return result.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            App.appContextHolder.setOnlineMode(false);
-        }
-
-        return null;
     }
 
 
-    public String getToken(String resourceOwner) {
-        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
-
-            String appKey = "", appSecret = "";
-            if (resourceOwner.equals(ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER)) {
-                appKey = this.appKey;
-                appSecret = this.appSecret;
-            } else {
-                appKey = this.customerAppKey;
-                appSecret = this.customerAppSecret;
-            }
-
-            HttpPost httpPost = new HttpPost((this.baseUrl + this.authorizationEndpoint));
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("app_key", appKey));
-            params.add(new BasicNameValuePair("app_secret", appSecret));
-            httpPost.setEntity(new UrlEncodedFormEntity(params));
-
-            HttpResponse response = httpClient.execute(httpPost);
-            BufferedReader rd = new BufferedReader(
-                    new InputStreamReader(response.getEntity().getContent()));
-
-            StringBuffer result = new StringBuffer();
-            String line = "";
-            while ((line = rd.readLine()) != null) {
-                result.append(line);
-            }
-            ObjectMapper mapper = new ObjectMapper();
-            Token token = mapper.readValue(result.toString(), Token.class);
-            return token.getToken();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public String getToken(String resourceOwner) throws IOException {
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        String appKey = "", appSecret = "";
+        if (resourceOwner.equals(ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER)) {
+            appKey = this.appKey;
+            appSecret = this.appSecret;
+        } else {
+            appKey = this.customerAppKey;
+            appSecret = this.customerAppSecret;
         }
 
-        return null;
+        HttpPost httpPost = new HttpPost((this.baseUrl + this.authorizationEndpoint));
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("app_key", appKey));
+        params.add(new BasicNameValuePair("app_secret", appSecret));
+        httpPost.setEntity(new UrlEncodedFormEntity(params));
+
+        HttpResponse response = httpClient.execute(httpPost);
+        BufferedReader rd = new BufferedReader(
+                new InputStreamReader(response.getEntity().getContent()));
+
+        StringBuffer result = new StringBuffer();
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        Token token = mapper.readValue(result.toString(), Token.class);
+        return token.getToken();
     }
 }

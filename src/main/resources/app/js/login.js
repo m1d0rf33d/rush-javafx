@@ -33,7 +33,7 @@ loginModule.controller('LoginController', function($scope){
 //Functions that are outside the angular context and will be executed by our java backend service
 function loginResponseHandler(jsonResponse) {
     var resp = JSON.parse(jsonResponse);
-
+    $(".temp").remove();
     if (resp.error_code != '0x0') {
         $(".temp").remove();
         $(".login-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
@@ -45,6 +45,7 @@ function loginResponseHandler(jsonResponse) {
 }
 
 function closeLoadingModal(resp) {
+    $(".temp").remove();
     if (resp == 'false') {
 
         $(".login-modal-body").prepend('<div class="temp"><p>You are currently in offline mode, only available feature is Give Points.</p></div>');

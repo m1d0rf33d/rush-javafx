@@ -52,7 +52,7 @@ public class LoginService {
             }
             this.baseUrl = prop.getProperty("base_url");
             this.loginEndpoint = prop.getProperty("login_endpoint");
-           // this.getBranchesEndpoint = prop.getProperty("get_branches_endpoint");
+            this.getBranchesEndpoint = prop.getProperty("get_branches_endpoint");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -61,53 +61,60 @@ public class LoginService {
     }
 
     public void login() {
-        ApiResponse apiResponse = new ApiResponse();
-        //Read html form values
-        HTMLInputElement employeeField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.EMPLOYEE_ID);
-        HTMLSelectElement selectField = (HTMLSelectElement) this.webEngine.getDocument().getElementById(ApiFieldContants.BRANCH_ID);
-        //Build request body
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, employeeField.getValue()));
-        params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, selectField.getValue()));
-        String jsonResponse = apiService.call((baseUrl + loginEndpoint), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        try {
+            ApiResponse apiResponse = new ApiResponse();
+            //Read html form values
+            HTMLInputElement employeeField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.EMPLOYEE_ID);
+            HTMLSelectElement selectField = (HTMLSelectElement) this.webEngine.getDocument().getElementById(ApiFieldContants.BRANCH_ID);
+            //Build request body
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, employeeField.getValue()));
+            params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, selectField.getValue()));
+            String jsonResponse = apiService.call((baseUrl + loginEndpoint), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
-        JSONParser parser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) parse(jsonResponse);
-        if (jsonObject.get("data") != null) {
-            JSONObject data = (JSONObject) jsonObject.get("data");
-            App.appContextHolder.setEmployeeName(((String) data.get("name")));
-            App.appContextHolder.setEmployeeId((String) data.get("id"));
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) parse(jsonResponse);
+            if (jsonObject.get("data") != null) {
+                JSONObject data = (JSONObject) jsonObject.get("data");
+                App.appContextHolder.setEmployeeName(((String) data.get("name")));
+                App.appContextHolder.setEmployeeId((String) data.get("id"));
+            }
+
+            webEngine.executeScript("loginResponseHandler('"+jsonResponse+"')");
+        } catch (IOException e) {
+            //LOG here
+            App.appContextHolder.setOnlineMode(false);
+            webEngine.executeScript("closeLoadingModal('"+ App.appContextHolder.isOnlineMode()+"')");
         }
-
-        webEngine.executeScript("loginResponseHandler('"+jsonResponse+"')");
     }
 
     public void loadBranches(final Object callbackfunction) {
-        ApiService apiService = new ApiService();
-        ApiResponse apiResponse = new ApiResponse();
-
-        String url = "http://52.74.203.202/api/dev/loyalty/merchantapp/merchant/branches";
-        List<NameValuePair> params = new ArrayList<>();
-        String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-        ObjectMapper mapper = new ObjectMapper();
         try {
+            ApiService apiService = new ApiService();
+            ApiResponse apiResponse = new ApiResponse();
+
+            String url = this.baseUrl + this.getBranchesEndpoint;
+            List<NameValuePair> params = new ArrayList<>();
+            String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+            ObjectMapper mapper = new ObjectMapper();
             apiResponse = mapper.readValue(result, ApiResponse.class);
-        }  catch (Exception e) {
-            e.printStackTrace();
+
+            final List<Branch> data = (List<Branch>) apiResponse.getData();
+            webEngine.executeScript("closeLoadingModal('"+ App.appContextHolder.isOnlineMode()+"')");
+            // launch a background thread (async)
+            new Thread( () -> {
+                try {
+                    sleep(1000); //add some processing simulation... Also if you remove this shit will break
+                    runLater( () ->
+                            Java2JavascriptUtils.call(callbackfunction, toJSONString(data))
+                    );
+                } catch (InterruptedException e) {	}
+            }).start();
+        } catch (IOException e) {
+            App.appContextHolder.setOnlineMode(false);
+            webEngine.executeScript("closeLoadingModal('"+ App.appContextHolder.isOnlineMode()+"')");
         }
-        final List<Branch> data = (List<Branch>) apiResponse.getData();
-        webEngine.executeScript("closeLoadingModal('"+ App.appContextHolder.isOnlineMode()+"')");
-        // launch a background thread (async)
-        new Thread( () -> {
-                       try {
-                              sleep(1000); //add some processing simulation...
-                              runLater( () ->
-                                            Java2JavascriptUtils.call(callbackfunction, toJSONString(data))
-                                           );
-                          } catch (InterruptedException e) {	}
-                  }
-                    ).start();
 
     }
 

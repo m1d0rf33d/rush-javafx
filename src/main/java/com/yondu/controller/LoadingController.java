@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
@@ -76,43 +77,53 @@ public class LoadingController implements Initializable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //Prepare data
+        //Screen shot and read total sales
         SalesCaptureService myService = new SalesCaptureService();
         myService.setOnSucceeded((WorkerStateEvent t) ->{
-            OrCaptureService orCaptureService = new OrCaptureService();
-            orCaptureService.setOnSucceeded((WorkerStateEvent a) ->{
-                ConvertPointsService convertPointsService = new ConvertPointsService();
-                convertPointsService.setOnSucceeded((WorkerStateEvent c) -> {
-                    CustomerInfoService customerInfoService = new CustomerInfoService();
-                    customerInfoService.setOnSucceeded((WorkerStateEvent e) -> {
-                        try{
-                            Stage stage = new Stage();
-                            FXMLLoader  loader  = new FXMLLoader(App.class.getResource(GIVE_POINTS_DETAILS_FXML));
-                            PointsDetailsController pointsDetailsController = new PointsDetailsController(orStr, totalAmountStr, convertedPoints, customer);
-                            loader.setController(pointsDetailsController);
-                            stage.setScene(new Scene(loader.load(), 500,400));
-                            stage.resizableProperty().setValue(Boolean.FALSE);
-                            stage.show();
+            //validate captured totalAmount
+            if (!NumberUtils.isDigits(totalAmountStr)) {
+                handleError("Captured total sales is not a valid amount : " + totalAmountStr);
+            } else {
+                //Screen shot and read or number
+                OrCaptureService orCaptureService = new OrCaptureService();
+                orCaptureService.setOnSucceeded((WorkerStateEvent a) ->{
 
-                            ((Stage)rushLogoImage.getScene().getWindow()).close();
-                        }catch (Exception err){
-                            err.printStackTrace();
-                        }
+                    //Convert captured total sales to points
+                    ConvertPointsService convertPointsService = new ConvertPointsService();
+                    convertPointsService.setOnSucceeded((WorkerStateEvent c) -> {
+
+                        //Get customer information for viewing
+                        CustomerInfoService customerInfoService = new CustomerInfoService();
+                        customerInfoService.setOnSucceeded((WorkerStateEvent e) -> {
+                            try{
+                                Stage stage = new Stage();
+                                FXMLLoader  loader  = new FXMLLoader(App.class.getResource(GIVE_POINTS_DETAILS_FXML));
+                                PointsDetailsController pointsDetailsController = new PointsDetailsController(orStr, totalAmountStr, convertedPoints, customer);
+                                loader.setController(pointsDetailsController);
+                                stage.setScene(new Scene(loader.load(), 500,400));
+                                stage.resizableProperty().setValue(Boolean.FALSE);
+                                stage.show();
+
+                                ((Stage)rushLogoImage.getScene().getWindow()).close();
+                            }catch (Exception err){
+                                err.printStackTrace();
+                            }
+                        });
+                        customerInfoService.setOnFailed((WorkerStateEvent f) -> {
+                            handleError("Customer info captured value: '" + totalAmountStr + "' is not a valid number.");
+                        });
+                        customerInfoService.start();
                     });
-                    customerInfoService.setOnFailed((WorkerStateEvent f) -> {
-                        handleError("Customer info captured value: '" + totalAmountStr + "' is not a valid number.");
+                    convertPointsService.setOnFailed((WorkerStateEvent x) -> {
+                        handleError("Convert captured value: '" + totalAmountStr + "' is not a valid number.");
                     });
-                    customerInfoService.start();
+                    convertPointsService.start();
                 });
-                convertPointsService.setOnFailed((WorkerStateEvent x) -> {
-                    handleError("Convert captured value: '" + totalAmountStr + "' is not a valid number.");
+                orCaptureService.setOnFailed((WorkerStateEvent d) -> {
+                    handleError("Or failed");
                 });
-                convertPointsService.start();
-            });
-            orCaptureService.setOnFailed((WorkerStateEvent d) -> {
-                handleError("Or failed");
-            });
-            orCaptureService.start();
+                orCaptureService.start();
+            }
         });
         myService.setOnFailed((WorkerStateEvent t) -> {
             handleError("Sales failed");
@@ -222,15 +233,25 @@ public class LoadingController implements Initializable{
         }
     }
     public void convertPoints() throws ParseException {
-        String url = baseUrl + pointsConversionEndpoint;
-        String result = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-        JSONParser parser = new JSONParser();
-        JSONObject jsonResponse = (JSONObject) parser.parse(result);
-        JSONObject data = (JSONObject) jsonResponse.get("data");
-        Long earningPeso = (Long) data.get("earning_peso");
-        Double totalAmount = Double.parseDouble(totalAmountStr);
-        Double points = totalAmount / earningPeso;
-        convertedPoints = String.valueOf(points);
+        if (App.appContextHolder.isOnlineMode()) {
+           try {
+               String url = baseUrl + pointsConversionEndpoint;
+               String result = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+               JSONParser parser = new JSONParser();
+               JSONObject jsonResponse = (JSONObject) parser.parse(result);
+               JSONObject data = (JSONObject) jsonResponse.get("data");
+               Long earningPeso = (Long) data.get("earning_peso");
+               Double totalAmount = Double.parseDouble(totalAmountStr);
+               Double points = totalAmount / earningPeso;
+               convertedPoints = String.valueOf(points);
+           } catch (IOException e) {
+               e.printStackTrace();
+               App.appContextHolder.setOnlineMode(false);
+
+           }
+        } else {
+            convertedPoints = "0";
+        }
     }
 
     private class SalesCaptureService extends Service<Void> {
@@ -301,13 +322,14 @@ public class LoadingController implements Initializable{
     }
 
     private void getCustomerInformation() {
-        java.util.List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
 
-        String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
-        String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-        JSONParser parser = new JSONParser();
         try {
+            java.util.List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
+
+            String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
+            String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            JSONParser parser = new JSONParser();
             JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
             JSONObject data = (JSONObject) jsonResponse.get("data");
             customer = new Account();
@@ -329,6 +351,12 @@ public class LoadingController implements Initializable{
             customer.setCurrentPoints(points);
         } catch (ParseException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            App.appContextHolder.setOnlineMode(false);
+            //Alert to offline mode
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to reach server. You are now in offline mode.", ButtonType.OK);
+            alert.showAndWait();
         }
     }
 }

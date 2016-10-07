@@ -10,16 +10,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
@@ -50,15 +48,18 @@ public class GivePointsController implements Initializable {
     public Button givePointsButton;
     @FXML
     public TextField mobileField;
+    @FXML
+    public Label mode;
 
     private String baseUrl;
     private String memberLoginEndpoint;
     private ApiService apiService;
-    private String givePointsEndpoint;
-    private Stage givePointsDetailsStage;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if (!App.appContextHolder.isOnlineMode()) {
+            mode.setText("OFFLINE");
+        }
         apiService = new ApiService();
         try {
             Properties prop = new Properties();
@@ -95,15 +96,15 @@ public class GivePointsController implements Initializable {
             public void handle(MouseEvent event) {
                 if (App.appContextHolder.getCustomerMobile() == null) {
                     try {
+                    if (App.appContextHolder.getEmployeeId().equals("OFFLINE_EMPLOYEE")) {
+                        throw new IOException();
+                    }
                     //login member
                     List<NameValuePair> params = new ArrayList<>();
                     params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getText()));
-
                     String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
                     String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
                     JSONParser parser = new JSONParser();
-
                         JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
                         if (!((String)jsonResponse.get("error_code")).equals("0x0")) {
                             Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) jsonResponse.get("message"), ButtonType.OK);
@@ -113,26 +114,45 @@ public class GivePointsController implements Initializable {
                                 alert.close();
                             }
                         } else {
-                           //Load givepoints result
+                            //Load givepoints result
                             JSONObject data = (JSONObject) jsonResponse.get("data");
                             App.appContextHolder.setCustomerUUID((String)data.get("id"));
                             App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
                             ((Stage)givePointsButton.getScene().getWindow()).close();
                             loadGivePointsDetailsView();
-
                         }
-
-                    } catch (Exception e) {
+                    } catch (IOException e) {
                         //Offline mode
                         e.printStackTrace();
-                        App.appContextHolder.setOnlineMode(false);
-                        App.appContextHolder.setCustomerMobile(mobileField.getText());
-                        App.appContextHolder.setEmployeeId(null);
-                        App.appContextHolder.setCustomerUUID(null);
-                        ((Stage)givePointsButton.getScene().getWindow()).close();
-                        loadGivePointsDetailsView();
+                        //Validate mobile field
+                        boolean isValid = true;
+                        if (mobileField.getText().isEmpty()) {
+                            isValid = false;
+                        } else {
+                            if (!NumberUtils.isDigits(mobileField.getText())) {
+                                    isValid = false;
+                            }
+                        }
+                        if (isValid) {
+                            App.appContextHolder.setOnlineMode(false);
+                            App.appContextHolder.setCustomerMobile(mobileField.getText());
+                            ((Stage)givePointsButton.getScene().getWindow()).close();
+                            loadGivePointsDetailsView();
+                        } else {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) "Invalid mobile number", ButtonType.OK);
+                            alert.showAndWait();
+
+                            if (alert.getResult() == ButtonType.OK) {
+                                alert.close();
+                            }
+                        }
+
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
                 } else {
+                    //Customer already logged in
                     ((Stage)givePointsButton.getScene().getWindow()).close();
                     loadGivePointsDetailsView();
                 }

@@ -68,7 +68,7 @@ public class SplashController implements Initializable{
                     try {
                         Stage givePointsStage = new Stage();
                         Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
-                        givePointsStage.setScene(new Scene(root, 400,200));
+                        givePointsStage.setScene(new Scene(root, 400,220));
                         givePointsStage.setTitle("Give Points");
                         givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                         givePointsStage.show();
@@ -91,29 +91,30 @@ public class SplashController implements Initializable{
         protected Task<Void> createTask() {
             return new Task<Void>() {
                 @Override
-                protected Void call() throws Exception {
+                protected Void call() {
                     //Prepare configuration files
-                    File dir = new File(System.getProperty("user.home") + "\\Rush-POS-Sync");
-                    if (!dir.exists()) {
-                        dir.mkdir();
-                    }
-                    File file = new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION);
-                    if (!file.exists()) {
-                        file.createNewFile();
-                        PrintWriter fstream = new PrintWriter(new FileWriter(file));
-                        fstream.println("sales_pos_x=");
-                        fstream.println("sales_pos_y=");
-                        fstream.println("sales_width=");
-                        fstream.println("sales_height=");
-                        fstream.println("or_pos_x=");
-                        fstream.println("or_pos_y=");
-                        fstream.println("or_width=");
-                        fstream.println("or_height=");
-                        fstream.flush();
-                        fstream.close();
-                    }
-                    //Check connection
                     try {
+                        File dir = new File(System.getProperty("user.home") + "\\Rush-POS-Sync");
+                        if (!dir.exists()) {
+                            dir.mkdir();
+                        }
+                        File file = new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION);
+                        if (!file.exists()) {
+                            file.createNewFile();
+                            PrintWriter fstream = new PrintWriter(new FileWriter(file));
+                            fstream.println("sales_pos_x=");
+                            fstream.println("sales_pos_y=");
+                            fstream.println("sales_width=");
+                            fstream.println("sales_height=");
+                            fstream.println("or_pos_x=");
+                            fstream.println("or_pos_y=");
+                            fstream.println("or_width=");
+                            fstream.println("or_height=");
+                            fstream.flush();
+                            fstream.close();
+                        }
+                        //Check connection
+
                         Properties prop = new Properties();
                         InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
                         if (inputStream != null) {
@@ -123,21 +124,20 @@ public class SplashController implements Initializable{
                         }
                         baseUrl = prop.getProperty("base_url");
                         getBranchesEndpoint = prop.getProperty("get_branches_endpoint");
+                        String url = baseUrl + getBranchesEndpoint;
+                        List<NameValuePair> params = new ArrayList<>();
+                        String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                        App.appContextHolder.setOnlineMode(true);
+                        Thread.sleep(1000);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
-                    String url = baseUrl + getBranchesEndpoint;
-                    List<NameValuePair> params = new ArrayList<>();
-                    String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-                    if (result == null) {
                         App.appContextHolder.setOnlineMode(false);
-                    } else {
-                        App.appContextHolder.setOnlineMode(true);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
 
-                    Thread.sleep(1000);
                     return null;
                 }
             };

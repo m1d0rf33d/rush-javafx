@@ -13,7 +13,7 @@ angular.module('HomeModule')
     }
 })
 .controller('MemberProfileCtrl', function($scope, $stateParams, DTOptionsBuilder, DTColumnBuilder, $q, $rootScope) {
-
+    $scope.message = "Offline Mode"
     var vm = this;
     $scope.activeVouchers = [];
     var getTableData = function() {

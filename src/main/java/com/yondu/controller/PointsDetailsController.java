@@ -55,6 +55,8 @@ public class PointsDetailsController implements Initializable{
     public Label totalAmountLbl;
     @FXML
     public Label currentPointsLbl;
+    @FXML
+    public Label mode;
 
     private ApiService apiService;
 
@@ -76,6 +78,9 @@ public class PointsDetailsController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if (!App.appContextHolder.isOnlineMode()) {
+            mode.setText("OFFLINE");
+        }
 
         apiService = new ApiService();
         this.rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
@@ -103,14 +108,15 @@ public class PointsDetailsController implements Initializable{
             @Override
             public void handle(MouseEvent event) {
                 if (App.appContextHolder.isOnlineMode()) {
-                    java.util.List<NameValuePair> params = new ArrayList<>();
-                    params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
-                    params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberLbl.getText().trim()));
-                    params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmountLbl.getText().trim()));
-                    String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-                    String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-                    JSONParser parser = new JSONParser();
-                    try {
+                    try{
+                        java.util.List<NameValuePair> params = new ArrayList<>();
+                        params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
+                        params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberLbl.getText().trim()));
+                        params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmountLbl.getText().trim()));
+                        String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+                        String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                        JSONParser parser = new JSONParser();
+
                         JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
                         if (jsonResponse.get("error_code").equals("0x0")) {
                             Alert alert = new Alert(Alert.AlertType.INFORMATION,"Give points successful", ButtonType.OK);

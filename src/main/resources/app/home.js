@@ -95,6 +95,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     $scope.goToMemberLoginView = function() {
 
         if ($rootScope.memberId != undefined) {
+            angular.element(".temp").remove();
             angular.element("#home-loading-modal").modal('show');
             $timeout(function(){
                 $state.go('member-profile-view');
@@ -106,7 +107,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
 
     $scope.goToPayWithPointsView = function() {
         if ($rootScope.memberId == undefined) {
-            $(".alert").remove();
+            angular.element(".temp").remove();
             $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
             $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Unable to give points</strong> </div>');
             $("#myModal").modal('show');
@@ -121,7 +122,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
 
     $scope.goToVoucherRedemptionView = function() {
         if ($rootScope.memberId == undefined) {
-            $(".alert").remove();
+            angular.element(".temp").remove();
             $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
             $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Not allowed</strong> </div>');
             $("#myModal").modal('show');
@@ -136,7 +137,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     $scope.goToIssueRewardsView = function() {
 
         if ($rootScope.memberId == undefined) {
-            $(".alert").remove();
+            angular.element(".temp").remove();
             $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
             $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Not allowed</strong> </div>');
             $("#myModal").modal('show');
@@ -150,7 +151,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
 
      $scope.goToTransactionsView = function() {
          if ($rootScope.memberId == undefined) {
-             $(".alert").remove();
+             angular.element(".temp").remove();
              $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
              $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Not allowed</strong> </div>');
              $("#myModal").modal('show');
@@ -195,19 +196,15 @@ homeModule.directive('backImg', function(){
 
 
 function closeLoadingModal(resp) {
-    $(".temp").remove();
     if (resp == 'false') {
+        $(".temp").remove();
         $("#mode").text("OFFLINE");
         $(".home-modal-body").prepend('<div class="temp"><p>You are currently in offline mode, only feature available is Give Points. </p></div>');
         $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Network connection error</strong> </div>');
         $("#myModal").modal('show');
+    }else {
+        $("#mode").text("");
     }
     $("#home-loading-modal").modal('hide');
 }
 
-
-$(document).ready(function() {
-    $('#myModal').on('hidden.bs.modal', function () {
-        $(".temp").remove();
-    })
-});

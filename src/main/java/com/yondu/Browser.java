@@ -27,7 +27,8 @@ public class Browser extends Region{
     public Browser() {
         //Retrieve local html resource
         String page = "";
-        if (App.appContextHolder.getEmployeeId() == null) {
+        if (App.appContextHolder.getEmployeeId() == null ||
+                (App.appContextHolder.getEmployeeId() != null && App.appContextHolder.getEmployeeId().equals("OFFLINE_EMPLOYEE"))) {
             page = App.class.getResource(LOGIN_PAGE).toExternalForm();
         } else {
             page = App.class.getResource("/app/home.html").toExternalForm();

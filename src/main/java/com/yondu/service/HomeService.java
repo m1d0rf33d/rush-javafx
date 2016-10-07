@@ -4,17 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.yondu.App;
-import com.yondu.AppContextHolder;
 import com.yondu.Browser;
 import com.yondu.model.Account;
 import com.yondu.model.constants.ApiFieldContants;
-import com.yondu.model.ApiResponse;
 import com.yondu.utils.Java2JavascriptUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
@@ -35,12 +31,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import static java.lang.Thread.sleep;
-import static javafx.application.Platform.runLater;
-import static org.bytedeco.javacpp.lept.pixDestroy;
-import static org.bytedeco.javacpp.lept.pixRead;
-import static org.junit.Assert.assertTrue;
-import static com.yondu.model.constants.AppConfigConstants.*;
+import static com.yondu.model.constants.AppConfigConstants.GIVE_POINTS_FXML;
+import static com.yondu.model.constants.AppConfigConstants.SETTINGS_FXML;
 
 /** Home Module services / Java2Javascript bridge
  *  Methods inside this class can be invoked inside a javascript using alert("__CONNECT__BACKEND__homeService")
@@ -131,35 +123,38 @@ public class HomeService {
      *
      */
     public void register() {
-        //Read html form values
-        HTMLInputElement nameField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_NAME);
-        HTMLInputElement emailField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_EMAIL);
-        HTMLInputElement mobileField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_MOBILE);
-        HTMLInputElement mpinField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MPIN);
-        HTMLInputElement birthdateField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.BIRTHDATE);
-        HTMLSelectElement genderField = (HTMLSelectElement) this.webEngine.getDocument().getElementById(ApiFieldContants.GENDER);
+        try {
+            //Read html form values
+            HTMLInputElement nameField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_NAME);
+            HTMLInputElement emailField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_EMAIL);
+            HTMLInputElement mobileField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MEMBER_MOBILE);
+            HTMLInputElement mpinField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.MPIN);
+            HTMLInputElement birthdateField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.BIRTHDATE);
+            HTMLSelectElement genderField = (HTMLSelectElement) this.webEngine.getDocument().getElementById(ApiFieldContants.GENDER);
 
-        //Build request body
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_NAME, nameField.getValue()));
-        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_EMAIL, emailField.getValue()));
-        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getValue()));
-        params.add(new BasicNameValuePair(ApiFieldContants.MPIN, mpinField.getValue()));
-        //Optional fields
-        if (birthdateField.getValue() != null && !birthdateField.getValue().isEmpty()) {
-            params.add(new BasicNameValuePair(ApiFieldContants.BIRTHDATE, birthdateField.getValue()));
-        }
-        if (genderField.getValue() != null && !genderField.getValue().isEmpty()) {
-            params.add(new BasicNameValuePair(ApiFieldContants.GENDER, genderField.getValue()));
-        }
+            //Build request body
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_NAME, nameField.getValue()));
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_EMAIL, emailField.getValue()));
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getValue()));
+            params.add(new BasicNameValuePair(ApiFieldContants.MPIN, mpinField.getValue()));
+            //Optional fields
+            if (birthdateField.getValue() != null && !birthdateField.getValue().isEmpty()) {
+                params.add(new BasicNameValuePair(ApiFieldContants.BIRTHDATE, birthdateField.getValue()));
+            }
+            if (genderField.getValue() != null && !genderField.getValue().isEmpty()) {
+                params.add(new BasicNameValuePair(ApiFieldContants.GENDER, genderField.getValue()));
+            }
 
 
-        String url = baseUrl + registerEndpoint;
-        String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
-        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
-        if (jsonResponse != null) {
+            String url = baseUrl + registerEndpoint;
+            String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
             this.webEngine.executeScript("registerResponseHandler('"+jsonResponse+"')");
+        } catch (IOException e) {
+            e.printStackTrace();
+            App.appContextHolder.setOnlineMode(false);
         }
+        webEngine.executeScript("closeLoadingModal('"+ App.appContextHolder.isOnlineMode()+"')");
     }
 
     /** Login member
@@ -168,16 +163,17 @@ public class HomeService {
      */
     public void loginMember(String mobileNumber, final Object callbackfunction) {
 
-        //Build request body
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileNumber));
-
-        String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
-        String result = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-
-        JSONParser parser = new JSONParser();
         try {
+            //Build request body
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileNumber));
+
+            String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
+            String result = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+
+            JSONParser parser = new JSONParser();
+
             JSONObject jsonObject = (JSONObject) parser.parse(result);
             String error =  (String) jsonObject.get(ApiFieldContants.ERROR_CODE);
             if (error.equals(ApiFieldContants.NO_ERROR)) {
@@ -201,78 +197,57 @@ public class HomeService {
                 data.put("activeVouchers", responseStr);
                 result = jsonObject.toJSONString();
             }
-        } catch (Exception e) {
-            result = null;
-            e.printStackTrace();
-        }
-        final String responseStr = result;
-        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
 
-        if (responseStr != null) {
+            final String responseStr = result;
             new Thread( () -> {
                 Java2JavascriptUtils.call(callbackfunction, responseStr);
             }).start();
+        } catch (IOException e) {
+            App.appContextHolder.setOnlineMode(false);
+            e.printStackTrace();
+            //offline mode
+        } catch (ParseException e) {
+           //invalid response format
+            e.printStackTrace();
         }
-    }
-
-    /** Load points conversion rules
-     *
-     * @param callbackfunction
-     */
-    public void loadPointsRule(final Object callbackfunction) {
-
-        String url = baseUrl + pointsConversionEndpoint;
-        String result = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-        new Thread( () -> {
-            Java2JavascriptUtils.call(callbackfunction, result);
-        }).start();
-    }
-
-    /** Get member current points a javascript response handler function will handle the results.
-     *
-     */
-    public void getPoints() {
-        //Build request body
-        List<NameValuePair> params = new ArrayList<>();
-        String url = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-        String jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-        this.webEngine.executeScript("getPointsHandler('"+jsonResponse+"')");
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
 
     /** Pay using points
      *
      */
     public void payWithPoints(String points, String orNumber, String amount) {
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
-        params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
-        params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount));
-        params.add(new BasicNameValuePair(ApiFieldContants.POINTS, points));
-        String url = baseUrl + payWithPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-        String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-        jsonResponse = jsonResponse.replace("'","");
+       try {
+           List<NameValuePair> params = new ArrayList<>();
+           params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
+           params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
+           params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount));
+           params.add(new BasicNameValuePair(ApiFieldContants.POINTS, points));
+           String url = baseUrl + payWithPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+           String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+           jsonResponse = jsonResponse.replace("'","");
 
-        JSONParser parser = new JSONParser();
-        try {
-            JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
-            String error =  (String) jsonObj.get(ApiFieldContants.ERROR_CODE);
-            if (error.equals(ApiFieldContants.NO_ERROR)) {
-                //get current points
-                params = new ArrayList<>();
-                url = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-                String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-                JSONObject resultJson = (JSONObject) parser.parse(result);
-                jsonObj.put("points", resultJson.get("data"));
-                jsonResponse = jsonObj.toJSONString();
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+           JSONParser parser = new JSONParser();
+           JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
+           String error =  (String) jsonObj.get(ApiFieldContants.ERROR_CODE);
+           if (error.equals(ApiFieldContants.NO_ERROR)) {
+               //get current points
+               params = new ArrayList<>();
+               url = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+               String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+               JSONObject resultJson = (JSONObject) parser.parse(result);
+               jsonObj.put("points", resultJson.get("data"));
+               jsonResponse = jsonObj.toJSONString();
+           }
 
-
-
-        webEngine.executeScript("payWithPointsResponse('"+jsonResponse+"')");
+           webEngine.executeScript("payWithPointsResponse('"+jsonResponse+"')");
+       } catch (IOException e) {
+           App.appContextHolder.setOnlineMode(false);
+           e.printStackTrace();
+       } catch (ParseException e) {
+           e.printStackTrace();
+       }
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
 
     /** Load all merchant rewards
@@ -281,14 +256,19 @@ public class HomeService {
      */
     public void loadRewards(final Object callbackfunction) {
 
+        try {
+            String url = baseUrl + getRewardsMerchantEndpoint;
+            String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
-        String url = baseUrl + getRewardsMerchantEndpoint;
-        String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-        final String data = jsonResponse;
-        new Thread( () -> {
-            Java2JavascriptUtils.call(callbackfunction, data);
-        }).start();
+            final String data = jsonResponse;
+            new Thread( () -> {
+                Java2JavascriptUtils.call(callbackfunction, data);
+            }).start();
+        } catch (IOException e) {
+            App.appContextHolder.setOnlineMode(false);
+            e.printStackTrace();
+        }
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
 
     /** Redeeem member reward
@@ -298,15 +278,15 @@ public class HomeService {
      */
     public void redeemRewards(String rewardId, String pin) {
 
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin));
-        String url = baseUrl + redeemRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerUUID());
-        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-        url = url.replace(":reward_id", rewardId);
-        String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-        responseStr  = responseStr.replace("'","");
-        //retrieve current points
         try {
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin));
+            String url = baseUrl + redeemRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerUUID());
+            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+            url = url.replace(":reward_id", rewardId);
+            String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            responseStr  = responseStr.replace("'","");
+            //retrieve current points
             JSONParser parser = new JSONParser();
             JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
             //get current points
@@ -317,20 +297,24 @@ public class HomeService {
             JSONObject json = (JSONObject) parser.parse(res);
             jsonResponse.put("points",  json.get("data"));
             responseStr = jsonResponse.toJSONString();
+
+            this.webEngine.executeScript("redeemRewardsResponseHandler('"+responseStr+"')");
+        } catch (IOException e) {
+            App.appContextHolder.setOnlineMode(false);
+            e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        this.webEngine.executeScript("redeemRewardsResponseHandler('"+responseStr+"')");
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
 
     public void loadCustomerRewards(final Object callbackfunction) {
-         String tempdata = "";
-        //Retrieve all rewards
-        String url = baseUrl + getRewardsEndpoint;
-        String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
-        JSONParser parser = new JSONParser();
         try {
+            String tempdata = "";
+            //Retrieve all rewards
+            String url = baseUrl + getRewardsEndpoint;
+            String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+            JSONParser parser = new JSONParser();
             JSONObject rewardsJson = (JSONObject) parser.parse(jsonResponse);
             List<JSONObject> rewardsDataList = (ArrayList) rewardsJson.get("data");
             url = baseUrl + unclaimedRewardsEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
@@ -352,35 +336,39 @@ public class HomeService {
                 }
             }
             tempdata = unclaimedJson.toJSONString();
+            final String finalData = tempdata;
+            new Thread( () -> {
+                Java2JavascriptUtils.call(callbackfunction, finalData);
+            }).start();
+        } catch (IOException e) {
+            App.appContextHolder.setOnlineMode(false);
+            e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        final String finalData = tempdata;
-        new Thread( () -> {
-            Java2JavascriptUtils.call(callbackfunction, finalData);
-        }).start();
-
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
 
 
     public void issueReward(String redeemId) {
-
-
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.REDEEM_ID, redeemId));
-        String url = baseUrl + claimRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerUUID());
-        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-        String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-        JSONParser parser = new JSONParser();
         try {
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.REDEEM_ID, redeemId));
+            String url = baseUrl + claimRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerUUID());
+            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+            String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            JSONParser parser = new JSONParser();
             JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
             jsonObj.put("redeemId", redeemId);
             jsonResponse = jsonObj.toJSONString();
+            this.webEngine.executeScript("issueRewardsResponseHandler('"+jsonResponse+"')");
+        } catch (IOException e) {
+            App.appContextHolder.setOnlineMode(false);
+            e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        this.webEngine.executeScript("issueRewardsResponseHandler('"+jsonResponse+"')");
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
 
     public void loadSettingsView() {
@@ -407,7 +395,7 @@ public class HomeService {
             }
             givePointsStage = new Stage();
             Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
-            givePointsStage.setScene(new Scene(root, 400,200));
+            givePointsStage.setScene(new Scene(root, 400,220));
             givePointsStage.setTitle("Give Points");
             givePointsStage.resizableProperty().setValue(Boolean.FALSE);
             givePointsStage.show();
@@ -416,6 +404,7 @@ public class HomeService {
 
         } catch (IOException e) {
             e.printStackTrace();
+
         }
     }
 
@@ -435,16 +424,16 @@ public class HomeService {
 
     public void fetchCustomerData(Object callbackfunction) {
         String result = "";
-        if (App.appContextHolder.getCustomerMobile() != null) {
-           //Retrieve customer information
-            //Build request body
-            List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
+        if (App.appContextHolder.getCustomerMobile() != null && App.appContextHolder.getCustomerUUID() != null) {
 
-            String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
-            result = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-            JSONParser parser = new JSONParser();
             try {
+                //Build request body
+                List<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
+
+                String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
+                result = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                JSONParser parser = new JSONParser();
                 JSONObject jsonResponse = (JSONObject) parser.parse(result);
                 JSONObject data = (JSONObject) jsonResponse.get("data");
                 //get current points
@@ -462,38 +451,41 @@ public class HomeService {
                 responseStr = new Gson().toJson(d);
                 data.put("activeVouchers", responseStr);
                 result = jsonResponse.toJSONString();
-
+                final String finalData = result;
+                new Thread( () -> {
+                    Java2JavascriptUtils.call(callbackfunction, finalData);
+                }).start();
+            } catch(IOException e) {
+                App.appContextHolder.setOnlineMode(false);
+                e.printStackTrace();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
-        webEngine.executeScript("closeLoadingModal()");
-        final String responseStr = result;
-        if (!responseStr.isEmpty()) {
-            new Thread( () -> {
-                Java2JavascriptUtils.call(callbackfunction, responseStr);
-            }).start();
-        }
-
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
 
     public void getCustomerRewards(Object callbackfunction) {
-        List params = new ArrayList<>();
-        String url = baseUrl + customerRewardsEndpoint.replace(":id",App.appContextHolder.getCustomerUUID());
-        String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
-        JSONParser parser = new JSONParser();
         try {
+            List params = new ArrayList<>();
+            String url = baseUrl + customerRewardsEndpoint.replace(":id",App.appContextHolder.getCustomerUUID());
+            String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+            JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(responseStr);
             List<JSONObject> data = (ArrayList) jsonObject.get("data");
             responseStr = new Gson().toJson(data);
+
+            final String dataStr = responseStr;
+            new Thread( () -> {
+                Java2JavascriptUtils.call(callbackfunction, dataStr);
+            }).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            App.appContextHolder.setOnlineMode(false);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        final String dataStr = responseStr;
-        new Thread( () -> {
-            Java2JavascriptUtils.call(callbackfunction, dataStr);
-        }).start();
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
 
     public void logoutMember() {
@@ -503,14 +495,20 @@ public class HomeService {
 
     public void getCustomerTransactions(Object callbackfunction) {
 
-        List params = new ArrayList<>();
-        String url = baseUrl + customerTransactionsEndpoint.replace(":id",App.appContextHolder.getCustomerUUID());
-        String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+        try {
+            List params = new ArrayList<>();
+            String url = baseUrl + customerTransactionsEndpoint.replace(":id",App.appContextHolder.getCustomerUUID());
+            String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
 
-        webEngine.executeScript("closeLoadingModal()");
-        new Thread( () -> {
-            Java2JavascriptUtils.call(callbackfunction, responseStr);
-        }).start();
+            webEngine.executeScript("closeLoadingModal()");
+            new Thread( () -> {
+                Java2JavascriptUtils.call(callbackfunction, responseStr);
+            }).start();
+        } catch (IOException e) {
+            App.appContextHolder.setOnlineMode(false);
+            e.printStackTrace();
+        }
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
 
 }

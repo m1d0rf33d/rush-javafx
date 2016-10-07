@@ -5,7 +5,7 @@ angular.module('HomeModule')
 });
 
 function registerResponseHandler(jsonResponse) {
-    $(".alert").remove();
+    $(".temp").remove();
     var resp = JSON.parse(jsonResponse);
     if (resp.message != undefined) {
         //registration failed

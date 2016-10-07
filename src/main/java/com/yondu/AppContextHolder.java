@@ -70,6 +70,9 @@ public class AppContextHolder {
     }
 
     public String getEmployeeId() {
+        if (this.employeeId == null) {
+            return "OFFLINE_EMPLOYEE";
+        }
         return employeeId;
     }
 

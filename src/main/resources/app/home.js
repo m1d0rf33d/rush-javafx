@@ -43,7 +43,10 @@ var homeModule = angular.module('HomeModule', ['ui.router','datatables','datatab
             url: '/issue-rewards-view',
             templateUrl: 'issue-rewards.html'
         })
-
+        .state('transactions-view', {
+            url: '/transactions-view',
+            templateUrl: 'transactions.html'
+        })
 
 })
 homeModule.controller('HomeController', function($scope, $state, $rootScope, $timeout){
@@ -144,6 +147,13 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
             $state.go('issue-rewards-view',{},{reload:true});
         }, 1000);
     }
+
+     $scope.goToTransactionsView = function() {
+         angular.element("#home-loading-modal").modal('show');
+         $timeout(function(){
+             $state.go('transactions-view',{},{reload:true});
+         }, 1000);
+     }
 
     $scope.logoutMember = function() {
         $rootScope.memberId = undefined;

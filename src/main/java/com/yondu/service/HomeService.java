@@ -65,6 +65,7 @@ public class HomeService {
     private String claimRewardsEndpoint;
     private String getRewardsMerchantEndpoint;
     private String customerRewardsEndpoint;
+    private String customerTransactionsEndpoint;
 
     private Stage ocrConfigStage;
     private Stage givePointsStage;
@@ -92,6 +93,7 @@ public class HomeService {
             this.claimRewardsEndpoint = prop.getProperty("claim_rewards_endpoint");
             this.getRewardsMerchantEndpoint =prop.getProperty("get_rewards_merchant_endpoint");
             this.customerRewardsEndpoint = prop.getProperty("customer_rewards_endpoint");
+            this.customerTransactionsEndpoint = prop.getProperty("customer_transactions_endpoint");
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -490,4 +492,17 @@ public class HomeService {
         App.appContextHolder.setCustomerUUID(null);
         App.appContextHolder.setCustomerMobile(null);
     }
+
+    public void getCustomerTransactions(Object callbackfunction) {
+
+        List params = new ArrayList<>();
+        String url = baseUrl + customerTransactionsEndpoint.replace(":id",App.appContextHolder.getCustomerUUID());
+        String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+
+        webEngine.executeScript("closeLoadingModal()");
+        new Thread( () -> {
+            Java2JavascriptUtils.call(callbackfunction, responseStr);
+        }).start();
+    }
+
 }

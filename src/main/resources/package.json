@@ -9,7 +9,6 @@
 		"angular-ui-router": "",
 		"angular-bootstrap": "",
 		"angular-modal-service": "",
-		"angular-datatables": "",
-		"angular-ui": ""
+		"angular-datatables": ""
 	}
 }

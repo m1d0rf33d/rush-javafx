@@ -524,9 +524,11 @@ public class HomeService {
                     jsonObject.put("mobileNumber", arr[0].split("=")[1]);
                     jsonObject.put("totalAmount", arr[1].split("=")[1]);
                     jsonObject.put("orNumber", arr[2].split("=")[1]);
+                    jsonObject.put("date", arr[3].split("=")[1]);
                     jsonArray.add(jsonObject);
                 }
             } catch (IOException e) {
+                App.appContextHolder.setOnlineMode(false);
                 e.printStackTrace();
             }
 
@@ -535,6 +537,90 @@ public class HomeService {
                 Java2JavascriptUtils.call(callbackFunction, finalData);
             }).start();
         }
-        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
+        this.webEngine.executeScript("closeLoadingModal('true')");
+    }
+
+    public void sendOfflinePoints() {
+        File file = new File(System.getProperty("user.home") + "\\Rush-POS-Sync\\offline.txt");
+
+        if (file.exists()) {
+            JSONArray failedArray = new JSONArray();
+            JSONArray successArray = new JSONArray();
+            //Read file
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String[] arr = line.split(",");
+
+                    String mobileNumber = arr[0].split("=")[1];
+                    String totalAmount = arr[1].split("=")[1];
+                    String orNumber = arr[2].split("=")[1];
+                    String date = arr[3].split("=")[1];
+
+                    JSONObject json = new JSONObject();
+                    json.put("mobileNumber",mobileNumber);
+                    json.put("totalAmount", totalAmount);
+                    json.put("orNumber", orNumber);
+                    json.put("date", date);
+                    //Retrieve customer information
+                    //Build request body
+                    List<NameValuePair> params = new ArrayList<>();
+                    params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileNumber));
+
+                    String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
+                    String resultJson = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+                    JSONParser parser = new JSONParser();
+                    JSONObject jsonObject = (JSONObject) parser.parse(resultJson);
+                    if (!jsonObject.get("error_code").equals("0x0")) {
+
+                        json.put("message", "No member found with corresponding mobile number.");
+                        failedArray.add(json);
+                    } else {
+                        JSONObject data = (JSONObject) jsonObject.get("data");
+                        params = new ArrayList<>();
+                        params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
+                        params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
+                        params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmount));
+                        url = baseUrl + givePointsEndpoint.replace(":customer_uuid", (String) data.get("id"));
+                        resultJson = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+                        jsonObject = (JSONObject) parser.parse(resultJson);
+                        if (!jsonObject.get("error_code").equals("0x0")) {
+                            JSONObject error = (JSONObject) jsonObject.get("errors");
+                            String errorMessage = "";
+                            if (error.get("or_no") != null) {
+                                List<String> l = (ArrayList<String>) error.get("or_no");
+                                errorMessage = l.get(0);
+                            }
+                            if (error.get("amount") != null) {
+                                List<String> l = (ArrayList<String>) error.get("amount");
+                                errorMessage = l.get(0);
+                            }
+                            json.put("message", errorMessage);
+                            failedArray.add(json);
+                        } else {
+                            successArray.add(json);
+                        }
+                    }
+                }
+                //Clear offline.txt
+                PrintWriter writer = new PrintWriter(file);
+                writer.print("");
+                writer.close();
+
+                br.close();
+                JSONObject finalJson = new JSONObject();
+                finalJson.put("successArray", successArray);
+                finalJson.put("failedArray", failedArray);
+                this.webEngine.executeScript("sendOfflinePointsResponse('"+ finalJson.toJSONString()+"')");
+            } catch (IOException e) {
+                App.appContextHolder.setOnlineMode(false);
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
+        }
     }
 }

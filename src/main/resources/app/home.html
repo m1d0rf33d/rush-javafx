@@ -175,19 +175,23 @@
     </div>
     <!-- End -->
 
-    <!-- Result Modal -->
-    <div  id="home-result-modal" class="modal fade" role="dialog"  tabindex="-1"  >
+    <!-- Offline transactions -->
+    <div  id="offlineModal" class="modal fade" role="dialog"  tabindex="-1"  >
         <div class="modal-dialog">
 
             <!-- Modal content-->
-            <div class="modal-content" style="background: white !important;height: 200px;">
-                <div class="modal-body home-result-body">
+            <div class="modal-content" style="background: white !important;width: 800px !important;">
+                <div class="modal-header offline-result-header">
 
                 </div>
+                <div class="modal-body offline-result-body" style="height: 300px; overflow: auto;">
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-send" type="button" data-dismiss="modal">Okay</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="goToMemberLoginView()">Close</button>
-            </div>
+
         </div>
     </div>
     <!-- End -->
@@ -200,6 +204,6 @@
     });
 
     document.oncontextmenu = document.body.oncontextmenu = function() {return false;}
-</script><!-- <script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>-->
+</script> <!--<script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>-->
 
 </body></html>

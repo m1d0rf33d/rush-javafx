@@ -25,6 +25,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -163,8 +164,11 @@ public class PointsDetailsController implements Initializable{
                         if (!file.exists()) {
                             file.createNewFile();
                         }
+                        SimpleDateFormat df  = new SimpleDateFormat("MM/dd/YYYY");
+                        String date = df.format(new Date());
+
                         PrintWriter fstream = new PrintWriter(new FileWriter(file,true));
-                        fstream.println("mobileNumber=" + customer.getMobileNumber()+ ",totalAmount=" + totalAmount + ", orNumber=" + orNumber);
+                        fstream.println("mobileNumber=" + customer.getMobileNumber()+ ",totalAmount=" + totalAmount + ", orNumber=" + orNumber + ", date=" + date);
                         fstream.flush();
                         fstream.close();
 

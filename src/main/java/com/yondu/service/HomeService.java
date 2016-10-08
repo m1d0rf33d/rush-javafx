@@ -538,7 +538,7 @@ public class HomeService {
                 Java2JavascriptUtils.call(callbackFunction, finalData);
             }).start();
         }
-        this.webEngine.executeScript("closeLoadingModal('true')");
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
 
     public void sendOfflinePoints() {

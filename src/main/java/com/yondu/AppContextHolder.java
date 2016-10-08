@@ -36,9 +36,27 @@ public class AppContextHolder {
     //Stage references
     private Stage homeStage;
     private boolean onlineMode;
+    private Stage orCaptureStage;
+    private Stage salesCaptureStage;
 
     private String ocrFullPath;
     private String offlinePath;
+
+    public Stage getSalesCaptureStage() {
+        return salesCaptureStage;
+    }
+
+    public void setSalesCaptureStage(Stage salesCaptureStage) {
+        this.salesCaptureStage = salesCaptureStage;
+    }
+
+    public Stage getOrCaptureStage() {
+        return orCaptureStage;
+    }
+
+    public void setOrCaptureStage(Stage orCaptureStage) {
+        this.orCaptureStage = orCaptureStage;
+    }
 
     public String getOfflinePath() {
         return offlinePath;

@@ -102,7 +102,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
             angular.element(".temp").remove();
             angular.element("#home-loading-modal").modal('show');
             $timeout(function(){
-                $state.go('member-profile-view');
+                $state.go('member-profile-view',{},{reload:true});
             }, 500);
         } else {
             $state.go('member-login-view');

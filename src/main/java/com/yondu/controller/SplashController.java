@@ -99,8 +99,8 @@ public class SplashController implements Initializable{
                             dir.mkdir();
                         }*/
 
-                        File file = new File("/home/aomine/Desktop/ocr.properties");
-                        //File file = new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION);
+                        //File file = new File("/home/aomine/Desktop/ocr.properties");
+                        File file = new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION);
                         if (!file.exists()) {
                             file.createNewFile();
                             PrintWriter fstream = new PrintWriter(new FileWriter(file));
@@ -115,11 +115,12 @@ public class SplashController implements Initializable{
                             fstream.flush();
                             fstream.close();
 
-                            //App.appContextHolder.setOcrFullPath(file.getAbsolutePath());
-                            //App.appContextHolder.setOfflinePath(System.getProperty("user.home") + AppConfigConstants.OFFLINE_LOCATION);
+
                         }
-                        App.appContextHolder.setOfflinePath("/home/aomine/Desktop/offline.txt");
-                        App.appContextHolder.setOcrFullPath("/home/aomine/Desktop/ocr.properties");
+                        App.appContextHolder.setOcrFullPath(file.getAbsolutePath());
+                        App.appContextHolder.setOfflinePath(System.getProperty("user.home") + AppConfigConstants.OFFLINE_LOCATION);
+                       /* App.appContextHolder.setOfflinePath("/home/aomine/Desktop/offline.txt");
+                        App.appContextHolder.setOcrFullPath("/home/aomine/Desktop/ocr.properties");*/
                         //Check connection
 
                         Properties prop = new Properties();

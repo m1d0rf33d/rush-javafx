@@ -8,34 +8,58 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.SettingsController">
    <children>
-      <Button layoutX="133.0" layoutY="292.0" mnemonicParsing="false" onAction="#loadSalesCaptureArea" prefHeight="40.0" prefWidth="90.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white;" text="Capture" textFill="#f8f1f1" />
+      <Button fx:id="SalesCaptureButton" layoutX="179.0" layoutY="132.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="Capture " textFill="#f8f1f1">
+         <font>
+            <Font size="17.0" />
+         </font></Button>
       <Label layoutX="32.0" layoutY="258.0" prefHeight="15.0" prefWidth="185.0" text="OR number position:" textFill="#030303">
          <font>
             <Font size="15.0" />
          </font></Label>
-      <Button layoutX="33.0" layoutY="292.0" mnemonicParsing="false" onAction="#previewSalesCaptureArea" prefHeight="40.0" prefWidth="90.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white;" text="Preview" textFill="#f8f1f1" />
+      <Button layoutX="32.0" layoutY="132.0" mnemonicParsing="false" onAction="#previewSalesCaptureArea" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="Preview" textFill="#f8f1f1">
+         <font>
+            <Font size="17.0" />
+         </font></Button>
       <Label layoutX="26.0" layoutY="101.0" prefHeight="15.0" prefWidth="185.0" text="Total sales position:" textFill="#030303">
          <font>
             <Font size="15.0" />
          </font></Label>
-      <Button layoutX="175.0" layoutY="133.0" mnemonicParsing="false" onAction="#loadOrCaptureArea" prefHeight="40.0" prefWidth="90.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white;" text="Capture" textFill="#f8f1f1" />
-      <Button layoutX="69.0" layoutY="132.0" mnemonicParsing="false" onAction="#previewOrArea" prefHeight="40.0" prefWidth="90.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white;" text="Preview" textFill="#f8f1f1" />
-      <Button layoutX="220.0" layoutY="434.0" mnemonicParsing="false" onAction="#saveDimensions" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white;" text="Save" textFill="#f8f1f1" />
-      <Button layoutX="368.0" layoutY="434.0" mnemonicParsing="false" onAction="#exit" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white;" text="Cancel" textFill="#f8f1f1" />
+      <Button fx:id="OrCaptureButton" layoutX="179.0" layoutY="295.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="Capture OR" textFill="#f8f1f1">
+         <font>
+            <Font size="17.0" />
+         </font></Button>
+      <Button layoutX="32.0" layoutY="295.0" mnemonicParsing="false" onAction="#previewOrArea" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="Preview" textFill="#f8f1f1">
+         <font>
+            <Font size="17.0" />
+         </font></Button>
+      <Button layoutX="213.0" layoutY="434.0" mnemonicParsing="false" onAction="#saveDimensions" prefHeight="50.0" prefWidth="140.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="Save" textFill="#f8f1f1">
+         <font>
+            <Font size="17.0" />
+         </font></Button>
+      <Button layoutX="368.0" layoutY="434.0" mnemonicParsing="false" onAction="#exit" prefHeight="50.0" prefWidth="140.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="Cancel" textFill="#f8f1f1">
+         <font>
+            <Font size="17.0" />
+         </font></Button>
       <ImageView fx:id="previewImage" fitHeight="102.0" fitWidth="185.0" layoutX="437.0" layoutY="143.0" pickOnBounds="true" preserveRatio="true" />
       <Label layoutX="437.0" layoutY="260.0" prefHeight="15.0" prefWidth="185.0" text="Text from image:" textFill="#030303">
          <font>
             <Font size="15.0" />
          </font></Label>
       <TextArea fx:id="previewText" editable="false" layoutX="437.0" layoutY="286.0" prefHeight="57.0" prefWidth="231.0" style="-fx-background-radius: 0;" />
-      <Label fx:id="salesAreaLbl" layoutX="196.0" layoutY="261.0" prefHeight="15.0" prefWidth="191.0" />
-      <Label fx:id="orAreaLbl" layoutX="187.0" layoutY="102.0" prefHeight="15.0" prefWidth="191.0" />
+      <Label fx:id="salesAreaLbl" layoutX="169.0" layoutY="103.0" prefHeight="15.0" prefWidth="191.0" />
+      <Label fx:id="orAreaLbl" layoutX="179.0" layoutY="260.0" prefHeight="15.0" prefWidth="191.0" />
       <Label layoutX="434.0" layoutY="101.0" prefHeight="15.0" prefWidth="185.0" text="Preview Image:" textFill="#030303">
          <font>
             <Font size="15.0" />
          </font></Label>
-      <ImageView fx:id="rushLogoImageView" fitHeight="46.0" fitWidth="168.0" layoutX="264.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="setOrButton" layoutX="132.0" layoutY="293.0" mnemonicParsing="false" onAction="#loadOrCaptureArea" prefHeight="40.0" prefWidth="90.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white;" text="Set" textFill="#f8f1f1" />
-      <Button fx:id="setSalesButton" layoutX="175.0" layoutY="133.0" mnemonicParsing="false" onAction="#loadSalesCaptureArea" prefHeight="40.0" prefWidth="90.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white;" text="Set" textFill="#f8f1f1" />
+      <ImageView fx:id="rushLogoImageView" fitHeight="57.0" fitWidth="185.0" layoutX="264.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="setOrButton" layoutX="179.0" layoutY="295.0" mnemonicParsing="false" onAction="#loadOrCaptureArea" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="Set" textFill="#f8f1f1">
+         <font>
+            <Font size="17.0" />
+         </font></Button>
+      <Button fx:id="setSalesButton" layoutX="179.0" layoutY="132.0" mnemonicParsing="false" onAction="#loadSalesCaptureArea" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="Set" textFill="#f8f1f1">
+         <font>
+            <Font size="17.0" />
+         </font></Button>
    </children>
 </Pane>

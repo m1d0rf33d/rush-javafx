@@ -1,6 +1,7 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import com.yondu.utils.ResizeHelper;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -20,9 +22,6 @@ import java.util.ResourceBundle;
  */
 public class OrCaptureController implements Initializable{
 
-
-    @FXML
-    public Button captureButton;
     @FXML
     public Pane capturePane;
 
@@ -30,50 +29,28 @@ public class OrCaptureController implements Initializable{
     private static double xOffset = 0;
     private static double yOffset = 0;
 
-
-    public void captureOrDimension() {
-
-        Stage stage = (Stage) this.captureButton.getScene().getWindow();
-        Double posX = stage.getX(),
-                posY = stage.getY(),
-                width = stage.getWidth(),
-                height = stage.getHeight();
-
-        App.appContextHolder.setOrNumberPosX(posX.intValue());
-        App.appContextHolder.setOrNumberPosY(posY.intValue());
-        App.appContextHolder.setOrNumberWidth(width.intValue());
-        App.appContextHolder.setOrNumberHeight(height.intValue());
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION,"Target screen area captured.", ButtonType.OK);
-        alert.showAndWait();
-        if (alert.getResult() == ButtonType.OK) {
-            alert.close();
-        }
-
-        ((Stage) this.captureButton.getScene().getWindow()).close();
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         capturePane.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-
-                xOffset = ((Stage) captureButton.getScene().getWindow()).getX() - event.getScreenX();
-                yOffset = ((Stage) captureButton.getScene().getWindow()).getY() - event.getScreenY();
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
             }
         });
         capturePane.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                ((Stage) captureButton.getScene().getWindow()).setX(event.getScreenX() + xOffset);
-                ((Stage) captureButton.getScene().getWindow()).setY(event.getScreenY() + yOffset);
-            }
-        });
-        captureButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                captureOrDimension();
+                Double stageX = App.appContextHolder.getOrCaptureStage().getX();
+                Double stageY = App.appContextHolder.getOrCaptureStage().getY();
+
+                Double width = App.appContextHolder.getOrCaptureStage().getWidth();
+                Double height = App.appContextHolder.getOrCaptureStage().getHeight();
+                if (event.getScreenX()  >  (stageX + 10) && event.getScreenY() > (stageY + 10) &&
+                        event.getScreenX() < (stageX + width - 10) && event.getScreenY() < (stageY + height - 10)) {
+                    App.appContextHolder.getOrCaptureStage().setX(event.getScreenX() - xOffset);
+                    App.appContextHolder.getOrCaptureStage().setY(event.getScreenY() - yOffset);
+                }
             }
         });
     }

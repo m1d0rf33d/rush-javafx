@@ -3,16 +3,22 @@ package com.yondu.controller;
 import com.yondu.App;
 import com.yondu.Browser;
 import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.utils.ResizeHelper;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -44,6 +50,15 @@ public class SettingsController implements Initializable{
     public ImageView previewImage;
     @FXML
     public ImageView rushLogoImageView;
+    @FXML
+    public javafx.scene.control.Button setOrButton;
+    @FXML
+    public Button OrCaptureButton;
+
+    @FXML
+    public javafx.scene.control.Button setSalesButton;
+    @FXML
+    public Button SalesCaptureButton;
 
     public void loadSalesCaptureArea() {
         try {
@@ -53,9 +68,13 @@ public class SettingsController implements Initializable{
             salesCaptureStage = new Stage();
             Parent root = FXMLLoader.load(App.class.getResource(SALES_CAPTURE_FXML));
             salesCaptureStage.setScene(new Scene(root, 300,100));
+            salesCaptureStage.initStyle(StageStyle.UNDECORATED);
             salesCaptureStage.setMaxHeight(100);
             salesCaptureStage.setMaxWidth(300);
             salesCaptureStage.show();
+            App.appContextHolder.setSalesCaptureStage(salesCaptureStage);
+            ResizeHelper.addResizeListener(salesCaptureStage);
+            setSalesButton.setVisible(false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,10 +87,14 @@ public class SettingsController implements Initializable{
             }
             orCaptureStage = new Stage();
             Parent root = FXMLLoader.load(App.class.getResource(OR_CAPTURE_FXML));
+            orCaptureStage.initStyle(StageStyle.UNDECORATED);
             orCaptureStage.setScene(new Scene(root, 300,100));
             orCaptureStage.setMaxHeight(100);
             orCaptureStage.setMaxWidth(300);
+            App.appContextHolder.setOrCaptureStage(orCaptureStage);
+            ResizeHelper.addResizeListener(orCaptureStage);
             orCaptureStage.show();
+            setOrButton.setVisible(false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -133,6 +156,55 @@ public class SettingsController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        this.SalesCaptureButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Double posX = salesCaptureStage.getX(),
+                        posY = salesCaptureStage.getY(),
+                        width = salesCaptureStage.getWidth(),
+                        height = salesCaptureStage.getHeight();
+
+                App.appContextHolder.setSalesPosX(posX.intValue());
+                App.appContextHolder.setSalesPosY(posY.intValue());
+                App.appContextHolder.setSalesWidth(width.intValue());
+                App.appContextHolder.setSalesHeight(height.intValue());
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION,"Target screen area captured.", ButtonType.OK);
+                alert.showAndWait();
+                if (alert.getResult() == ButtonType.OK) {
+                    alert.close();
+                }
+                salesCaptureStage.close();
+                setSalesButton.setVisible(true);
+                salesAreaLbl.setText(posX.intValue() + ", " + posY.intValue() + ", " + width.intValue() + ", " + height.intValue());
+            }
+        });
+
+        this.OrCaptureButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Double posX = orCaptureStage.getX(),
+                        posY = orCaptureStage.getY(),
+                        width = orCaptureStage.getWidth(),
+                        height = orCaptureStage.getHeight();
+
+                App.appContextHolder.setOrNumberPosX(posX.intValue());
+                App.appContextHolder.setOrNumberPosY(posY.intValue());
+                App.appContextHolder.setOrNumberWidth(width.intValue());
+                App.appContextHolder.setOrNumberHeight(height.intValue());
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION,"Target screen area captured.", ButtonType.OK);
+                alert.showAndWait();
+                if (alert.getResult() == ButtonType.OK) {
+                    alert.close();
+                }
+                orCaptureStage.close();
+                setOrButton.setVisible(true);
+                orAreaLbl.setText(posX.intValue() + ", " + posY.intValue() + ", " + width.intValue() + ", " + height.intValue());
+            }
+        });
+
         this.rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
         //Load ocr-properties saved config
         try {

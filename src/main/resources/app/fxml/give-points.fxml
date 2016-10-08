@@ -8,7 +8,10 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.GivePointsController">
    <children>
-      <Button fx:id="givePointsButton" layoutX="131.0" layoutY="159.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="158.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600;" text="GIVE POINTS" />
+      <Button fx:id="givePointsButton" layoutX="131.0" layoutY="159.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="158.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600;" text="GIVE POINTS" textFill="#fcf9f9">
+         <font>
+            <Font size="17.0" />
+         </font></Button>
       <Label layoutX="28.0" layoutY="102.0" prefHeight="47.0" prefWidth="44.0" text="+693">
          <font>
             <Font size="15.0" />

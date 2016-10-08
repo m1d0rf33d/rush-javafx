@@ -5,12 +5,13 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="capturePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: #222;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.OrCaptureController">
+
+<Pane fx:id="capturePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: #ffb600;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.OrCaptureController">
    <children>
-      <Button fx:id="captureButton" alignment="TOP_CENTER" mnemonicParsing="false" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: #F5A91B; -fx-background-radius: 0;" text="Drag to target screen area and press" textFill="#f8f4f4">
+      <Label layoutX="40.0" layoutY="12.0" prefHeight="77.0" prefWidth="246.0" text="DRAG AND RESIZE TO OR AREA" textFill="#f8f8f8">
          <font>
-            <Font size="16.0" />
+            <Font name="System Bold" size="15.0" />
          </font>
-      </Button>
+      </Label>
    </children>
 </Pane>

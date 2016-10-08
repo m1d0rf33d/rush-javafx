@@ -1,41 +1,56 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /** JavaFx controller mapped to sales-capture.fxml
  *
  *  @m1d0rf33d
  */
-public class SalesCaptureController {
+public class SalesCaptureController implements Initializable {
 
     @FXML
-    public Button previewButton;
+    public Pane salesPane;
 
-    private Stage resultStage;
 
-    public void captureSalesArea() {
-        Stage stage = (Stage) this.previewButton.getScene().getWindow();
-        Double salesPosX = stage.getX(),
-                salesPosY = stage.getY(),
-                salesWidth = stage.getWidth(),
-                salesHeight = stage.getHeight();
+    private static double xOffset = 0;
+    private static double yOffset = 0;
 
-        App.appContextHolder.setSalesPosX(salesPosX.intValue());
-        App.appContextHolder.setSalesPosY(salesPosY.intValue());
-        App.appContextHolder.setSalesWidth(salesWidth.intValue());
-        App.appContextHolder.setSalesHeight(salesHeight.intValue());
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION,"Target screen area captured.", ButtonType.OK);
-        alert.showAndWait();
-        if (alert.getResult() == ButtonType.OK) {
-            alert.close();
-        }
 
-        ((Stage) this.previewButton.getScene().getWindow()).close();
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        salesPane.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            }
+        });
+        salesPane.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Double stageX = App.appContextHolder.getSalesCaptureStage().getX();
+                Double stageY = App.appContextHolder.getSalesCaptureStage().getY();
+                Double width = App.appContextHolder.getSalesCaptureStage().getWidth();
+                Double height = App.appContextHolder.getSalesCaptureStage().getHeight();
+                if (event.getScreenX()  >  (stageX + 10) && event.getScreenY() > (stageY + 10) &&
+                        event.getScreenX() < (stageX + width - 10) && event.getScreenY() < (stageY + height - 10)) {
+                    App.appContextHolder.getSalesCaptureStage().setX(event.getScreenX() - xOffset);
+                    App.appContextHolder.getSalesCaptureStage().setY(event.getScreenY() - yOffset);
+                }
+            }
+        });
     }
 }

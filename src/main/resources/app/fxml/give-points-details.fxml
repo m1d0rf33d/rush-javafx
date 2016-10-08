@@ -28,47 +28,47 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="33.0" layoutY="259.0" prefHeight="21.0" prefWidth="122.0" text="Converted points:">
+      <Label layoutX="33.0" layoutY="259.0" prefHeight="21.0" prefWidth="145.0" text="Converted points:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Button fx:id="continueButton" layoutX="139.0" layoutY="344.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="108.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600;" text="Continue" textFill="#f5f2f2">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Button>
-      <Button fx:id="cancelButton" layoutX="276.0" layoutY="344.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="108.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600;" text="Cancel" textFill="#f5f2f2">
+      <Button fx:id="continueButton" layoutX="139.0" layoutY="344.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="108.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="Continue" textFill="#f5f2f2">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Label fx:id="nameLbl" layoutX="165.0" layoutY="99.0" prefHeight="21.0" prefWidth="221.0">
+      <Button fx:id="cancelButton" layoutX="276.0" layoutY="344.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="108.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="Cancel" textFill="#f5f2f2">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Label fx:id="nameLbl" layoutX="171.0" layoutY="99.0" prefHeight="21.0" prefWidth="221.0">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="currentPointsLbl" layoutX="165.0" layoutY="183.0" prefHeight="21.0" prefWidth="221.0">
+      <Label fx:id="currentPointsLbl" layoutX="171.0" layoutY="183.0" prefHeight="21.0" prefWidth="221.0">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="mobileNumberLbl" layoutX="165.0" layoutY="138.0" prefHeight="21.0" prefWidth="221.0">
+      <Label fx:id="mobileNumberLbl" layoutX="171.0" layoutY="138.0" prefHeight="21.0" prefWidth="221.0">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="convertedPointsLbl" layoutX="165.0" layoutY="259.0" prefHeight="21.0" prefWidth="221.0">
+      <Label fx:id="convertedPointsLbl" layoutX="171.0" layoutY="259.0" prefHeight="21.0" prefWidth="221.0">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="totalAmountLbl" layoutX="165.0" layoutY="221.0" prefHeight="21.0" prefWidth="221.0">
+      <Label fx:id="totalAmountLbl" layoutX="171.0" layoutY="221.0" prefHeight="21.0" prefWidth="221.0">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="orNumberLbl" layoutX="165.0" layoutY="298.0" prefHeight="21.0" prefWidth="221.0">
+      <Label fx:id="orNumberLbl" layoutX="171.0" layoutY="298.0" prefHeight="21.0" prefWidth="221.0">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>

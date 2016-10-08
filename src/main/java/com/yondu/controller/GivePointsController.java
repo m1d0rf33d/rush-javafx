@@ -73,7 +73,7 @@ public class GivePointsController implements Initializable {
 
 
         this.rushLogoImageView.setImage(new Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
-        this.homeImageView.setImage(new Image(App.class.getResource("/app/images/home.png").toExternalForm()));
+        this.homeImageView.setImage(new Image(App.class.getResource("/app/images/home-512.gif").toExternalForm()));
         if (App.appContextHolder.getCustomerMobile() != null) {
             this.mobileField.setText(App.appContextHolder.getCustomerMobile());
         }

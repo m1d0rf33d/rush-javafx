@@ -6,6 +6,6 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.LoadingController">
    <children>
-      <ImageView fx:id="rushLogoImage" fitHeight="55.0" fitWidth="200.0" layoutX="50.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="rushLogoImage" fitHeight="55.0" fitWidth="200.0" layoutX="55.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </Pane>

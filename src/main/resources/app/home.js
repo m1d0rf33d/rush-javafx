@@ -207,12 +207,14 @@ homeModule.directive('backImg', function(){
 
 function closeLoadingModal(resp) {
     if (resp == 'false') {
+        $(".offline-mode").show();
         $(".temp").remove();
         $("#mode").text("OFFLINE");
         $(".home-modal-body").prepend('<div class="temp"><p>You are currently in offline mode, only feature available is Give Points. </p></div>');
         $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Network connection error</strong> </div>');
         $("#myModal").modal('show');
     }else {
+        $(".offline-mode").hide();
         $("#mode").text("");
     }
     $("#home-loading-modal").modal('hide');

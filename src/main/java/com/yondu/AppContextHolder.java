@@ -37,6 +37,25 @@ public class AppContextHolder {
     private Stage homeStage;
     private boolean onlineMode;
 
+    private String ocrFullPath;
+    private String offlinePath;
+
+    public String getOfflinePath() {
+        return offlinePath;
+    }
+
+    public void setOfflinePath(String offlinePath) {
+        this.offlinePath = offlinePath;
+    }
+
+    public String getOcrFullPath() {
+        return ocrFullPath;
+    }
+
+    public void setOcrFullPath(String ocrFullPath) {
+        this.ocrFullPath = ocrFullPath;
+    }
+
     public boolean isOnlineMode() {
         return onlineMode;
     }

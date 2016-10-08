@@ -377,11 +377,12 @@ public class HomeService {
             }
             ocrConfigStage = new Stage();
             Parent root = FXMLLoader.load(App.class.getResource(SETTINGS_FXML));
-            ocrConfigStage.setScene(new Scene(root, 600,400));
-            ocrConfigStage.setTitle("Settings");
+            ocrConfigStage.setScene(new Scene(root, 700,500));
+            ocrConfigStage.setTitle("Setup OCR");
             ocrConfigStage.getScene().getStylesheets().add(App.class.getResource("/app/css/fxml.css").toExternalForm());
             ocrConfigStage.resizableProperty().setValue(Boolean.FALSE);
             ocrConfigStage.show();
+            App.appContextHolder.getHomeStage().close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -511,7 +512,7 @@ public class HomeService {
     }
 
     public void getOfflineTransactions(Object callbackFunction) {
-        File file = new File(System.getProperty("user.home") + "\\Rush-POS-Sync\\offline.txt");
+        File file = new File(App.appContextHolder.getOfflinePath());
         if (file.exists()) {
             JSONArray jsonArray = new JSONArray();
             //Read file
@@ -541,7 +542,7 @@ public class HomeService {
     }
 
     public void sendOfflinePoints() {
-        File file = new File(System.getProperty("user.home") + "\\Rush-POS-Sync\\offline.txt");
+        File file = new File(App.appContextHolder.getOfflinePath());
 
         if (file.exists()) {
             JSONArray failedArray = new JSONArray();

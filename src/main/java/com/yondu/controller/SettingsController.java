@@ -1,6 +1,7 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import com.yondu.Browser;
 import com.yondu.model.constants.AppConfigConstants;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -9,6 +10,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
@@ -39,6 +42,8 @@ public class SettingsController implements Initializable{
     public javafx.scene.control.TextArea previewText;
     @FXML
     public ImageView previewImage;
+    @FXML
+    public ImageView rushLogoImageView;
 
     public void loadSalesCaptureArea() {
         try {
@@ -86,7 +91,7 @@ public class SettingsController implements Initializable{
         } else {
             try {
                 Properties prop = new Properties();
-                InputStream inputStream = new FileInputStream(new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION));
+                InputStream inputStream = new FileInputStream(App.appContextHolder.getOcrFullPath());
                 prop.load(inputStream);
                 salesX = ((Double)Double.parseDouble(prop.getProperty("sales_pos_x"))).intValue();
                 salesY =((Double) Double.parseDouble(prop.getProperty("sales_pos_y"))).intValue();
@@ -128,11 +133,11 @@ public class SettingsController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        this.rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
         //Load ocr-properties saved config
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION));
+            InputStream inputStream = new FileInputStream(App.appContextHolder.getOcrFullPath());
             prop.load(inputStream);
             StringBuilder sb = new StringBuilder();
             sb.append(prop.getProperty("sales_pos_x"));
@@ -205,7 +210,7 @@ public class SettingsController implements Initializable{
         //Load ocr-properties saved config
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION));
+            InputStream inputStream = new FileInputStream(App.appContextHolder.getOcrFullPath());
             prop.load(inputStream);
             StringBuilder sb = new StringBuilder();
             sb.append(prop.getProperty("sales_pos_x"));
@@ -238,7 +243,7 @@ public class SettingsController implements Initializable{
             String salesPosX = "", salesPosY = "", salesWidth = "", salesHeight = "",
                     orPosX = "", orPosY = "", orWidth = "", orHeight = "";
 
-            File file = new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION);
+            File file = new File(App.appContextHolder.getOcrFullPath());
             if (file.exists()) {
                 Properties prop = new Properties();
                 InputStream inputStream = new FileInputStream(file);
@@ -286,6 +291,11 @@ public class SettingsController implements Initializable{
             fstream.flush();
             fstream.close();
 
+            Stage stage = new Stage();
+            stage.setScene(new Scene(new Browser(),750,500, javafx.scene.paint.Color.web("#666970")));
+            stage.setMaximized(true);
+            stage.show();
+            App.appContextHolder.setHomeStage(stage);
             ((Stage)this.previewText.getScene().getWindow()).close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -305,7 +315,7 @@ public class SettingsController implements Initializable{
         } else {
             try {
                 Properties prop = new Properties();
-                InputStream inputStream = new FileInputStream(new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION));
+                InputStream inputStream = new FileInputStream(App.appContextHolder.getOcrFullPath());
                 prop.load(inputStream);
                 salesX = ((Double)Double.parseDouble(prop.getProperty("or_pos_x"))).intValue();
                 salesY =((Double) Double.parseDouble(prop.getProperty("or_pos_y"))).intValue();
@@ -345,6 +355,12 @@ public class SettingsController implements Initializable{
     }
 
     public void exit() {
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
+        stage.setMaximized(true);
+        stage.show();
+        App.appContextHolder.setHomeStage(stage);
         ((Stage)this.previewText.getScene().getWindow()).close();
     }
 

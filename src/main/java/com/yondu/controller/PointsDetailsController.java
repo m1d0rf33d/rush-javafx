@@ -160,7 +160,7 @@ public class PointsDetailsController implements Initializable{
                 } else {
                     //write to file
                     try {
-                        File file = new File(System.getProperty("user.home") + "\\Rush-POS-Sync\\offline.txt");
+                        File file = new File(App.appContextHolder.getOfflinePath());
                         if (!file.exists()) {
                             file.createNewFile();
                         }

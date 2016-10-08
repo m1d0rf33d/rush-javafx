@@ -94,11 +94,13 @@ public class SplashController implements Initializable{
                 protected Void call() {
                     //Prepare configuration files
                     try {
-                        File dir = new File(System.getProperty("user.home") + "\\Rush-POS-Sync");
+                        /*File dir = new File(System.getProperty("user.home") + "\\Rush-POS-Sync");
                         if (!dir.exists()) {
                             dir.mkdir();
-                        }
-                        File file = new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION);
+                        }*/
+
+                        File file = new File("/home/aomine/Desktop/ocr.properties");
+                        //File file = new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION);
                         if (!file.exists()) {
                             file.createNewFile();
                             PrintWriter fstream = new PrintWriter(new FileWriter(file));
@@ -112,7 +114,12 @@ public class SplashController implements Initializable{
                             fstream.println("or_height=");
                             fstream.flush();
                             fstream.close();
+
+                            //App.appContextHolder.setOcrFullPath(file.getAbsolutePath());
+                            //App.appContextHolder.setOfflinePath(System.getProperty("user.home") + AppConfigConstants.OFFLINE_LOCATION);
                         }
+                        App.appContextHolder.setOfflinePath("/home/aomine/Desktop/offline.txt");
+                        App.appContextHolder.setOcrFullPath("/home/aomine/Desktop/ocr.properties");
                         //Check connection
 
                         Properties prop = new Properties();
@@ -124,6 +131,8 @@ public class SplashController implements Initializable{
                         }
                         baseUrl = prop.getProperty("base_url");
                         getBranchesEndpoint = prop.getProperty("get_branches_endpoint");
+                        inputStream.close();
+
                         String url = baseUrl + getBranchesEndpoint;
                         List<NameValuePair> params = new ArrayList<>();
                         String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);

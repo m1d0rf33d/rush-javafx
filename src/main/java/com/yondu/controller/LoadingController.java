@@ -160,7 +160,7 @@ public class LoadingController implements Initializable{
 
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION));
+            InputStream inputStream = new FileInputStream(App.appContextHolder.getOcrFullPath());
             prop.load(inputStream);
             salesX = ((Double)Double.parseDouble(prop.getProperty("sales_pos_x"))).intValue();
             salesY =((Double) Double.parseDouble(prop.getProperty("sales_pos_y"))).intValue();
@@ -196,7 +196,7 @@ public class LoadingController implements Initializable{
 
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION));
+            InputStream inputStream = new FileInputStream(App.appContextHolder.getOcrFullPath());
             prop.load(inputStream);
             salesX = ((Double)Double.parseDouble(prop.getProperty("or_pos_x"))).intValue();
             salesY =((Double) Double.parseDouble(prop.getProperty("or_pos_y"))).intValue();

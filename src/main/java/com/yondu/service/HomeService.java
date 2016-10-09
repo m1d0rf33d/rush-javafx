@@ -43,54 +43,11 @@ public class HomeService {
     private WebEngine webEngine;
     private ApiService apiService = new ApiService();
 
-    private String baseUrl;
-    private String registerEndpoint;
-    private String memberLoginEndpoint;
-    private String pointsConversionEndpoint;
-    private String givePointsEndpoint;
-    private String getPointsEndpoint;
-    private String payWithPointsEndpoint;
-    private String getRewardsEndpoint;
-    private String redeemRewardsEndpoint;
-    private String unclaimedRewardsEndpoint;
-    private String claimRewardsEndpoint;
-    private String getRewardsMerchantEndpoint;
-    private String customerRewardsEndpoint;
-    private String customerTransactionsEndpoint;
-
     private Stage ocrConfigStage;
     private Stage givePointsStage;
 
     public HomeService(WebEngine webEngine) {
         this.webEngine = webEngine;
-        try {
-            Properties prop = new Properties();
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
-            if (inputStream != null) {
-                prop.load(inputStream);
-            } else {
-                throw new FileNotFoundException("property file api.properties not found in the classpath");
-            }
-            this.baseUrl = prop.getProperty("base_url");
-            this.registerEndpoint = prop.getProperty("register_endpoint");
-            this.memberLoginEndpoint = prop.getProperty("member_login_endpoint");
-            this.pointsConversionEndpoint = prop.getProperty("points_conversion_endpoint");
-            this.givePointsEndpoint = prop.getProperty("give_points_endpoint");
-            this.getPointsEndpoint = prop.getProperty("get_points_endpoint");
-            this.payWithPointsEndpoint = prop.getProperty("pay_points_endpoint");
-            this.getRewardsEndpoint = prop.getProperty("get_rewards_endpoint");
-            this.redeemRewardsEndpoint = prop.getProperty("redeem_rewards_endpoint");
-            this.unclaimedRewardsEndpoint = prop.getProperty("unclaimed_rewards_endpoint");
-            this.claimRewardsEndpoint = prop.getProperty("claim_rewards_endpoint");
-            this.getRewardsMerchantEndpoint =prop.getProperty("get_rewards_merchant_endpoint");
-            this.customerRewardsEndpoint = prop.getProperty("customer_rewards_endpoint");
-            this.customerTransactionsEndpoint = prop.getProperty("customer_transactions_endpoint");
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /** Load employee data that will be sent back to the calling javascript. Target page view-> home.html
@@ -146,7 +103,7 @@ public class HomeService {
             }
 
 
-            String url = baseUrl + registerEndpoint;
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getRegisterEndpoint();
             String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
             this.webEngine.executeScript("registerResponseHandler('"+jsonResponse+"')");
         } catch (IOException e) {
@@ -167,7 +124,8 @@ public class HomeService {
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileNumber));
 
-            String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
+            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
             String result = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
 
@@ -182,14 +140,17 @@ public class HomeService {
 
                 //get current points
                 params = new ArrayList<>();
-                url = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+                url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetPointsEndpoint();
+                url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
                 String jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                 JSONObject json = (JSONObject) parser.parse(jsonResponse);
                 data.put("points",  json.get("data"));
 
                 //get member rewards
-                url = baseUrl + customerRewardsEndpoint.replace(":id",App.appContextHolder.getCustomerUUID());
+                url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getCustomerRewardsEndpoint();
+                url = url.replace(":id",App.appContextHolder.getCustomerUUID());
                 String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+                //Parse results
                 JSONObject j = (JSONObject) parser.parse(responseStr);
                 List<JSONObject> d = (ArrayList) j.get("data");
                 responseStr = new Gson().toJson(d);
@@ -222,7 +183,9 @@ public class HomeService {
            params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
            params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount));
            params.add(new BasicNameValuePair(ApiFieldContants.POINTS, points));
-           String url = baseUrl + payWithPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+
+           String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPayWithPointsEndpoint();
+           url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
            String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
            jsonResponse = jsonResponse.replace("'","");
 
@@ -232,8 +195,10 @@ public class HomeService {
            if (error.equals(ApiFieldContants.NO_ERROR)) {
                //get current points
                params = new ArrayList<>();
-               url = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+               url =  App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetPointsEndpoint();
+               url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
                String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+               //Parse response
                JSONObject resultJson = (JSONObject) parser.parse(result);
                jsonObj.put("points", resultJson.get("data"));
                jsonResponse = jsonObj.toJSONString();
@@ -256,7 +221,7 @@ public class HomeService {
     public void loadRewards(final Object callbackfunction) {
 
         try {
-            String url = baseUrl + getRewardsMerchantEndpoint;
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetRewardsMerchantEndpoint();
             String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
             final String data = jsonResponse;
@@ -280,7 +245,8 @@ public class HomeService {
         try {
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin));
-            String url = baseUrl + redeemRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerUUID());
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getRedeemRewardsEndpoint();
+            url = url.replace(":customer_id",App.appContextHolder.getCustomerUUID());
             url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
             url = url.replace(":reward_id", rewardId);
             String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
@@ -290,7 +256,8 @@ public class HomeService {
             JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
             //get current points
             params = new ArrayList<>();
-            url = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+            url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetPointsEndpoint();
+            url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
             String res = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
             JSONObject json = (JSONObject) parser.parse(res);
@@ -311,12 +278,14 @@ public class HomeService {
         try {
             String tempdata = "";
             //Retrieve all rewards
-            String url = baseUrl + getRewardsEndpoint;
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetRewardsEndpoint();
             String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
             JSONParser parser = new JSONParser();
             JSONObject rewardsJson = (JSONObject) parser.parse(jsonResponse);
             List<JSONObject> rewardsDataList = (ArrayList) rewardsJson.get("data");
-            url = baseUrl + unclaimedRewardsEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
+
+            url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getUnclaimedRewardsEndpoint();
+            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
             url = url.replace(":customer_id", App.appContextHolder.getCustomerUUID());
             String responseStr = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
@@ -353,9 +322,11 @@ public class HomeService {
         try {
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair(ApiFieldContants.REDEEM_ID, redeemId));
-            String url = baseUrl + claimRewardsEndpoint.replace(":customer_id",App.appContextHolder.getCustomerUUID());
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getClaimRewardsEndpoint();
+            url = url.replace(":customer_id",App.appContextHolder.getCustomerUUID());
             url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
             String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            //Parse response
             JSONParser parser = new JSONParser();
             JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
             jsonObj.put("redeemId", redeemId);
@@ -431,21 +402,25 @@ public class HomeService {
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
 
-                String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
+                String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
+                url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
                 result = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                 JSONParser parser = new JSONParser();
                 JSONObject jsonResponse = (JSONObject) parser.parse(result);
                 JSONObject data = (JSONObject) jsonResponse.get("data");
                 //get current points
                 params = new ArrayList<>();
-                url = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+                url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetPointsEndpoint();
+                url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
                 result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
                 JSONObject json = (JSONObject) parser.parse(result);
                 data.put("points",  json.get("data"));
                 //get member rewards
-                url = baseUrl + customerRewardsEndpoint.replace(":id",App.appContextHolder.getCustomerUUID());
+                url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getCustomerRewardsEndpoint();
+                url = url.replace(":id",App.appContextHolder.getCustomerUUID());
                 String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+                //Parse response
                 JSONObject j = (JSONObject) parser.parse(responseStr);
                 List<JSONObject> d = (ArrayList) j.get("data");
                 responseStr = new Gson().toJson(d);
@@ -468,8 +443,10 @@ public class HomeService {
     public void getCustomerRewards(Object callbackfunction) {
         try {
             List params = new ArrayList<>();
-            String url = baseUrl + customerRewardsEndpoint.replace(":id",App.appContextHolder.getCustomerUUID());
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getCustomerRewardsEndpoint();
+            url = url.replace(":id",App.appContextHolder.getCustomerUUID());
             String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+            //Parse response
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(responseStr);
             List<JSONObject> data = (ArrayList) jsonObject.get("data");
@@ -497,7 +474,8 @@ public class HomeService {
 
         try {
             List params = new ArrayList<>();
-            String url = baseUrl + customerTransactionsEndpoint.replace(":id",App.appContextHolder.getCustomerUUID());
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getCustomerTransactionsEndpoint();
+            url = url.replace(":id",App.appContextHolder.getCustomerUUID());
             String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
 
             webEngine.executeScript("closeLoadingModal()");
@@ -568,7 +546,8 @@ public class HomeService {
                     List<NameValuePair> params = new ArrayList<>();
                     params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileNumber));
 
-                    String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
+                    String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
+                    url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
                     String resultJson = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
                     JSONParser parser = new JSONParser();
@@ -583,7 +562,8 @@ public class HomeService {
                         params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
                         params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
                         params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmount));
-                        url = baseUrl + givePointsEndpoint.replace(":customer_uuid", (String) data.get("id"));
+                        url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGivePointsEndpoint();
+                        url = url.replace(":customer_uuid", (String) data.get("id"));
                         resultJson = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
                         jsonObject = (JSONObject) parser.parse(resultJson);

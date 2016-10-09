@@ -25,35 +25,6 @@ import java.util.Properties;
  */
 public class ApiService {
 
-    private String baseUrl;
-    private String authorizationEndpoint;
-    private String appKey;
-    private String appSecret;
-    private String customerAppKey;
-    private String customerAppSecret;
-
-    public ApiService() {
-        try {
-            Properties prop = new Properties();
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
-            if (inputStream != null) {
-                prop.load(inputStream);
-            } else {
-                throw new FileNotFoundException("property file api.properties not found in the classpath");
-            }
-            this.baseUrl = prop.getProperty("base_url");
-            this.authorizationEndpoint = prop.getProperty("authorization_endpoint");
-            this.appKey = prop.getProperty("app_key");
-            this.appSecret = prop.getProperty("app_secret");
-            this.customerAppKey = prop.getProperty("customer_app_key");
-            this.customerAppSecret = prop.getProperty("customer_app_secret");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public String call(String url, List<NameValuePair> params, String method, String resourceOwner) throws IOException {
         //Validate token
         String token = "";
@@ -105,14 +76,15 @@ public class ApiService {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         String appKey = "", appSecret = "";
         if (resourceOwner.equals(ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER)) {
-            appKey = this.appKey;
-            appSecret = this.appSecret;
+            appKey = App.appContextHolder.getAppKey();
+            appSecret = App.appContextHolder.getAppSecret();
         } else {
-            appKey = this.customerAppKey;
-            appSecret = this.customerAppSecret;
+            appKey = App.appContextHolder.getCustomerAppKey();
+            appSecret = App.appContextHolder.getCustomerAppSecret();
         }
 
-        HttpPost httpPost = new HttpPost((this.baseUrl + this.authorizationEndpoint));
+        String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getAuthorizationEndpoint();
+        HttpPost httpPost = new HttpPost(url);
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("app_key", appKey));
         params.add(new BasicNameValuePair("app_secret", appSecret));

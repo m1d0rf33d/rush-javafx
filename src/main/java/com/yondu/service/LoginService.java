@@ -36,41 +36,22 @@ public class LoginService {
     private ApiService apiService = new ApiService();
     private WebEngine webEngine;
 
-    private String baseUrl;
-    private String loginEndpoint;
-    private String getBranchesEndpoint;
-
     public LoginService(WebEngine webEngine) {
         this.webEngine = webEngine;
-        try {
-            Properties prop = new Properties();
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
-            if (inputStream != null) {
-                prop.load(inputStream);
-            } else {
-                throw new FileNotFoundException("property file api.properties not found in the classpath");
-            }
-            this.baseUrl = prop.getProperty("base_url");
-            this.loginEndpoint = prop.getProperty("login_endpoint");
-            this.getBranchesEndpoint = prop.getProperty("get_branches_endpoint");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void login() {
         try {
-            ApiResponse apiResponse = new ApiResponse();
             //Read html form values
             HTMLInputElement employeeField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.EMPLOYEE_ID);
             HTMLSelectElement selectField = (HTMLSelectElement) this.webEngine.getDocument().getElementById(ApiFieldContants.BRANCH_ID);
+
             //Build request body
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, employeeField.getValue()));
             params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, selectField.getValue()));
-            String jsonResponse = apiService.call((baseUrl + loginEndpoint), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getLoginEndpoint();
+            String jsonResponse = apiService.call((url), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parse(jsonResponse);
@@ -93,7 +74,7 @@ public class LoginService {
             ApiService apiService = new ApiService();
             ApiResponse apiResponse = new ApiResponse();
 
-            String url = this.baseUrl + this.getBranchesEndpoint;
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
             List<NameValuePair> params = new ArrayList<>();
             String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 

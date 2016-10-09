@@ -22,7 +22,7 @@ public class App extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        //Launch Splash stage
+        //Let's get the party started
         Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
         primaryStage.setScene(new Scene(root, 600,400));
         primaryStage.resizableProperty().setValue(false);

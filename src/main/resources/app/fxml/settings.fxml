@@ -8,7 +8,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.SettingsController">
    <children>
-      <Button fx:id="SalesCaptureButton" layoutX="33.0" layoutY="128.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: #FF5733;" text="Capture " textFill="#f8f1f1">
+      <Button fx:id="SalesCaptureButton" layoutX="33.0" layoutY="128.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: ed2828;" text="Capture " textFill="#f8f1f1">
          <font>
             <Font size="17.0" />
          </font></Button>
@@ -16,7 +16,7 @@
          <font>
             <Font size="15.0" />
          </font></Label>
-      <Button layoutX="173.0" layoutY="129.0" mnemonicParsing="false" onAction="#previewSalesCaptureArea" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: #FF5733;" text="Preview" textFill="#f8f1f1">
+      <Button layoutX="173.0" layoutY="129.0" mnemonicParsing="false" onAction="#previewSalesCaptureArea" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: ed2828;" text="Preview" textFill="#f8f1f1">
          <font>
             <Font size="17.0" />
          </font></Button>
@@ -24,11 +24,11 @@
          <font>
             <Font size="15.0" />
          </font></Label>
-      <Button fx:id="OrCaptureButton" layoutX="33.0" layoutY="288.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: #FF5733;" text="Capture" textFill="#f8f1f1">
+      <Button fx:id="OrCaptureButton" layoutX="33.0" layoutY="288.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: ed2828;" text="Capture" textFill="#f8f1f1">
          <font>
             <Font size="17.0" />
          </font></Button>
-      <Button layoutX="175.0" layoutY="289.0" mnemonicParsing="false" onAction="#previewOrArea" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: #FF5733;" text="Preview" textFill="#f8f1f1">
+      <Button layoutX="175.0" layoutY="289.0" mnemonicParsing="false" onAction="#previewOrArea" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: ed2828;" text="Preview" textFill="#f8f1f1">
          <font>
             <Font size="17.0" />
          </font></Button>
@@ -53,11 +53,11 @@
             <Font size="15.0" />
          </font></Label>
       <ImageView fx:id="rushLogoImageView" fitHeight="57.0" fitWidth="185.0" layoutX="264.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="setOrButton" layoutX="35.0" layoutY="288.0" mnemonicParsing="false" onAction="#loadOrCaptureArea" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: #FF5733;" text="Set" textFill="#f8f1f1">
+      <Button fx:id="setOrButton" layoutX="35.0" layoutY="288.0" mnemonicParsing="false" onAction="#loadOrCaptureArea" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: ed2828;" text="Set" textFill="#f8f1f1">
          <font>
             <Font size="17.0" />
          </font></Button>
-      <Button fx:id="setSalesButton" layoutX="33.0" layoutY="129.0" mnemonicParsing="false" onAction="#loadSalesCaptureArea" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: #FF5733;" text="Set" textFill="#f8f1f1">
+      <Button fx:id="setSalesButton" layoutX="33.0" layoutY="129.0" mnemonicParsing="false" onAction="#loadSalesCaptureArea" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: ed2828;" text="Set" textFill="#f8f1f1">
          <font>
             <Font size="17.0" />
          </font></Button>

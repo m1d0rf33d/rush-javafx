@@ -36,51 +36,40 @@ import static com.yondu.model.constants.AppConfigConstants.GIVE_POINTS_FXML;
  *  @author m1d0rf33d
  */
 public class SplashController implements Initializable{
-/*
-    @FXML
-    public  ProgressBar myProgressBar;*/
     @FXML
     public Label progressStatus;
     @FXML
     public ImageView rushLogoImage;
 
-    private ApiService apiService;
-    private String baseUrl;
-    private String getBranchesEndpoint;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        apiService = new ApiService();
         this.rushLogoImage.setImage(new Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
 
         MyService myService = new MyService();
-        myService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent t) {
-                if (App.appContextHolder.isOnlineMode()) {
-                    Stage stage = new Stage();
-                    stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
-                    stage.setMaximized(true);
-                    stage.show();
-                    App.appContextHolder.setHomeStage(stage);
+        myService.setOnSucceeded((WorkerStateEvent t) -> {
+            //Check ONLINE of OFFLINE mode
+            if (App.appContextHolder.isOnlineMode()) {
+                Stage stage = new Stage();
+                stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
+                stage.setMaximized(true);
+                stage.show();
+                App.appContextHolder.setHomeStage(stage);
+                ((Stage) rushLogoImage.getScene().getWindow()).close();
+            } else {
+
+                try {
+                    Stage givePointsStage = new Stage();
+                    Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+                    givePointsStage.setScene(new Scene(root, 400,220));
+                    givePointsStage.setTitle("Give Points");
+                    givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                    givePointsStage.show();
                     ((Stage) rushLogoImage.getScene().getWindow()).close();
-                } else {
-
-                    try {
-                        Stage givePointsStage = new Stage();
-                        Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
-                        givePointsStage.setScene(new Scene(root, 400,220));
-                        givePointsStage.setTitle("Give Points");
-                        givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-                        givePointsStage.show();
-                        ((Stage) rushLogoImage.getScene().getWindow()).close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
             }
         });
-        //rushLogoImage.progressProperty().bind(myService.progressProperty());
         progressStatus.textProperty().bind(myService.messageProperty());
         myService.start();
     }
@@ -92,8 +81,9 @@ public class SplashController implements Initializable{
             return new Task<Void>() {
                 @Override
                 protected Void call() {
-                    //Prepare configuration files
+
                     try {
+                        //Prepare configuration files
                         /*File dir = new File(System.getProperty("user.home") + "\\Rush-POS-Sync");
                         if (!dir.exists()) {
                             dir.mkdir();
@@ -114,29 +104,22 @@ public class SplashController implements Initializable{
                             fstream.println("or_height=");
                             fstream.flush();
                             fstream.close();
-
-
                         }
                         //App.appContextHolder.setOcrFullPath(file.getAbsolutePath());
                         //App.appContextHolder.setOfflinePath(System.getProperty("user.home") + AppConfigConstants.OFFLINE_LOCATION);
                         App.appContextHolder.setOfflinePath("/home/aomine/Desktop/offline.txt");
                         App.appContextHolder.setOcrFullPath("/home/aomine/Desktop/ocr.properties");
-                        //Check connection
 
-                        Properties prop = new Properties();
-                        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
-                        if (inputStream != null) {
-                            prop.load(inputStream);
-                        } else {
-                            throw new FileNotFoundException("property file api.properties not found in the classpath");
-                        }
-                        baseUrl = prop.getProperty("base_url");
-                        getBranchesEndpoint = prop.getProperty("get_branches_endpoint");
-                        inputStream.close();
 
-                        String url = baseUrl + getBranchesEndpoint;
+                        //Read and set RUSH endpoints from config file
+                        loadEndpointsFromConfig();
+
+                        //Check internet connection
+                        ApiService apiService = new ApiService();
+                        App.appContextHolder.setApiService(apiService);
+                        String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
                         List<NameValuePair> params = new ArrayList<>();
-                        String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                        apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                         App.appContextHolder.setOnlineMode(true);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -144,10 +127,45 @@ public class SplashController implements Initializable{
                         e.printStackTrace();
                         App.appContextHolder.setOnlineMode(false);
                     }
-
                     return null;
                 }
             };
         }
+    }
+
+    private void loadEndpointsFromConfig() {
+       try {
+           Properties prop = new Properties();
+           InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
+           if (inputStream != null) {
+               prop.load(inputStream);
+               inputStream.close();
+           } else {
+               throw new FileNotFoundException("property file api.properties not found in the classpath");
+           }
+           App.appContextHolder.setBaseUrl(prop.getProperty("base_url"));
+           App.appContextHolder.setRegisterEndpoint(prop.getProperty("register_endpoint"));
+           App.appContextHolder.setMemberLoginEndpoint(prop.getProperty("member_login_endpoint"));
+           App.appContextHolder.setPointsConversionEndpoint(prop.getProperty("points_conversion_endpoint"));
+           App.appContextHolder.setGivePointsEndpoint(prop.getProperty("give_points_endpoint"));
+           App.appContextHolder.setGetPointsEndpoint(prop.getProperty("get_points_endpoint"));
+           App.appContextHolder.setPayWithPointsEndpoint(prop.getProperty("pay_points_endpoint"));
+           App.appContextHolder.setGetRewardsEndpoint(prop.getProperty("get_rewards_endpoint"));
+           App.appContextHolder.setRedeemRewardsEndpoint(prop.getProperty("redeem_rewards_endpoint"));
+           App.appContextHolder.setUnclaimedRewardsEndpoint(prop.getProperty("unclaimed_rewards_endpoint"));
+           App.appContextHolder.setClaimRewardsEndpoint(prop.getProperty("claim_rewards_endpoint"));
+           App.appContextHolder.setGetRewardsMerchantEndpoint(prop.getProperty("get_rewards_merchant_endpoint"));
+           App.appContextHolder.setCustomerRewardsEndpoint(prop.getProperty("customer_rewards_endpoint"));
+           App.appContextHolder.setCustomerTransactionsEndpoint(prop.getProperty("customer_transactions_endpoint"));
+           App.appContextHolder.setGetBranchesEndpoint(prop.getProperty("get_branches_endpoint"));
+           App.appContextHolder.setLoginEndpoint(prop.getProperty("login_endpoint"));
+           App.appContextHolder.setAuthorizationEndpoint(prop.getProperty("authorization_endpoint"));
+           App.appContextHolder.setAppKey(prop.getProperty("app_key"));
+           App.appContextHolder.setAppSecret(prop.getProperty("app_secret"));
+           App.appContextHolder.setCustomerAppKey(prop.getProperty("customer_app_key"));
+           App.appContextHolder.setCustomerAppSecret(prop.getProperty("customer_app_secret"));
+       } catch(IOException e) {
+           e.printStackTrace();
+       }
     }
 }

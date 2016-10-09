@@ -66,9 +66,6 @@ public class PointsDetailsController implements Initializable{
     private String convertedPoints;
     private Account customer;
 
-    private String baseUrl;
-    private String givePointsEndpoint;
-
     public PointsDetailsController(String orNumber, String totalAmount, String convertedPoints, Account customer) {
         this.orNumber = orNumber;
         this.totalAmount = totalAmount;
@@ -90,105 +87,92 @@ public class PointsDetailsController implements Initializable{
         this.nameLbl.setText(customer.getName());
         this.mobileNumberLbl.setText(customer.getMobileNumber());
         this.currentPointsLbl.setText(String.valueOf(customer.getCurrentPoints()));
-
         this.orNumberLbl.setText(this.orNumber);
         this.totalAmountLbl.setText(this.totalAmount);
         this.convertedPointsLbl.setText(this.convertedPoints);
 
-        try {
-            Properties prop = new Properties();
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
-            prop.load(inputStream);
-            this.baseUrl = prop.getProperty("base_url");
-            this.givePointsEndpoint = prop.getProperty("give_points_endpoint");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.continueButton.addEventHandler(MouseEvent.MOUSE_CLICKED,(MouseEvent event) ->{
+            if (App.appContextHolder.isOnlineMode()) {
+                try{
+                    java.util.List<NameValuePair> params = new ArrayList<>();
+                    params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
+                    params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberLbl.getText().trim()));
+                    params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmountLbl.getText().trim()));
+                    String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGivePointsEndpoint();
+                    url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+                    String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                    JSONParser parser = new JSONParser();
 
-        this.continueButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (App.appContextHolder.isOnlineMode()) {
-                    try{
-                        java.util.List<NameValuePair> params = new ArrayList<>();
-                        params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
-                        params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberLbl.getText().trim()));
-                        params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmountLbl.getText().trim()));
-                        String url = baseUrl + givePointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-                        String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-                        JSONParser parser = new JSONParser();
-
-                        JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
-                        if (jsonResponse.get("error_code").equals("0x0")) {
-                            Alert alert = new Alert(Alert.AlertType.INFORMATION,"Give points successful", ButtonType.OK);
-                            alert.showAndWait();
-
-                            if (alert.getResult() == ButtonType.OK) {
-                                alert.close();
-                                Stage givePointsStage = new Stage();
-                                Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
-                                givePointsStage.setScene(new Scene(root, 400,200));
-                                givePointsStage.setTitle("Give Points");
-                                givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-                                givePointsStage.show();
-
-                                ((Stage)rushLogoImageView.getScene().getWindow()).close();
-                            }
-                        } else {
-                            JSONObject error = (JSONObject) jsonResponse.get("errors");
-                            String errorMessage = "";
-                            if (error.get("or_no") != null) {
-                                List<String> l = (ArrayList<String>) error.get("or_no");
-                                errorMessage = l.get(0);
-                            }
-                            if (error.get("amount") != null) {
-                                List<String> l = (ArrayList<String>) error.get("amount");
-                                errorMessage = l.get(0);
-                            }
-                            Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
-                            alert.showAndWait();
-
-                            if (alert.getResult() == ButtonType.OK) {
-                                alert.close();
-                            }
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    //write to file
-                    try {
-                        File file = new File(App.appContextHolder.getOfflinePath());
-                        if (!file.exists()) {
-                            file.createNewFile();
-                        }
-                        SimpleDateFormat df  = new SimpleDateFormat("MM/dd/YYYY");
-                        String date = df.format(new Date());
-
-                        PrintWriter fstream = new PrintWriter(new FileWriter(file,true));
-                        fstream.println("mobileNumber=" + customer.getMobileNumber()+ ",totalAmount=" + totalAmount + ", orNumber=" + orNumber + ", date=" + date);
-                        fstream.flush();
-                        fstream.close();
-
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION,"Give points saved to offline transactions", ButtonType.OK);
+                    JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
+                    if (jsonResponse.get("error_code").equals("0x0")) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,"Give points successful", ButtonType.OK);
                         alert.showAndWait();
 
                         if (alert.getResult() == ButtonType.OK) {
                             alert.close();
                             Stage givePointsStage = new Stage();
                             Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
-                            givePointsStage.setScene(new Scene(root, 400,200));
+                            givePointsStage.setScene(new Scene(root, 400,220));
                             givePointsStage.setTitle("Give Points");
                             givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                             givePointsStage.show();
 
                             ((Stage)rushLogoImageView.getScene().getWindow()).close();
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } else {
+                        JSONObject error = (JSONObject) jsonResponse.get("errors");
+                        String errorMessage = "";
+                        if (error.get("or_no") != null) {
+                            List<String> l = (ArrayList<String>) error.get("or_no");
+                            errorMessage = l.get(0);
+                        }
+                        if (error.get("amount") != null) {
+                            List<String> l = (ArrayList<String>) error.get("amount");
+                            errorMessage = l.get(0);
+                        }
+                        Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
+                        alert.showAndWait();
+
+                        if (alert.getResult() == ButtonType.OK) {
+                            alert.close();
+                        }
                     }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                //write to file
+                try {
+                    File file = new File(App.appContextHolder.getOfflinePath());
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+                    SimpleDateFormat df  = new SimpleDateFormat("MM/dd/YYYY");
+                    String date = df.format(new Date());
+
+                    PrintWriter fstream = new PrintWriter(new FileWriter(file,true));
+                    fstream.println("mobileNumber=" + customer.getMobileNumber()+ ",totalAmount=" + totalAmount + ", orNumber=" + orNumber + ", date=" + date);
+                    fstream.flush();
+                    fstream.close();
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION,"Give points saved to offline transactions", ButtonType.OK);
+                    alert.showAndWait();
+
+                    if (alert.getResult() == ButtonType.OK) {
+                        alert.close();
+                        Stage givePointsStage = new Stage();
+                        Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+                        givePointsStage.setScene(new Scene(root, 400,200));
+                        givePointsStage.setTitle("Give Points");
+                        givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                        givePointsStage.show();
+
+                        ((Stage)rushLogoImageView.getScene().getWindow()).close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         });

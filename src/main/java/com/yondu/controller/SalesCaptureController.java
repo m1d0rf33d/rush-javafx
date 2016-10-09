@@ -31,25 +31,19 @@ public class SalesCaptureController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        salesPane.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                xOffset = event.getSceneX();
-                yOffset = event.getSceneY();
-            }
+        salesPane.setOnMousePressed((MouseEvent event) -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
         });
-        salesPane.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                Double stageX = App.appContextHolder.getSalesCaptureStage().getX();
-                Double stageY = App.appContextHolder.getSalesCaptureStage().getY();
-                Double width = App.appContextHolder.getSalesCaptureStage().getWidth();
-                Double height = App.appContextHolder.getSalesCaptureStage().getHeight();
-                if (event.getScreenX()  >  (stageX + 10) && event.getScreenY() > (stageY + 10) &&
-                        event.getScreenX() < (stageX + width - 10) && event.getScreenY() < (stageY + height - 10)) {
-                    App.appContextHolder.getSalesCaptureStage().setX(event.getScreenX() - xOffset);
-                    App.appContextHolder.getSalesCaptureStage().setY(event.getScreenY() - yOffset);
-                }
+        salesPane.setOnMouseDragged((MouseEvent event) ->{
+            Double stageX = App.appContextHolder.getSalesCaptureStage().getX();
+            Double stageY = App.appContextHolder.getSalesCaptureStage().getY();
+            Double width = App.appContextHolder.getSalesCaptureStage().getWidth();
+            Double height = App.appContextHolder.getSalesCaptureStage().getHeight();
+            if (event.getScreenX()  >  (stageX + 10) && event.getScreenY() > (stageY + 10) &&
+                    event.getScreenX() < (stageX + width - 10) && event.getScreenY() < (stageY + height - 10)) {
+                App.appContextHolder.getSalesCaptureStage().setX(event.getScreenX() - xOffset);
+                App.appContextHolder.getSalesCaptureStage().setY(event.getScreenY() - yOffset);
             }
         });
     }

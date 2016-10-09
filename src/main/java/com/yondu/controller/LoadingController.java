@@ -47,36 +47,16 @@ public class LoadingController implements Initializable{
     @FXML
     public ImageView rushLogoImage;
 
-    private ApiService apiService;
-
     private String orStr;
     private String totalAmountStr;
     private String convertedPoints;
     private Account customer;
-    private String baseUrl;
-
-    private String pointsConversionEndpoint;
-    private String memberLoginEndpoint;
-    private String getPointsEndpoint;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        apiService = new ApiService();
         this.rushLogoImage.setImage(new Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
 
-        try {
-            Properties prop = new Properties();
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
-            prop.load(inputStream);
-            inputStream.close();
-            baseUrl = prop.getProperty("base_url");
-            pointsConversionEndpoint = prop.getProperty("points_conversion_endpoint");
-            memberLoginEndpoint = prop.getProperty("member_login_endpoint");
-            getPointsEndpoint = prop.getProperty("get_points_endpoint");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         //Screen shot and read total sales
         SalesCaptureService myService = new SalesCaptureService();
         myService.setOnSucceeded((WorkerStateEvent t) ->{
@@ -145,7 +125,7 @@ public class LoadingController implements Initializable{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            givePointsStage.setScene(new Scene(root, 400,200));
+            givePointsStage.setScene(new Scene(root, 400,220));
             givePointsStage.setTitle("Give Points");
             givePointsStage.resizableProperty().setValue(Boolean.FALSE);
             givePointsStage.show();
@@ -235,8 +215,8 @@ public class LoadingController implements Initializable{
     public void convertPoints() throws ParseException {
         if (App.appContextHolder.isOnlineMode()) {
            try {
-               String url = baseUrl + pointsConversionEndpoint;
-               String result = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+               String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
+               String result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                JSONParser parser = new JSONParser();
                JSONObject jsonResponse = (JSONObject) parser.parse(result);
                JSONObject data = (JSONObject) jsonResponse.get("data");
@@ -327,8 +307,9 @@ public class LoadingController implements Initializable{
             java.util.List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
 
-            String url = baseUrl + memberLoginEndpoint.replace(":employee_id", App.appContextHolder.getEmployeeId());
-            String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
+            url = url + url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+            String responseStr = App.appContextHolder.getApiService().call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
             JSONParser parser = new JSONParser();
             JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
             JSONObject data = (JSONObject) jsonResponse.get("data");
@@ -337,8 +318,8 @@ public class LoadingController implements Initializable{
             customer.setMobileNumber((String) data.get("mobile_no"));
             //get customer current points
             params = new ArrayList<>();
-            url = baseUrl + getPointsEndpoint.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-            responseStr = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetPointsEndpoint().replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+            responseStr = App.appContextHolder.getApiService().call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
             jsonResponse = (JSONObject) parser.parse(responseStr);
             Double points = null;

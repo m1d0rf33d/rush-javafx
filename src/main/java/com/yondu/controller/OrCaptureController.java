@@ -31,26 +31,20 @@ public class OrCaptureController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        capturePane.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                xOffset = event.getSceneX();
-                yOffset = event.getSceneY();
-            }
+        capturePane.setOnMousePressed((MouseEvent event) -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
         });
-        capturePane.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                Double stageX = App.appContextHolder.getOrCaptureStage().getX();
-                Double stageY = App.appContextHolder.getOrCaptureStage().getY();
+        capturePane.setOnMouseDragged((MouseEvent event) ->{
+            Double stageX = App.appContextHolder.getOrCaptureStage().getX();
+            Double stageY = App.appContextHolder.getOrCaptureStage().getY();
 
-                Double width = App.appContextHolder.getOrCaptureStage().getWidth();
-                Double height = App.appContextHolder.getOrCaptureStage().getHeight();
-                if (event.getScreenX()  >  (stageX + 10) && event.getScreenY() > (stageY + 10) &&
-                        event.getScreenX() < (stageX + width - 10) && event.getScreenY() < (stageY + height - 10)) {
-                    App.appContextHolder.getOrCaptureStage().setX(event.getScreenX() - xOffset);
-                    App.appContextHolder.getOrCaptureStage().setY(event.getScreenY() - yOffset);
-                }
+            Double width = App.appContextHolder.getOrCaptureStage().getWidth();
+            Double height = App.appContextHolder.getOrCaptureStage().getHeight();
+            if (event.getScreenX()  >  (stageX + 10) && event.getScreenY() > (stageY + 10) &&
+                    event.getScreenX() < (stageX + width - 10) && event.getScreenY() < (stageY + height - 10)) {
+                App.appContextHolder.getOrCaptureStage().setX(event.getScreenX() - xOffset);
+                App.appContextHolder.getOrCaptureStage().setY(event.getScreenY() - yOffset);
             }
         });
     }

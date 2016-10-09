@@ -1,10 +1,10 @@
 package com.yondu;
 
-import com.yondu.model.Account;
+import com.yondu.service.ApiService;
 import javafx.stage.Stage;
 
 /** This will serve as a single instance application context holder that
- *  contains shared data within the application.
+ *  contains shared data within the application. This is the heart of the application.
  *
  *  @employeeId - logged in employee
  *  @authorizationToken - we don't want to request for token each api call so we store it here
@@ -39,8 +39,211 @@ public class AppContextHolder {
     private Stage orCaptureStage;
     private Stage salesCaptureStage;
 
+    //static path reference
     private String ocrFullPath;
     private String offlinePath;
+
+    //Read endpoints from config file
+    private String baseUrl;
+    private String registerEndpoint;
+    private String memberLoginEndpoint;
+    private String pointsConversionEndpoint;
+    private String givePointsEndpoint;
+    private String getPointsEndpoint;
+    private String payWithPointsEndpoint;
+    private String getRewardsEndpoint;
+    private String redeemRewardsEndpoint;
+    private String unclaimedRewardsEndpoint;
+    private String claimRewardsEndpoint;
+    private String getRewardsMerchantEndpoint;
+    private String customerRewardsEndpoint;
+    private String customerTransactionsEndpoint;
+    private String getBranchesEndpoint;
+    private String loginEndpoint;
+
+    private String appKey;
+    private String appSecret;
+    private String customerAppKey;
+    private String customerAppSecret;
+    private String authorizationEndpoint;
+
+    private ApiService apiService;
+
+    public ApiService getApiService() {
+        return apiService;
+    }
+
+    public void setApiService(ApiService apiService) {
+        this.apiService = apiService;
+    }
+
+    public String getAppSecret() {
+        return appSecret;
+    }
+
+    public void setAppSecret(String appSecret) {
+        this.appSecret = appSecret;
+    }
+
+    public String getCustomerAppKey() {
+        return customerAppKey;
+    }
+
+    public void setCustomerAppKey(String customerAppKey) {
+        this.customerAppKey = customerAppKey;
+    }
+
+    public String getCustomerAppSecret() {
+        return customerAppSecret;
+    }
+
+    public void setCustomerAppSecret(String customerAppSecret) {
+        this.customerAppSecret = customerAppSecret;
+    }
+
+    public String getAuthorizationEndpoint() {
+        return authorizationEndpoint;
+    }
+
+    public void setAuthorizationEndpoint(String authorizationEndpoint) {
+        this.authorizationEndpoint = authorizationEndpoint;
+    }
+
+    public String getAppKey() {
+        return appKey;
+    }
+
+    public void setAppKey(String appKey) {
+        this.appKey = appKey;
+    }
+
+    public String getLoginEndpoint() {
+        return loginEndpoint;
+    }
+
+    public void setLoginEndpoint(String loginEndpoint) {
+        this.loginEndpoint = loginEndpoint;
+    }
+
+    public String getGetBranchesEndpoint() {
+        return getBranchesEndpoint;
+    }
+
+    public void setGetBranchesEndpoint(String getBranchesEndpoint) {
+        this.getBranchesEndpoint = getBranchesEndpoint;
+    }
+
+    public String getRegisterEndpoint() {
+        return registerEndpoint;
+    }
+
+    public void setRegisterEndpoint(String registerEndpoint) {
+        this.registerEndpoint = registerEndpoint;
+    }
+
+    public String getMemberLoginEndpoint() {
+        return memberLoginEndpoint;
+    }
+
+    public void setMemberLoginEndpoint(String memberLoginEndpoint) {
+        this.memberLoginEndpoint = memberLoginEndpoint;
+    }
+
+    public String getPointsConversionEndpoint() {
+        return pointsConversionEndpoint;
+    }
+
+    public void setPointsConversionEndpoint(String pointsConversionEndpoint) {
+        this.pointsConversionEndpoint = pointsConversionEndpoint;
+    }
+
+    public String getGivePointsEndpoint() {
+        return givePointsEndpoint;
+    }
+
+    public void setGivePointsEndpoint(String givePointsEndpoint) {
+        this.givePointsEndpoint = givePointsEndpoint;
+    }
+
+    public String getGetPointsEndpoint() {
+        return getPointsEndpoint;
+    }
+
+    public void setGetPointsEndpoint(String getPointsEndpoint) {
+        this.getPointsEndpoint = getPointsEndpoint;
+    }
+
+    public String getPayWithPointsEndpoint() {
+        return payWithPointsEndpoint;
+    }
+
+    public void setPayWithPointsEndpoint(String payWithPointsEndpoint) {
+        this.payWithPointsEndpoint = payWithPointsEndpoint;
+    }
+
+    public String getGetRewardsEndpoint() {
+        return getRewardsEndpoint;
+    }
+
+    public void setGetRewardsEndpoint(String getRewardsEndpoint) {
+        this.getRewardsEndpoint = getRewardsEndpoint;
+    }
+
+    public String getRedeemRewardsEndpoint() {
+        return redeemRewardsEndpoint;
+    }
+
+    public void setRedeemRewardsEndpoint(String redeemRewardsEndpoint) {
+        this.redeemRewardsEndpoint = redeemRewardsEndpoint;
+    }
+
+    public String getUnclaimedRewardsEndpoint() {
+        return unclaimedRewardsEndpoint;
+    }
+
+    public void setUnclaimedRewardsEndpoint(String unclaimedRewardsEndpoint) {
+        this.unclaimedRewardsEndpoint = unclaimedRewardsEndpoint;
+    }
+
+    public String getClaimRewardsEndpoint() {
+        return claimRewardsEndpoint;
+    }
+
+    public void setClaimRewardsEndpoint(String claimRewardsEndpoint) {
+        this.claimRewardsEndpoint = claimRewardsEndpoint;
+    }
+
+    public String getGetRewardsMerchantEndpoint() {
+        return getRewardsMerchantEndpoint;
+    }
+
+    public void setGetRewardsMerchantEndpoint(String getRewardsMerchantEndpoint) {
+        this.getRewardsMerchantEndpoint = getRewardsMerchantEndpoint;
+    }
+
+    public String getCustomerRewardsEndpoint() {
+        return customerRewardsEndpoint;
+    }
+
+    public void setCustomerRewardsEndpoint(String customerRewardsEndpoint) {
+        this.customerRewardsEndpoint = customerRewardsEndpoint;
+    }
+
+    public String getCustomerTransactionsEndpoint() {
+        return customerTransactionsEndpoint;
+    }
+
+    public void setCustomerTransactionsEndpoint(String customerTransactionsEndpoint) {
+        this.customerTransactionsEndpoint = customerTransactionsEndpoint;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
 
     public Stage getSalesCaptureStage() {
         return salesCaptureStage;

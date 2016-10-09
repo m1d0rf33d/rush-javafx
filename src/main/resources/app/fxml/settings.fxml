@@ -24,7 +24,7 @@
          <font>
             <Font size="15.0" />
          </font></Label>
-      <Button fx:id="OrCaptureButton" layoutX="179.0" layoutY="295.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="Capture OR" textFill="#f8f1f1">
+      <Button fx:id="OrCaptureButton" layoutX="179.0" layoutY="295.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="Capture" textFill="#f8f1f1">
          <font>
             <Font size="17.0" />
          </font></Button>

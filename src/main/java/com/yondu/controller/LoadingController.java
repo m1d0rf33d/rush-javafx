@@ -82,6 +82,7 @@ public class LoadingController implements Initializable{
                                 loader.setController(pointsDetailsController);
                                 stage.setScene(new Scene(loader.load(), 500,400));
                                 stage.resizableProperty().setValue(Boolean.FALSE);
+                                stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                                 stage.show();
 
                                 ((Stage)rushLogoImage.getScene().getWindow()).close();
@@ -128,6 +129,7 @@ public class LoadingController implements Initializable{
             givePointsStage.setScene(new Scene(root, 400,220));
             givePointsStage.setTitle("Give Points");
             givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+            givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             givePointsStage.show();
 
             ((Stage)rushLogoImage.getScene().getWindow()).close();
@@ -308,7 +310,7 @@ public class LoadingController implements Initializable{
             params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
 
             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
-            url = url + url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
             String responseStr = App.appContextHolder.getApiService().call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
             JSONParser parser = new JSONParser();
             JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);

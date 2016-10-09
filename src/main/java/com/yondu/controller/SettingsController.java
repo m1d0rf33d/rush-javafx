@@ -13,7 +13,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
@@ -71,6 +72,7 @@ public class SettingsController implements Initializable{
             salesCaptureStage.initStyle(StageStyle.UNDECORATED);
             salesCaptureStage.setMaxHeight(100);
             salesCaptureStage.setMaxWidth(300);
+            salesCaptureStage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             salesCaptureStage.show();
             App.appContextHolder.setSalesCaptureStage(salesCaptureStage);
             ResizeHelper.addResizeListener(salesCaptureStage);
@@ -93,6 +95,7 @@ public class SettingsController implements Initializable{
             orCaptureStage.setMaxWidth(300);
             App.appContextHolder.setOrCaptureStage(orCaptureStage);
             ResizeHelper.addResizeListener(orCaptureStage);
+            orCaptureStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             orCaptureStage.show();
             setOrButton.setVisible(false);
         } catch (IOException e) {
@@ -366,6 +369,7 @@ public class SettingsController implements Initializable{
             Stage stage = new Stage();
             stage.setScene(new Scene(new Browser(),750,500, javafx.scene.paint.Color.web("#666970")));
             stage.setMaximized(true);
+            stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             stage.show();
             App.appContextHolder.setHomeStage(stage);
             ((Stage)this.previewText.getScene().getWindow()).close();
@@ -431,6 +435,7 @@ public class SettingsController implements Initializable{
         Stage stage = new Stage();
         stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
         stage.setMaximized(true);
+        stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
         stage.show();
         App.appContextHolder.setHomeStage(stage);
         ((Stage)this.previewText.getScene().getWindow()).close();

@@ -9,7 +9,7 @@ angular.module('HomeModule')
                 mobileNumber = 'a';
             }
             $state.go('member-profile-view', {mobileNumber: mobileNumber});
-        }, 1000);
+        }, 500);
     }
 })
 .controller('MemberProfileCtrl', function($scope, $stateParams, DTOptionsBuilder, DTColumnBuilder, $q, $rootScope) {
@@ -54,6 +54,7 @@ angular.module('HomeModule')
         });
     } else {
         homeService.loginMember($stateParams.mobileNumber, function(resp) {
+
             if (resp.message != undefined) {
                 $scope.message = 'Customer not found';
             } else {

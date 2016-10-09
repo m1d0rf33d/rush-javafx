@@ -68,6 +68,7 @@ public class GivePointsController implements Initializable {
             Stage stage = new Stage();
             stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
             stage.setMaximized(true);
+            stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             stage.show();
             App.appContextHolder.setHomeStage(stage);
             ((Stage) homeImageView.getScene().getWindow()).close();
@@ -132,6 +133,7 @@ public class GivePointsController implements Initializable {
                 }
             } else {
                 //Customer already logged in
+                App.appContextHolder.setCustomerMobile(mobileField.getText());
                 ((Stage)givePointsButton.getScene().getWindow()).close();
                 loadGivePointsDetailsView();
             }
@@ -147,6 +149,7 @@ public class GivePointsController implements Initializable {
             loadingStage.setScene(new Scene(root, 300,100));
             loadingStage.initStyle(StageStyle.UNDECORATED);
             loadingStage.resizableProperty().setValue(Boolean.FALSE);
+            loadingStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             loadingStage.show();
         } catch (IOException e) {
             e.printStackTrace();

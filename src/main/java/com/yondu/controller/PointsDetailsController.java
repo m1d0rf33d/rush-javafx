@@ -167,6 +167,7 @@ public class PointsDetailsController implements Initializable{
                         givePointsStage.setScene(new Scene(root, 400,200));
                         givePointsStage.setTitle("Give Points");
                         givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                        givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                         givePointsStage.show();
 
                         ((Stage)rushLogoImageView.getScene().getWindow()).close();
@@ -190,6 +191,7 @@ public class PointsDetailsController implements Initializable{
                 givePointsStage.setScene(new Scene(root, 400,200));
                 givePointsStage.setTitle("Give Points");
                 givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                 givePointsStage.show();
 
                 ((Stage)rushLogoImageView.getScene().getWindow()).close();

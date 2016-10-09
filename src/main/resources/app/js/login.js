@@ -4,8 +4,8 @@ alert("__CONNECT__BACKEND__homeService");
 //Create our angular login module
 var loginModule = angular.module('LoginModule',[]);
 
-loginModule.controller('LoginController', function($scope){
-    angular.element("#login-loading-modal").modal('show');
+loginModule.controller('LoginController', function($scope, $timeout){
+
     $scope.employeeId = '';
     $scope.branches = [];
     angular.element(document).ready(function () {
@@ -13,20 +13,28 @@ loginModule.controller('LoginController', function($scope){
     });
 
    $scope.update=function(){
-        //This is a java service (magic motherfucker!)
-       loginService.loadBranches(function(data){
-           if (data != null) {
-               $scope.branches = data;
+       angular.element("#login-loading-modal").modal('show');
+       $timeout(function(){
+           //This is a java service (magic motherfucker!)
+           loginService.loadBranches(function(resp){
+               $scope.branches = resp.data;
                $scope.defaultBranch = $scope.branches[0].id;
                $scope.$apply();
-           }
-        });
+           });
+       }, 500);
+
     }
     $scope.clearLoginField = function() {
         $scope.employeeId = '';
     }
     $scope.addNumber = function(num) {
         $scope.employeeId = $scope.employeeId + num;
+    }
+    $scope.login = function() {
+        angular.element("#login-loading-modal").modal('show');
+        var employeeId = angular.element("#employee_id").val(),
+            branchId = angular.element("#branch_id").val();
+        loginService.login(employeeId, branchId);
     }
 });
 
@@ -45,11 +53,11 @@ function loginResponseHandler(jsonResponse) {
 }
 
 function closeLoadingModal(resp) {
-    $(".temp").remove();
+    $(".loading-temp").remove();
     if (resp == 'false') {
 
-        $(".login-modal-body").prepend('<div class="temp"><p>You are currently in offline mode, only available feature is Give Points.</p></div>');
-        $(".login-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Network connection error</strong> </div>');
+        $(".login-modal-body").prepend('<div class="loading-temp"><p>You are currently in offline mode, only available feature is Give Points.</p></div>');
+        $(".login-modal-body").prepend('<div class="alert alert-warning loading-temp"> <strong>Network connection error</strong> </div>');
         $("#loginModal").modal('show');
         $(".online-element").hide();
         $(".offline-element").show();

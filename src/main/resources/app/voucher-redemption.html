@@ -82,12 +82,58 @@
 
             <div class="modal fade" id="{{item.id}}_pin_modal" tabindex="-2" role="dialog" aria-labelledby="myModal2">
                 <div class="modal-dialog" role="document">
-                    <div class="modal-content row" style="background: white;text-align: center;padding: 20px;">
-                        <h1>Enter 4-Digit M-Pin</h1>
-                        <input type="password" class="w80" id="{{item.id}}_pin">
-                        <div class="modal-buttons">
-                            <button ng-click="redeemRewards(item.id)" type="button" class="btn btn-default orange-btn btn-lg">Proceed</button>
+                    <div class="modal-content row" style="background: white;text-align: center;padding: 20px; width: 900px !important;">
+                        <div class="col-sm-6" style="margin-top: 100px;">
+                            <h1>Enter 4-Digit M-Pin</h1>
+                            <input type="password" class="w80" id="{{item.id}}_pin" ng-model="mpin">
+                            <div class="modal-buttons">
+                                <button ng-click="redeemRewards(item.id)" type="button" class="btn btn-default orange-btn btn-lg">Proceed</button>
+                            </div>
                         </div>
+                        <div class="col-sm-6">
+                            <section id="number-pad-wrapper" class="sm">
+                                <ul>
+                                    <li>
+                                        <button ng-click="addNumber(1)">1</button>
+                                    </li>
+                                    <li>
+                                        <button ng-click="addNumber(2)">2</button>
+                                    </li>
+                                    <li>
+                                        <button ng-click="addNumber(3)">3</button>
+                                    </li>
+                                    <li>
+                                        <button ng-click="addNumber(4)">4</button>
+                                    </li>
+                                    <li>
+                                        <button ng-click="addNumber(5)">5</button>
+                                    </li>
+                                    <li>
+                                        <button ng-click="addNumber(6)">6</button>
+                                    </li>
+                                    <li>
+                                        <button ng-click="addNumber(7)">7</button>
+                                    </li>
+                                    <li>
+                                        <button ng-click="addNumber(8)">8</button>
+                                    </li>
+                                    <li>
+                                        <button ng-click="addNumber(9)">9</button>
+                                    </li>
+                                    <li>
+                                        <button ng-click="clearLoginField()"><img src="images/remove.png" alt="remove"></button>
+                                    </li>
+                                    <li>
+                                        <button ng-click="addNumber(0)">0</button>
+                                    </li>
+                                    <li>
+                                        <button ng-click="addNumber('.')"><img src="images/dot.png" alt="dot"></button>
+                                    </li>
+                                </ul>
+                            </section>
+                        </div>
+
+
                         <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="images/close.png" alt=""></a>
                     </div>
                 </div>

@@ -6,11 +6,15 @@ import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.Branch;
 import com.yondu.utils.Java2JavascriptUtils;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.scene.web.WebEngine;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.w3c.dom.html.HTMLInputElement;
 import org.w3c.dom.html.HTMLSelectElement;
 
@@ -40,62 +44,83 @@ public class LoginService {
         this.webEngine = webEngine;
     }
 
-    public void login() {
-        try {
-            //Read html form values
-            HTMLInputElement employeeField = (HTMLInputElement) this.webEngine.getDocument().getElementById(ApiFieldContants.EMPLOYEE_ID);
-            HTMLSelectElement selectField = (HTMLSelectElement) this.webEngine.getDocument().getElementById(ApiFieldContants.BRANCH_ID);
+    public void login(String employeeId, String branchId) {
+        Service<String> service = new Service<String>() {
+            @Override
+            protected Task<String> createTask() {
+                return new Task<String>() {
+                    @Override
+                    protected String call() throws Exception {
+                        String jsonResponse = null;
+                        try {
+                            //Build request body
+                            List<NameValuePair> params = new ArrayList<>();
+                            params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, employeeId));
+                            params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, branchId));
+                            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getLoginEndpoint();
+                            jsonResponse = apiService.call((url), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
-            //Build request body
-            List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, employeeField.getValue()));
-            params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, selectField.getValue()));
-            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getLoginEndpoint();
-            String jsonResponse = apiService.call((url), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                            JSONParser parser = new JSONParser();
+                            JSONObject jsonObject = (JSONObject) parser.parse(jsonResponse);
+                            if (jsonObject.get("error_code").equals("0x0")) {
+                                JSONObject data = (JSONObject) jsonObject.get("data");
+                                App.appContextHolder.setEmployeeName(((String) data.get("name")));
+                                App.appContextHolder.setEmployeeId((String) data.get("id"));
+                            }
 
-            JSONParser parser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) parse(jsonResponse);
-            if (jsonObject.get("data") != null) {
-                JSONObject data = (JSONObject) jsonObject.get("data");
-                App.appContextHolder.setEmployeeName(((String) data.get("name")));
-                App.appContextHolder.setEmployeeId((String) data.get("id"));
+                        } catch (IOException e) {
+                            //LOG here
+                            jsonResponse = null;
+                            App.appContextHolder.setOnlineMode(false);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        return jsonResponse;
+                    }
+                };
+            }
+        };
+        service.setOnSucceeded((WorkerStateEvent e) -> {
+            if (e.getSource().getValue() != null) {
+                webEngine.executeScript("loginResponseHandler('"+e.getSource().getValue()+"')");
             }
 
-            webEngine.executeScript("loginResponseHandler('"+jsonResponse+"')");
-        } catch (IOException e) {
-            //LOG here
-            App.appContextHolder.setOnlineMode(false);
             webEngine.executeScript("closeLoadingModal('"+ App.appContextHolder.isOnlineMode()+"')");
-        }
+        });
+        service.start();
+
     }
 
     public void loadBranches(final Object callbackfunction) {
-        try {
-            ApiService apiService = new ApiService();
-            ApiResponse apiResponse = new ApiResponse();
-
-            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
-            List<NameValuePair> params = new ArrayList<>();
-            String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-            ObjectMapper mapper = new ObjectMapper();
-            apiResponse = mapper.readValue(result, ApiResponse.class);
-
-            final List<Branch> data = (List<Branch>) apiResponse.getData();
-            webEngine.executeScript("closeLoadingModal('"+ App.appContextHolder.isOnlineMode()+"')");
-            // launch a background thread (async)
-            new Thread( () -> {
-                try {
-                    sleep(1000); //add some processing simulation... Also if you remove this shit will break
-                    runLater( () ->
-                            Java2JavascriptUtils.call(callbackfunction, toJSONString(data))
-                    );
-                } catch (InterruptedException e) {	}
-            }).start();
-        } catch (IOException e) {
-            App.appContextHolder.setOnlineMode(false);
-            webEngine.executeScript("closeLoadingModal('"+ App.appContextHolder.isOnlineMode()+"')");
-        }
+        Service<Void> service = new Service<Void>() {
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        try {
+                            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
+                            List<NameValuePair> params = new ArrayList<>();
+                            String jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                            Thread thread = new Thread(()->{
+                                runLater( () ->
+                                        Java2JavascriptUtils.call(callbackfunction, jsonResponse)
+                                );
+                            });
+                            thread.start();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            App.appContextHolder.setOnlineMode(false);
+                        }
+                        return null;
+                    }
+                };
+            }
+        };
+        service.setOnSucceeded((WorkerStateEvent e) -> {
+           webEngine.executeScript("closeLoadingModal('"+ App.appContextHolder.isOnlineMode()+"')");
+        });
+        service.start();
 
     }
 

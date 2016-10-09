@@ -33,7 +33,7 @@
                     {{branch.name}}
                 </option>
             </select>
-            <input value="LOGIN" type="button" onclick="loginService.login();">
+            <input value="LOGIN" type="button" ng-click="login();">
         </form>
     </div>
     <div class="right-block">
@@ -115,5 +115,5 @@
         $(this).blur();
     });
     document.oncontextmenu = document.body.oncontextmenu = function() {return false;}
-</script>
+</script><!--<script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>-->
 </body></html>

@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -27,6 +28,7 @@ public class App extends Application{
         primaryStage.setScene(new Scene(root, 600,400));
         primaryStage.resizableProperty().setValue(false);
         primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
         primaryStage.show();
     }
 

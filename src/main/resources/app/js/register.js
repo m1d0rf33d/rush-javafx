@@ -1,7 +1,18 @@
 
 angular.module('HomeModule')
-.controller('RegisterCtrl', function($scope){
-
+.controller('RegisterCtrl', function($scope, $timeout){
+    $scope.register = function() {
+        angular.element("#home-loading-modal").modal('show');
+        $timeout(function(){
+            var name = angular.element("#name").val(),
+                birthdate = angular.element("#birthdate").val(),
+                mpin = angular.element("#mpin").val(),
+                email = angular.element("#email").val(),
+                gender = angular.element("#gender").val(),
+                mobileNo = angular.element("#mobile_no").val();
+            homeService.register(name,email,mobileNo, mpin, birthdate,gender);
+        },0);
+    }
 });
 
 function registerResponseHandler(jsonResponse) {

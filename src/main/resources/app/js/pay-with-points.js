@@ -52,7 +52,7 @@ function payWithPointsResponse (jsonResponse){
             errorMessage = resp.errors.points[0];
         }
         $(".paypoints-result-body").prepend('<div class="temp"><p>'+ errorMessage+'</p></div>');
-        $(".paypoints-result-body").prepend('<div class="alert alert-warning temp"> <strong>Failed to pay with points.</strong> </div>');
+        $(".paypoints-result-body").prepend('<div class="alert alert-warning temp"> <strong>Pay with points failed.</strong> </div>');
         $("#paypoints-result-modal").modal('show');
     } else {
         $(".paypoints-result-body").prepend('<div class="temp"><p>Member points remaining '+ resp.points +'</p></div>');

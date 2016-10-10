@@ -36,6 +36,19 @@ loginModule.controller('LoginController', function($scope, $timeout){
             branchId = angular.element("#branch_id").val();
         loginService.login(employeeId, branchId);
     }
+})
+loginModule.directive('myEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if(event.which === 13) {
+                scope.$apply(function (){
+                    scope.$eval(attrs.myEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
 });
 
 //Functions that are outside the angular context and will be executed by our java backend service

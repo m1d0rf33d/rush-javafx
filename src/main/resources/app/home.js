@@ -127,8 +127,8 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     $scope.goToVoucherRedemptionView = function() {
         if ($rootScope.memberId == undefined) {
             angular.element(".temp").remove();
-            $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
-            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Not allowed</strong> </div>');
+            $(".home-modal-body").prepend('<div class="temp"><p>Please log in customer.</p></div>');
+            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Redeem Voucher</strong> </div>');
             $("#myModal").modal('show');
             return;
         }
@@ -142,8 +142,8 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
 
         if ($rootScope.memberId == undefined) {
             angular.element(".temp").remove();
-            $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
-            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Not allowed</strong> </div>');
+            $(".home-modal-body").prepend('<div class="temp"><p>Please log in customer.</p></div>');
+            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Issue Rewards</strong> </div>');
             $("#myModal").modal('show');
             return;
         }
@@ -156,8 +156,8 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
      $scope.goToTransactionsView = function() {
          if ($rootScope.memberId == undefined) {
              angular.element(".temp").remove();
-             $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
-             $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Not allowed</strong> </div>');
+             $(".home-modal-body").prepend('<div class="temp"><p>Please log in customer.</p></div>');
+             $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Transactions View</strong> </div>');
              $("#myModal").modal('show');
              return;
          }
@@ -199,6 +199,18 @@ homeModule.directive('backImg', function(){
         element.css({
             'background-image': 'url(' + url +')',
             'background-size' : 'cover'
+        });
+    };
+}).directive('myEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if(event.which === 13) {
+                scope.$apply(function (){
+                    scope.$eval(attrs.myEnter);
+                });
+
+                event.preventDefault();
+            }
         });
     };
 });

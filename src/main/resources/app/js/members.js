@@ -56,7 +56,7 @@ angular.module('HomeModule')
         homeService.loginMember($stateParams.mobileNumber, function(resp) {
 
             if (resp.message != undefined) {
-                $scope.message = 'Customer not found';
+                $scope.message = 'No member found that matches the mobile number.';
             } else {
                 $scope.member = {
                     id: resp.data.id,

@@ -67,7 +67,7 @@ public class LoadingController implements Initializable{
                 //Screen shot and read or number
                 OrCaptureService orCaptureService = new OrCaptureService();
                 orCaptureService.setOnSucceeded((WorkerStateEvent a) ->{
-
+                    App.appContextHolder.getLoadingStage().setIconified(false);
                     //Convert captured total sales to points
                     ConvertPointsService convertPointsService = new ConvertPointsService();
                     convertPointsService.setOnSucceeded((WorkerStateEvent c) -> {
@@ -91,23 +91,23 @@ public class LoadingController implements Initializable{
                             }
                         });
                         customerInfoService.setOnFailed((WorkerStateEvent f) -> {
-                            handleError("Customer info captured value: '" + totalAmountStr + "' is not a valid number.");
+                            handleError("Internal fatal error");
                         });
                         customerInfoService.start();
                     });
                     convertPointsService.setOnFailed((WorkerStateEvent x) -> {
-                        handleError("Convert captured value: '" + totalAmountStr + "' is not a valid number.");
+                        handleError("Internal fatal error");
                     });
                     convertPointsService.start();
                 });
                 orCaptureService.setOnFailed((WorkerStateEvent d) -> {
-                    handleError("Or failed");
+                    handleError("Internal fatal error");
                 });
                 orCaptureService.start();
             }
         });
         myService.setOnFailed((WorkerStateEvent t) -> {
-            handleError("Sales failed");
+            handleError("Internal fatal error");
         });
 
         myService.start();

@@ -38,6 +38,7 @@ public class AppContextHolder {
     private boolean onlineMode;
     private Stage orCaptureStage;
     private Stage salesCaptureStage;
+    private Stage loadingStage;
 
     //static path reference
     private String ocrFullPath;
@@ -66,6 +67,14 @@ public class AppContextHolder {
     private String customerAppKey;
     private String customerAppSecret;
     private String authorizationEndpoint;
+
+    public Stage getLoadingStage() {
+        return loadingStage;
+    }
+
+    public void setLoadingStage(Stage loadingStage) {
+        this.loadingStage = loadingStage;
+    }
 
     private ApiService apiService;
 

@@ -4,6 +4,7 @@ import com.yondu.App;
 import com.yondu.Browser;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.service.ApiService;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -53,6 +55,10 @@ public class GivePointsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        mobileField.setOnKeyPressed((event)->{
+            if(event.getCode() == KeyCode.ENTER) {   givePoints(); }
+        });
+
         if (!App.appContextHolder.isOnlineMode()) {
             mode.setText("OFFLINE");
         }
@@ -75,70 +81,74 @@ public class GivePointsController implements Initializable {
         });
 
         this.givePointsButton.addEventHandler(MouseEvent.MOUSE_CLICKED,(MouseEvent t) -> {
-            if (App.appContextHolder.getCustomerMobile() == null) {
-                try {
-                    if (App.appContextHolder.getEmployeeId().equals("OFFLINE_EMPLOYEE")) {
-                        throw new IOException();
-                    }
-
-                    List<NameValuePair> params = new ArrayList<>();
-                    params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getText()));
-                    String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
-                    url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-                    String responseStr = App.appContextHolder.getApiService().call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-                    JSONParser parser = new JSONParser();
-                    JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
-                    if (!(jsonResponse.get("error_code")).equals("0x0")) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) jsonResponse.get("message"), ButtonType.OK);
-                        alert.showAndWait();
-
-                        if (alert.getResult() == ButtonType.OK) {
-                            alert.close();
-                        }
-                    } else {
-                        //Load givepoints result
-                        JSONObject data = (JSONObject) jsonResponse.get("data");
-                        App.appContextHolder.setCustomerUUID((String)data.get("id"));
-                        App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
-                        ((Stage)givePointsButton.getScene().getWindow()).close();
-                        loadGivePointsDetailsView();
-                    }
-                } catch (IOException e) {
-                    //Offline mode
-                    e.printStackTrace();
-                    //Validate mobile field
-                    boolean isValid = true;
-                    if (mobileField.getText().isEmpty()) {
-                        isValid = false;
-                    } else {
-                        if (!NumberUtils.isDigits(mobileField.getText())) {
-                            isValid = false;
-                        }
-                    }
-                    if (isValid) {
-                        App.appContextHolder.setOnlineMode(false);
-                        App.appContextHolder.setCustomerMobile(mobileField.getText());
-                        ((Stage)givePointsButton.getScene().getWindow()).close();
-                        loadGivePointsDetailsView();
-                    } else {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) "Invalid mobile number", ButtonType.OK);
-                        alert.showAndWait();
-
-                        if (alert.getResult() == ButtonType.OK) {
-                            alert.close();
-                        }
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                //Customer already logged in
-                App.appContextHolder.setCustomerMobile(mobileField.getText());
-                ((Stage)givePointsButton.getScene().getWindow()).close();
-                loadGivePointsDetailsView();
-            }
+            givePoints();
         });
 
+    }
+
+    private void givePoints() {
+        if (App.appContextHolder.getCustomerMobile() == null || App.appContextHolder.getCustomerUUID() == null) {
+            try {
+                if (App.appContextHolder.getEmployeeId().equals("OFFLINE_EMPLOYEE")) {
+                    throw new IOException();
+                }
+
+                List<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getText()));
+                String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
+                url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+                String responseStr = App.appContextHolder.getApiService().call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                JSONParser parser = new JSONParser();
+                JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
+                if (!(jsonResponse.get("error_code")).equals("0x0")) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) jsonResponse.get("message"), ButtonType.OK);
+                    alert.showAndWait();
+
+                    if (alert.getResult() == ButtonType.OK) {
+                        alert.close();
+                    }
+                } else {
+                    //Load givepoints result
+                    JSONObject data = (JSONObject) jsonResponse.get("data");
+                    App.appContextHolder.setCustomerUUID((String)data.get("id"));
+                    App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
+                    ((Stage)givePointsButton.getScene().getWindow()).close();
+                    loadGivePointsDetailsView();
+                }
+            } catch (IOException e) {
+                //Offline mode
+                e.printStackTrace();
+                //Validate mobile field
+                boolean isValid = true;
+                if (mobileField.getText().isEmpty()) {
+                    isValid = false;
+                } else {
+                    if (!NumberUtils.isDigits(mobileField.getText())) {
+                        isValid = false;
+                    }
+                }
+                if (isValid) {
+                    App.appContextHolder.setOnlineMode(false);
+                    App.appContextHolder.setCustomerMobile(mobileField.getText());
+                    ((Stage)givePointsButton.getScene().getWindow()).close();
+                    loadGivePointsDetailsView();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) "Invalid mobile number", ButtonType.OK);
+                    alert.showAndWait();
+
+                    if (alert.getResult() == ButtonType.OK) {
+                        alert.close();
+                    }
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else {
+            //Customer already logged in
+            App.appContextHolder.setCustomerMobile(mobileField.getText());
+            ((Stage)givePointsButton.getScene().getWindow()).close();
+            loadGivePointsDetailsView();
+        }
     }
 
     private  void loadGivePointsDetailsView() {
@@ -151,6 +161,8 @@ public class GivePointsController implements Initializable {
             loadingStage.resizableProperty().setValue(Boolean.FALSE);
             loadingStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             loadingStage.show();
+            App.appContextHolder.setLoadingStage(loadingStage);
+            loadingStage.setIconified(true);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -76,10 +76,6 @@ public class PointsDetailsController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if (!App.appContextHolder.isOnlineMode()) {
-            mode.setText("OFFLINE");
-        }
-
         apiService = new ApiService();
         this.rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
 
@@ -90,6 +86,11 @@ public class PointsDetailsController implements Initializable{
         this.orNumberLbl.setText(this.orNumber);
         this.totalAmountLbl.setText(this.totalAmount);
         this.convertedPointsLbl.setText(this.convertedPoints);
+
+        if (!App.appContextHolder.isOnlineMode()) {
+            mode.setText("OFFLINE");
+            currentPointsLbl.setText("");
+        }
 
         this.continueButton.addEventHandler(MouseEvent.MOUSE_CLICKED,(MouseEvent event) ->{
             if (App.appContextHolder.isOnlineMode()) {
@@ -105,7 +106,7 @@ public class PointsDetailsController implements Initializable{
 
                     JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
                     if (jsonResponse.get("error_code").equals("0x0")) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION,"Give points successful", ButtonType.OK);
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,"Points has been successfully given to customer.", ButtonType.OK);
                         alert.showAndWait();
 
                         if (alert.getResult() == ButtonType.OK) {
@@ -141,40 +142,11 @@ public class PointsDetailsController implements Initializable{
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    App.appContextHolder.setOnlineMode(false);
+                    writeOfflineTransaction();
                 }
             } else {
-                //write to file
-                try {
-                    File file = new File(App.appContextHolder.getOfflinePath());
-                    if (!file.exists()) {
-                        file.createNewFile();
-                    }
-                    SimpleDateFormat df  = new SimpleDateFormat("MM/dd/YYYY");
-                    String date = df.format(new Date());
-
-                    PrintWriter fstream = new PrintWriter(new FileWriter(file,true));
-                    fstream.println("mobileNumber=" + customer.getMobileNumber()+ ",totalAmount=" + totalAmount + ", orNumber=" + orNumber + ", date=" + date);
-                    fstream.flush();
-                    fstream.close();
-
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION,"Give points saved to offline transactions", ButtonType.OK);
-                    alert.showAndWait();
-
-                    if (alert.getResult() == ButtonType.OK) {
-                        alert.close();
-                        Stage givePointsStage = new Stage();
-                        Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
-                        givePointsStage.setScene(new Scene(root, 400,200));
-                        givePointsStage.setTitle("Give Points");
-                        givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-                        givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                        givePointsStage.show();
-
-                        ((Stage)rushLogoImageView.getScene().getWindow()).close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                writeOfflineTransaction();
             }
         });
 
@@ -188,7 +160,7 @@ public class PointsDetailsController implements Initializable{
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                givePointsStage.setScene(new Scene(root, 400,200));
+                givePointsStage.setScene(new Scene(root, 400,220));
                 givePointsStage.setTitle("Give Points");
                 givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                 givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
@@ -198,5 +170,38 @@ public class PointsDetailsController implements Initializable{
             }
         });
     }
+    private  void writeOfflineTransaction() {
+        //write to file
+        try {
+            File file = new File(App.appContextHolder.getOfflinePath());
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            SimpleDateFormat df  = new SimpleDateFormat("MM/dd/YYYY");
+            String date = df.format(new Date());
 
+            PrintWriter fstream = new PrintWriter(new FileWriter(file,true));
+            fstream.println("mobileNumber=" + customer.getMobileNumber()+ ",totalAmount=" + totalAmount + ", orNumber=" + orNumber + ", date=" + date);
+            fstream.flush();
+            fstream.close();
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION,"Give points data has been recorded, you may view this on offline transactions.", ButtonType.OK);
+            alert.showAndWait();
+
+            if (alert.getResult() == ButtonType.OK) {
+                alert.close();
+                Stage givePointsStage = new Stage();
+                Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+                givePointsStage.setScene(new Scene(root, 400,220));
+                givePointsStage.setTitle("Give Points");
+                givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                givePointsStage.show();
+
+                ((Stage)rushLogoImageView.getScene().getWindow()).close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

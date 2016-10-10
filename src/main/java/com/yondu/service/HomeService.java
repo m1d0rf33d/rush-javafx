@@ -165,7 +165,7 @@ public class HomeService {
                         result = jsonObject.toJSONString();
                     }
                     Java2JavascriptUtils.call(callbackfunction, result);
-                    webEngine.executeScript("closeLoadingModal('" + App.appContextHolder.isOnlineMode() + "')");
+
                 } catch (IOException e) {
                     App.appContextHolder.setOnlineMode(false);
                     e.printStackTrace();
@@ -174,6 +174,7 @@ public class HomeService {
                     //invalid response format
                     e.printStackTrace();
                 }
+                webEngine.executeScript("closeLoadingModal('" + App.appContextHolder.isOnlineMode() + "')");
             });
         }).start();
 

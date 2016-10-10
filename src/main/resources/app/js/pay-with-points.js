@@ -42,14 +42,19 @@ function payWithPointsResponse (jsonResponse){
     var resp = JSON.parse(jsonResponse);
     if (resp.error_code != '0x0') {
         var errorMessage = '';
-        if (resp.errors.amount != undefined) {
-            errorMessage = resp.errors.amount[0];
+        if (resp.errors != undefined) {
+            if (resp.errors.amount != undefined) {
+                errorMessage = resp.errors.amount[0];
+            }
+            if (resp.errors.or_no != undefined) {
+                errorMessage = resp.errors.or_no[0];
+            }
+            if (resp.errors.points != undefined) {
+                errorMessage = resp.errors.points[0];
+            }
         }
-        if (resp.errors.or_no != undefined) {
-            errorMessage = resp.errors.or_no[0];
-        }
-        if (resp.errors.points != undefined) {
-            errorMessage = resp.errors.points[0];
+        if (resp.message != undefined) {
+            errorMessage = resp.message;
         }
         $(".paypoints-result-body").prepend('<div class="temp"><p>'+ errorMessage+'</p></div>');
         $(".paypoints-result-body").prepend('<div class="alert alert-warning temp"> <strong>Pay with points failed.</strong> </div>');

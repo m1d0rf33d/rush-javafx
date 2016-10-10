@@ -86,7 +86,7 @@
                        <div class="modal-content row" style="background: white;text-align: center;padding: 20px; width: 900px !important;">
                            <div class="col-sm-6" style="margin-top: 100px;">
                                <h1>Enter 4-Digit M-Pin</h1>
-                               <input type="password" class="w80" id="{{item.id}}_pin" ng-model="mpin" my-enter="redeemRewards(item.id)">
+                               <input autofocus type="password" class="w80" id="{{item.id}}_pin"  my-enter="redeemRewards(item.id)">
                                <div class="modal-buttons">
                                    <button ng-click="redeemRewards(item.id)" type="button" class="btn btn-default orange-btn btn-lg">Proceed</button>
                                </div>
@@ -95,40 +95,40 @@
                                <section id="number-pad-wrapper" class="sm">
                                    <ul>
                                        <li>
-                                           <button ng-click="addNumber(1)">1</button>
+                                           <button ng-click="addNumber(1, item.id)">1</button>
                                        </li>
                                        <li>
-                                           <button ng-click="addNumber(2)">2</button>
+                                           <button ng-click="addNumber(2, item.id)">2</button>
                                        </li>
                                        <li>
-                                           <button ng-click="addNumber(3)">3</button>
+                                           <button ng-click="addNumber(3, item.id)">3</button>
                                        </li>
                                        <li>
-                                           <button ng-click="addNumber(4)">4</button>
+                                           <button ng-click="addNumber(4, item.id)">4</button>
                                        </li>
                                        <li>
-                                           <button ng-click="addNumber(5)">5</button>
+                                           <button ng-click="addNumber(5, item.id)">5</button>
                                        </li>
                                        <li>
-                                           <button ng-click="addNumber(6)">6</button>
+                                           <button ng-click="addNumber(6, item.id)">6</button>
                                        </li>
                                        <li>
-                                           <button ng-click="addNumber(7)">7</button>
+                                           <button ng-click="addNumber(7, item.id)">7</button>
                                        </li>
                                        <li>
-                                           <button ng-click="addNumber(8)">8</button>
+                                           <button ng-click="addNumber(8, item.id)">8</button>
                                        </li>
                                        <li>
-                                           <button ng-click="addNumber(9)">9</button>
+                                           <button ng-click="addNumber(9, item.id)">9</button>
                                        </li>
                                        <li>
-                                           <button ng-click="clearLoginField()"><img src="images/remove.png" alt="remove"></button>
+                                           <button ng-click="clearLoginField(item.id)"><img src="images/remove.png" alt="remove"></button>
                                        </li>
                                        <li>
-                                           <button ng-click="addNumber(0)">0</button>
+                                           <button ng-click="addNumber(0, item.id)">0</button>
                                        </li>
                                        <li>
-                                           <button ng-click="addNumber('.')"><img src="images/dot.png" alt="dot"></button>
+                                           <button ng-click="addNumber('.',item.id)"><img src="images/dot.png" alt="dot"></button>
                                        </li>
                                    </ul>
                                </section>

@@ -1,6 +1,6 @@
 angular.module('HomeModule')
 .controller('MemberLoginCtrl', function($scope, $state, $timeout) {
-
+    $scope.mobile = '';
     $scope.loginMember = function() {
         angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
@@ -10,6 +10,12 @@ angular.module('HomeModule')
             }
             $state.go('member-profile-view', {mobileNumber: mobileNumber});
         }, 500);
+    }
+    $scope.addNumber = function(num) {
+        $scope.mobile = $scope.mobile + num;
+    }
+    $scope.clearLoginField = function() {
+        $scope.mobile = '';
     }
 })
 .controller('MemberProfileCtrl', function($scope, $stateParams, DTOptionsBuilder, DTColumnBuilder, $q, $rootScope) {

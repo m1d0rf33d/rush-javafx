@@ -90,7 +90,10 @@ public class SplashController implements Initializable{
                         if (!dir.exists()) {
                             dir.mkdir();
                         }
-
+                        File offlineFile = new File(System.getProperty("user.home") + AppConfigConstants.OFFLINE_LOCATION);
+                        if (!offlineFile.exists()) {
+                            offlineFile.createNewFile();
+                        }
                         //File file = new File("/home/aomine/Desktop/ocr.properties");
                         File file = new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION);
                         if (!file.exists()) {

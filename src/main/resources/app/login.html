@@ -25,7 +25,7 @@
             <a onClick="homeService.loadGivePointsView()" href=""  style="margin-left:150px;display:block;padding: 15px;background-color:#ffb600;border-radius: 30px;color: white;width: 400px;">GIVE POINTS</a>
         </div>
         <form action="" id="login-form" class="online-element">
-            <input my-enter="login()" placeholder="INPUT EMPLOYEE ID" type="text" id="employee_id" ng-model="employeeId">
+            <input my-enter="login()" placeholder="INPUT EMPLOYEE ID" type="text" id="employee_id" ng-model="employeeId" autofocus>
             <select name="" id="branch_id" ng-model="account.branchId">
                 <option ng-selected="{{defaultBranch == branch.id}}"
                         ng-repeat="branch in branches"

@@ -488,12 +488,36 @@ public class HomeService {
             url = url.replace(":id",App.appContextHolder.getCustomerUUID());
             String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
 
-            webEngine.executeScript("closeLoadingModal()");
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObj = (JSONObject) parser.parse(responseStr);
+            List<JSONObject> data = (ArrayList) jsonObj.get("data");
+            for (JSONObject j : data) {
+                if ((Long)j.get("type") == 1) {
+                    j.put("typeStr", "Earn");
+                } else if ((Long)j.get("type") == 2) {
+                    j.put("typeStr", "Paypoints");
+                }
+                else if ((Long)j.get("type") == 3) {
+                    j.put("typeStr", "Redeem");
+                }
+                else if ((Long)j.get("type") == 4) {
+                    j.put("typeStr", "Void");
+                }
+                else if ((Long)j.get("type") == 5) {
+                    j.put("typeStr", "Void-Paypoints");
+                }
+                else if ((Long)j.get("type") == 6) {
+                    j.put("typeStr", "Void-Redeem");
+                }
+            }
+            final String finalData = jsonObj.toJSONString();
             new Thread( () -> {
-                Java2JavascriptUtils.call(callbackfunction, responseStr);
+                Java2JavascriptUtils.call(callbackfunction, finalData);
             }).start();
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");

@@ -3,12 +3,9 @@ package com.yondu.controller;
 import com.yondu.App;
 import com.yondu.model.Account;
 import com.yondu.model.constants.ApiFieldContants;
-import com.yondu.model.constants.AppConfigConstants;
-import com.yondu.service.ApiService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -22,7 +19,6 @@ import javafx.stage.Stage;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
@@ -31,7 +27,10 @@ import org.json.simple.parser.ParseException;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -52,7 +51,6 @@ public class LoadingController implements Initializable{
     private String convertedPoints;
     private Account customer;
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.rushLogoImage.setImage(new Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
@@ -61,9 +59,12 @@ public class LoadingController implements Initializable{
         SalesCaptureService myService = new SalesCaptureService();
         myService.setOnSucceeded((WorkerStateEvent t) ->{
             //validate captured totalAmount
-            if (!NumberUtils.isDigits(totalAmountStr)) {
-                handleError("Captured total sales is not a valid amount : " + totalAmountStr);
-            } else {
+            try {
+             /*   if (!totalAmountStr.contains(".")) {
+                    Long l = Long.parseLong(totalAmountStr);
+                    totalAmountStr = String.valueOf(l.doubleValue());
+                }*/
+                Double.parseDouble(totalAmountStr);
                 //Screen shot and read or number
                 OrCaptureService orCaptureService = new OrCaptureService();
                 orCaptureService.setOnSucceeded((WorkerStateEvent a) ->{
@@ -104,6 +105,10 @@ public class LoadingController implements Initializable{
                     handleError("Internal fatal error");
                 });
                 orCaptureService.start();
+            }
+            catch(NumberFormatException e) {
+
+                handleError("Captured total sales is not a valid amount : " + totalAmountStr);
             }
         });
         myService.setOnFailed((WorkerStateEvent t) -> {

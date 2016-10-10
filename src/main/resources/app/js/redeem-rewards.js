@@ -1,7 +1,6 @@
 
 angular.module('HomeModule')
 .controller('RedeemRewardsCtrl', function($scope, $rootScope, $timeout) {
-    $scope.mpin = '';
     $scope.merchantRewards = [];
     //Load merchant rewards
     homeService.loadRewards(function(resp){
@@ -30,7 +29,6 @@ angular.module('HomeModule')
     $scope.redeemRewards = function(rewardId) {
         var pin = angular.element("#"+rewardId+"_pin").val();
         angular.element("#"+rewardId+"_pin").val('');
-        $scope.mpin = '';
         $("#"+rewardId).modal('hide');
         $("#"+rewardId+"_pin_modal").modal('hide');
         angular.element("#home-loading-modal").modal('show');
@@ -38,12 +36,16 @@ angular.module('HomeModule')
             homeService.redeemRewards(rewardId, pin);
         },500);
     }
-    $scope.addNumber = function(num) {
-        $scope.mpin = $scope.mpin + num;
+
+
+    $scope.addNumber  = function(num, id) {
+        var r =  angular.element("#"+id+"_pin").val() + num;
+        angular.element("#"+id+"_pin").val(r);
     }
-    $scope.clearLoginField = function() {
-        $scope.mpin = '';
+    $scope.clearLoginField = function(id) {
+        angular.element("#"+id+"_pin").val('');
     }
+
 
 });
 

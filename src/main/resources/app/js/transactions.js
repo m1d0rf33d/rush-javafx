@@ -12,7 +12,7 @@ angular.module('HomeModule')
     vm.dtOptions = DTOptionsBuilder.fromFnPromise(getTableData).withPaginationType('full_numbers');
     vm.dtColumns = [
         DTColumnBuilder.newColumn('id').withTitle('Transaction ID').notSortable(),
-        DTColumnBuilder.newColumn('type').withTitle('Transaction Type').notSortable(),
+        DTColumnBuilder.newColumn('typeStr').withTitle('Transaction Type').notSortable(),
         DTColumnBuilder.newColumn('points').withTitle('Points').notSortable(),
         DTColumnBuilder.newColumn('reward_name').withTitle('Reward').notSortable(),
         DTColumnBuilder.newColumn('total_amount').withTitle('Total amount').notSortable(),
@@ -42,7 +42,6 @@ angular.module('HomeModule')
     });
 
     homeService.getCustomerTransactions(function(resp){
-        console.log(resp.data);
         $scope.transactions = resp.data;
     })
 });

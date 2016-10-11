@@ -22,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.apache.http.NameValuePair;
 
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
@@ -47,29 +48,57 @@ public class SplashController implements Initializable{
 
         MyService myService = new MyService();
         myService.setOnSucceeded((WorkerStateEvent t) -> {
-            //Check ONLINE of OFFLINE mode
-            if (App.appContextHolder.isOnlineMode()) {
-                Stage stage = new Stage();
+            if (App.appContextHolder.getIsActivated().equals("true")) {
+                //Check ONLINE of OFFLINE mode
+                if (App.appContextHolder.isOnlineMode()) {
+                /*Stage stage = new Stage();
                 stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
                 stage.setMaximized(true);
                 stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                 stage.show();
-                App.appContextHolder.setHomeStage(stage);
-                ((Stage) rushLogoImage.getScene().getWindow()).close();
-            } else {
+                App.appContextHolder.setHomeStage(stage);*/
+                    try {
+                        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                        double width = screenSize.getWidth();
+                        double height = screenSize.getHeight();
+                        Stage stage = new Stage();
+                        Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/login.fxml"));
+                        stage.setScene(new Scene(root, width,height - 70));
+                        stage.setTitle("Rush");
+                        stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                        stage.show();
+                        ((Stage) rushLogoImage.getScene().getWindow()).close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
 
-                try {
-                    Stage givePointsStage = new Stage();
-                    Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
-                    givePointsStage.setScene(new Scene(root, 400,220));
-                    givePointsStage.setTitle("Give Points");
-                    givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-                    givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                    givePointsStage.show();
-                    ((Stage) rushLogoImage.getScene().getWindow()).close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    try {
+                        Stage givePointsStage = new Stage();
+                        Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+                        givePointsStage.setScene(new Scene(root, 400,220));
+                        givePointsStage.setTitle("Give Points");
+                        givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                        givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                        givePointsStage.show();
+                        ((Stage) rushLogoImage.getScene().getWindow()).close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+            } else {
+               try {
+                   Stage stage = new Stage();
+                   Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/activation.fxml"));
+                   stage.setScene(new Scene(root, 400,200));
+                   stage.setTitle("Activate merchant");
+                   stage.resizableProperty().setValue(Boolean.FALSE);
+                   stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                   stage.show();
+                   ((Stage) rushLogoImage.getScene().getWindow()).close();
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
             }
         });
         progressStatus.textProperty().bind(myService.messageProperty());
@@ -112,11 +141,8 @@ public class SplashController implements Initializable{
                         }
                         App.appContextHolder.setOcrFullPath(file.getAbsolutePath());
                         App.appContextHolder.setOfflinePath(System.getProperty("user.home") + AppConfigConstants.OFFLINE_LOCATION);
-                        /*App.appContextHolder.setOfflinePath("/home/aomine/Desktop/offline.txt");
-                        App.appContextHolder.setOcrFullPath("/home/aomine/Desktop/ocr.properties");*/
 
 
-                        //Read and set RUSH endpoints from config file
                         loadEndpointsFromConfig();
 
                         //Check internet connection
@@ -126,6 +152,10 @@ public class SplashController implements Initializable{
                         List<NameValuePair> params = new ArrayList<>();
                         apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                         App.appContextHolder.setOnlineMode(true);
+                        /*App.appContextHolder.setOfflinePath("/home/aomine/Desktop/offline.txt");
+                        App.appContextHolder.setOcrFullPath("/home/aomine/Desktop/ocr.properties");*/
+
+
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -169,6 +199,7 @@ public class SplashController implements Initializable{
            App.appContextHolder.setAppSecret(prop.getProperty("app_secret"));
            App.appContextHolder.setCustomerAppKey(prop.getProperty("customer_app_key"));
            App.appContextHolder.setCustomerAppSecret(prop.getProperty("customer_app_secret"));
+           App.appContextHolder.setIsActivated(prop.getProperty("isActivated"));
        } catch(IOException e) {
            e.printStackTrace();
        }

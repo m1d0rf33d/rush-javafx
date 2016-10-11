@@ -12,6 +12,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -26,6 +29,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
@@ -71,12 +75,31 @@ public class GivePointsController implements Initializable {
 
         //Add buttons event handlers
         this.homeImageView.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent t) -> {
-            Stage stage = new Stage();
-            stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
-            stage.setMaximized(true);
-            stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-            stage.show();
-            App.appContextHolder.setHomeStage(stage);
+            if (App.appContextHolder.getEmployeeId() == null ||
+                    (App.appContextHolder.getEmployeeId() != null && App.appContextHolder.getEmployeeId().equals("OFFLINE_EMPLOYEE"))) {
+                try {
+                    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                    double width = screenSize.getWidth();
+                    double height = screenSize.getHeight();
+                    Stage stage = new Stage();
+                    Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/login.fxml"));
+                    stage.setScene(new Scene(root, width,height));
+                    stage.setTitle("Rush");
+                    stage.resizableProperty().setValue(Boolean.FALSE);
+                    stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Stage stage = new Stage();
+                stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
+                stage.setMaximized(true);
+                stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                stage.show();
+                App.appContextHolder.setHomeStage(stage);
+            }
+
             ((Stage) homeImageView.getScene().getWindow()).close();
         });
 

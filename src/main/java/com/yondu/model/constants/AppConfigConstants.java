@@ -6,6 +6,7 @@ package com.yondu.model.constants;
 public class AppConfigConstants {
     public static final String OCR_CONFIG_LOCATION = "\\Rush-POS-Sync\\ocr.properties";
     public static final String OFFLINE_LOCATION = "\\Rush-POS-Sync\\offline.txt";
+    public static final String ACTIVATION_LOCATION = "\\Rush-POS-Sync\\activation.txt";
     //public static final String OCR_CONFIG_LOCATION = "/home/aomine/Desktop/ocr.properties";
     //public static final String OCR_CONFIG_LOCATION = "C:\\Users\\erwin\\Desktop\\ocr.properties";
 

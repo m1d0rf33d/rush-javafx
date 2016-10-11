@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #fafafa;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.LoginController">
+   <children>
+      <Pane fx:id="rightPane" layoutX="720.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #f4f4f4;">
+         <children>
+            <Button layoutX="85.0" layoutY="52.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="1" textFill="#71747a">
+               <font>
+                  <Font size="51.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="TWO_PASS_BOX" />
+               </effect>
+            </Button>
+            <Button layoutX="242.0" layoutY="52.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="2"  textFill="#71747a">
+               <font>
+                  <Font size="51.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="TWO_PASS_BOX" />
+               </effect>
+            </Button>
+            <Button layoutX="398.0" layoutY="52.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="3" textFill="#71747a">
+               <font>
+                  <Font size="51.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="TWO_PASS_BOX" />
+               </effect>
+            </Button>
+            <Button layoutX="402.0" layoutY="203.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="6" textFill="#71747a">
+               <font>
+                  <Font size="51.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="TWO_PASS_BOX" />
+               </effect>
+            </Button>
+            <Button layoutX="246.0" layoutY="203.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="5" textFill="#71747a">
+               <font>
+                  <Font size="51.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="TWO_PASS_BOX" />
+               </effect>
+            </Button>
+            <Button layoutX="89.0" layoutY="203.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="4" textFill="#71747a">
+               <font>
+                  <Font size="51.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="TWO_PASS_BOX" />
+               </effect>
+            </Button>
+            <Button layoutX="90.0" layoutY="359.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="7" textFill="#71747a">
+               <font>
+                  <Font size="51.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="TWO_PASS_BOX" />
+               </effect>
+            </Button>
+            <Button layoutX="247.0" layoutY="359.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="8" textFill="#71747a">
+               <font>
+                  <Font size="51.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="TWO_PASS_BOX" />
+               </effect>
+            </Button>
+            <Button layoutX="403.0" layoutY="359.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="9" textFill="#71747a">
+               <font>
+                  <Font size="51.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="TWO_PASS_BOX" />
+               </effect>
+            </Button>
+            <Button layoutX="404.0" layoutY="510.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="." textFill="#71747a">
+               <font>
+                  <Font size="51.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="TWO_PASS_BOX" />
+               </effect>
+            </Button>
+            <Button layoutX="248.0" layoutY="510.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="0" textFill="#71747a">
+               <font>
+                  <Font size="51.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="TWO_PASS_BOX" />
+               </effect>
+            </Button>
+            <Button layoutX="91.0" layoutY="510.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="x" textFill="#71747a">
+               <font>
+                  <Font size="51.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="TWO_PASS_BOX" />
+               </effect>
+            </Button>
+         </children></Pane>
+      <Label layoutX="237.0" layoutY="250.0" prefHeight="50.0" prefWidth="200.0" text="EMPLOYEE LOGIN">
+         <font>
+            <Font name="System Bold" size="23.0" />
+         </font>
+      </Label>
+      <Button fx:id="loginBtn" layoutX="109.0" layoutY="426.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="450.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="LOGIN" textFill="#f5f2f2">
+         <font>
+            <Font size="23.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="CLOSED_HAND" />
+         </cursor>
+      </Button>
+      <ImageView fx:id="rushLogo" fitHeight="88.0" fitWidth="245.0" layoutX="217.0" layoutY="171.0" pickOnBounds="true" preserveRatio="true" />
+      <ComboBox fx:id="branchBox" layoutX="114.0" layoutY="363.0" prefHeight="50.0" prefWidth="450.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: f4f4f4;" />
+      <TextField fx:id="loginTextField" layoutX="115.0" layoutY="300.0" prefHeight="50.0" prefWidth="450.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: f4f4f4;">
+         <font>
+            <Font size="20.0" />
+         </font></TextField>
+      <Pane fx:id="overlayPane" opacity="0.51" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #222;" />
+   </children>
+</Pane>

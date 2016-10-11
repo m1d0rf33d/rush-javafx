@@ -26,13 +26,7 @@ public class Browser extends Region{
 
     public Browser() {
         //Retrieve local html resource
-        String page = "";
-        if (App.appContextHolder.getEmployeeId() == null ||
-                (App.appContextHolder.getEmployeeId() != null && App.appContextHolder.getEmployeeId().equals("OFFLINE_EMPLOYEE"))) {
-            page = App.class.getResource(LOGIN_PAGE).toExternalForm();
-        } else {
-            page = App.class.getResource("/app/home.html").toExternalForm();
-        }
+        String page = App.class.getResource("/app/home.html").toExternalForm();
         webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
             @Override
             public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {

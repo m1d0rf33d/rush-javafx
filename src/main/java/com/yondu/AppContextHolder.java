@@ -1,6 +1,7 @@
 package com.yondu;
 
 import com.yondu.service.ApiService;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /** This will serve as a single instance application context holder that
@@ -67,6 +68,16 @@ public class AppContextHolder {
     private String customerAppKey;
     private String customerAppSecret;
     private String authorizationEndpoint;
+
+    private String isActivated;
+
+    public String getIsActivated() {
+        return isActivated;
+    }
+
+    public void setIsActivated(String isActivated) {
+        this.isActivated = isActivated;
+    }
 
     public Stage getLoadingStage() {
         return loadingStage;

@@ -28,6 +28,7 @@ import org.json.simple.parser.ParseException;
 import org.w3c.dom.html.HTMLInputElement;
 import org.w3c.dom.html.HTMLSelectElement;
 
+import java.awt.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -394,13 +395,22 @@ public class HomeService {
         App.appContextHolder.setEmployeeName(null);
         App.appContextHolder.setCustomerMobile(null);
         //redirect to login page
-        Stage stage = new Stage();
-        stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
-        stage.setMaximized(true);
-        stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-        stage.show();
-        App.appContextHolder.getHomeStage().close();
-        App.appContextHolder.setHomeStage(stage);
+        try {
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            double width = screenSize.getWidth();
+            double height = screenSize.getHeight();
+            Stage stage = new Stage();
+            Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/login.fxml"));
+            stage.setScene(new Scene(root, width,height));
+            stage.setTitle("Rush");
+            stage.resizableProperty().setValue(Boolean.FALSE);
+            stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+            stage.show();
+            App.appContextHolder.getHomeStage().close();
+            App.appContextHolder.setHomeStage(stage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void fetchCustomerData(Object callbackfunction) {

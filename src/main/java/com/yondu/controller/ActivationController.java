@@ -11,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -31,12 +32,13 @@ public class ActivationController implements Initializable{
 
     @FXML
     public TextField merchantKey;
-
+    @FXML
+    public ImageView rushLogo;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        rushLogo.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
 
         activateBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
             activate();

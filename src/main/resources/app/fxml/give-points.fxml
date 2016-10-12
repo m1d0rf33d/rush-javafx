@@ -10,7 +10,7 @@
    <children>
       <Button fx:id="givePointsButton" layoutX="131.0" layoutY="159.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="158.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="GIVE POINTS" textFill="#fcf9f9">
          <font>
-            <Font size="17.0" />
+            <Font name="System Bold" size="17.0" />
          </font></Button>
       <Label layoutX="137.0" layoutY="68.0" prefHeight="41.0" prefWidth="151.0" text="Input mobile number">
          <font>

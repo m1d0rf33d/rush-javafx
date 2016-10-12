@@ -161,7 +161,7 @@ public class LoginController implements Initializable {
             FXMLLoader  loader  = new FXMLLoader(App.class.getResource("/app/fxml/custom-dialog.fxml"));
             CustomDialogController controller = new CustomDialogController(message, overlayPane);
             loader.setController(controller);
-            stage.setScene(new Scene(loader.load(), 600,400));
+            stage.setScene(new Scene(loader.load(), 500,350));
             stage.setTitle("Rush");
             stage.initStyle(StageStyle.UNDECORATED);
             stage.initModality(Modality.WINDOW_MODAL);

@@ -32,7 +32,7 @@ function registerResponseHandler(jsonResponse) {
         $("#mobile_no").val('');
         $("#mpin").val('');
         $("#birthdate").val('');
-        $("#gender").val('-1');
+        $("#gender").val('');
     }
 
     $("#myModal").modal('show');

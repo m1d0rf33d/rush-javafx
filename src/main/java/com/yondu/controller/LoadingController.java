@@ -81,7 +81,7 @@ public class LoadingController implements Initializable{
                                 FXMLLoader  loader  = new FXMLLoader(App.class.getResource(GIVE_POINTS_DETAILS_FXML));
                                 PointsDetailsController pointsDetailsController = new PointsDetailsController(orStr, totalAmountStr, convertedPoints, customer);
                                 loader.setController(pointsDetailsController);
-                                stage.setScene(new Scene(loader.load(), 500,400));
+                                stage.setScene(new Scene(loader.load(), 600,500));
                                 stage.resizableProperty().setValue(Boolean.FALSE);
                                 stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                                 stage.show();
@@ -102,7 +102,7 @@ public class LoadingController implements Initializable{
                     convertPointsService.start();
                 });
                 orCaptureService.setOnFailed((WorkerStateEvent d) -> {
-                    handleError("Internal fatal error");
+                    handleError("OR number screen area is not configured. Please go to OCR settings and set the dimensions.");
                 });
                 orCaptureService.start();
             }
@@ -112,7 +112,7 @@ public class LoadingController implements Initializable{
             }
         });
         myService.setOnFailed((WorkerStateEvent t) -> {
-            handleError("Internal fatal error");
+            handleError("Total amount screen area is not configured. Please go to OCR settings and set the dimensions.");
         });
 
         myService.start();

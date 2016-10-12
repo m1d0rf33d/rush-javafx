@@ -649,4 +649,57 @@ public class HomeService {
             this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
         }
     }
+
+    public void givePointsManual(String orNumber, String amount) {
+
+        try {
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
+            params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
+            params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount));
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGivePointsEndpoint();
+            url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+            String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) parser.parse(responseStr);
+            if (jsonObject.get("error_code").equals("0x0")) {
+                //get current points
+                params = new ArrayList<>();
+                url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetPointsEndpoint();
+                url = url.replace(":customer_uuid", App.appContextHolder.getCustomerUUID());
+                String jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                JSONObject json = (JSONObject) parser.parse(jsonResponse);
+                jsonObject.put("points", json.get("data"));
+                responseStr = jsonObject.toJSONString();
+            }
+
+            webEngine.executeScript("givePointsManualResponse('"+responseStr+"')");
+        } catch (IOException e) {
+            e.printStackTrace();
+            App.appContextHolder.setOnlineMode(false);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
+    }
+
+    public void getPointsRule(Object callbackFunction) {
+
+
+        try {
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
+            String result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+            new Thread( () -> {
+                Java2JavascriptUtils.call(callbackFunction, result);
+            }).start();
+        } catch (IOException e) {
+            App.appContextHolder.setOnlineMode(false);
+            e.printStackTrace();
+        }
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
+    }
+
+
 }

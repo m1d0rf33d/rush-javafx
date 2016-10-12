@@ -51,6 +51,10 @@ var homeModule = angular.module('HomeModule', ['ui.router','datatables','datatab
             url: '/offline-transactions-view',
             templateUrl: 'offline-transactions.html'
         })
+        .state('manual-givepoints-view', {
+            url: '/manual-givepoints-view',
+            templateUrl: 'manual-givepoints.html'
+        })
 
 })
 homeModule.controller('HomeController', function($scope, $state, $rootScope, $timeout){
@@ -191,6 +195,19 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     }
     $scope.addNumber = function(num) {
         $scope.employeeId = $scope.employeeId + num;
+    }
+    $scope.loadManualGivePoints = function() {
+        if ($rootScope.memberId == undefined) {
+            angular.element(".temp").remove();
+            $(".home-modal-body").prepend('<div class="temp"><p>Please log in customer.</p></div>');
+            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Payment Details</strong> </div>');
+            $("#myModal").modal('show');
+            return;
+        }
+        angular.element("#home-loading-modal").modal('show');
+        $timeout(function(){
+            $state.go('manual-givepoints-view',{},{reload:true});
+        },500);
     }
 });
 homeModule.directive('backImg', function(){

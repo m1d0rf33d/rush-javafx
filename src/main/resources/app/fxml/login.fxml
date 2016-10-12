@@ -19,14 +19,20 @@
                <effect>
                   <DropShadow blurType="TWO_PASS_BOX" />
                </effect>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
             </Button>
-            <Button layoutX="242.0" layoutY="52.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="2"  textFill="#71747a">
+            <Button layoutX="242.0" layoutY="52.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="2" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
                <effect>
                   <DropShadow blurType="TWO_PASS_BOX" />
                </effect>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
             </Button>
             <Button layoutX="398.0" layoutY="52.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="3" textFill="#71747a">
                <font>
@@ -35,6 +41,9 @@
                <effect>
                   <DropShadow blurType="TWO_PASS_BOX" />
                </effect>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
             </Button>
             <Button layoutX="402.0" layoutY="203.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="6" textFill="#71747a">
                <font>
@@ -43,6 +52,9 @@
                <effect>
                   <DropShadow blurType="TWO_PASS_BOX" />
                </effect>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
             </Button>
             <Button layoutX="246.0" layoutY="203.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="5" textFill="#71747a">
                <font>
@@ -51,6 +63,9 @@
                <effect>
                   <DropShadow blurType="TWO_PASS_BOX" />
                </effect>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
             </Button>
             <Button layoutX="89.0" layoutY="203.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="4" textFill="#71747a">
                <font>
@@ -59,6 +74,9 @@
                <effect>
                   <DropShadow blurType="TWO_PASS_BOX" />
                </effect>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
             </Button>
             <Button layoutX="90.0" layoutY="359.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="7" textFill="#71747a">
                <font>
@@ -67,6 +85,9 @@
                <effect>
                   <DropShadow blurType="TWO_PASS_BOX" />
                </effect>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
             </Button>
             <Button layoutX="247.0" layoutY="359.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="8" textFill="#71747a">
                <font>
@@ -75,6 +96,9 @@
                <effect>
                   <DropShadow blurType="TWO_PASS_BOX" />
                </effect>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
             </Button>
             <Button layoutX="403.0" layoutY="359.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="9" textFill="#71747a">
                <font>
@@ -83,6 +107,9 @@
                <effect>
                   <DropShadow blurType="TWO_PASS_BOX" />
                </effect>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
             </Button>
             <Button layoutX="404.0" layoutY="510.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="." textFill="#71747a">
                <font>
@@ -91,6 +118,9 @@
                <effect>
                   <DropShadow blurType="TWO_PASS_BOX" />
                </effect>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
             </Button>
             <Button layoutX="248.0" layoutY="510.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="0" textFill="#71747a">
                <font>
@@ -99,15 +129,22 @@
                <effect>
                   <DropShadow blurType="TWO_PASS_BOX" />
                </effect>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
             </Button>
-            <Button layoutX="91.0" layoutY="510.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="x" textFill="#71747a">
+            <Button layoutX="91.0" layoutY="510.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
                <effect>
                   <DropShadow blurType="TWO_PASS_BOX" />
                </effect>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
             </Button>
+            <ImageView fx:id="removeImage" fitHeight="33.0" fitWidth="47.0" layoutX="133.0" layoutY="559.0" pickOnBounds="true" preserveRatio="true" />
          </children></Pane>
       <Label layoutX="237.0" layoutY="250.0" prefHeight="50.0" prefWidth="200.0" text="EMPLOYEE LOGIN">
          <font>
@@ -116,7 +153,7 @@
       </Label>
       <Button fx:id="loginBtn" layoutX="109.0" layoutY="426.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="450.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="LOGIN" textFill="#f5f2f2">
          <font>
-            <Font size="23.0" />
+            <Font name="System Bold" size="23.0" />
          </font>
          <cursor>
             <Cursor fx:constant="CLOSED_HAND" />

@@ -20,7 +20,7 @@ public class ButtonEventHandler implements EventHandler<ActionEvent> {
     public void handle(ActionEvent event) {
 
         Button btn = (Button) event.getSource();
-        if (btn.getText().equalsIgnoreCase("X")) {
+        if (btn.getText().equalsIgnoreCase("")) {
             loginTextField.setText("");
         } else {
             loginTextField.setText(loginTextField.getText() + btn.getText());

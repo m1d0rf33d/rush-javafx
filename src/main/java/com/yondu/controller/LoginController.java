@@ -55,6 +55,8 @@ public class LoginController implements Initializable {
     public TextField loginTextField;
     @FXML
     public Pane overlayPane;
+    @FXML
+    public ImageView removeImage;
 
     private List<JSONObject> branches;
 
@@ -63,8 +65,12 @@ public class LoginController implements Initializable {
 
         List<Node> buttons = rightPane.getChildren();
         for (Node button : buttons) {
-            Button b = (Button) button;
-            b.setOnAction(new ButtonEventHandler(loginTextField));
+            try {
+                Button b = (Button) button;
+                b.setOnAction(new ButtonEventHandler(loginTextField));
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
         }
 
         overlayPane.setVisible(false);
@@ -80,7 +86,7 @@ public class LoginController implements Initializable {
         overlayPane.setPrefWidth(width);
 
         rushLogo.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
-
+        removeImage.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/remove.png").toExternalForm()));
         try {
             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
             java.util.List<NameValuePair> params = new ArrayList<>();

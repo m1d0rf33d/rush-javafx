@@ -1,7 +1,7 @@
 
 angular.module('HomeModule')
 .controller('PayWithPointsCtrl', function($scope,  $timeout) {
-    $scope.showModal2 = false;
+
     homeService.fetchCustomerData(function(resp) {
         if (resp.data != undefined) {
             $scope.member = {
@@ -65,4 +65,8 @@ function payWithPointsResponse (jsonResponse){
         $("#paypoints-result-modal").modal('show');
         $("#points-span").text(resp.points);
     }
+
+    $("#or_no").val('');
+    $("#amount").val('');
+    $("#points").val('');
 }

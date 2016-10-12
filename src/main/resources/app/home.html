@@ -27,6 +27,7 @@
     <script src="js/register.js"></script>
     <script src="js/transactions.js"></script>
     <script src="js/offline-transactions.js"></script>
+    <script src="js/give-points.js"></script>
 
     <style>
        /*Hack to avoid width expansion caused by modals*/
@@ -114,8 +115,11 @@
             <a href="" ng-click="goToMemberLoginView()">
                 <li>MEMBER INQUIRY</li>
             </a>
-            <a href="" ng-click="loadGivePointsView()" >
+            <a href="" ng-click="loadManualGivePoints()()" >
                 <li>GIVE POINTS</li>
+            </a>
+            <a href="" ng-click="loadGivePointsView()" >
+                <li>GIVE POINTS (OCR)</li>
             </a><!--
             <a href="" ng-disabled="!memberProfile.id" >
                 <li>GIVE POINTS (OCR)</li>

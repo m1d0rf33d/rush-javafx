@@ -69,14 +69,14 @@ public class AppContextHolder {
     private String customerAppSecret;
     private String authorizationEndpoint;
 
-    private String isActivated;
+    private boolean isActivated;
 
-    public String getIsActivated() {
+    public boolean isActivated() {
         return isActivated;
     }
 
-    public void setIsActivated(String isActivated) {
-        this.isActivated = isActivated;
+    public void setActivated(boolean activated) {
+        isActivated = activated;
     }
 
     public Stage getLoadingStage() {

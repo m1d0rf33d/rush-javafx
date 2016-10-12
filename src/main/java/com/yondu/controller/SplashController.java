@@ -21,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.apache.http.NameValuePair;
+import org.json.simple.JSONObject;
 
 import java.awt.*;
 import java.io.*;
@@ -48,15 +49,9 @@ public class SplashController implements Initializable{
 
         MyService myService = new MyService();
         myService.setOnSucceeded((WorkerStateEvent t) -> {
-            if (App.appContextHolder.getIsActivated().equals("true")) {
+            if (App.appContextHolder.isActivated()) {
                 //Check ONLINE of OFFLINE mode
                 if (App.appContextHolder.isOnlineMode()) {
-                /*Stage stage = new Stage();
-                stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
-                stage.setMaximized(true);
-                stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                stage.show();
-                App.appContextHolder.setHomeStage(stage);*/
                     try {
                         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                         double width = screenSize.getWidth();
@@ -141,20 +136,20 @@ public class SplashController implements Initializable{
                         }
                         App.appContextHolder.setOcrFullPath(file.getAbsolutePath());
                         App.appContextHolder.setOfflinePath(System.getProperty("user.home") + AppConfigConstants.OFFLINE_LOCATION);
-
-
-                        loadEndpointsFromConfig();
-
-                        //Check internet connection
-                        ApiService apiService = new ApiService();
-                        App.appContextHolder.setApiService(apiService);
-                        String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
-                        List<NameValuePair> params = new ArrayList<>();
-                        apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-                        App.appContextHolder.setOnlineMode(true);
-                        /*App.appContextHolder.setOfflinePath("/home/aomine/Desktop/offline.txt");
-                        App.appContextHolder.setOcrFullPath("/home/aomine/Desktop/ocr.properties");*/
-
+                        file = new File(System.getProperty("user.home") + AppConfigConstants.ACTIVATION_LOCATION);
+                        if (file.exists()) {
+                            App.appContextHolder.setActivated(true);
+                            loadEndpointsFromConfig(file);
+                            //Check internet connection
+                            ApiService apiService = new ApiService();
+                            App.appContextHolder.setApiService(apiService);
+                            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
+                            List<NameValuePair> params = new ArrayList<>();
+                            apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                            App.appContextHolder.setOnlineMode(true);
+                        } else {
+                            App.appContextHolder.setActivated(false);
+                        }
 
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -168,7 +163,7 @@ public class SplashController implements Initializable{
         }
     }
 
-    private void loadEndpointsFromConfig() {
+    private void loadEndpointsFromConfig(File file) {
        try {
            Properties prop = new Properties();
            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
@@ -195,11 +190,27 @@ public class SplashController implements Initializable{
            App.appContextHolder.setGetBranchesEndpoint(prop.getProperty("get_branches_endpoint"));
            App.appContextHolder.setLoginEndpoint(prop.getProperty("login_endpoint"));
            App.appContextHolder.setAuthorizationEndpoint(prop.getProperty("authorization_endpoint"));
-           App.appContextHolder.setAppKey(prop.getProperty("app_key"));
-           App.appContextHolder.setAppSecret(prop.getProperty("app_secret"));
-           App.appContextHolder.setCustomerAppKey(prop.getProperty("customer_app_key"));
-           App.appContextHolder.setCustomerAppSecret(prop.getProperty("customer_app_secret"));
-           App.appContextHolder.setIsActivated(prop.getProperty("isActivated"));
+
+           try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+               String line;
+               while ((line = br.readLine()) != null) {
+                   String[] arr = line.split("=");
+                   String merchant = arr[1];
+                   if (merchant.equals("planet_sports")) {
+                       App.appContextHolder.setAppKey((String) prop.get("planet_merchant_app_key"));
+                       App.appContextHolder.setAppSecret((String) prop.get("planet_merchant_app_secret"));
+                       App.appContextHolder.setCustomerAppKey((String) prop.get("planet_customer_app_key"));
+                       App.appContextHolder.setCustomerAppSecret((String) prop.get("planet_customer_app_secret"));
+                   } else if (merchant.equals("pro_gross")) {
+                       App.appContextHolder.setAppKey((String) prop.get("pro_gross_merchant_app_key"));
+                       App.appContextHolder.setAppSecret((String) prop.get("pro_gross_merchant_app_secret"));
+                       App.appContextHolder.setCustomerAppKey((String) prop.get("pro_gross_customer_app_key"));
+                       App.appContextHolder.setCustomerAppSecret((String) prop.get("pro_gross_customer_app_secret"));
+                   }
+               }
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
        } catch(IOException e) {
            e.printStackTrace();
        }

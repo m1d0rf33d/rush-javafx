@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.*?>
 
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<Pane fx:controller="com.yondu.controller.ActivationController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button fx:id="givePointsButton" layoutX="121.0" layoutY="139.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="158.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="ACTIVATE" textFill="#fcf9f9">
+      <Button fx:id="activateBtn" layoutX="121.0" layoutY="139.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="158.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="ACTIVATE" textFill="#fcf9f9">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
@@ -18,6 +18,6 @@
             <Font size="26.0" />
          </font>
       </Label>
-      <TextField layoutX="45.0" layoutY="80.0" prefHeight="40.0" prefWidth="310.0" />
+      <TextField fx:id="merchantKey" layoutX="45.0" layoutY="80.0" prefHeight="40.0" prefWidth="310.0" />
    </children>
 </Pane>

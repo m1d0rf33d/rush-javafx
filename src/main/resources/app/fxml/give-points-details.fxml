@@ -43,7 +43,7 @@
             <Font name="System Bold" size="20.0" />
          </font>
       </Button>
-      <Label fx:id="nameLbl" layoutX="256.0" layoutY="99.0" prefHeight="21.0" prefWidth="221.0">
+      <Label fx:id="nameLbl" layoutX="256.0" layoutY="99.0" prefHeight="36.0" prefWidth="316.0">
          <font>
             <Font name="System Bold" size="25.0" />
          </font>
@@ -53,7 +53,7 @@
             <Font name="System Bold" size="25.0" />
          </font>
       </Label>
-      <Label fx:id="mobileNumberLbl" layoutX="256.0" layoutY="142.0" prefHeight="21.0" prefWidth="221.0">
+      <Label fx:id="mobileNumberLbl" layoutX="256.0" layoutY="142.0" prefHeight="36.0" prefWidth="316.0">
          <font>
             <Font name="System Bold" size="25.0" />
          </font>
@@ -68,7 +68,7 @@
             <Font name="System Bold" size="25.0" />
          </font>
       </Label>
-      <Label fx:id="orNumberLbl" layoutX="256.0" layoutY="347.0" prefHeight="21.0" prefWidth="221.0">
+      <Label fx:id="orNumberLbl" layoutX="256.0" layoutY="347.0" prefHeight="36.0" prefWidth="307.0">
          <font>
             <Font name="System Bold" size="25.0" />
          </font>

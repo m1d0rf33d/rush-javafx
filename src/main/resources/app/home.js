@@ -2,7 +2,7 @@
 alert("__CONNECT__BACKEND__homeService");
 
 
-var homeModule = angular.module('HomeModule', ['ui.router','datatables','datatables.columnfilter'])
+var homeModule = angular.module('HomeModule', ['ui.router','datatables','datatables.columnfilter','fcsa-number'])
     .run(function($rootScope){
         $rootScope.memberId = undefined;
     })
@@ -230,7 +230,42 @@ homeModule.directive('backImg', function(){
             }
         });
     };
-});
+}).directive('numericOnly', function(){
+    return {
+        require: 'ngModel',
+        link: function(scope, element, attrs, modelCtrl) {
+
+            modelCtrl.$parsers.push(function (inputValue) {
+                var transformedInput = inputValue ? inputValue.replace(/[^\d.-]/g,'') : null;
+
+                if (transformedInput!=inputValue) {
+                    modelCtrl.$setViewValue(transformedInput);
+                    modelCtrl.$render();
+                }
+
+                return transformedInput;
+            });
+        }
+    };
+})
+    .directive('amountOnly', function(){
+        return {
+            require: 'ngModel',
+            link: function(scope, element, attrs, modelCtrl) {
+
+                modelCtrl.$parsers.push(function (inputValue) {
+                    var transformedInput = inputValue ? inputValue.replace(/[^0-9,.]+$/g,'') : null;
+
+                    if (transformedInput!=inputValue) {
+                        modelCtrl.$setViewValue(transformedInput);
+                        modelCtrl.$render();
+                    }
+
+                    return transformedInput;
+                });
+            }
+        };
+    });
 // FUNCTIONS CALLED BY JAVA BACKEND METHODS AKA AS RESPONSEHANDLERS
 
 

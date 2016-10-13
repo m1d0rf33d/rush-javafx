@@ -58,7 +58,7 @@
                 </div>
                 <div class="col-sm-4">
                     <label>Purchase Amount</label>
-                    <input id="amount" type="text" class="w100" value="" ng-model='totalSales' ng-keyup="pointsToEarn = (totalSales / earningPeso)">
+                    <input fcsa-number="{maxDecimals: 2, preventInvalidInput: true,min: 0}" id="amount" type="text" class="w100" value="" ng-model='totalSales' ng-keyup="pointsToEarn = (totalSales / earningPeso)">
                 </div>
                 <div class="col-sm-4">
                     <label>Points to earn</label>
@@ -85,5 +85,6 @@
 
     <div hidden class="offline-mode" style="text-align: center; margin-top: 200px;">
         <h1>You are currently offline.</h1>
+    </div>
     </div>
 </div>

@@ -19,21 +19,26 @@
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                 </select>-->
-                <input type="text" class="w100" id="gender" placeholder="Male/Female">
+               <div class="row">
+                   <div class="col-sm-2" data-ng-repeat="gender in genders">
+                       <input  class="gender" type="radio" name="response" ng-model="$parent.gender"  data-ng-value="gender" />
+                       {{gender}}
+                   </div>
+               </div>
             </div>
             <div class="col-sm-6">
                 <label>Mobile Numbers</label>
-                <input type="text" class="w100" id="mobile_no">
+                <input type="text" class="w100" id="mobile_no" numeric-only maxlength="11" ng-model="mobilenumber">
                 <label>Birthdate</label>
                 <input id="birthdate" type="text" placeholder="MM/DD/YY" class="w100 date-field">
                 <label>4-Digit M-Pin (App Password)</label>
-                <input type="text" class="w100" id="mpin">
+                <input maxlength="4" numeric-only ng-model="mpin" type="text" class="w100" id="mpin">
             </div>
         </form>
     </div>
     <div class="row">
         <div class="col-md-12 center">
-            <button class="btn-clear" type="button">Clear All</button>
+            <button class="btn-clear" type="button" ng-click="clearAll()">Clear All</button>
             <button class="btn-send" type="button" ng-click="register();">Send</button>
         </div>
     </div>

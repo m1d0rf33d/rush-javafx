@@ -9,6 +9,7 @@
 		"angular-ui-router": "",
 		"angular-bootstrap": "",
 		"angular-modal-service": "",
-		"angular-datatables": ""
+		"angular-datatables": "",
+		"angular-fcsa-number": ""
 	}
 }

@@ -2,6 +2,7 @@
     <div ng-if="member.id">
         <div>
             <div class="col-sm-12">
+                <h4 class="content-title">PAY WITH POINTS</h4>
                 <!--  <h4 class="content-title">PAY WITH POINTS <img src="images/sample_user.png" class="profile-picture-thumb pull-right" alt=""></h4>-->
                 <hr>
             </div>
@@ -57,11 +58,11 @@
                 </div>
                 <div class="col-sm-4">
                     <label>Purchase Amount</label>
-                    <input id="amount" type="text" class="w100" value="">
+                    <input fcsa-number="{maxDecimals: 2, preventInvalidInput: true,min: 0}"  ng-model="amount" id="amount" type="text" class="w100" value="">
                 </div>
                 <div class="col-sm-4">
                     <label>Total Points to Pay</label>
-                    <input id="points" type="text" class="w100" value="">
+                    <input fcsa-number="{maxDecimals: 2, preventInvalidInput: true,min: 0}" ng-model="points" id="points" type="text" class="w100" value="">
                 </div>
             </div>
             <br>

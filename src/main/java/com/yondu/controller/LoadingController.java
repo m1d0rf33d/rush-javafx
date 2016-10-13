@@ -172,7 +172,7 @@ public class LoadingController implements Initializable{
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = tesseract.doOCR(screenFullImage);
-            totalAmountStr  = outText.trim();
+            totalAmountStr  = outText.trim().replace(",","");
         } catch (Exception e) {
             e.printStackTrace();
         }

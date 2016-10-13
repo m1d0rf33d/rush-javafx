@@ -78,7 +78,7 @@ public class HomeService {
     /** Register new member, a javascript response handler function will be called to handle the result.
      *
      */
-    public void register(String name, String email, String mobile, String mpin, String birthdate, String gender) {
+    public void register(String name, String email, String mobile, String mpin, String birthdate, String gender, Object callbackfunction) {
         Service<String> service = new Service<String>() {
             @Override
             protected Task<String> createTask() {
@@ -103,7 +103,10 @@ public class HomeService {
 
                             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getRegisterEndpoint();
                             jsonResponse = apiService.call(url, params, "post", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
-
+                            final String d = jsonResponse;
+                            Platform.runLater(()->
+                                    Java2JavascriptUtils.call(callbackfunction, d)
+                            );
                         } catch (IOException e) {
                             e.printStackTrace();
                             App.appContextHolder.setOnlineMode(false);
@@ -189,8 +192,8 @@ public class HomeService {
            List<NameValuePair> params = new ArrayList<>();
            params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
            params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
-           params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount));
-           params.add(new BasicNameValuePair(ApiFieldContants.POINTS, points));
+           params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount.replace(",","")));
+           params.add(new BasicNameValuePair(ApiFieldContants.POINTS, points.replace(",","")));
 
            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPayWithPointsEndpoint();
            url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
@@ -656,7 +659,7 @@ public class HomeService {
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
             params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
-            params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount));
+            params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount.replace(",","")));
             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGivePointsEndpoint();
             url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
             String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);

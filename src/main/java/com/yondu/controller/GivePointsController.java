@@ -4,6 +4,8 @@ import com.yondu.App;
 import com.yondu.Browser;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.service.ApiService;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -59,6 +61,18 @@ public class GivePointsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        mobileField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    mobileField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+                if (mobileField.getText().length() > 11) {
+                    String s = mobileField.getText().substring(0, 11);
+                    mobileField.setText(s);
+                }
+            }
+        });
         mobileField.setOnKeyPressed((event)->{
             if(event.getCode() == KeyCode.ENTER) {   givePoints(); }
         });

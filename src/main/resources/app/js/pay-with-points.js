@@ -1,7 +1,6 @@
 
 angular.module('HomeModule')
 .controller('PayWithPointsCtrl', function($scope,  $timeout) {
-
     homeService.fetchCustomerData(function(resp) {
         if (resp.data != undefined) {
             $scope.member = {

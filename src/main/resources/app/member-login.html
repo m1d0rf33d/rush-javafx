@@ -6,7 +6,7 @@
             <label class="d-label">Scan QR Code</label>
             <label class="d-label">or</label>
             <label class="d-label">Input Mobile Number</label>
-            <input type="text" class="w80" id="mobile_no"  my-enter="loginMember()" ng-model="mobile" autofocus>
+            <input numeric-only maxlength="11" type="text" class="w80" id="mobile_no"  my-enter="loginMember()" ng-model="mobile" autofocus>
             <input type="button" value="VIEW DETAILS" ng-click="loginMember()" />
         </form>
     </div>

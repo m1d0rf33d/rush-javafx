@@ -522,10 +522,10 @@ public class HomeService {
         try {
             List params = new ArrayList<>();
             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getCustomerTransactionsEndpoint();
-            url = url.replace(":id",App.appContextHolder.getCustomerUUID());
+            url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
             String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
 
-            JSONParser parser = new JSONParser();
+           /* JSONParser parser = new JSONParser();
             JSONObject jsonObj = (JSONObject) parser.parse(responseStr);
             List<JSONObject> data = (ArrayList) jsonObj.get("data");
             for (JSONObject j : data) {
@@ -547,14 +547,12 @@ public class HomeService {
                     j.put("typeStr", "Void-Redeem");
                 }
             }
-            final String finalData = jsonObj.toJSONString();
+            final String finalData = jsonObj.toJSONString();*/
             new Thread( () -> {
-                Java2JavascriptUtils.call(callbackfunction, finalData);
+                Java2JavascriptUtils.call(callbackfunction, responseStr);
             }).start();
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
-            e.printStackTrace();
-        } catch (ParseException e) {
             e.printStackTrace();
         }
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");

@@ -11,12 +11,12 @@ angular.module('HomeModule')
 
     vm.dtOptions = DTOptionsBuilder.fromFnPromise(getTableData).withPaginationType('full_numbers');
     vm.dtColumns = [
-        DTColumnBuilder.newColumn('id').withTitle('Transaction ID').notSortable(),
-        DTColumnBuilder.newColumn('typeStr').withTitle('Transaction Type').notSortable(),
-        DTColumnBuilder.newColumn('points').withTitle('Points').notSortable(),
-        DTColumnBuilder.newColumn('reward_name').withTitle('Reward').notSortable(),
-        DTColumnBuilder.newColumn('total_amount').withTitle('Total amount').notSortable(),
-        DTColumnBuilder.newColumn('date').withTitle('Transaction Date').notSortable()
+        DTColumnBuilder.newColumn('date').withTitle('Date'),
+        DTColumnBuilder.newColumn('transaction_type').withTitle('Transaction Type'),
+        DTColumnBuilder.newColumn('receipt_no').withTitle('OR Number'),
+        DTColumnBuilder.newColumn('amount_paid_with_points').withTitle('Points paid'),
+        DTColumnBuilder.newColumn('amount_paid_with_cash').withTitle('Cash paid'),
+        DTColumnBuilder.newColumn('points_earned').withTitle('Points earned')
     ];
     vm.dtInstance = {};
     vm.dtInstanceCallback = function(_dtInstance) {
@@ -42,6 +42,8 @@ angular.module('HomeModule')
     });
 
     homeService.getCustomerTransactions(function(resp){
+
         $scope.transactions = resp.data;
+        console.log($scope.transactions);
     })
 });

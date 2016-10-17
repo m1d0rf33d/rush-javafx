@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="500.0" style="-fx-background-color: #fafafa;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.ManGivePointsController">
+   <children>
+      <Button fx:id="givePointsBtn" layoutX="140.0" layoutY="229.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="220.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="GIVE POINTS" textFill="#e8e4e4">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="CLOSED_HAND" />
+         </cursor>
+      </Button>
+      <Label layoutX="22.0" layoutY="136.0" text="RECEIPT NO.">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label layoutX="24.0" layoutY="184.0" text="TOTAL AMOUNT">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label layoutX="22.0" layoutY="90.0" text="MOBILE NUMBER">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <TextField fx:id="mobileField" layoutX="229.0" layoutY="87.0" prefHeight="30.0" prefWidth="250.0" />
+      <TextField fx:id="orField" layoutX="229.0" layoutY="132.0" prefHeight="30.0" prefWidth="250.0" />
+      <TextField fx:id="amountField" layoutX="229.0" layoutY="176.0" prefHeight="30.0" prefWidth="250.0" />
+      <ImageView fx:id="rushLogo" fitHeight="50.0" fitWidth="174.0" layoutX="173.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="ocrLogo" fitHeight="39.0" fitWidth="54.0" layoutX="392.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+         <cursor>
+            <Cursor fx:constant="CLOSED_HAND" />
+         </cursor></ImageView>
+      <ImageView fx:id="homeLogo" fitHeight="39.0" fitWidth="54.0" layoutX="452.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+         <cursor>
+            <Cursor fx:constant="CLOSED_HAND" />
+         </cursor>
+      </ImageView>
+   </children>
+</Pane>

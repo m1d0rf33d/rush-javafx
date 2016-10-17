@@ -18,6 +18,7 @@ public class AppContextHolder {
     //Reference for logged in employee
     private String employeeId;
     private String employeeName;
+    private String branchId;
 
     //Reference for logged in customer
     private String customerMobile;
@@ -70,6 +71,23 @@ public class AppContextHolder {
     private String authorizationEndpoint;
 
     private boolean isActivated;
+    private String previousStage;
+
+    public String getPreviousStage() {
+        return previousStage;
+    }
+
+    public void setPreviousStage(String previousStage) {
+        this.previousStage = previousStage;
+    }
+
+    public String getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(String branchId) {
+        this.branchId = branchId;
+    }
 
     public boolean isActivated() {
         return isActivated;

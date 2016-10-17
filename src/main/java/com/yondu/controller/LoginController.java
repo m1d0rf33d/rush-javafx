@@ -3,6 +3,7 @@ package com.yondu.controller;
 import com.yondu.App;
 import com.yondu.Browser;
 import com.yondu.model.constants.ApiFieldContants;
+import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.utils.ButtonEventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.*;
 import javafx.scene.image.Image;
@@ -57,11 +59,39 @@ public class LoginController implements Initializable {
     public Pane overlayPane;
     @FXML
     public ImageView removeImage;
+    @FXML
+    public Label offlineLbl;
+    @FXML
+    public Button givePointsBtn;
 
     private List<JSONObject> branches;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        if (App.appContextHolder.isOnlineMode()) {
+            offlineLbl.setVisible(false);
+            givePointsBtn.setVisible(false);
+        } else {
+            loginTextField.setVisible(false);
+            loginBtn.setVisible(false);
+            branchBox.setVisible(false);
+        }
+        givePointsBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+          try {
+              Stage givePointsStage = new Stage();
+              Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.GIVE_POINTS_FXML));
+              givePointsStage.setScene(new Scene(root, 400,220));
+
+              givePointsStage.setTitle("Give Points (OCR)");
+              givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+              givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+              givePointsStage.show();
+              ((Stage) branchBox.getScene().getWindow()).close();
+          } catch (IOException e) {
+              e.printStackTrace();
+          }
+        });
 
         List<Node> buttons = rightPane.getChildren();
         for (Node button : buttons) {
@@ -132,7 +162,7 @@ public class LoginController implements Initializable {
                         JSONObject data = (JSONObject) jsonObject.get("data");
                         App.appContextHolder.setEmployeeName(((String) data.get("name")));
                         App.appContextHolder.setEmployeeId((String) data.get("id"));
-
+                        App.appContextHolder.setBranchId(branchId);
                         //Redirect to home page
                         Stage stage = new Stage();
                         stage.setScene(new Scene(new Browser(),750,500, javafx.scene.paint.Color.web("#666970")));

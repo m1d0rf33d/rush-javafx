@@ -83,7 +83,9 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
        homeService.loadEmployeeData(function(data) {
            $scope.account = {
                name: data.name,
-               currentDate: data.currentDate
+               currentDate: data.currentDate,
+               branchLogo: data.branchLogo,
+               branchName: data.branchName
            }
        })
 

@@ -5,7 +5,7 @@ angular.module('HomeModule')
     homeService.fetchCustomerData(function(resp) {
         if (resp.data != undefined) {
             $scope.member = {
-                id: resp.data.id,
+                id: resp.data.profile_id,
                 name: resp.data.name,
                 email: resp.data.email,
                 mobile_no: resp.data.mobile_no,

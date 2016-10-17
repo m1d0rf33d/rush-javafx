@@ -166,5 +166,18 @@
             <Font size="20.0" />
          </font></TextField>
       <Pane fx:id="overlayPane" opacity="0.51" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #222;" />
+      <Label fx:id="offlineLbl" layoutX="170.0" layoutY="300.0" prefHeight="50.0" prefWidth="341.0" text="YOU ARE CURRENTLY OFFLINE" textFill="#f20606">
+         <font>
+            <Font name="System Bold" size="23.0" />
+         </font>
+      </Label>
+      <Button fx:id="givePointsBtn" layoutX="109.0" layoutY="363.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="450.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="GIVE POINTS" textFill="#f5f2f2">
+         <cursor>
+            <Cursor fx:constant="CLOSED_HAND" />
+         </cursor>
+         <font>
+            <Font name="System Bold" size="23.0" />
+         </font>
+      </Button>
    </children>
 </Pane>

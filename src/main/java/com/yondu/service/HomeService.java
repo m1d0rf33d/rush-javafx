@@ -63,16 +63,39 @@ public class HomeService {
      * @param callbackfunction
      */
     public void loadEmployeeData(final Object callbackfunction) {
-        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-YYYY");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", App.appContextHolder.getEmployeeId());
-        jsonObject.put("name",App.appContextHolder.getEmployeeName());
-        jsonObject.put("currentDate",formatter.format(new Date()));
-        new Thread( () -> {
-            Platform.runLater(()->
-                    Java2JavascriptUtils.call(callbackfunction, jsonObject.toJSONString())
-            );
-        }).start();
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-YYYY");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", App.appContextHolder.getEmployeeId());
+            jsonObject.put("name",App.appContextHolder.getEmployeeName());
+            jsonObject.put("currentDate",formatter.format(new Date()));
+
+            //Load branches
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
+            List<NameValuePair> params = new ArrayList<>();
+            String jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
+            List<JSONObject> data = (ArrayList) jsonObj.get("data");
+            for (JSONObject branch : data) {
+                if (branch.get("id").equals(App.appContextHolder.getBranchId())) {
+                    jsonObject.put("branchName", branch.get("name"));
+                    jsonObject.put("branchLogo", branch.get("logo_url"));
+                    break;
+                }
+            }
+
+            new Thread( () -> {
+                Platform.runLater(()->
+                        Java2JavascriptUtils.call(callbackfunction, jsonObject.toJSONString())
+                );
+            }).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            App.appContextHolder.setOnlineMode(false);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     /** Register new member, a javascript response handler function will be called to handle the result.

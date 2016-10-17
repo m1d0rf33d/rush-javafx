@@ -66,6 +66,7 @@ public class LoginService {
                                 JSONObject data = (JSONObject) jsonObject.get("data");
                                 App.appContextHolder.setEmployeeName(((String) data.get("name")));
                                 App.appContextHolder.setEmployeeId((String) data.get("id"));
+                                App.appContextHolder.setBranchId((String) data.get("branch_id"));
                             }
 
                         } catch (IOException e) {

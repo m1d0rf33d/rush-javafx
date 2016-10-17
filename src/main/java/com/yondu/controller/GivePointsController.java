@@ -58,9 +58,15 @@ public class GivePointsController implements Initializable {
     public TextField mobileField;
     @FXML
     public Label mode;
+    @FXML
+    public ImageView mlogo;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if (App.appContextHolder.isOnlineMode()) {
+            mlogo.setVisible(false);
+        }
+
         mobileField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -80,7 +86,7 @@ public class GivePointsController implements Initializable {
         if (!App.appContextHolder.isOnlineMode()) {
             mode.setText("OFFLINE");
         }
-
+        this.mlogo.setImage(new Image(App.class.getResource("/app/images/m_logo.png").toExternalForm()));
         this.rushLogoImageView.setImage(new Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
         this.homeImageView.setImage(new Image(App.class.getResource("/app/images/home-512.gif").toExternalForm()));
         if (App.appContextHolder.getCustomerMobile() != null) {
@@ -119,6 +125,22 @@ public class GivePointsController implements Initializable {
 
         this.givePointsButton.addEventHandler(MouseEvent.MOUSE_CLICKED,(MouseEvent t) -> {
             givePoints();
+        });
+
+        this.mlogo.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+           try {
+               Stage givePointsStage = new Stage();
+               Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
+               givePointsStage.setScene(new Scene(root, 500,300));
+
+               givePointsStage.setTitle("Give Points");
+               givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+               givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+               givePointsStage.show();
+               ((Stage) homeImageView.getScene().getWindow()).close();
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
         });
 
     }

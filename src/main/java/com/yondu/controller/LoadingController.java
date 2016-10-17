@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -85,7 +86,7 @@ public class LoadingController implements Initializable{
                                 stage.resizableProperty().setValue(Boolean.FALSE);
                                 stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                                 stage.show();
-
+                                App.appContextHolder.setPreviousStage("GIVE_POINTS_OCR");
                                 ((Stage)rushLogoImage.getScene().getWindow()).close();
                             }catch (Exception err){
                                 err.printStackTrace();
@@ -230,7 +231,10 @@ public class LoadingController implements Initializable{
                Long earningPeso = (Long) data.get("earning_peso");
                Double totalAmount = Double.parseDouble(totalAmountStr);
                Double points = totalAmount / earningPeso;
-               convertedPoints = String.valueOf(points);
+
+               DecimalFormat formatter = new DecimalFormat("#,###.00");
+               totalAmountStr = formatter.format(totalAmount);
+               convertedPoints = formatter.format(points);
            } catch (IOException e) {
                e.printStackTrace();
                App.appContextHolder.setOnlineMode(false);

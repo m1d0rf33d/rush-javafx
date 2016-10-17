@@ -7,7 +7,7 @@ angular.module('HomeModule')
             $scope.message = 'Customer not found';
         } else {
             $scope.member = {
-                id: resp.data.id,
+                id: resp.data.profile_id,
                 name:  resp.data.name,
                 email:  resp.data.email,
                 mobile_no:  resp.data.mobile_no,

@@ -29,14 +29,10 @@ public class ApiService {
         //Validate token
         String token = "";
         if (resourceOwner.equals(ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER)) {
-            if (App.appContextHolder.getAuthorizationToken() == null) {
-                App.appContextHolder.setAuthorizationToken(getToken(resourceOwner));
-            }
+            App.appContextHolder.setAuthorizationToken(getToken(resourceOwner));
             token = App.appContextHolder.getAuthorizationToken();
         } else {
-            if (App.appContextHolder.getCustomerAppAuthToken() == null) {
-                App.appContextHolder.setCustomerAppAuthToken(getToken(resourceOwner));
-            }
+            App.appContextHolder.setCustomerAppAuthToken(getToken(resourceOwner));
             token = App.appContextHolder.getCustomerAppAuthToken();
         }
 

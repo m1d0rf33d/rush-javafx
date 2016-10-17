@@ -25,6 +25,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -66,6 +67,8 @@ public class PointsDetailsController implements Initializable{
     private String convertedPoints;
     private Account customer;
 
+
+
     public PointsDetailsController(String orNumber, String totalAmount, String convertedPoints, Account customer) {
         this.orNumber = orNumber;
         this.totalAmount = totalAmount;
@@ -98,7 +101,7 @@ public class PointsDetailsController implements Initializable{
                     java.util.List<NameValuePair> params = new ArrayList<>();
                     params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
                     params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberLbl.getText().trim()));
-                    params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmountLbl.getText().trim()));
+                    params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmountLbl.getText().trim().replace(",","")));
                     String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGivePointsEndpoint();
                     url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
                     String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
@@ -153,19 +156,28 @@ public class PointsDetailsController implements Initializable{
         this.cancelButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                Stage givePointsStage = new Stage();
-                Parent root = null;
                 try {
-                    root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+                    if (App.appContextHolder.getPreviousStage().equals("GIVE_POINTS_OCR")) {
+                        Stage givePointsStage = new Stage();
+                        Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+                        givePointsStage.setScene(new Scene(root, 400,220));
+                        givePointsStage.setTitle("Give Points");
+                        givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                        givePointsStage.show();
+                    } else {
+                        Stage givePointsStage = new Stage();
+                        Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
+                        givePointsStage.setScene(new Scene(root, 500,300));
+
+                        givePointsStage.setTitle("Give Points (OCR)");
+                        givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                        givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                        givePointsStage.show();
+                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                givePointsStage.setScene(new Scene(root, 400,220));
-                givePointsStage.setTitle("Give Points");
-                givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-                givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                givePointsStage.show();
-
                 ((Stage)rushLogoImageView.getScene().getWindow()).close();
             }
         });
@@ -190,13 +202,24 @@ public class PointsDetailsController implements Initializable{
 
             if (alert.getResult() == ButtonType.OK) {
                 alert.close();
-                Stage givePointsStage = new Stage();
-                Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
-                givePointsStage.setScene(new Scene(root, 400,220));
-                givePointsStage.setTitle("Give Points");
-                givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-                givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                givePointsStage.show();
+                if (App.appContextHolder.getPreviousStage().equals("GIVE_POINTS_OCR")) {
+                    Stage givePointsStage = new Stage();
+                    Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+                    givePointsStage.setScene(new Scene(root, 400,220));
+                    givePointsStage.setTitle("Give Points");
+                    givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                    givePointsStage.show();
+                } else {
+                    Stage givePointsStage = new Stage();
+                    Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
+                    givePointsStage.setScene(new Scene(root, 500,300));
+
+                    givePointsStage.setTitle("Give Points (OCR)");
+                    givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                    givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                    givePointsStage.show();
+                }
+
 
                 ((Stage)rushLogoImageView.getScene().getWindow()).close();
             }

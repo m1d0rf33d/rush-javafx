@@ -20,8 +20,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.awt.*;
 import java.io.*;
@@ -140,13 +148,10 @@ public class SplashController implements Initializable{
                         file = new File(System.getProperty("user.home") + AppConfigConstants.ACTIVATION_LOCATION);
                         if (file.exists()) {
                             App.appContextHolder.setActivated(true);
-                            loadEndpointsFromConfig(file);
-                            //Check internet connection
-                            ApiService apiService = new ApiService();
-                            App.appContextHolder.setApiService(apiService);
-                            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
-                            List<NameValuePair> params = new ArrayList<>();
-                            apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                            loadEndpointsFromConfig();
+
+                            loadMerchantKeys();
+
                             App.appContextHolder.setOnlineMode(true);
                         } else {
                             App.appContextHolder.setActivated(false);
@@ -157,6 +162,8 @@ public class SplashController implements Initializable{
                     } catch (IOException e) {
                         e.printStackTrace();
                         App.appContextHolder.setOnlineMode(false);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
                     return null;
                 }
@@ -164,7 +171,46 @@ public class SplashController implements Initializable{
         }
     }
 
-    private void loadEndpointsFromConfig(File file) {
+    private void loadMerchantKeys() throws IOException, ParseException {
+        Properties prop = new Properties();
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("activation.txt");
+        if (inputStream != null) {
+            prop.load(inputStream);
+            inputStream.close();
+        } else {
+            throw new FileNotFoundException("property file api.properties not found in the classpath");
+        }
+
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("uniqueKey", prop.getProperty("merchant")));
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        HttpPost httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/merchant/validate");
+        httpPost.setEntity(new UrlEncodedFormEntity(params));
+        HttpResponse response = httpClient.execute(httpPost);
+        BufferedReader rd = new BufferedReader(
+                new InputStreamReader(response.getEntity().getContent()));
+        httpClient.close();
+        StringBuffer result = new StringBuffer();
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+        String jsonResponse = result.toString();
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
+        if (jsonObj.get("responseCode").equals("200")) {
+            JSONObject data = (JSONObject) jsonObj.get("data");
+            App.appContextHolder.setAppKey((String) data.get("merchantApiKey"));
+            App.appContextHolder.setAppSecret((String) data.get("merchantApiSecret"));
+            App.appContextHolder.setCustomerAppKey((String) data.get("customerApiKey"));
+            App.appContextHolder.setCustomerAppSecret((String) data.get("customerApiSecret"));
+            App.appContextHolder.setApiService(new ApiService());
+        } else {
+            throw new IOException();
+        }
+    }
+
+    private void loadEndpointsFromConfig() {
        try {
            Properties prop = new Properties();
            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
@@ -192,26 +238,7 @@ public class SplashController implements Initializable{
            App.appContextHolder.setLoginEndpoint(prop.getProperty("login_endpoint"));
            App.appContextHolder.setAuthorizationEndpoint(prop.getProperty("authorization_endpoint"));
 
-           try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-               String line;
-               while ((line = br.readLine()) != null) {
-                   String[] arr = line.split("=");
-                   String merchant = arr[1];
-                   if (merchant.equals("planet_sports")) {
-                       App.appContextHolder.setAppKey((String) prop.get("planet_merchant_app_key"));
-                       App.appContextHolder.setAppSecret((String) prop.get("planet_merchant_app_secret"));
-                       App.appContextHolder.setCustomerAppKey((String) prop.get("planet_customer_app_key"));
-                       App.appContextHolder.setCustomerAppSecret((String) prop.get("planet_customer_app_secret"));
-                   } else if (merchant.equals("pro_gross")) {
-                       App.appContextHolder.setAppKey((String) prop.get("pro_gross_merchant_app_key"));
-                       App.appContextHolder.setAppSecret((String) prop.get("pro_gross_merchant_app_secret"));
-                       App.appContextHolder.setCustomerAppKey((String) prop.get("pro_gross_customer_app_key"));
-                       App.appContextHolder.setCustomerAppSecret((String) prop.get("pro_gross_customer_app_secret"));
-                   }
-               }
-           } catch (IOException e) {
-               e.printStackTrace();
-           }
+
        } catch(IOException e) {
            e.printStackTrace();
        }

@@ -53,6 +53,7 @@ public class ApiService {
                 request.addHeader("Authorization", "Bearer "+ token);
                 response = httpClient.execute(request);
             }
+            httpClient.close();
             // use httpClient (no need to close it explicitly)
             BufferedReader rd = new BufferedReader(
                     new InputStreamReader(response.getEntity().getContent()));

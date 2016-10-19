@@ -1,6 +1,7 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppConfigConstants;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,9 +17,22 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -46,25 +60,41 @@ public class ActivationController implements Initializable{
     }
     private void activate() {
         try {
-            InputStream in = getClass().getClassLoader().getResourceAsStream("api.properties");
-            Properties props = new Properties();
-            props.load(in);
-            in.close();
 
             String inputKey = merchantKey.getText();
-            if (inputKey.equals(props.get("planet_sports_key"))) {
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("uniqueKey", inputKey);
+            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            HttpPost httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/merchant/validate");
+            StringEntity entity = new StringEntity(jsonObject.toJSONString());
+            httpPost.addHeader("content-type", "application/json");
+            httpPost.setEntity(entity);
+            HttpResponse response = httpClient.execute(httpPost);
+            BufferedReader rd = new BufferedReader(
+                    new InputStreamReader(response.getEntity().getContent()));
+
+            StringBuffer result = new StringBuffer();
+            String line = "";
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+            String jsonResponse = result.toString();
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
+            if (jsonObj.get("responseCode").equals("200")) {
                 File file = new File(System.getProperty("user.home") + AppConfigConstants.ACTIVATION_LOCATION);
                 PrintWriter writer = new PrintWriter(file);
-                writer.write("merchant=planet_sports");
+                writer.write("merchant=" + inputKey);
                 writer.flush();
                 writer.close();
-                goToLoginPage();
-            }else if (inputKey.equals(props.get("pro_gross_key"))) {
-                File file = new File(System.getProperty("user.home") + AppConfigConstants.ACTIVATION_LOCATION);
-                PrintWriter writer = new PrintWriter(file);
-                writer.write("merchant=pro_gross");
-                writer.flush();
-                writer.close();
+
+                JSONObject data = (JSONObject) jsonObj.get("data");
+                App.appContextHolder.setAppKey((String) data.get("merchantApiKey"));
+                App.appContextHolder.setAppSecret((String) data.get("merchantApiSecret"));
+                App.appContextHolder.setCustomerAppKey((String) data.get("customerApiKey"));
+                App.appContextHolder.setCustomerAppSecret((String) data.get("customerApiSecret"));
+
                 goToLoginPage();
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid merchant key.");
@@ -74,6 +104,9 @@ public class ActivationController implements Initializable{
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+            App.appContextHolder.setOnlineMode(true);
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }

@@ -53,7 +53,7 @@
            <div class="col-sm-4" ng-repeat="item in merchantRewards" >
                <div class="item"  data-toggle="modal" data-target="#{{item.id}}">
                    <figure>
-                       <img ng-src="{{item.image_url}}"/>
+                       <img style="width: 300px;height: 171px;" ng-src="{{item.image_url}}"/>
                    </figure>
                    <figcaption>
                        {{item.details}}
@@ -65,7 +65,7 @@
                <div class="modal fade" id="{{item.id}}" tabindex="-1" role="dialog" aria-labelledby="myModal2">
                    <div class="modal-dialog" role="document">
                        <div class="modal-content row">
-                           <div class="col-md-5 col-sm-5 modal-image" back-img="{{item.image_url}}">
+                           <div  class="col-md-5 col-sm-5 modal-image" back-img="{{item.image_url}}">
 
                            </div>
                            <div class="col-md-7  col-sm-7 details">

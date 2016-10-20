@@ -55,7 +55,7 @@
             <div class="col-sm-4" ng-repeat="item in activeVouchers" id="{{item.id}}_div">
                 <div class="item"  data-toggle="modal" data-target="#{{item.id}}">
                     <figure>
-                        <img ng-src="{{item.reward.image_url}}"/>
+                        <img style="width: 300px;height: 171px;" ng-src="{{item.reward.image_url}}"/>
                     </figure>
                     <figcaption>
                         {{item.reward.name}}

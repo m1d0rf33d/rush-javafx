@@ -85,6 +85,14 @@ public class HomeService {
                 }
             }
 
+            url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMerchantDesignsEndpoint();
+            params = new ArrayList<>();
+            jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            jsonObj = (JSONObject) parser.parse(jsonResponse);
+            JSONObject d = (JSONObject) jsonObj.get("data");
+            JSONObject merchant = (JSONObject) d.get("merchant");
+            jsonObject.put("backgroundUrl", merchant.get("background_url"));
+
             new Thread( () -> {
                 Platform.runLater(()->
                         Java2JavascriptUtils.call(callbackfunction, jsonObject.toJSONString())

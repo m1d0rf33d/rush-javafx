@@ -54,7 +54,10 @@ var homeModule = angular.module('HomeModule', ['ui.router','datatables','datatab
         .state('manual-givepoints-view', {
             url: '/manual-givepoints-view',
             templateUrl: 'manual-givepoints.html'
-        })
+        }).state("otherwise", {
+            url: "*path",
+            templateUrl: "default.html"
+        });
 
 })
 homeModule.controller('HomeController', function($scope, $state, $rootScope, $timeout){
@@ -85,7 +88,8 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
                name: data.name,
                currentDate: data.currentDate,
                branchLogo: data.branchLogo,
-               branchName: data.branchName
+               branchName: data.branchName,
+               backgroundUrl: data.backgroundUrl
            }
        })
 
@@ -101,9 +105,10 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
    //State transition bindings because a href binding is not working wtf..
     $scope.goToRegisterView = function() {
         $state.go('register-view');
+        $scope.highlightButton('register');
     }
     $scope.goToMemberLoginView = function() {
-
+        $scope.highlightButton('memberinquiry');
         if ($rootScope.memberId != undefined) {
             angular.element(".temp").remove();
             angular.element("#home-loading-modal").modal('show');
@@ -116,6 +121,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     }
 
     $scope.goToPayWithPointsView = function() {
+
         if ($rootScope.memberId == undefined) {
             angular.element(".temp").remove();
             $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
@@ -123,6 +129,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
             $("#myModal").modal('show');
             return;
         }
+        $scope.highlightButton('paywithpoints');
         angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
             $state.go('pay-points-view');
@@ -138,6 +145,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
             $("#myModal").modal('show');
             return;
         }
+        $scope.highlightButton('redeemrewards');
         angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
             $state.go('voucher-redemption-view',{},{reload:true});
@@ -153,6 +161,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
             $("#myModal").modal('show');
             return;
         }
+        $scope.highlightButton('issuerewards');
         angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
             $state.go('issue-rewards-view',{},{reload:true});
@@ -167,16 +176,53 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
              $("#myModal").modal('show');
              return;
          }
+         $scope.highlightButton('transactionview');
          angular.element("#home-loading-modal").modal('show');
          $timeout(function(){
              $state.go('transactions-view',{},{reload:true});
          },500);
      }
      $scope.goToOfflineTransactionsView = function() {
+         $scope.highlightButton('offlinetransactions');
          angular.element("#home-loading-modal").modal('show');
          $timeout(function(){
              $state.go('offline-transactions-view',{},{reload:true});
          },500);
+     }
+     $scope.highlightButton = function (view) {
+         angular.element('a').removeClass('selected-button');
+         angular.element('li').removeClass('selected-button');
+         if (view === 'register') {
+             angular.element('#reg-a').addClass('selected-button');
+             angular.element('#reg-li').addClass('selected-button');
+         } else if (view === 'memberinquiry') {
+             angular.element('#mi-a').addClass('selected-button');
+             angular.element('#mi-li').addClass('selected-button');
+         }  else if (view === 'givepoints') {
+             angular.element('#gp-a').addClass('selected-button');
+             angular.element('#gp-li').addClass('selected-button');
+         }  else if (view === 'givepointsocr') {
+             angular.element('#gpo-a').addClass('selected-button');
+             angular.element('#gpo-li').addClass('selected-button');
+         } else if (view === 'givepointsocr') {
+             angular.element('#gpo-a').addClass('selected-button');
+             angular.element('#gpo-li').addClass('selected-button');
+         } else if (view === 'paywithpoints') {
+             angular.element('#pwp-a').addClass('selected-button');
+             angular.element('#pwp-li').addClass('selected-button');
+         } else if (view === 'redeemrewards') {
+             angular.element('#rr-a').addClass('selected-button');
+             angular.element('#rr-li').addClass('selected-button');
+         } else if (view === 'issuerewards') {
+             angular.element('#ir-a').addClass('selected-button');
+             angular.element('#ir-li').addClass('selected-button');
+         } else if (view === 'transactionview') {
+             angular.element('#tv-a').addClass('selected-button');
+             angular.element('#tv-li').addClass('selected-button');
+         } else if (view === 'offlinetransactions') {
+             angular.element('#otv-a').addClass('selected-button');
+             angular.element('#otv-li').addClass('selected-button');
+         }
      }
 
     $scope.logoutMember = function() {
@@ -206,6 +252,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
             $("#myModal").modal('show');
             return;
         }
+        $scope.highlightButton('givepoints');
         angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
             $state.go('manual-givepoints-view',{},{reload:true});

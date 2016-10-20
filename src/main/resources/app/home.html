@@ -5,6 +5,7 @@
     <title>Rush - Register User</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/custom2.css">
     <link rel="stylesheet" href="css/dataTables.bootstrap.min.css">
     <link rel="stylesheet" href="css/angular-datatables.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
@@ -104,45 +105,46 @@
 <main>
     <div id="sidebar">
         <ul id="sidebar-links">
-            <a href="" ng-click="goToRegisterView()">
-                <li>REGISTRATION</li>
+            <a id="reg-a"  href="" ng-click="goToRegisterView()">
+                <li id="reg-li">REGISTRATION</li>
             </a>
-            <a href="" ng-click="goToMemberLoginView()">
-                <li>MEMBER INQUIRY</li>
+            <a id="mi-a" href="" ng-click="goToMemberLoginView()">
+                <li id="mi-li">MEMBER INQUIRY</li>
             </a>
-            <a href="" ng-click="loadManualGivePoints()()" >
-                <li>GIVE POINTS</li>
+            <a id="gi-a" href="" ng-click="loadManualGivePoints()()" >
+                <li id="gi-li">GIVE POINTS</li>
             </a>
-            <a href="" ng-click="loadGivePointsView()" >
-                <li>GIVE POINTS (OCR)</li>
+            <a  id="gio-a" href="" ng-click="loadGivePointsView()" >
+                <li id="gio-li">GIVE POINTS (OCR)</li>
             </a><!--
             <a href="" ng-disabled="!memberProfile.id" >
                 <li>GIVE POINTS (OCR)</li>
             </a>-->
-            <a href="" ng-click="goToPayWithPointsView()">
-                <li>PAY WITH POINTS</li>
+            <a id="pwp-a" href="" ng-click="goToPayWithPointsView()">
+                <li id="pwp-li">PAY WITH POINTS</li>
             </a>
-            <a href="" ng-click="goToVoucherRedemptionView()">
-                <li>REDEEM REWARDS</li>
+            <a id="rr-a" href="" ng-click="goToVoucherRedemptionView()">
+                <li id="rr-li">REDEEM REWARDS</li>
             </a>
-            <a href="" ng-click="goToIssueRewardsView()">
-                <li>ISSUE REWARDS</li>
+            <a id="ir-a" href="" ng-click="goToIssueRewardsView()">
+                <li id="ir-li">ISSUE REWARDS</li>
             </a>
-            <a href="" ng-click="goToTransactionsView()">
-                <li>TRANSACTION VIEW</li>
+            <a id="tv-a" href="" ng-click="goToTransactionsView()">
+                <li id="tv-li">TRANSACTION VIEW</li>
             </a>
-            <a href="" ng-click="goToOfflineTransactionsView()">
-                <li>OFFLINE TRANSACTIONS</li>
+            <a id="otv-a" href="" ng-click="goToOfflineTransactionsView()">
+                <li id="otv-li">OFFLINE TRANSACTIONS</li>
             </a>
-            <a href="" ng-click="loadSettingsView()">
-                <li class="yellow-bg">SETUP (OCR)</li>
+            <a id="so-a" href="" ng-click="loadSettingsView()">
+                <li id="so-li" class="yellow-bg">SETUP (OCR)</li>
             </a>
             <a href="" ng-click="logoutMember()">
                 <li class="red-bg">EXIT MEMBER DETAILS</li>
             </a>
         </ul>
     </div>
-    <div id="content-wrapper" ui-view>
+
+    <div style="height: 100%;" id="content-wrapper" ui-view >
 
     </div>
     <!-- Modal -->

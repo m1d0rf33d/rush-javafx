@@ -24,6 +24,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
@@ -150,7 +151,7 @@ public class SplashController implements Initializable{
                             App.appContextHolder.setActivated(true);
                             loadEndpointsFromConfig();
 
-                            loadMerchantKeys();
+                            loadMerchantKeys(file);
 
                             App.appContextHolder.setOnlineMode(true);
                         } else {
@@ -171,30 +172,33 @@ public class SplashController implements Initializable{
         }
     }
 
-    private void loadMerchantKeys() throws IOException, ParseException {
-        Properties prop = new Properties();
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("activation.txt");
-        if (inputStream != null) {
-            prop.load(inputStream);
-            inputStream.close();
-        } else {
-            throw new FileNotFoundException("property file api.properties not found in the classpath");
+    private void loadMerchantKeys(File file) throws IOException, ParseException {
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String l = "";
+        String merchant = null;
+        while ((l = br.readLine()) != null) {
+            String[] arr = l.split("=");
+            merchant = arr[1];
         }
+        br.close();
 
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("uniqueKey", prop.getProperty("merchant")));
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("uniqueKey", merchant);
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         HttpPost httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/merchant/validate");
-        httpPost.setEntity(new UrlEncodedFormEntity(params));
+        StringEntity entity = new StringEntity(jsonObject.toJSONString());
+        httpPost.addHeader("content-type", "application/json");
+        httpPost.setEntity(entity);
         HttpResponse response = httpClient.execute(httpPost);
         BufferedReader rd = new BufferedReader(
                 new InputStreamReader(response.getEntity().getContent()));
-        httpClient.close();
+
         StringBuffer result = new StringBuffer();
         String line = "";
         while ((line = rd.readLine()) != null) {
             result.append(line);
         }
+        rd.close();
         String jsonResponse = result.toString();
         JSONParser parser = new JSONParser();
         JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
@@ -237,7 +241,7 @@ public class SplashController implements Initializable{
            App.appContextHolder.setGetBranchesEndpoint(prop.getProperty("get_branches_endpoint"));
            App.appContextHolder.setLoginEndpoint(prop.getProperty("login_endpoint"));
            App.appContextHolder.setAuthorizationEndpoint(prop.getProperty("authorization_endpoint"));
-
+            App.appContextHolder.setMerchantDesignsEndpoint(prop.getProperty("merchant_designs"));
 
        } catch(IOException e) {
            e.printStackTrace();

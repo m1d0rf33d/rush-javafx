@@ -64,6 +64,7 @@ public class AppContextHolder {
     private String getBranchesEndpoint;
     private String loginEndpoint;
     private String merchantDesignsEndpoint;
+    private String merchantSettingsEndpoint;
 
     private String appKey;
     private String appSecret;
@@ -73,6 +74,14 @@ public class AppContextHolder {
 
     private boolean isActivated;
     private String previousStage;
+
+    public String getMerchantSettingsEndpoint() {
+        return merchantSettingsEndpoint;
+    }
+
+    public void setMerchantSettingsEndpoint(String merchantSettingsEndpoint) {
+        this.merchantSettingsEndpoint = merchantSettingsEndpoint;
+    }
 
     public String getMerchantDesignsEndpoint() {
         return merchantDesignsEndpoint;

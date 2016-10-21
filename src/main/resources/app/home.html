@@ -105,40 +105,40 @@
 <main>
     <div id="sidebar">
         <ul id="sidebar-links">
-            <a id="reg-a"  href="" ng-click="goToRegisterView()">
+            <a ng-hide="account.registration != '1'" id="reg-a"  href="" ng-click="goToRegisterView()">
                 <li id="reg-li">REGISTRATION</li>
             </a>
-            <a id="mi-a" href="" ng-click="goToMemberLoginView()">
+            <a  ng-hide="account.member_inquiry != '1'" id="mi-a" href="" ng-click="goToMemberLoginView()">
                 <li id="mi-li">MEMBER INQUIRY</li>
             </a>
-            <a id="gi-a" href="" ng-click="loadManualGivePoints()()" >
+            <a  ng-hide="account.give_points != '1'" id="gi-a" href="" ng-click="loadManualGivePoints()()" >
                 <li id="gi-li">GIVE POINTS</li>
             </a>
-            <a  id="gio-a" href="" ng-click="loadGivePointsView()" >
+            <a   ng-hide="account.give_points_ocr != '1'" id="gio-a" href="" ng-click="loadGivePointsView()" >
                 <li id="gio-li">GIVE POINTS (OCR)</li>
             </a><!--
             <a href="" ng-disabled="!memberProfile.id" >
                 <li>GIVE POINTS (OCR)</li>
             </a>-->
-            <a id="pwp-a" href="" ng-click="goToPayWithPointsView()">
+            <a  ng-hide="account.pay_with_points != '1'" id="pwp-a" href="" ng-click="goToPayWithPointsView()">
                 <li id="pwp-li">PAY WITH POINTS</li>
             </a>
-            <a id="rr-a" href="" ng-click="goToVoucherRedemptionView()">
+            <a  ng-hide="account.redeem_rewards != '1'" id="rr-a" href="" ng-click="goToVoucherRedemptionView()">
                 <li id="rr-li">REDEEM REWARDS</li>
             </a>
-            <a id="ir-a" href="" ng-click="goToIssueRewardsView()">
+            <a  ng-hide="account.issue_rewards != '1'" id="ir-a" href="" ng-click="goToIssueRewardsView()">
                 <li id="ir-li">ISSUE REWARDS</li>
             </a>
-            <a id="tv-a" href="" ng-click="goToTransactionsView()">
+            <a  ng-hide="account.transaction_view != '1'" id="tv-a" href="" ng-click="goToTransactionsView()">
                 <li id="tv-li">TRANSACTION VIEW</li>
             </a>
-            <a id="otv-a" href="" ng-click="goToOfflineTransactionsView()">
+            <a  ng-hide="account.offline_transactions != '1'" id="otv-a" href="" ng-click="goToOfflineTransactionsView()">
                 <li id="otv-li">OFFLINE TRANSACTIONS</li>
             </a>
-            <a id="so-a" href="" ng-click="loadSettingsView()">
+            <a  ng-hide="account.setup_ocr != '1'" id="so-a" href="" ng-click="loadSettingsView()">
                 <li id="so-li" class="yellow-bg">SETUP (OCR)</li>
             </a>
-            <a href="" ng-click="logoutMember()">
+            <a  ng-hide="account.exit_member_details != '1'" href="" ng-click="logoutMember()">
                 <li class="red-bg">EXIT MEMBER DETAILS</li>
             </a>
         </ul>

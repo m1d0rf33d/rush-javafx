@@ -89,8 +89,20 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
                currentDate: data.currentDate,
                branchLogo: data.branchLogo,
                branchName: data.branchName,
-               backgroundUrl: data.backgroundUrl
+               backgroundUrl: data.backgroundUrl,
+               registration: data.registration,
+               member_inquiry: data.member_inquiry,
+               give_points: data.give_points,
+               give_points_ocr: data.give_points_ocr,
+               pay_with_points: data.pay_with_points,
+               redeem_rewards: data.redeem_rewards,
+               issue_rewards: data.issue_rewards,
+               transaction_view: data.transaction_view,
+               offline_transactions: data.offline_transactions,
+               setup_ocr: data.setup_ocr,
+               exit_member_details: data.exit_member_details
            }
+
        })
 
         homeService.fetchCustomerData(function(resp) {

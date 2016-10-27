@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.yondu.App;
+import com.yondu.AppContextHolder;
 import com.yondu.Browser;
 import com.yondu.model.Account;
 import com.yondu.model.constants.ApiFieldContants;
@@ -19,7 +20,13 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -30,6 +37,7 @@ import org.w3c.dom.html.HTMLSelectElement;
 
 import java.awt.*;
 import java.io.*;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,7 +77,6 @@ public class HomeService {
             jsonObject.put("id", App.appContextHolder.getEmployeeId());
             jsonObject.put("name",App.appContextHolder.getEmployeeName());
             jsonObject.put("currentDate",formatter.format(new Date()));
-
             //Load branches
             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
             List<NameValuePair> params = new ArrayList<>();
@@ -93,17 +100,39 @@ public class HomeService {
             JSONObject merchant = (JSONObject) d.get("merchant");
             jsonObject.put("backgroundUrl", merchant.get("background_url"));
 
-            url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMerchantSettingsEndpoint();
-            params = new ArrayList<>();
-            jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-            jsonObj = (JSONObject) parser.parse(jsonResponse);
-            data = (ArrayList) jsonObj.get("data");
-            for (JSONObject json : data) {
-             
-                jsonObject.put(json.get("name"), json.get("enabled"));
+
+            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            HttpPost httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/oauth/token?grant_type=password&username=admin&password=admin&client_id=clientIdPassword");
+            httpPost.addHeader("Authorization", "Basic Y2xpZW50SWRQYXNzd29yZDpzZWNyZXQ=");
+            httpPost.addHeader("Content-Type", "application/json");
+            HttpResponse response = httpClient.execute(httpPost);
+            // use httpClient (no need to close it explicitly)
+            BufferedReader rd = new BufferedReader(
+                    new InputStreamReader(response.getEntity().getContent()));
+
+            StringBuffer result = new StringBuffer();
+            String line = "";
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
             }
+            JSONObject jsonObj1 = (JSONObject) parser.parse(result.toString());
+            String token = (String) jsonObj1.get("access_token");
+            HttpGet httpGet = new HttpGet("http://52.74.190.173:8080/rush-pos-sync/api/merchant/access/" + App.appContextHolder.getEmployeeId());
+            httpGet.addHeader("Authorization", "Bearer " + token);
+            httpGet.addHeader("Content-Type", "application/json");
+            response = httpClient.execute(httpGet);
+            rd = new BufferedReader(
+                    new InputStreamReader(response.getEntity().getContent()));
 
-
+             result = new StringBuffer();
+             line = "";
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+            JSONObject j = (JSONObject) parser.parse(result.toString());
+            List<String> screens = (ArrayList) j.get("data");
+            jsonObject.put("screens", screens);
+            httpClient.close();
             new Thread( () -> {
                 Platform.runLater(()->
                         Java2JavascriptUtils.call(callbackfunction, jsonObject.toJSONString())
@@ -231,6 +260,7 @@ public class HomeService {
      */
     public void payWithPoints(String points, String orNumber, String amount) {
        try {
+           DecimalFormat formatter = new DecimalFormat("#,###.00");
            List<NameValuePair> params = new ArrayList<>();
            params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
            params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
@@ -253,7 +283,37 @@ public class HomeService {
                String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                //Parse response
                JSONObject resultJson = (JSONObject) parser.parse(result);
-               jsonObj.put("points", resultJson.get("data"));
+               jsonObj.put("points", formatter.format(resultJson.get("data")));
+               if(jsonObj.get("points").equals(".00")) {
+                   jsonObj.put("points", "0");
+               }
+               //Convert to peso value
+               url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
+               result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+               JSONObject obj1 = (JSONObject) parser.parse(result);
+               JSONObject d1 = (JSONObject) obj1.get("data");
+
+
+               Double dPoints = null;
+               Double redemptionPeso = null;
+               Long redemptionPoints = (Long) d1.get("redemption_points");
+               try {
+                   dPoints = (Double) resultJson.get("data");
+               } catch (ClassCastException e) {
+                   Long po = (Long) resultJson.get("data");
+                   dPoints = po.doubleValue();
+               }
+               dPoints = dPoints / redemptionPoints;
+               try {
+                   redemptionPeso = (Double) d1.get("redemption_peso");
+               } catch (ClassCastException e) {
+                   Long ex = (Long) d1.get("redemption_peso");
+                   redemptionPeso = ex.doubleValue();
+               }
+               jsonObj.put("pointsPesoValue", formatter.format( dPoints * redemptionPeso));
+               if (jsonObj.get("pointsPesoValue").equals(".00")) {
+                   jsonObj.put("pointsPesoValue","0");
+               }
                jsonResponse = jsonObj.toJSONString();
            }
 
@@ -464,6 +524,7 @@ public class HomeService {
         if (App.appContextHolder.getCustomerMobile() != null && App.appContextHolder.getCustomerUUID() != null) {
 
             try {
+                DecimalFormat formatter = new DecimalFormat("#,###.00");
                 //Build request body
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
@@ -481,7 +542,11 @@ public class HomeService {
                 result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
                 JSONObject json = (JSONObject) parser.parse(result);
-                data.put("points",  json.get("data"));
+                data.put("points",  formatter.format(json.get("data")));
+                if (data.get("points").equals(".00")) {
+                    data.put("points",  "0");
+                }
+
                 //get member rewards
                 url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getCustomerRewardsEndpoint();
                 url = url.replace(":id",App.appContextHolder.getCustomerUUID());
@@ -491,6 +556,34 @@ public class HomeService {
                 List<JSONObject> d = (ArrayList) j.get("data");
                 responseStr = new Gson().toJson(d);
                 data.put("activeVouchers", responseStr);
+                //Convert to peso value
+                url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
+                result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                JSONObject obj1 = (JSONObject) parser.parse(result);
+                JSONObject d1 = (JSONObject) obj1.get("data");
+
+
+                Double dPoints = null;
+                Double redemptionPeso = null;
+                Long redemptionPoints = (Long) d1.get("redemption_points");
+                try {
+                    dPoints = (Double) json.get("data");
+                } catch (ClassCastException e) {
+                    Long po = (Long) json.get("data");
+                    dPoints = po.doubleValue();
+                }
+                dPoints = dPoints / redemptionPoints;
+                try {
+                    redemptionPeso = (Double) d1.get("redemption_peso");
+                } catch (ClassCastException e) {
+                    Long ex = (Long) d1.get("redemption_peso");
+                    redemptionPeso = ex.doubleValue();
+                }
+                data.put("pointsPesoValue", formatter.format( dPoints * redemptionPeso));
+                if (data.get("pointsPesoValue").equals(".00")) {
+                    data.put("pointsPesoValue","0");
+                }
+
                 result = jsonResponse.toJSONString();
                 final String finalData = result;
                 new Thread( () -> {
@@ -500,6 +593,8 @@ public class HomeService {
                 App.appContextHolder.setOnlineMode(false);
                 e.printStackTrace();
             } catch (ParseException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

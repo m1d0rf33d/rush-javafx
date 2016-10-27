@@ -11,7 +11,8 @@ angular.module('HomeModule')
                 points: resp.data.points,
                 birthdate: resp.data.birthdate,
                 gender: resp.data.gender,
-                registration_date: resp.data.registration_date
+                registration_date: resp.data.registration_date,
+                pointsPesoValue: resp.data.pointsPesoValue
             }
 
         }
@@ -63,6 +64,7 @@ function payWithPointsResponse (jsonResponse){
         $(".paypoints-result-body").prepend('<div class="alert alert-success temp"> <strong>Pay with points successful.</strong> </div>');
         $("#paypoints-result-modal").modal('show');
         $("#points-span").text(resp.points);
+        $("#points-peso-span").text(resp.pointsPesoValue);
     }
 
     $("#or_no").val('');

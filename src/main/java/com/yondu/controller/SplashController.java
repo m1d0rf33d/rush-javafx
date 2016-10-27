@@ -182,13 +182,12 @@ public class SplashController implements Initializable{
         }
         br.close();
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("uniqueKey", merchant);
+
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/merchant/validate");
-        StringEntity entity = new StringEntity(jsonObject.toJSONString());
+        HttpPost httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/oauth/token?grant_type=password&username=admin&password=admin&client_id=clientIdPassword");
+
         httpPost.addHeader("content-type", "application/json");
-        httpPost.setEntity(entity);
+        httpPost.addHeader("authorization", "Basic Y2xpZW50SWRQYXNzd29yZDpzZWNyZXQ=");
         HttpResponse response = httpClient.execute(httpPost);
         BufferedReader rd = new BufferedReader(
                 new InputStreamReader(response.getEntity().getContent()));
@@ -199,8 +198,29 @@ public class SplashController implements Initializable{
             result.append(line);
         }
         rd.close();
-        String jsonResponse = result.toString();
         JSONParser parser = new JSONParser();
+        JSONObject json1 = (JSONObject) parser.parse(result.toString());
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("uniqueKey", merchant);
+        httpClient = HttpClientBuilder.create().build();
+        httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/api/merchant/validate");
+        StringEntity entity = new StringEntity(jsonObject.toJSONString());
+        httpPost.addHeader("content-type", "application/json");
+        httpPost.addHeader("authorization", "Bearer "+ json1.get("access_token"));
+        httpPost.setEntity(entity);
+         response = httpClient.execute(httpPost);
+         rd = new BufferedReader(
+                new InputStreamReader(response.getEntity().getContent()));
+
+         result = new StringBuffer();
+         line = "";
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+        rd.close();
+        String jsonResponse = result.toString();
+
         JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
         if (jsonObj.get("responseCode").equals("200")) {
             JSONObject data = (JSONObject) jsonObj.get("data");
@@ -212,6 +232,7 @@ public class SplashController implements Initializable{
         } else {
             throw new IOException();
         }
+        httpClient.close();
     }
 
     private void loadEndpointsFromConfig() {

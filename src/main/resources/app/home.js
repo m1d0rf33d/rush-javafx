@@ -89,20 +89,43 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
                currentDate: data.currentDate,
                branchLogo: data.branchLogo,
                branchName: data.branchName,
-               backgroundUrl: data.backgroundUrl,
-               registration: data.registration,
-               member_inquiry: data.member_inquiry,
-               give_points: data.give_points,
-               give_points_ocr: data.give_points_ocr,
-               pay_with_points: data.pay_with_points,
-               redeem_rewards: data.redeem_rewards,
-               issue_rewards: data.issue_rewards,
-               transaction_view: data.transaction_view,
-               offline_transactions: data.offline_transactions,
-               setup_ocr: data.setup_ocr,
-               exit_member_details: data.exit_member_details
+               backgroundUrl: data.backgroundUrl
            }
-
+           angular.forEach(data.screens, function(value){
+               if (value == 'REGISTER') {
+                   $scope.account.registration = '1';
+               }
+               if (value == 'MEMBER_PROFILE') {
+                   $scope.account.member_inquiry = '1';
+               }
+               if (value == 'GIVE_POINTS') {
+                   $scope.account.give_points = '1';
+               }
+               if (value == 'GIVE_POINTS_OCR') {
+                   $scope.account.give_points_ocr = '1';
+               }
+               if (value == 'PAY_WITH_POINTS') {
+                   $scope.account.pay_with_points = '1';
+               }
+               if (value == 'REDEEM_REWARDS') {
+                   $scope.account.redeem_rewards = '1';
+               }
+               if (value == 'ISSUE_REWARDS') {
+                   $scope.account.issue_rewards = '1';
+               }
+               if (value == 'TRANSACTIONS_VIEW') {
+                   $scope.account.transaction_view = '1';
+               }
+               if (value == 'OCR_SETTINGS') {
+                   $scope.account.setup_ocr = '1';
+               }
+               if (value == 'OFFLINE_TRANSACTIONS') {
+                   $scope.account.offline_transactions = '1';
+               }
+               if (value == 'EXIT_MEMBER') {
+                   $scope.account.exit_member_details = '1';
+               }
+           });
        })
 
         homeService.fetchCustomerData(function(resp) {
@@ -144,7 +167,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
         $scope.highlightButton('paywithpoints');
         angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
-            $state.go('pay-points-view');
+            $state.go('pay-points-view',{},{reload:true});
         },500);
 
     }

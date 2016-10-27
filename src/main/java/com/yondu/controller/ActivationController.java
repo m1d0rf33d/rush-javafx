@@ -61,16 +61,12 @@ public class ActivationController implements Initializable{
     private void activate() {
         try {
 
-            String inputKey = merchantKey.getText();
-
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("uniqueKey", inputKey);
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/merchant/validate");
-            StringEntity entity = new StringEntity(jsonObject.toJSONString());
-            httpPost.addHeader("content-type", "application/json");
-            httpPost.setEntity(entity);
+            HttpPost httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/oauth/token?grant_type=password&username=admin&password=admin&client_id=clientIdPassword");
+            httpPost.addHeader("Authorization", "Basic Y2xpZW50SWRQYXNzd29yZDpzZWNyZXQ=");
+            httpPost.addHeader("Content-Type", "application/json");
             HttpResponse response = httpClient.execute(httpPost);
+            // use httpClient (no need to close it explicitly)
             BufferedReader rd = new BufferedReader(
                     new InputStreamReader(response.getEntity().getContent()));
 
@@ -79,8 +75,31 @@ public class ActivationController implements Initializable{
             while ((line = rd.readLine()) != null) {
                 result.append(line);
             }
-            String jsonResponse = result.toString();
             JSONParser parser = new JSONParser();
+            JSONObject jsonObj1 = (JSONObject) parser.parse(result.toString());
+            String token = (String) jsonObj1.get("access_token");
+
+            String inputKey = merchantKey.getText();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("uniqueKey", inputKey);
+            httpClient = HttpClientBuilder.create().build();
+            httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/api/merchant/validate");
+            StringEntity entity = new StringEntity(jsonObject.toJSONString());
+            httpPost.addHeader("content-type", "application/json");
+            httpPost.addHeader("authorization", "Bearer " + token);
+            httpPost.setEntity(entity);
+            response = httpClient.execute(httpPost);
+            rd = new BufferedReader(
+                    new InputStreamReader(response.getEntity().getContent()));
+
+            result = new StringBuffer();
+            line = "";
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+            rd.close();
+            httpClient.close();
+            String jsonResponse = result.toString();
             JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
             if (jsonObj.get("responseCode").equals("200")) {
                 File file = new File(System.getProperty("user.home") + AppConfigConstants.ACTIVATION_LOCATION);

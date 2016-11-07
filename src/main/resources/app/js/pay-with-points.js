@@ -24,6 +24,15 @@ angular.module('HomeModule')
                 orNumber = angular.element("#or_no").val(),
                 amount = angular.element("#amount").val();
             //Call java method
+            if (points == '0') {
+                angular.element("#home-loading-modal").modal('hide');
+                $(".temp").remove();
+                $(".paypoints-result-body").prepend('<div class="temp"><p> Total points to pay cannot be 0.</p></div>');
+                $(".paypoints-result-body").prepend('<div class="alert alert-warning temp"> <strong>Pay with points failed.</strong> </div>');
+                $("#paypoints-result-modal").modal('show');
+                return;
+            }
+
             homeService.payWithPoints(points, orNumber, amount);
         },1000);
 

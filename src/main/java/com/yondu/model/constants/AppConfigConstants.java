@@ -21,4 +21,10 @@ public class AppConfigConstants {
     public static final String GIVE_POINTS_FXML = "/app/fxml/give-points.fxml";
     public static final String GIVE_POINTS_DETAILS_FXML = "/app/fxml/give-points-details.fxml";
     public static final String LOADING_FXML = "/app/fxml/loading.fxml";
+
+    public static final String LOGIN_FXML = "/app/fxml/login.fxml";
+    public static final String RUSH_LOGO = "/app/images/rush_logo.png";
+    public static final String R_LOGO = "/app/images/r_logo.png";
+    public static final String GIVE_POINTS_MANUAL_FXML = "/app/fxml/give-points-manual.fxml";
+    public static final String ACTIVATION_FXML = "/app/fxml/activation.fxml";
 }

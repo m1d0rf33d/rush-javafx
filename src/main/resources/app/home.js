@@ -24,7 +24,6 @@ var homeModule = angular.module('HomeModule', ['ui.router','datatables','datatab
         .state('member-profile-view', {
             url: '/member-profile-view',
             templateUrl: 'member-profile.html',
-            controller: 'MemberProfileCtrl',
             params: {mobileNumber: null}
         })
         .state('give-points-view', {
@@ -71,8 +70,8 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     //Merchant points conversion
     $scope.pointsRule = {};
     //Default values
-    $scope.pointsToEarn = 0;
-    $scope.totalSales = 0;
+    $scope.pointsToEarn = '';
+    $scope.totalSales = '';
 
     $scope.items = [];
     $scope.allRewards = [];
@@ -320,7 +319,7 @@ homeModule.directive('backImg', function(){
         link: function(scope, element, attrs, modelCtrl) {
 
             modelCtrl.$parsers.push(function (inputValue) {
-                var transformedInput = inputValue ? inputValue.replace(/[^\d.-]/g,'') : null;
+                var transformedInput = inputValue ? inputValue.replace(/[^\d]/g,'') : null;
 
                 if (transformedInput!=inputValue) {
                     modelCtrl.$setViewValue(transformedInput);
@@ -349,6 +348,33 @@ homeModule.directive('backImg', function(){
                 });
             }
         };
+    })
+    .directive('replace', function() {
+        return {
+            require: 'ngModel',
+            scope: {
+                regex: '@replace',
+                with: '@with'
+            },
+            link: function(scope, element, attrs, model) {
+                model.$parsers.push(function(val) {
+                    if (!val) { return; }
+                    var regex = new RegExp(scope.regex);
+                    var replaced = val.replace(regex, scope.with);
+                    if (replaced !== val) {
+                        model.$setViewValue(replaced);
+                        model.$render();
+                    }
+                    return replaced;
+                });
+            }
+        };
+    })
+    .directive('lettersOnly', function() {
+        return {
+            replace: true,
+            template: '<input replace="[^a-zA-Z_ -]" with="">'
+        };
     });
 // FUNCTIONS CALLED BY JAVA BACKEND METHODS AKA AS RESPONSEHANDLERS
 
@@ -367,4 +393,3 @@ function closeLoadingModal(resp) {
     }
     $("#home-loading-modal").modal('hide');
 }
-

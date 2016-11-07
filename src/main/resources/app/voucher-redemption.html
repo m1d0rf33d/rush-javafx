@@ -86,7 +86,7 @@
                        <div class="modal-content row" style="background: white;text-align: center;padding: 20px; width: 900px !important;">
                            <div class="col-sm-6" style="margin-top: 100px;">
                                <h1>Enter 4-Digit M-Pin</h1>
-                               <input autofocus type="password" class="w80" id="{{item.id}}_pin"  my-enter="redeemRewards(item.id)">
+                               <input ng-model="test" numeric-only maxlength="4" autofocus type="password" class="w80" id="{{item.id}}_pin"  my-enter="redeemRewards(item.id)">
                                <div class="modal-buttons">
                                    <button ng-click="redeemRewards(item.id)" type="button" class="btn btn-default orange-btn btn-lg">Proceed</button>
                                </div>
@@ -148,3 +148,15 @@
         <h1>You are currently offline.</h1>
     </div>
 </div>
+
+<script>
+    $(document).ready(function(){
+
+        $("input").focus(function(){
+            homeService.showVirtualKeyboard();
+        });
+        $("input").focusout(function(){
+            homeService.hideVirtualKeyboard();
+        });
+    });
+</script>

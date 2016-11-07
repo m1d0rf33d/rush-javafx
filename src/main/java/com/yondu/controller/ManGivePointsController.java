@@ -1,5 +1,6 @@
 package com.yondu.controller;
 
+import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
 import com.yondu.Browser;
 import com.yondu.model.Account;
@@ -12,12 +13,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.*;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.awt.*;
 import java.awt.geom.Arc2D;
@@ -47,10 +50,45 @@ public class ManGivePointsController implements Initializable{
     public TextField amountField;
     @FXML
     public TextField mobileField;
+    @FXML
+    public Label mode;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        if (App.appContextHolder.getWithVk() != null && !App.appContextHolder.getWithVk()) {
+            orField.focusedProperty().addListener(new ChangeListener<Boolean>()
+            {
+                public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+                {
+                    if (newPropertyValue)
+                        FXVK.detach();
+                }
+            });
+            amountField.focusedProperty().addListener(new ChangeListener<Boolean>()
+            {
+                public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+                {
+                    if (newPropertyValue)
+                        FXVK.detach();
+                }
+            });
+            mobileField.focusedProperty().addListener(new ChangeListener<Boolean>()
+            {
+                public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+                {
+                    if (newPropertyValue)
+                        FXVK.detach();
+                }
+            });
+        }
+
+
+        if (!App.appContextHolder.isOnlineMode()) {
+            mode.setVisible(true);
+            mode.setText("(OFFLINE)");
+        }
         this.rushLogo.setImage(new Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
         this.ocrLogo.setImage(new Image(App.class.getResource("/app/images/ocr_logo.png").toExternalForm()));
         this.homeLogo.setImage(new Image(App.class.getResource("/app/images/home-512.gif").toExternalForm()));
@@ -69,6 +107,15 @@ public class ManGivePointsController implements Initializable{
             }
         });
 
+        amountField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    amountField.setText(newValue.replaceAll("[^\\d{1,3}(,?\\d{3})?(\\.\\d{2})?$]", ""));
+                }
+            }
+        });
+
         this.homeLogo.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
             //Open home stage
             if (App.appContextHolder.getEmployeeId() == null ||
@@ -77,13 +124,13 @@ public class ManGivePointsController implements Initializable{
                     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                     double width = screenSize.getWidth();
                     double height = screenSize.getHeight();
-                    Stage stage = new Stage();
-                    Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/login.fxml"));
-                    stage.setScene(new Scene(root, width,height));
-                    stage.setTitle("Rush");
-                    stage.resizableProperty().setValue(Boolean.FALSE);
-                    stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                    stage.show();
+                    Stage primaryStage = new Stage();
+                    Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
+                    primaryStage.setScene(new Scene(root, 600,400));
+                    primaryStage.resizableProperty().setValue(false);
+                    primaryStage.initStyle(StageStyle.UNDECORATED);
+                    primaryStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                    primaryStage.show();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -91,6 +138,7 @@ public class ManGivePointsController implements Initializable{
                 Stage stage = new Stage();
                 stage.setScene(new Scene(new Browser(),750,500, javafx.scene.paint.Color.web("#666970")));
                 stage.setMaximized(true);
+                stage.setTitle("Rush");
                 stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                 stage.show();
                 App.appContextHolder.setHomeStage(stage);
@@ -104,7 +152,7 @@ public class ManGivePointsController implements Initializable{
                 Stage givePointsStage = new Stage();
                 Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.GIVE_POINTS_FXML));
                 givePointsStage.setScene(new Scene(root, 400,220));
-                givePointsStage.setTitle("Give Points");
+                givePointsStage.setTitle("Rush");
                 givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                 givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                 givePointsStage.show();

@@ -69,15 +69,15 @@
             <div class="row">
                 <div class="col-sm-4">
                     <label>Receipt No.</label>
-                    <input id="or_no" type="text" class="w100" value="">
+                    <input onfocus="homeService.showVirtualKeyboard()" onfocusout="homeService.hideVirtualKeyboard()" id="or_no" type="text" class="w100" value="">
                 </div>
                 <div class="col-sm-4">
                     <label>Purchase Amount</label>
-                    <input fcsa-number="{maxDecimals: 2, preventInvalidInput: true,min: 0}"  ng-model="amount" id="amount" type="text" class="w100" value="">
+                    <input onfocus="homeService.showVirtualKeyboard()" onfocusout="homeService.hideVirtualKeyboard()" amount-only  ng-model="amount" id="amount" type="text" class="w100" value="">
                 </div>
                 <div class="col-sm-4">
                     <label>Total Points to Pay</label>
-                    <input fcsa-number="{maxDecimals: 2, preventInvalidInput: true,min: 0}" ng-model="points" id="points" type="text" class="w100" value="">
+                    <input onfocus="homeService.showVirtualKeyboard()" onfocusout="homeService.hideVirtualKeyboard()" amount-only ng-model="points" id="points" type="text" class="w100" value="">
                 </div>
             </div>
             <br>
@@ -121,3 +121,4 @@
         <h1>You are currently offline.</h1>
     </div>
 </div>
+

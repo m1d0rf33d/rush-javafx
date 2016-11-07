@@ -1,6 +1,7 @@
 
 angular.module('HomeModule')
 .controller('RegisterCtrl', function($scope, $timeout){
+
     $scope.mobilenumber = '';
     $scope.genders = ['Male','Female'];
     $scope.register = function() {
@@ -51,3 +52,5 @@ function registerResponseHandler(jsonResponse) {
 
     $("#myModal").modal('show');
 }
+
+

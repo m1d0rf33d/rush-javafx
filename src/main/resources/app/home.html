@@ -103,43 +103,43 @@
 
 
 <main>
-    <div id="sidebar" style="min-height: 700px;">
+    <div id="sidebar" style="height: 1100px;min-height: 1100px;">
         <ul id="sidebar-links">
-            <a ng-hide="account.registration != '1'" id="reg-a"  href="" ng-click="goToRegisterView()">
-                <li id="reg-li">REGISTRATION</li>
+            <a  class="menu-a" ng-hide="account.registration != '1'" id="reg-a"  href="" ng-click="goToRegisterView()">
+                <li class="menu-li" id="reg-li">REGISTRATION</li>
             </a>
-            <a  ng-hide="account.member_inquiry != '1'" id="mi-a" href="" ng-click="goToMemberLoginView()">
-                <li id="mi-li">MEMBER INQUIRY</li>
+            <a   class="menu-a" ng-hide="account.member_inquiry != '1'" id="mi-a" href="" ng-click="goToMemberLoginView()">
+                <li class="menu-li"id="mi-li">MEMBER INQUIRY</li>
             </a>
-            <a  ng-hide="account.give_points != '1'" id="gi-a" href="" ng-click="loadManualGivePoints()()" >
-                <li id="gi-li">GIVE POINTS</li>
+            <a  class="menu-a" ng-hide="account.give_points != '1'" id="gi-a" href="" ng-click="loadManualGivePoints()()" >
+                <li class="menu-li"id="gi-li">GIVE POINTS</li>
             </a>
-            <a   ng-hide="account.give_points_ocr != '1'" id="gio-a" href="" ng-click="loadGivePointsView()" >
-                <li id="gio-li">GIVE POINTS (OCR)</li>
+            <a   class="menu-a" ng-hide="account.give_points_ocr != '1'" id="gio-a" href="" ng-click="loadGivePointsView()" >
+                <li class="menu-li"id="gio-li">GIVE POINTS (OCR)</li>
             </a><!--
             <a href="" ng-disabled="!memberProfile.id" >
                 <li>GIVE POINTS (OCR)</li>
             </a>-->
-            <a  ng-hide="account.pay_with_points != '1'" id="pwp-a" href="" ng-click="goToPayWithPointsView()">
-                <li id="pwp-li">PAY WITH POINTS</li>
+            <a  class="menu-a" ng-hide="account.pay_with_points != '1'" id="pwp-a" href="" ng-click="goToPayWithPointsView()">
+                <li class="menu-li"id="pwp-li">PAY WITH POINTS</li>
             </a>
-            <a  ng-hide="account.redeem_rewards != '1'" id="rr-a" href="" ng-click="goToVoucherRedemptionView()">
-                <li id="rr-li">REDEEM REWARDS</li>
+            <a  class="menu-a" ng-hide="account.redeem_rewards != '1'" id="rr-a" href="" ng-click="goToVoucherRedemptionView()">
+                <li class="menu-li"id="rr-li">REDEEM REWARDS</li>
             </a>
-            <a  ng-hide="account.issue_rewards != '1'" id="ir-a" href="" ng-click="goToIssueRewardsView()">
-                <li id="ir-li">ISSUE REWARDS</li>
+            <a  class="menu-a" ng-hide="account.issue_rewards != '1'" id="ir-a" href="" ng-click="goToIssueRewardsView()">
+                <li class="menu-li"id="ir-li">ISSUE REWARDS</li>
             </a>
-            <a  ng-hide="account.transaction_view != '1'" id="tv-a" href="" ng-click="goToTransactionsView()">
-                <li id="tv-li">TRANSACTION VIEW</li>
+            <a  class="menu-a" ng-hide="account.transaction_view != '1'" id="tv-a" href="" ng-click="goToTransactionsView()">
+                <li class="menu-li"id="tv-li">TRANSACTION VIEW</li>
             </a>
-            <a  ng-hide="account.offline_transactions != '1'" id="otv-a" href="" ng-click="goToOfflineTransactionsView()">
-                <li id="otv-li">OFFLINE TRANSACTIONS</li>
+            <a  class="menu-a" ng-hide="account.offline_transactions != '1'" id="otv-a" href="" ng-click="goToOfflineTransactionsView()">
+                <li class="menu-li"id="otv-li">OFFLINE TRANSACTIONS</li>
             </a>
-            <a  ng-hide="account.setup_ocr != '1'" id="so-a" href="" ng-click="loadSettingsView()">
-                <li id="so-li" class="yellow-bg">SETUP (OCR)</li>
+            <a  class="menu-a" ng-hide="account.setup_ocr != '1'" id="so-a" href="" ng-click="loadSettingsView()">
+                <li class="menu-li"id="so-li" class="yellow-bg">SETUP (OCR)</li>
             </a>
-            <a  ng-hide="account.exit_member_details != '1'" href="" ng-click="logoutMember()">
-                <li class="red-bg">EXIT MEMBER DETAILS</li>
+            <a class="menu-a"  ng-hide="account.exit_member_details != '1'" href="" ng-click="logoutMember()">
+                <li class="menu-li" class="red-bg">EXIT MEMBER DETAILS</li>
             </a>
         </ul>
     </div>
@@ -200,6 +200,23 @@
 
 
 <script>
+    $(document).ready(function(){
+
+        $("input").focus(function(){
+            homeService.showVirtualKeyboard();
+        });
+        $("input").focusout(function(){
+            homeService.hideVirtualKeyboard();
+        });
+
+
+        $('.menu-li').mousedown(function() {
+            $(this).css('border', '2px solid #e7e7e7');
+        });
+        $('.menu-li').mouseup(function() {
+            $(this).css('border', '0');
+        });
+    });
     $("#number-pad-wrapper button").mouseup(function(){
         $(this).blur();
     });

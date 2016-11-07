@@ -87,3 +87,14 @@
         <button class="btn-send" type="button" ng-click="givePointsToCustomer()">Submit</button>
     </div>
 </div>
+<script>
+    $(document).ready(function(){
+
+        $("input").focus(function(){
+            homeService.showVirtualKeyboard();
+        });
+        $("input").focusout(function(){
+            homeService.hideVirtualKeyboard();
+        });
+    });
+</script>

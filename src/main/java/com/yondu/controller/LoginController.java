@@ -1,10 +1,13 @@
 package com.yondu.controller;
 
+import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
 import com.yondu.Browser;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.utils.ButtonEventHandler;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -63,15 +66,28 @@ public class LoginController implements Initializable {
     public Label offlineLbl;
     @FXML
     public Button givePointsBtn;
+    @FXML
+    public Button reconnectBtn;
 
     private List<JSONObject> branches;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        loginTextField.focusedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+            {
+                if (newPropertyValue)
+                    FXVK.detach();
+            }
+        });
+        removeImage.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+            this.loginTextField.setText("");
+        });
         if (App.appContextHolder.isOnlineMode()) {
             offlineLbl.setVisible(false);
             givePointsBtn.setVisible(false);
+            reconnectBtn.setVisible(false);
         } else {
             loginTextField.setVisible(false);
             loginBtn.setVisible(false);
@@ -83,7 +99,7 @@ public class LoginController implements Initializable {
               Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.GIVE_POINTS_FXML));
               givePointsStage.setScene(new Scene(root, 400,220));
 
-              givePointsStage.setTitle("Give Points (OCR)");
+              givePointsStage.setTitle("Rush");
               givePointsStage.resizableProperty().setValue(Boolean.FALSE);
               givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
               givePointsStage.show();
@@ -136,6 +152,42 @@ public class LoginController implements Initializable {
             e.printStackTrace();
         }
 
+        reconnectBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+            try {
+                branchBox.getItems().clear();
+                String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
+                java.util.List<NameValuePair> params = new ArrayList<>();
+                String jsonResponse = App.appContextHolder.getApiService().call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+                JSONParser parser = new JSONParser();
+                JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
+                List<JSONObject> data = (ArrayList) jsonObj.get("data");
+                branches = data;
+                for (JSONObject branch : data) {
+                    branchBox.getItems().add(branch.get("name"));
+                }
+                branchBox.getSelectionModel().selectFirst();
+                offlineLbl.setVisible(false);
+                givePointsBtn.setVisible(false);
+                reconnectBtn.setVisible(false);
+                loginTextField.setVisible(true);
+                loginBtn.setVisible(true);
+                branchBox.setVisible(true);
+            } catch (IOException e) {
+                e.printStackTrace();
+                prompt("Unable to connect to Rush Server due to network connection problem. Please check your internet connection and try again.", event);
+                offlineLbl.setVisible(true);
+                givePointsBtn.setVisible(true);
+                reconnectBtn.setVisible(true);
+                loginTextField.setVisible(false);
+                loginBtn.setVisible(false);
+                branchBox.setVisible(false);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        });
+
+
 
         loginBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
             overlayPane.setVisible(true);
@@ -167,27 +219,71 @@ public class LoginController implements Initializable {
                         Stage stage = new Stage();
                         stage.setScene(new Scene(new Browser(),750,500, javafx.scene.paint.Color.web("#666970")));
                         stage.setMaximized(true);
+                        stage.setTitle("Rush");
                         stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                         stage.show();
                         App.appContextHolder.setHomeStage(stage);
                         ((Stage) branchBox.getScene().getWindow()).close();
+                    } else if (jsonObject.get("error_code").equals("0x2")) {
+                        showRequirePinModal(event);
                     } else {
                        prompt((String) jsonObject.get("message"), event);
                     }
 
                 } catch (IOException e) {
-                    //LOG here
+
                     jsonResponse = null;
                     App.appContextHolder.setOnlineMode(false);
                     prompt("Unable to connect to Rush Server due to network connection problem. Please check your internet connection and try again.", event);
+                    offlineLbl.setVisible(true);
+                    givePointsBtn.setVisible(true);
+                    reconnectBtn.setVisible(true);
+                    loginTextField.setVisible(false);
+                    loginBtn.setVisible(false);
+                    branchBox.setVisible(false);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
             } else {
                 prompt("Unable to connect to Rush Server due to network connection problem. Please check your internet connection and try again.", event);
+                offlineLbl.setVisible(true);
+                givePointsBtn.setVisible(true);
+                reconnectBtn.setVisible(true);
+                loginTextField.setVisible(false);
+                loginBtn.setVisible(false);
+                branchBox.setVisible(false);
             }
         });
+    }
+
+    private void showRequirePinModal(MouseEvent event) {
+        try {
+
+            String branchId = "";
+            for (JSONObject branch : branches) {
+                if (branchBox.getSelectionModel().getSelectedItem().equals(branch.get("name"))) {
+                    branchId = (String) branch.get("id");
+                }
+            }
+
+
+            Stage stage = new Stage();
+            FXMLLoader  loader  = new FXMLLoader(App.class.getResource("/app/fxml/require-pin.fxml"));
+            RequirePinController controller = new RequirePinController(overlayPane, loginTextField.getText(), branchId );
+            loader.setController(controller);
+            stage.setScene(new Scene(loader.load(), 900,600));
+            stage.setTitle("Rush");
+            stage.initStyle(StageStyle.UNDECORATED);
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(
+                    ((Node)event.getSource()).getScene().getWindow() );
+            stage.resizableProperty().setValue(Boolean.FALSE);
+            stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void prompt(String message, MouseEvent event) {

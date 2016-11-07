@@ -74,6 +74,15 @@ public class AppContextHolder {
 
     private boolean isActivated;
     private String previousStage;
+    private Boolean withVk;
+
+    public Boolean getWithVk() {
+        return withVk;
+    }
+
+    public void setWithVk(Boolean withVk) {
+        this.withVk = withVk;
+    }
 
     public String getMerchantSettingsEndpoint() {
         return merchantSettingsEndpoint;

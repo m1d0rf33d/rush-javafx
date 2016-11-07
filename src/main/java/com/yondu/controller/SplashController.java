@@ -35,6 +35,9 @@ import org.json.simple.parser.ParseException;
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -54,37 +57,41 @@ public class SplashController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.rushLogoImage.setImage(new Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
+        this.rushLogoImage.setImage(new Image(App.class.getResource(AppConfigConstants.RUSH_LOGO).toExternalForm()));
 
         MyService myService = new MyService();
         myService.setOnSucceeded((WorkerStateEvent t) -> {
+            //Make sure user has already activated the application
             if (App.appContextHolder.isActivated()) {
-                //Check ONLINE of OFFLINE mode
+                //If user is online redirect to login page
                 if (App.appContextHolder.isOnlineMode()) {
                     try {
                         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                         double width = screenSize.getWidth();
                         double height = screenSize.getHeight();
                         Stage stage = new Stage();
-                        Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/login.fxml"));
+                        Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.LOGIN_FXML));
                         stage.setScene(new Scene(root, width,height - 70));
                         stage.setTitle("Rush");
-                        stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                        stage.getIcons().add(new Image(App.class.getResource(AppConfigConstants.R_LOGO).toExternalForm()));
                         stage.show();
+                        App.appContextHolder.setHomeStage(stage);
                         ((Stage) rushLogoImage.getScene().getWindow()).close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else {
-
+                  //User is offline redirect to give points window
                     try {
+                        ApiService apiService = new ApiService();
+                        App.appContextHolder.setApiService(apiService);
                         Stage givePointsStage = new Stage();
-                        Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
+                        Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.GIVE_POINTS_MANUAL_FXML));
                         givePointsStage.setScene(new Scene(root, 500,300));
 
-                        givePointsStage.setTitle("Give Points (OCR)");
+                        givePointsStage.setTitle("Rush");
                         givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-                        givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                        givePointsStage.getIcons().add(new Image(App.class.getResource(AppConfigConstants.R_LOGO).toExternalForm()));
                         givePointsStage.show();
                         ((Stage) rushLogoImage.getScene().getWindow()).close();
                     } catch (IOException e) {
@@ -94,11 +101,11 @@ public class SplashController implements Initializable{
             } else {
                try {
                    Stage stage = new Stage();
-                   Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/activation.fxml"));
+                   Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.ACTIVATION_FXML));
                    stage.setScene(new Scene(root, 400,200));
-                   stage.setTitle("Activate merchant");
+                   stage.setTitle("Rush");
                    stage.resizableProperty().setValue(Boolean.FALSE);
-                   stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                   stage.getIcons().add(new Image(App.class.getResource(AppConfigConstants.R_LOGO).toExternalForm()));
                    stage.show();
                    ((Stage) rushLogoImage.getScene().getWindow()).close();
                } catch (IOException e) {
@@ -123,12 +130,15 @@ public class SplashController implements Initializable{
                        File dir = new File(System.getProperty("user.home") + "\\Rush-POS-Sync");
                         if (!dir.exists()) {
                             dir.mkdir();
+                            Path path = FileSystems.getDefault().getPath(dir.getAbsolutePath());
+                            Files.setAttribute(path, "dos:hidden", true);
                         }
+                        //Offline transactions database
                         File offlineFile = new File(System.getProperty("user.home") + AppConfigConstants.OFFLINE_LOCATION);
                         if (!offlineFile.exists()) {
                             offlineFile.createNewFile();
                         }
-                        //File file = new File("/home/aomine/Desktop/ocr.properties");
+                        //OCR settings
                         File file = new File(System.getProperty("user.home") + AppConfigConstants.OCR_CONFIG_LOCATION);
                         if (!file.exists()) {
                             file.createNewFile();
@@ -150,9 +160,7 @@ public class SplashController implements Initializable{
                         if (file.exists()) {
                             App.appContextHolder.setActivated(true);
                             loadEndpointsFromConfig();
-
                             loadMerchantKeys(file);
-
                             App.appContextHolder.setOnlineMode(true);
                         } else {
                             App.appContextHolder.setActivated(false);
@@ -173,6 +181,7 @@ public class SplashController implements Initializable{
     }
 
     private void loadMerchantKeys(File file) throws IOException, ParseException {
+        //Get merchant key from activation file
         BufferedReader br = new BufferedReader(new FileReader(file));
         String l = "";
         String merchant = null;
@@ -182,12 +191,20 @@ public class SplashController implements Initializable{
         }
         br.close();
 
+        Properties prop = new Properties();
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
+        if (inputStream != null) {
+            prop.load(inputStream);
+            inputStream.close();
+        } else {
+            throw new FileNotFoundException("property file api.properties not found in the classpath");
+        }
 
+        //Get authorization to call from RUSH POS Sync API
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/oauth/token?grant_type=password&username=admin&password=admin&client_id=clientIdPassword");
-
+        HttpPost httpPost = new HttpPost(prop.getProperty("oauth_endpoint"));
         httpPost.addHeader("content-type", "application/json");
-        httpPost.addHeader("authorization", "Basic Y2xpZW50SWRQYXNzd29yZDpzZWNyZXQ=");
+        httpPost.addHeader("authorization", prop.getProperty("oauth_secret"));
         HttpResponse response = httpClient.execute(httpPost);
         BufferedReader rd = new BufferedReader(
                 new InputStreamReader(response.getEntity().getContent()));
@@ -198,13 +215,15 @@ public class SplashController implements Initializable{
             result.append(line);
         }
         rd.close();
+
         JSONParser parser = new JSONParser();
         JSONObject json1 = (JSONObject) parser.parse(result.toString());
-
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("uniqueKey", merchant);
+
+        //Get merchant and customer API details from RUSH POS Sync server
         httpClient = HttpClientBuilder.create().build();
-        httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/api/merchant/validate");
+        httpPost = new HttpPost(prop.getProperty("validate_merchant_endpoint"));
         StringEntity entity = new StringEntity(jsonObject.toJSONString());
         httpPost.addHeader("content-type", "application/json");
         httpPost.addHeader("authorization", "Bearer "+ json1.get("access_token"));
@@ -213,8 +232,7 @@ public class SplashController implements Initializable{
          rd = new BufferedReader(
                 new InputStreamReader(response.getEntity().getContent()));
 
-         result = new StringBuffer();
-         line = "";
+        result = new StringBuffer();
         while ((line = rd.readLine()) != null) {
             result.append(line);
         }

@@ -1,6 +1,5 @@
 //Trigger the alert listener on our backend to bind loginService
 alert("__CONNECT__BACKEND__loginService");
-alert("__CONNECT__BACKEND__homeService");
 //Create our angular login module
 var loginModule = angular.module('LoginModule',[]);
 

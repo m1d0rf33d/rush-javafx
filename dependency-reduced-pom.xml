@@ -25,7 +25,7 @@
             <configuration>
               <artifactSet>
                 <excludes>
-                  <exclude>node_modules/</exclude>
+                  <exclude>node_modules/**</exclude>
                 </excludes>
               </artifactSet>
               <transformers>

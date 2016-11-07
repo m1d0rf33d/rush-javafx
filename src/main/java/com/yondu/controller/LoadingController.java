@@ -133,7 +133,7 @@ public class LoadingController implements Initializable{
                 e.printStackTrace();
             }
             givePointsStage.setScene(new Scene(root, 400,220));
-            givePointsStage.setTitle("Give Points");
+            givePointsStage.setTitle("Rush");
             givePointsStage.resizableProperty().setValue(Boolean.FALSE);
             givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             givePointsStage.show();

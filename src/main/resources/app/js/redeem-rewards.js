@@ -39,8 +39,11 @@ angular.module('HomeModule')
 
 
     $scope.addNumber  = function(num, id) {
-        var r =  angular.element("#"+id+"_pin").val() + num;
-        angular.element("#"+id+"_pin").val(r);
+        if ( angular.element("#"+id+"_pin").val().length < 4) {
+            var r =  angular.element("#"+id+"_pin").val() + num;
+            angular.element("#"+id+"_pin").val(r);
+        }
+
     }
     $scope.clearLoginField = function(id) {
         angular.element("#"+id+"_pin").val('');

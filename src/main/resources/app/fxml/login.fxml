@@ -144,7 +144,10 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <ImageView fx:id="removeImage" fitHeight="33.0" fitWidth="47.0" layoutX="133.0" layoutY="559.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="removeImage" fitHeight="33.0" fitWidth="47.0" layoutX="133.0" layoutY="559.0" pickOnBounds="true" preserveRatio="true">
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor></ImageView>
          </children></Pane>
       <Label layoutX="237.0" layoutY="250.0" prefHeight="50.0" prefWidth="200.0" text="EMPLOYEE LOGIN">
          <font>
@@ -172,6 +175,14 @@
          </font>
       </Label>
       <Button fx:id="givePointsBtn" layoutX="109.0" layoutY="363.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="450.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="GIVE POINTS" textFill="#f5f2f2">
+         <cursor>
+            <Cursor fx:constant="CLOSED_HAND" />
+         </cursor>
+         <font>
+            <Font name="System Bold" size="23.0" />
+         </font>
+      </Button>
+      <Button fx:id="reconnectBtn" layoutX="109.0" layoutY="426.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="450.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="RECONNECT" textFill="#f5f2f2">
          <cursor>
             <Cursor fx:constant="CLOSED_HAND" />
          </cursor>

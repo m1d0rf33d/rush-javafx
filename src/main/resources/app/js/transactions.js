@@ -21,7 +21,13 @@ angular.module('HomeModule')
     vm.dtInstance = {};
     vm.dtInstanceCallback = function(_dtInstance) {
         vm.dtInstance = _dtInstance;
-        vm.dtInstance.reloadData(); //or something else....
+        vm.dtInstance.reloadData(); //or something else...
+        angular.element(document).find('input').focus(function() {
+           homeService.showVirtualKeyboard();
+        });
+        angular.element(document).find('input').focusout(function() {
+            homeService.hideVirtualKeyboard();
+        });
     }
 
     homeService.fetchCustomerData(function(resp) {

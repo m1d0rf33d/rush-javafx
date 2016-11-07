@@ -1,4 +1,4 @@
-<div ng-controller="RegisterCtrl">
+<div ng-controller="RegisterCtrl" id="parent">
     <div class="row">
         <div class="col-sm-6">
             <h4 class="content-title">REGISTER NEW MEMBER</h4>
@@ -10,7 +10,7 @@
         <form action="http://54.169.103.206/design/rush-pos/register.html" class="form">
             <div class="col-sm-6">
                 <label>Member Name</label>
-                <input type="text" class="w100" id="name">
+                <input letters-only ng-model="memberName" type="text" class="w100" id="name">
                 <label>EMAIL</label>
                 <input type="text" class="w100" id="email">
                 <label>GENDER</label>
@@ -27,7 +27,7 @@
                </div>
             </div>
             <div class="col-sm-6">
-                <label>Mobile Numbers</label>
+                <label>Mobile Number</label>
                 <input type="text" class="w100" id="mobile_no" numeric-only maxlength="11" ng-model="mobilenumber">
                 <label>Birthdate</label>
                 <input id="birthdate" type="text" placeholder="MM/DD/YY" class="w100 date-field">
@@ -43,3 +43,15 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function(){
+
+        $("input").focus(function(){
+            homeService.showVirtualKeyboard();
+        });
+        $("input").focusout(function(){
+            homeService.hideVirtualKeyboard();
+        });
+    });
+</script>

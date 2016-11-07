@@ -1,6 +1,7 @@
 package com.yondu;
 
 import com.yondu.service.HomeService;
+import com.yondu.service.JavaFXVirtualKeyboard;
 import com.yondu.service.LoginService;
 import com.yondu.utils.Java2JavascriptUtils;
 import javafx.beans.value.ChangeListener;
@@ -8,13 +9,17 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.layout.Region;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import org.json.simple.JSONObject;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.html.HTMLInputElement;
 
 import java.io.*;
+import java.util.List;
 
 
 public class Browser extends Region{
@@ -31,7 +36,7 @@ public class Browser extends Region{
             @Override
             public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
                 Java2JavascriptUtils.connectBackendObject(webEngine, "loginService", new LoginService(webEngine));
-                Java2JavascriptUtils.connectBackendObject(webEngine, "homeService", new HomeService(webEngine));
+                Java2JavascriptUtils.connectBackendObject(webEngine, "homeService", new HomeService(webEngine, webView));
             }
         });
         webEngine.load(page);

@@ -54,11 +54,11 @@
             <div class="row">
                 <div class="col-sm-4">
                     <label>Receipt No.</label>
-                    <input id="or_no" type="text" class="w100" value="">
+                    <input onfocus="homeService.showVirtualKeyboard()" onfocusout="homeService.hideVirtualKeyboard()"   id="or_no" type="text" class="w100" value="">
                 </div>
                 <div class="col-sm-4">
                     <label>Purchase Amount</label>
-                    <input fcsa-number="{maxDecimals: 2, preventInvalidInput: true,min: 0}" id="amount" type="text" class="w100" value="" ng-model='totalSales' ng-keyup="pointsToEarn = (totalSales / earningPeso)">
+                    <input onfocus="homeService.showVirtualKeyboard()" onfocusout="homeService.hideVirtualKeyboard()" numeric-only id="amount" type="text" class="w100" value="" ng-model='totalSales' ng-change="pointsToEarn = (totalSales / earningPeso)">
                 </div>
                 <div class="col-sm-4">
                     <label>Points to earn</label>
@@ -83,3 +83,14 @@
     </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function(){
+        $("input").focus(function(){
+            homeService.showVirtualKeyboard();
+        });
+        $("input").focusout(function(){
+            homeService.hideVirtualKeyboard();
+        });
+    });
+</script>

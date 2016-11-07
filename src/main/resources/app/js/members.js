@@ -19,7 +19,8 @@ angular.module('HomeModule')
     }
 })
 .controller('MemberProfileCtrl', function($scope, $stateParams, DTOptionsBuilder, DTColumnBuilder, $q, $rootScope) {
-    $scope.message = ""
+    console.log('entering...');
+    $scope.message = "";
     var vm = this;
     $scope.activeVouchers = [];
     var getTableData = function() {
@@ -30,14 +31,22 @@ angular.module('HomeModule')
 
     vm.dtOptions = DTOptionsBuilder.fromFnPromise(getTableData).withPaginationType('full_numbers');
     vm.dtColumns = [
+        DTColumnBuilder.newColumn('date').withTitle('Redemption Date'),
         DTColumnBuilder.newColumn('name').withTitle('Reward').notSortable(),
         DTColumnBuilder.newColumn('details').withTitle('Details').notSortable(),
-        DTColumnBuilder.newColumn('date').withTitle('Redemption Date').notSortable()
+        DTColumnBuilder.newColumn('points').withTitle('Points').notSortable()
+
     ];
     vm.dtInstance = {};
     vm.dtInstanceCallback = function(_dtInstance) {
         vm.dtInstance = _dtInstance;
         vm.dtInstance.reloadData(); //or something else....
+        angular.element(document).find('input').focus(function() {
+            homeService.showVirtualKeyboard();
+        });
+        angular.element(document).find('input').focusout(function() {
+            homeService.hideVirtualKeyboard();
+        });
     }
     if ($stateParams.mobileNumber === null) {
         homeService.fetchCustomerData(function(resp) {
@@ -55,6 +64,7 @@ angular.module('HomeModule')
                     registration_date:  resp.data.registration_date
                 }
                 $scope.activeVouchers = JSON.parse(resp.data.activeVouchers);
+
                 $rootScope.memberId = resp.data.id;
             }
         });

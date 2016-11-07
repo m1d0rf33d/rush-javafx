@@ -35,7 +35,7 @@
       <TextField fx:id="mobileField" layoutX="229.0" layoutY="87.0" prefHeight="30.0" prefWidth="250.0" />
       <TextField fx:id="orField" layoutX="229.0" layoutY="132.0" prefHeight="30.0" prefWidth="250.0" />
       <TextField fx:id="amountField" layoutX="229.0" layoutY="176.0" prefHeight="30.0" prefWidth="250.0" />
-      <ImageView fx:id="rushLogo" fitHeight="50.0" fitWidth="174.0" layoutX="173.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="rushLogo" fitHeight="39.0" fitWidth="54.0" layoutX="24.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="ocrLogo" fitHeight="39.0" fitWidth="54.0" layoutX="392.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
          <cursor>
             <Cursor fx:constant="CLOSED_HAND" />
@@ -45,5 +45,10 @@
             <Cursor fx:constant="CLOSED_HAND" />
          </cursor>
       </ImageView>
+      <Label fx:id="mode" layoutX="22.0" layoutY="36.0" prefHeight="27.0" prefWidth="149.0" textFill="#f50303">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
    </children>
 </Pane>

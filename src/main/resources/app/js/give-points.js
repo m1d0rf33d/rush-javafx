@@ -32,8 +32,8 @@ angular.module('HomeModule')
 
     $scope.resetFields = function() {
         angular.element("#or_no").val('');
-        angular.element("#points").val('0');
-        angular.element("#amount").val('0');
+        angular.element("#points").val('');
+        angular.element("#amount").val('');
         angular.element("#remarks").val('');
     }
 
@@ -64,7 +64,7 @@ function givePointsManualResponse(jsonResponse) {
     $("#myModal").modal('show');
 
     $("#or_no").val('');
-    $("#amount").val('0');
-    $("#points").val('0');
+    $("#amount").val('');
+    $("#points").val('');
     $("#remarks").val('');
 }

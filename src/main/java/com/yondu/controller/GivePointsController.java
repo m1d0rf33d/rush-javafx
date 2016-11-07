@@ -1,8 +1,10 @@
 package com.yondu.controller;
 
+import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
 import com.yondu.Browser;
 import com.yondu.model.constants.ApiFieldContants;
+import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.service.ApiService;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -63,6 +65,18 @@ public class GivePointsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        if (App.appContextHolder.getWithVk() != null && !App.appContextHolder.getWithVk()) {
+            mobileField.focusedProperty().addListener(new ChangeListener<Boolean>()
+            {
+                public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+                {
+                    if (newPropertyValue)
+                        FXVK.detach();
+                }
+            });
+        }
+
         if (App.appContextHolder.isOnlineMode()) {
             mlogo.setVisible(false);
         }
@@ -84,7 +98,7 @@ public class GivePointsController implements Initializable {
         });
 
         if (!App.appContextHolder.isOnlineMode()) {
-            mode.setText("OFFLINE");
+            mode.setText("(OFFLINE)");
         }
         this.mlogo.setImage(new Image(App.class.getResource("/app/images/m_logo.png").toExternalForm()));
         this.rushLogoImageView.setImage(new Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
@@ -101,13 +115,13 @@ public class GivePointsController implements Initializable {
                     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                     double width = screenSize.getWidth();
                     double height = screenSize.getHeight();
-                    Stage stage = new Stage();
-                    Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/login.fxml"));
-                    stage.setScene(new Scene(root, width,height));
-                    stage.setTitle("Rush");
-                    stage.resizableProperty().setValue(Boolean.FALSE);
-                    stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                    stage.show();
+                    Stage primaryStage = new Stage();
+                    Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
+                    primaryStage.setScene(new Scene(root, 600,400));
+                    primaryStage.resizableProperty().setValue(false);
+                    primaryStage.initStyle(StageStyle.UNDECORATED);
+                    primaryStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                    primaryStage.show();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -115,6 +129,7 @@ public class GivePointsController implements Initializable {
                 Stage stage = new Stage();
                 stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
                 stage.setMaximized(true);
+                stage.setTitle("Rush");
                 stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                 stage.show();
                 App.appContextHolder.setHomeStage(stage);
@@ -133,7 +148,7 @@ public class GivePointsController implements Initializable {
                Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
                givePointsStage.setScene(new Scene(root, 500,300));
 
-               givePointsStage.setTitle("Give Points");
+               givePointsStage.setTitle("Rush");
                givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                givePointsStage.show();
@@ -146,67 +161,60 @@ public class GivePointsController implements Initializable {
     }
 
     private void givePoints() {
-        if (App.appContextHolder.getCustomerMobile() == null || App.appContextHolder.getCustomerUUID() == null) {
-            try {
-                if (App.appContextHolder.getEmployeeId().equals("OFFLINE_EMPLOYEE")) {
-                    throw new IOException();
-                }
-
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getText()));
-                String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
-                url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-                String responseStr = App.appContextHolder.getApiService().call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-                JSONParser parser = new JSONParser();
-                JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
-                if (!(jsonResponse.get("error_code")).equals("0x0")) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) jsonResponse.get("message"), ButtonType.OK);
-                    alert.showAndWait();
-
-                    if (alert.getResult() == ButtonType.OK) {
-                        alert.close();
-                    }
-                } else {
-                    //Load givepoints result
-                    JSONObject data = (JSONObject) jsonResponse.get("data");
-                    App.appContextHolder.setCustomerUUID((String)data.get("id"));
-                    App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
-                    ((Stage)givePointsButton.getScene().getWindow()).close();
-                    loadGivePointsDetailsView();
-                }
-            } catch (IOException e) {
-                //Offline mode
-                e.printStackTrace();
-                //Validate mobile field
-                boolean isValid = true;
-                if (mobileField.getText().isEmpty()) {
-                    isValid = false;
-                } else {
-                    if (!NumberUtils.isDigits(mobileField.getText())) {
-                        isValid = false;
-                    }
-                }
-                if (isValid) {
-                    App.appContextHolder.setOnlineMode(false);
-                    App.appContextHolder.setCustomerMobile(mobileField.getText());
-                    ((Stage)givePointsButton.getScene().getWindow()).close();
-                    loadGivePointsDetailsView();
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) "Invalid mobile number", ButtonType.OK);
-                    alert.showAndWait();
-
-                    if (alert.getResult() == ButtonType.OK) {
-                        alert.close();
-                    }
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
+        try {
+            if (App.appContextHolder.getEmployeeId().equals("OFFLINE_EMPLOYEE")) {
+                throw new IOException();
             }
-        } else {
-            //Customer already logged in
-            App.appContextHolder.setCustomerMobile(mobileField.getText());
-            ((Stage)givePointsButton.getScene().getWindow()).close();
-            loadGivePointsDetailsView();
+
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getText()));
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
+            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+            String responseStr = App.appContextHolder.getApiService().call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            JSONParser parser = new JSONParser();
+            JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
+            if (!(jsonResponse.get("error_code")).equals("0x0")) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) jsonResponse.get("message"), ButtonType.OK);
+                alert.showAndWait();
+
+                if (alert.getResult() == ButtonType.OK) {
+                    alert.close();
+                }
+            } else {
+                //Load givepoints result
+                JSONObject data = (JSONObject) jsonResponse.get("data");
+                App.appContextHolder.setCustomerUUID((String)data.get("id"));
+                App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
+                ((Stage)givePointsButton.getScene().getWindow()).close();
+                loadGivePointsDetailsView();
+            }
+        } catch (IOException e) {
+            //Offline mode
+            e.printStackTrace();
+            //Validate mobile field
+            boolean isValid = true;
+            if (mobileField.getText().isEmpty()) {
+                isValid = false;
+            } else {
+                if (!NumberUtils.isDigits(mobileField.getText())) {
+                    isValid = false;
+                }
+            }
+            if (isValid) {
+                App.appContextHolder.setOnlineMode(false);
+                App.appContextHolder.setCustomerMobile(mobileField.getText());
+                ((Stage)givePointsButton.getScene().getWindow()).close();
+                loadGivePointsDetailsView();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) "Invalid mobile number", ButtonType.OK);
+                alert.showAndWait();
+
+                if (alert.getResult() == ButtonType.OK) {
+                    alert.close();
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 
@@ -226,5 +234,7 @@ public class GivePointsController implements Initializable {
             e.printStackTrace();
         }
     }
+
+
 
 }

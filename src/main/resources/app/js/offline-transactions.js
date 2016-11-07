@@ -11,15 +11,21 @@ angular.module('HomeModule')
 
     vm.dtOptions = DTOptionsBuilder.fromFnPromise(getTableData).withPaginationType('full_numbers');
     vm.dtColumns = [
+        DTColumnBuilder.newColumn('date').withTitle('Transaction Date'),
         DTColumnBuilder.newColumn('mobileNumber').withTitle('Mobile Number').notSortable(),
         DTColumnBuilder.newColumn('totalAmount').withTitle('Total Amount').notSortable(),
-        DTColumnBuilder.newColumn('orNumber').withTitle('OR Number').notSortable(),
-        DTColumnBuilder.newColumn('date').withTitle('Date')
+        DTColumnBuilder.newColumn('orNumber').withTitle('OR Number').notSortable()
     ];
     vm.dtInstance = {};
     vm.dtInstanceCallback = function(_dtInstance) {
         vm.dtInstance = _dtInstance;
         vm.dtInstance.reloadData(); //or something else....
+        angular.element(document).find('input').focus(function() {
+            homeService.showVirtualKeyboard();
+        });
+        angular.element(document).find('input').focusout(function() {
+            homeService.hideVirtualKeyboard();
+        });
     }
     homeService.getOfflineTransactions(function(resp){
         $scope.offlineTransactions = resp;

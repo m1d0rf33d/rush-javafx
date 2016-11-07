@@ -9,6 +9,11 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 /** This is where the fun begins..
  *
  *  @author m1d0rf33d
@@ -18,6 +23,24 @@ public class App extends Application{
     public static final AppContextHolder appContextHolder = new AppContextHolder();
 
     public static void main(String[] args) {
+
+
+        //Check lock file
+        File file = new File(System.getProperty("user.home") + "\\Rush-POS-Sync\\lock.txt");
+        if (file.exists()) {
+            try {
+                Runtime.getRuntime().exec("cmd /c start C:\\\"Program Files (x86)\"\\Rush-POS-Sync\\max.vbs");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.exit(0);
+        } else {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         launch(args);
     }
 
@@ -32,6 +55,14 @@ public class App extends Application{
         primaryStage.show();
     }
 
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        File file = new File(System.getProperty("user.home") + "\\Rush-POS-Sync\\lock.txt");
+        if (file.exists()) {
+            file.delete();
+        }
+    }
 }
 
 

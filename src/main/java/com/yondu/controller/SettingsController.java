@@ -328,10 +328,10 @@ public class SettingsController implements Initializable{
                 salesWidth = prop.getProperty("sales_width");
                 salesHeight = prop.getProperty("sales_height");
 
-                orPosX = prop.getProperty("orPosX");
-                orPosY = prop.getProperty("orPosY");
-                orWidth = prop.getProperty("orWidth");
-                orHeight = prop.getProperty("orHeight");
+                orPosX = prop.getProperty("or_pos_x");
+                orPosY = prop.getProperty("or_pos_y");
+                orWidth = prop.getProperty("or_width");
+                orHeight = prop.getProperty("or_height");
             }
             if (!file.exists()) {
                 file.createNewFile();
@@ -344,7 +344,6 @@ public class SettingsController implements Initializable{
                 salesPosY = String.valueOf(App.appContextHolder.getSalesPosY());
                 salesWidth = String.valueOf(App.appContextHolder.getSalesWidth());
                 salesHeight = String.valueOf(App.appContextHolder.getSalesHeight());
-
             }
             if (App.appContextHolder.getOrNumberPosX() != null) {
                 orPosX = String.valueOf(App.appContextHolder.getOrNumberPosX());
@@ -353,26 +352,48 @@ public class SettingsController implements Initializable{
                 orHeight = String.valueOf(App.appContextHolder.getOrNumberHeight());
             }
 
-            //recreate file
-            PrintWriter fstream = new PrintWriter(new FileWriter(file));
-            fstream.println("sales_pos_x=" + salesPosX);
-            fstream.println("sales_pos_y=" + salesPosY);
-            fstream.println("sales_width=" + salesWidth);
-            fstream.println("sales_height=" + salesHeight);
-            fstream.println("or_pos_x=" + orPosX);
-            fstream.println("or_pos_y=" + orPosY);
-            fstream.println("or_width=" + orWidth);
-            fstream.println("or_height=" + orHeight);
-            fstream.flush();
-            fstream.close();
+            if (orPosX ==null  || salesPosX == null || orPosX.equals("") || salesPosX.equals("")) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION,"You have not completed assigning target screen area.", ButtonType.OK);
+                alert.showAndWait();
+                if (alert.getResult() == ButtonType.OK) {
+                    alert.close();
+                }
+            } else {
+                //recreate file
+                PrintWriter fstream = new PrintWriter(new FileWriter(file));
+                fstream.println("sales_pos_x=" + salesPosX);
+                fstream.println("sales_pos_y=" + salesPosY);
+                fstream.println("sales_width=" + salesWidth);
+                fstream.println("sales_height=" + salesHeight);
+                fstream.println("or_pos_x=" + orPosX);
+                fstream.println("or_pos_y=" + orPosY);
+                fstream.println("or_width=" + orWidth);
+                fstream.println("or_height=" + orHeight);
+                fstream.flush();
+                fstream.close();
 
-            Stage stage = new Stage();
-            stage.setScene(new Scene(new Browser(),750,500, javafx.scene.paint.Color.web("#666970")));
-            stage.setMaximized(true);
-            stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-            stage.show();
-            App.appContextHolder.setHomeStage(stage);
-            ((Stage)this.previewText.getScene().getWindow()).close();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION,"OCR settings updated.", ButtonType.OK);
+                alert.showAndWait();
+                if (alert.getResult() == ButtonType.OK) {
+
+                    Stage stage = new Stage();
+                    stage.setScene(new Scene(new Browser(),750,500, javafx.scene.paint.Color.web("#666970")));
+                    stage.setMaximized(true);
+                    stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                    stage.show();
+                    App.appContextHolder.setHomeStage(stage);
+                    if (salesCaptureStage != null) {
+                        ((Stage)salesCaptureStage.getScene().getWindow()).close();
+                    }
+                    if (orCaptureStage != null) {
+                        ((Stage)orCaptureStage.getScene().getWindow()).close();
+                    }
+                    ((Stage)this.previewText.getScene().getWindow()).close();
+                    alert.close();
+                }
+
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -438,6 +459,13 @@ public class SettingsController implements Initializable{
         stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
         stage.show();
         App.appContextHolder.setHomeStage(stage);
+
+        if (salesCaptureStage != null) {
+            ((Stage)salesCaptureStage.getScene().getWindow()).close();
+        }
+        if (orCaptureStage != null) {
+            ((Stage)orCaptureStage.getScene().getWindow()).close();
+        }
         ((Stage)this.previewText.getScene().getWindow()).close();
     }
 

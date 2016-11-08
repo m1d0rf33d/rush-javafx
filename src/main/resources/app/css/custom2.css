@@ -7,3 +7,11 @@
     background-color: #e7e7e7 !important;
     color: #0c0c0c !important;
 }
+body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

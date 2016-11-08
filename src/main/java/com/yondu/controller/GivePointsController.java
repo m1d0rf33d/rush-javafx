@@ -51,9 +51,7 @@ import static org.bytedeco.javacpp.lept.pixRead;
 public class GivePointsController implements Initializable {
 
     @FXML
-    public ImageView rushLogoImageView;
-    @FXML
-    public ImageView homeImageView;
+    public Button homeBtn;
     @FXML
     public Button givePointsButton;
     @FXML
@@ -61,7 +59,7 @@ public class GivePointsController implements Initializable {
     @FXML
     public Label mode;
     @FXML
-    public ImageView mlogo;
+    public Button manualBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -78,7 +76,7 @@ public class GivePointsController implements Initializable {
         }
 
         if (App.appContextHolder.isOnlineMode()) {
-            mlogo.setVisible(false);
+            manualBtn.setVisible(false);
         }
 
         mobileField.textProperty().addListener(new ChangeListener<String>() {
@@ -100,15 +98,12 @@ public class GivePointsController implements Initializable {
         if (!App.appContextHolder.isOnlineMode()) {
             mode.setText("(OFFLINE)");
         }
-        this.mlogo.setImage(new Image(App.class.getResource("/app/images/m_logo.png").toExternalForm()));
-        this.rushLogoImageView.setImage(new Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
-        this.homeImageView.setImage(new Image(App.class.getResource("/app/images/home-512.gif").toExternalForm()));
         if (App.appContextHolder.getCustomerMobile() != null) {
             this.mobileField.setText(App.appContextHolder.getCustomerMobile());
         }
 
         //Add buttons event handlers
-        this.homeImageView.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent t) -> {
+        this.homeBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent t) -> {
             if (App.appContextHolder.getEmployeeId() == null ||
                     (App.appContextHolder.getEmployeeId() != null && App.appContextHolder.getEmployeeId().equals("OFFLINE_EMPLOYEE"))) {
                 try {
@@ -135,14 +130,14 @@ public class GivePointsController implements Initializable {
                 App.appContextHolder.setHomeStage(stage);
             }
 
-            ((Stage) homeImageView.getScene().getWindow()).close();
+            ((Stage) homeBtn.getScene().getWindow()).close();
         });
 
         this.givePointsButton.addEventHandler(MouseEvent.MOUSE_CLICKED,(MouseEvent t) -> {
             givePoints();
         });
 
-        this.mlogo.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+        this.manualBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
            try {
                Stage givePointsStage = new Stage();
                Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
@@ -152,7 +147,7 @@ public class GivePointsController implements Initializable {
                givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                givePointsStage.show();
-               ((Stage) homeImageView.getScene().getWindow()).close();
+               ((Stage) manualBtn.getScene().getWindow()).close();
            } catch (IOException e) {
                e.printStackTrace();
            }

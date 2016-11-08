@@ -50,8 +50,6 @@ public class SettingsController implements Initializable{
     @FXML
     public ImageView previewImage;
     @FXML
-    public ImageView rushLogoImageView;
-    @FXML
     public javafx.scene.control.Button setOrButton;
     @FXML
     public Button OrCaptureButton;
@@ -208,7 +206,7 @@ public class SettingsController implements Initializable{
             }
         });
 
-        this.rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
+
         //Load ocr-properties saved config
         try {
             Properties prop = new Properties();

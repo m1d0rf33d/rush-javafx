@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -37,11 +38,9 @@ import static com.yondu.model.constants.AppConfigConstants.GIVE_POINTS_DETAILS_F
 public class ManGivePointsController implements Initializable{
 
     @FXML
-    public ImageView rushLogo;
+    public Button ocrBtn;
     @FXML
-    public ImageView ocrLogo;
-    @FXML
-    public ImageView homeLogo;
+    public Button homeBtn;
     @FXML
     public javafx.scene.control.Button givePointsBtn;
     @FXML
@@ -89,9 +88,6 @@ public class ManGivePointsController implements Initializable{
             mode.setVisible(true);
             mode.setText("(OFFLINE)");
         }
-        this.rushLogo.setImage(new Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
-        this.ocrLogo.setImage(new Image(App.class.getResource("/app/images/ocr_logo.png").toExternalForm()));
-        this.homeLogo.setImage(new Image(App.class.getResource("/app/images/home-512.gif").toExternalForm()));
 
 
         mobileField.textProperty().addListener(new ChangeListener<String>() {
@@ -116,7 +112,7 @@ public class ManGivePointsController implements Initializable{
             }
         });
 
-        this.homeLogo.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+        this.homeBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
             //Open home stage
             if (App.appContextHolder.getEmployeeId() == null ||
                     (App.appContextHolder.getEmployeeId() != null && App.appContextHolder.getEmployeeId().equals("OFFLINE_EMPLOYEE"))) {
@@ -144,10 +140,10 @@ public class ManGivePointsController implements Initializable{
                 App.appContextHolder.setHomeStage(stage);
             }
 
-            ((Stage) rushLogo.getScene().getWindow()).close();
+            ((Stage) homeBtn.getScene().getWindow()).close();
         });
 
-        this.ocrLogo.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+        this.ocrBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
             try {
                 Stage givePointsStage = new Stage();
                 Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.GIVE_POINTS_FXML));
@@ -156,7 +152,7 @@ public class ManGivePointsController implements Initializable{
                 givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                 givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                 givePointsStage.show();
-                ((Stage) rushLogo.getScene().getWindow()).close();
+                ((Stage) ocrBtn.getScene().getWindow()).close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -191,7 +187,7 @@ public class ManGivePointsController implements Initializable{
                 App.appContextHolder.setPreviousStage("GIVE_POINTS_MANUAL");
                 stage.show();
 
-                ((Stage)rushLogo.getScene().getWindow()).close();
+                ((Stage)ocrBtn.getScene().getWindow()).close();
             } catch (NumberFormatException e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, sales + " is not a valid amount.", ButtonType.OK);
                 alert.showAndWait();

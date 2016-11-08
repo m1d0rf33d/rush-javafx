@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="css/dataTables.bootstrap.min.css">
     <link rel="stylesheet" href="css/angular-datatables.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/datepicker.min.css">
 
     <script src="js/lib/jquery.min.js"></script>
+    <script src="js/lib/moment.min.js"></script>
     <script src="js/lib/jquery.dataTables.min.js"></script>
     <script src="js/lib/bootstrap.js"></script>
     <script src="js/lib/angular.min.js"></script>
@@ -18,6 +20,7 @@
     <script src="js/lib/angular-datatables.columnfilter.min.js"></script>
     <script src="js/lib/angular-ui-router.min.js"></script>
     <script src="js/lib/ui-bootstrap.min.js"></script>
+    <script src="js/lib/bootstrap-datepicker.min.js"></script>
     <script src="js/lib/ui-bootstrap-tpls.min.js"></script>
     <script src="js/lib/angular-ui.min.js"></script>
     <script src="js/lib/fcsaNumber.min.js"></script>
@@ -47,7 +50,7 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#" style="width: 400px; margin-left: 0 !important;padding: 0 !important;"> <img ng-src="{{account.branchLogo}}" style="height: 50px;width: 50px;margin-left: 0;padding-left: 0;"/>{{account.branchName}}</a>
+            <a class="navbar-brand" href="#" style="width: 400px; margin-left: -100px !important;padding: 0 !important;"> <img ng-src="{{account.branchLogo}}" style="height: 50px;width: 50px;margin-left: 0;padding-left: 0;"/>{{account.branchName}}</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -216,6 +219,26 @@
         $('.menu-li').mouseup(function() {
             $(this).css('border', '0');
         });
+
+        var clicked = false, clickY;
+        $(document).on({
+            'mousemove': function(e) {
+                clicked && updateScrollPos(e);
+            },
+            'mousedown': function(e) {
+                clicked = true;
+                clickY = e.pageY;
+            },
+            'mouseup': function() {
+                clicked = false;
+                $('html').css('cursor', 'auto');
+            }
+        });
+
+        var updateScrollPos = function(e) {
+            $('html').css('cursor', 'row-resize');
+            $(window).scrollTop($(window).scrollTop() + (clickY - e.pageY));
+        }
     });
     $("#number-pad-wrapper button").mouseup(function(){
         $(this).blur();

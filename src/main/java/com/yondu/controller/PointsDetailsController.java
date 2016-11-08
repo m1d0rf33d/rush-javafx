@@ -124,6 +124,14 @@ public class PointsDetailsController implements Initializable{
 
                             ((Stage)rushLogoImageView.getScene().getWindow()).close();
                         }
+                    } else if (jsonResponse.get("error_code").equals("0x4")) {
+                        String errorMessage = (String) jsonResponse.get("message");
+                        Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
+                        alert.showAndWait();
+
+                        if (alert.getResult() == ButtonType.OK) {
+                            alert.close();
+                        }
                     } else {
                         JSONObject error = (JSONObject) jsonResponse.get("errors");
                         String errorMessage = "";

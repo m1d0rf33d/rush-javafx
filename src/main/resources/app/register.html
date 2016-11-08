@@ -10,9 +10,9 @@
         <form action="http://54.169.103.206/design/rush-pos/register.html" class="form">
             <div class="col-sm-6">
                 <label>Member Name</label>
-                <input letters-only ng-model="memberName" type="text" class="w100" id="name">
+                <input letters-only ng-model="memberName" type="text" class="w100" id="name" maxlength="50">
                 <label>EMAIL</label>
-                <input type="text" class="w100" id="email">
+                <input type="text" class="w100" id="email" maxlength="40">
                 <label>GENDER</label>
                <!-- <select name="" id="gender" class="w100">
                     <option value="-1">Select Gender</option>
@@ -31,6 +31,7 @@
                 <input type="text" class="w100" id="mobile_no" numeric-only maxlength="11" ng-model="mobilenumber">
                 <label>Birthdate</label>
                 <input id="birthdate" type="text" placeholder="MM/DD/YY" class="w100 date-field">
+
                 <label>4-Digit M-Pin (App Password)</label>
                 <input maxlength="4" numeric-only ng-model="mpin" type="text" class="w100" id="mpin">
             </div>

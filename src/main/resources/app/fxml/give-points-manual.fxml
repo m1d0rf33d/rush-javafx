@@ -17,38 +17,44 @@
             <Cursor fx:constant="CLOSED_HAND" />
          </cursor>
       </Button>
-      <Label layoutX="22.0" layoutY="136.0" text="RECEIPT NO.">
+      <Label layoutX="22.0" layoutY="131.0" text="RECEIPT NO." textFill="#5b5656">
          <font>
-            <Font size="20.0" />
+            <Font name="System Bold" size="20.0" />
          </font>
       </Label>
-      <Label layoutX="24.0" layoutY="184.0" text="TOTAL AMOUNT">
+      <Label layoutX="24.0" layoutY="176.0" text="TOTAL AMOUNT" textFill="#5b5656">
          <font>
-            <Font size="20.0" />
+            <Font name="System Bold" size="20.0" />
          </font>
       </Label>
-      <Label layoutX="22.0" layoutY="90.0" text="MOBILE NUMBER">
+      <Label layoutX="22.0" layoutY="88.0" text="MOBILE NUMBER" textFill="#5b5656">
          <font>
-            <Font size="20.0" />
+            <Font name="System Bold" size="20.0" />
          </font>
       </Label>
-      <TextField fx:id="mobileField" layoutX="229.0" layoutY="87.0" prefHeight="30.0" prefWidth="250.0" />
-      <TextField fx:id="orField" layoutX="229.0" layoutY="132.0" prefHeight="30.0" prefWidth="250.0" />
-      <TextField fx:id="amountField" layoutX="229.0" layoutY="176.0" prefHeight="30.0" prefWidth="250.0" />
-      <ImageView fx:id="rushLogo" fitHeight="39.0" fitWidth="54.0" layoutX="24.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="ocrLogo" fitHeight="39.0" fitWidth="54.0" layoutX="392.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-         <cursor>
-            <Cursor fx:constant="CLOSED_HAND" />
-         </cursor></ImageView>
-      <ImageView fx:id="homeLogo" fitHeight="39.0" fitWidth="54.0" layoutX="452.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-         <cursor>
-            <Cursor fx:constant="CLOSED_HAND" />
-         </cursor>
-      </ImageView>
-      <Label fx:id="mode" layoutX="22.0" layoutY="36.0" prefHeight="27.0" prefWidth="149.0" textFill="#f50303">
+      <TextField fx:id="mobileField" layoutX="229.0" layoutY="87.0" prefHeight="30.0" prefWidth="250.0" style="-fx-background-radius: 0;" />
+      <TextField fx:id="orField" layoutX="229.0" layoutY="132.0" prefHeight="30.0" prefWidth="250.0" style="-fx-background-radius: 0;" />
+      <TextField fx:id="amountField" layoutX="229.0" layoutY="176.0" prefHeight="30.0" prefWidth="250.0" style="-fx-background-radius: 0;" />
+      <Label fx:id="mode" layoutX="405.0" layoutY="5.0" prefHeight="27.0" prefWidth="149.0" textFill="#f50303">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
+      <Button fx:id="homeBtn" layoutX="19.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-border-color: #ffb600;" text="HOME" textFill="#ffb600">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="CLOSED_HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="ocrBtn" layoutX="111.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-border-color: #ffb600;" text="OCR" textFill="#ffb600">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="CLOSED_HAND" />
+         </cursor>
+      </Button>
    </children>
 </Pane>

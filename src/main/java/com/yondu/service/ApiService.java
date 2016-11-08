@@ -44,6 +44,7 @@ public class ApiService {
                 HttpPost httpPost = new HttpPost(url);
                 httpPost.setEntity(new UrlEncodedFormEntity(params));
                 httpPost.addHeader("Authorization", "Bearer "+ token);
+                httpPost.addHeader("X-App", "POS-Sync");
                 response = httpClient.execute(httpPost);
             }
             //GET request
@@ -51,6 +52,7 @@ public class ApiService {
                 HttpGet request = new HttpGet(url);
                 request.addHeader("content-type", "application/json");
                 request.addHeader("Authorization", "Bearer "+ token);
+                request.addHeader("X-App", "POS-Sync");
                 response = httpClient.execute(request);
             }
             // use httpClient (no need to close it explicitly)

@@ -170,7 +170,7 @@ public class HomeService {
             params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_NAME, name));
             params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_EMAIL, email));
             params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobile));
-            params.add(new BasicNameValuePair(ApiFieldContants.MPIN, mpin));
+            params.add(new BasicNameValuePair(ApiFieldContants.PIN, mpin));
             //Optional fields
             if (birthdate != null && !birthdate.isEmpty()) {
                 params.add(new BasicNameValuePair(ApiFieldContants.BIRTHDATE, birthdate));
@@ -179,8 +179,8 @@ public class HomeService {
                 params.add(new BasicNameValuePair(ApiFieldContants.GENDER, gender));
             }
 
-            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getRegisterEndpoint();
-            jsonResponse = apiService.call(url, params, "post", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getRegisterEndpoint().replace(":employee_id", App.appContextHolder.getEmployeeId());
+            jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
             final String d = jsonResponse;
             new Thread(()->
                     Java2JavascriptUtils.call(callbackfunction, d)
@@ -769,31 +769,36 @@ public class HomeService {
                         if (!jsonObject.get("error_code").equals("0x0")) {
                             JSONObject error = (JSONObject) jsonObject.get("errors");
                             String errorMessage = "";
-                            if (error.get("or_no") != null) {
-                                List<String> l = (ArrayList<String>) error.get("or_no");
-                                errorMessage = l.get(0);
-                            }
-                            if (error.get("amount") != null) {
-                                List<String> l = (ArrayList<String>) error.get("amount");
-                                errorMessage = l.get(0);
-                            }
+                           if (error != null) {
+                               if (error.get("or_no") != null) {
+                                   List<String> l = (ArrayList<String>) error.get("or_no");
+                                   errorMessage = l.get(0);
+                               }
+                               if (error.get("amount") != null) {
+                                   List<String> l = (ArrayList<String>) error.get("amount");
+                                   errorMessage = l.get(0);
+                               }
+                           }
+                           if (jsonObject.get("message") != null) {
+                               errorMessage = (String)jsonObject.get("message");
+                           }
                             json.put("message", errorMessage);
                             failedArray.add(json);
-                        } else {
+                        }  else {
                             successArray.add(json);
                         }
                     }
                 }
                 //Clear offline.txt
-                PrintWriter writer = new PrintWriter(file);
+             /*   PrintWriter writer = new PrintWriter(file);
                 writer.print("");
                 writer.close();
-
+*/
                 br.close();
                 JSONObject finalJson = new JSONObject();
                 finalJson.put("successArray", successArray);
                 finalJson.put("failedArray", failedArray);
-                this.webEngine.executeScript("sendOfflinePointsResponse('"+ finalJson.toJSONString()+"')");
+                this.webEngine.executeScript("sendOfflinePointsResponse('"+ finalJson.toJSONString().replace("'","")+"')");
             } catch (IOException e) {
                 App.appContextHolder.setOnlineMode(false);
                 redirectToSplash();
@@ -815,6 +820,7 @@ public class HomeService {
             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGivePointsEndpoint();
             url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
             String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(responseStr);
             if (jsonObject.get("error_code").equals("0x0")) {
@@ -826,8 +832,11 @@ public class HomeService {
                 JSONObject json = (JSONObject) parser.parse(jsonResponse);
                 jsonObject.put("points", json.get("data"));
                 responseStr = jsonObject.toJSONString();
-            }
+            } else {
+                responseStr = jsonObject.toJSONString();
 
+            }
+            responseStr = responseStr.replace("'","");
             webEngine.executeScript("givePointsManualResponse('"+responseStr+"')");
         } catch (IOException e) {
             e.printStackTrace();

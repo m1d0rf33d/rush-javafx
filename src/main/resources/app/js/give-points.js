@@ -42,6 +42,8 @@ angular.module('HomeModule')
 function givePointsManualResponse(jsonResponse) {
     $(".temp").remove();
     var resp = JSON.parse(jsonResponse);
+
+
     if (resp.error_code != '0x0') {
         var message = '';
         if (resp.errors != undefined) {
@@ -51,6 +53,9 @@ function givePointsManualResponse(jsonResponse) {
             if (resp.errors.amount != undefined) {
                 message = resp.errors.amount[0];
             }
+        }
+        if (resp.message != undefined) {
+            message =resp.message;
         }
 
         $(".home-modal-body").prepend('<div class="temp"><p>'+message+' </p></div>');

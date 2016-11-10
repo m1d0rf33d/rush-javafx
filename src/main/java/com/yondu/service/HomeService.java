@@ -790,10 +790,10 @@ public class HomeService {
                     }
                 }
                 //Clear offline.txt
-             /*   PrintWriter writer = new PrintWriter(file);
+                PrintWriter writer = new PrintWriter(file);
                 writer.print("");
                 writer.close();
-*/
+
                 br.close();
                 JSONObject finalJson = new JSONObject();
                 finalJson.put("successArray", successArray);

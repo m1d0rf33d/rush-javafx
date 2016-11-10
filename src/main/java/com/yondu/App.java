@@ -29,7 +29,7 @@ public class App extends Application{
         File file = new File(System.getProperty("user.home") + "\\Rush-POS-Sync\\lock.txt");
         if (file.exists()) {
             try {
-                Runtime.getRuntime().exec("cmd /c start C:\\\"Program Files (x86)\"\\Rush-POS-Sync\\max.vbs");
+                Runtime.getRuntime().exec("cmd /c start C:\\\"Program Files\"\\Rush-POS-Sync\\max.vbs");
             } catch (IOException e) {
                 e.printStackTrace();
             }

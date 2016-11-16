@@ -30,9 +30,9 @@
                 <label>Mobile Number</label>
                 <input type="text" class="w100" id="mobile_no" numeric-only maxlength="11" ng-model="mobilenumber">
                 <label>Birthdate</label>
-                <input id="birthdate" type="text" placeholder="MM/DD/YY" class="w100 date-field">
-
-                <label>4-Digit M-Pin (App Password)</label>
+           <!--     <input id="birthdate"  class="datepicker" type="text" placeholder="MM/DD/YY" class="w100 date-field">-->
+                <input id="birthdate"  type='text' class="datetimepicker1" style="width: 100%!important;"/>
+                <label>4-Digit M-PIN (App Password)</label>
                 <input maxlength="4" numeric-only ng-model="mpin" type="text" class="w100" id="mpin">
             </div>
         </form>
@@ -46,6 +46,12 @@
 </div>
 
 <script>
+    $(function () {
+        $('.datetimepicker1').datetimepicker({
+            format: 'MM/DD/YYYY'
+        });
+    });
+
     $(document).ready(function(){
 
         $("input").focus(function(){

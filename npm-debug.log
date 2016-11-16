@@ -1,0 +1,35 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'eonasdan-bootstrap-datetimepicker#latest',
+1 verbose cli   '--save' ]
+2 info using npm@2.15.9
+3 info using node@v4.5.0
+4 verbose install initial load of C:\Users\erwin\java_projects\rush-pos\package.json
+5 verbose readDependencies loading dependencies from C:\Users\erwin\java_projects\rush-pos\package.json
+6 silly cache add args [ 'eonasdan-bootstrap-datetimepicker#latest', null ]
+7 verbose cache add spec eonasdan-bootstrap-datetimepicker#latest
+8 silly cache add parsed spec Result {
+8 silly cache add   raw: 'eonasdan-bootstrap-datetimepicker#latest',
+8 silly cache add   scope: null,
+8 silly cache add   name: null,
+8 silly cache add   rawSpec: 'eonasdan-bootstrap-datetimepicker#latest',
+8 silly cache add   spec: 'C:\\Users\\erwin\\java_projects\\rush-pos\\eonasdan-bootstrap-datetimepicker#latest',
+8 silly cache add   type: 'local' }
+9 error addLocal Could not install C:\Users\erwin\java_projects\rush-pos\eonasdan-bootstrap-datetimepicker#latest
+10 verbose stack Error: ENOENT: no such file or directory, open 'C:\Users\erwin\java_projects\rush-pos\eonasdan-bootstrap-datetimepicker#latest'
+10 verbose stack     at Error (native)
+11 verbose cwd C:\Users\erwin\java_projects\rush-pos
+12 error Windows_NT 6.1.7601
+13 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "eonasdan-bootstrap-datetimepicker#latest" "--save"
+14 error node v4.5.0
+15 error npm  v2.15.9
+16 error path C:\Users\erwin\java_projects\rush-pos\eonasdan-bootstrap-datetimepicker#latest
+17 error code ENOENT
+18 error errno -4058
+19 error syscall open
+20 error enoent ENOENT: no such file or directory, open 'C:\Users\erwin\java_projects\rush-pos\eonasdan-bootstrap-datetimepicker#latest'
+20 error enoent This is most likely not a problem with npm itself
+20 error enoent and is related to npm not being able to find a file.
+21 verbose exit [ -4058, true ]

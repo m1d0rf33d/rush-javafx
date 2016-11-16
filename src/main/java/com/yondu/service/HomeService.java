@@ -173,6 +173,7 @@ public class HomeService {
             params.add(new BasicNameValuePair(ApiFieldContants.PIN, mpin));
             //Optional fields
             if (birthdate != null && !birthdate.isEmpty()) {
+
                 params.add(new BasicNameValuePair(ApiFieldContants.BIRTHDATE, birthdate));
             }
             if (gender != null && !gender.isEmpty()) {

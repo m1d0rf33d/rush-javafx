@@ -110,7 +110,7 @@ public class HomeService {
 
 
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/oauth/token?grant_type=password&username=admin&password=admin&client_id=clientIdPassword");
+            HttpPost httpPost = new HttpPost("http://52.74.203.202:8080/rush-pos-sync/oauth/token?grant_type=password&username=admin&password=admin&client_id=clientIdPassword");
             httpPost.addHeader("Authorization", "Basic Y2xpZW50SWRQYXNzd29yZDpzZWNyZXQ=");
             httpPost.addHeader("Content-Type", "application/json");
             HttpResponse response = httpClient.execute(httpPost);
@@ -125,7 +125,7 @@ public class HomeService {
             }
             JSONObject jsonObj1 = (JSONObject) parser.parse(result.toString());
             String token = (String) jsonObj1.get("access_token");
-            HttpGet httpGet = new HttpGet("http://52.74.190.173:8080/rush-pos-sync/api/merchant/access/" + App.appContextHolder.getEmployeeId() +"/" + App.appContextHolder.getBranchId());
+            HttpGet httpGet = new HttpGet("http://52.74.203.202:8080/rush-pos-sync/api/merchant/access/" + App.appContextHolder.getEmployeeId() +"/" + App.appContextHolder.getBranchId());
             httpGet.addHeader("Authorization", "Bearer " + token);
             httpGet.addHeader("Content-Type", "application/json");
             response = httpClient.execute(httpGet);
@@ -183,8 +183,11 @@ public class HomeService {
             jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
             final String d = jsonResponse;
             new Thread(()->
-                    Java2JavascriptUtils.call(callbackfunction, d)
+                    Platform.runLater(()->
+                            Java2JavascriptUtils.call(callbackfunction, d)
+                    )
             ).start();
+
             this.webEngine.executeScript("registerResponseHandler('"+d+"')");
         } catch (IOException e) {
             e.printStackTrace();
@@ -236,10 +239,11 @@ public class HomeService {
                 result = jsonObject.toJSONString();
             }
             String finalData = result;
-            new Thread(() ->{
-                Java2JavascriptUtils.call(callbackfunction, finalData);
-            }).start();
-
+            new Thread(()->
+                    Platform.runLater(()->
+                            Java2JavascriptUtils.call(callbackfunction, finalData)
+                    )
+            ).start();
 
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
@@ -338,9 +342,12 @@ public class HomeService {
             String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
             final String data = jsonResponse;
-            new Thread( () -> {
-                Java2JavascriptUtils.call(callbackfunction, data);
-            }).start();
+            new Thread(()->
+                    Platform.runLater(()->
+                            Java2JavascriptUtils.call(callbackfunction, data)
+                    )
+            ).start();
+
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
             redirectToSplash();
@@ -420,9 +427,12 @@ public class HomeService {
             }
             tempdata = unclaimedJson.toJSONString();
             final String finalData = tempdata;
-            new Thread( () -> {
-                Java2JavascriptUtils.call(callbackfunction, finalData);
-            }).start();
+            new Thread(()->
+                    Platform.runLater(()->
+                            Java2JavascriptUtils.call(callbackfunction, finalData)
+                    )
+            ).start();
+
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
             e.printStackTrace();
@@ -465,7 +475,6 @@ public class HomeService {
             Parent root = FXMLLoader.load(App.class.getResource(SETTINGS_FXML));
             ocrConfigStage.setScene(new Scene(root, 700,500));
             ocrConfigStage.setTitle("Rush");
-            ocrConfigStage.getScene().getStylesheets().add(App.class.getResource("/app/css/fxml.css").toExternalForm());
             ocrConfigStage.resizableProperty().setValue(Boolean.FALSE);
             ocrConfigStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             ocrConfigStage.show();
@@ -589,9 +598,12 @@ public class HomeService {
 
                 result = jsonResponse.toJSONString();
                 final String finalData = result;
-                new Thread( () -> {
-                    Java2JavascriptUtils.call(callbackfunction, finalData);
-                }).start();
+                new Thread(()->
+                        Platform.runLater(()->
+                                Java2JavascriptUtils.call(callbackfunction, finalData)
+                        )
+                ).start();
+
             } catch(IOException e) {
                 App.appContextHolder.setOnlineMode(false);
                 e.printStackTrace();
@@ -617,9 +629,12 @@ public class HomeService {
             responseStr = new Gson().toJson(data);
 
             final String dataStr = responseStr;
-            new Thread( () -> {
-                Java2JavascriptUtils.call(callbackfunction, dataStr);
-            }).start();
+            new Thread(()->
+                    Platform.runLater(()->
+                            Java2JavascriptUtils.call(callbackfunction, dataStr)
+                    )
+            ).start();
+
         } catch (IOException e) {
             e.printStackTrace();
             App.appContextHolder.setOnlineMode(false);
@@ -672,9 +687,12 @@ public class HomeService {
                 }
             }
             final String finalData = jsonObj.toJSONString();*/
-            new Thread( () -> {
-                Java2JavascriptUtils.call(callbackfunction, jsonObj.toJSONString());
-            }).start();
+            new Thread(()->
+                    Platform.runLater(()->
+                            Java2JavascriptUtils.call(callbackfunction, jsonObj.toJSONString())
+                    )
+            ).start();
+
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
             e.printStackTrace();
@@ -709,9 +727,12 @@ public class HomeService {
             }
 
             final String finalData = jsonArray.toJSONString();
-            new Thread( () -> {
-                Java2JavascriptUtils.call(callbackFunction, finalData);
-            }).start();
+            new Thread(()->
+                    Platform.runLater(()->
+                            Java2JavascriptUtils.call(callbackFunction, finalData)
+                    )
+            ).start();
+
         }
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
@@ -854,10 +875,12 @@ public class HomeService {
         try {
             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
             String result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            new Thread(()->
+                    Platform.runLater(()->
+                            Java2JavascriptUtils.call(callbackFunction, result)
+                    )
+            ).start();
 
-            new Thread( () -> {
-                Java2JavascriptUtils.call(callbackFunction, result);
-            }).start();
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
             e.printStackTrace();

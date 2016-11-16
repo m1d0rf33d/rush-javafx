@@ -168,8 +168,15 @@ public class LoadingController implements Initializable{
             Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
+            String basePath = "";
+            if (App.appContextHolder.getIs64Bit()) {
+                basePath = "C:\\Program Files (x86)";
+            } else {
+                basePath = "C:\\Program Files";
+            }
+
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(TESSERACT_LOCATION);
+            tesseract.setDatapath(basePath + TESSERACT_LOCATION);
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = tesseract.doOCR(screenFullImage);
@@ -204,8 +211,15 @@ public class LoadingController implements Initializable{
             Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
+            String basePath = "";
+            if (App.appContextHolder.getIs64Bit()) {
+                basePath = "C:\\Program Files (x86)";
+            } else {
+                basePath = "C:\\Program Files";
+            }
+
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(TESSERACT_LOCATION);
+            tesseract.setDatapath(basePath + TESSERACT_LOCATION);
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = null;

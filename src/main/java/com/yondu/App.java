@@ -24,24 +24,41 @@ public class App extends Application{
 
     public static void main(String[] args) {
 
-
-        //Check lock file
-        File file = new File(System.getProperty("user.home") + "\\Rush-POS-Sync\\lock.txt");
-        if (file.exists()) {
-            try {
-                Runtime.getRuntime().exec("cmd /c start C:\\\"Program Files\"\\Rush-POS-Sync\\max.vbs");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.exit(0);
-        } else {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
+        boolean is64bit = false;
+        if (System.getProperty("os.name").contains("Windows")) {
+            is64bit = (System.getenv("ProgramFiles(x86)") != null);
+            App.appContextHolder.setIs64Bit(is64bit);
+            File file = new File(System.getProperty("user.home") + AppConfigConstants.LOCK_LOCATION);
+            if (file.exists()) {
+                try {
+                    if (is64bit) {
+                        Runtime.getRuntime().exec("cmd /c start  C:\\\"Program Files (x86)\"" + AppConfigConstants.VBS_LOCATION);
+                    } else {
+                        Runtime.getRuntime().exec("cmd /c start C:\\\"Program Files\"" + AppConfigConstants.VBS_LOCATION);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
+            } else {
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Runtime.getRuntime().addShutdownHook(new Thread() {
+                    @Override
+                    public void run() {
+                        File file = new File(System.getProperty("user.home") + AppConfigConstants.LOCK_LOCATION);
+                        if (file.exists()) {
+                            file.delete();
+                        }
+                    }
+                });
+                launch(args);
             }
         }
-        launch(args);
+
     }
 
     @Override
@@ -58,7 +75,7 @@ public class App extends Application{
     @Override
     public void stop() throws Exception {
         super.stop();
-        File file = new File(System.getProperty("user.home") + "\\Rush-POS-Sync\\lock.txt");
+        File file = new File(System.getProperty("user.home") + AppConfigConstants.LOCK_LOCATION);
         if (file.exists()) {
             file.delete();
         }

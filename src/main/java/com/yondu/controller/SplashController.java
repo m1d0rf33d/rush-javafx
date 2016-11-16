@@ -100,6 +100,7 @@ public class SplashController implements Initializable{
                 }
             } else {
                try {
+                   //Launch activation window
                    Stage stage = new Stage();
                    Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.ACTIVATION_FXML));
                    stage.setScene(new Scene(root, 400,200));
@@ -154,6 +155,7 @@ public class SplashController implements Initializable{
                             fstream.flush();
                             fstream.close();
                         }
+
                         App.appContextHolder.setOcrFullPath(file.getAbsolutePath());
                         App.appContextHolder.setOfflinePath(System.getProperty("user.home") + AppConfigConstants.OFFLINE_LOCATION);
                         file = new File(System.getProperty("user.home") + AppConfigConstants.ACTIVATION_LOCATION);

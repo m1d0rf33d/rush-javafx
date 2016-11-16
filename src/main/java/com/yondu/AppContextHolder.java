@@ -75,6 +75,15 @@ public class AppContextHolder {
     private boolean isActivated;
     private String previousStage;
     private Boolean withVk;
+    private Boolean is64Bit;
+
+    public Boolean getIs64Bit() {
+        return is64Bit;
+    }
+
+    public void setIs64Bit(Boolean is64Bit) {
+        this.is64Bit = is64Bit;
+    }
 
     public Boolean getWithVk() {
         return withVk;

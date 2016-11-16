@@ -62,7 +62,7 @@ public class ActivationController implements Initializable{
         try {
 
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/oauth/token?grant_type=password&username=admin&password=admin&client_id=clientIdPassword");
+            HttpPost httpPost = new HttpPost("http://52.74.203.202:8080/rush-pos-sync/oauth/token?grant_type=password&username=admin&password=admin&client_id=clientIdPassword");
             httpPost.addHeader("Authorization", "Basic Y2xpZW50SWRQYXNzd29yZDpzZWNyZXQ=");
             httpPost.addHeader("Content-Type", "application/json");
             HttpResponse response = httpClient.execute(httpPost);
@@ -83,7 +83,7 @@ public class ActivationController implements Initializable{
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("uniqueKey", inputKey);
             httpClient = HttpClientBuilder.create().build();
-            httpPost = new HttpPost("http://52.74.190.173:8080/rush-pos-sync/api/merchant/validate");
+            httpPost = new HttpPost("http://52.74.203.202:8080/rush-pos-sync/api/merchant/validate");
             StringEntity entity = new StringEntity(jsonObject.toJSONString());
             httpPost.addHeader("content-type", "application/json");
             httpPost.addHeader("authorization", "Bearer " + token);

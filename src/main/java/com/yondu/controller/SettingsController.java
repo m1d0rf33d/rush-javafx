@@ -137,8 +137,15 @@ public class SettingsController implements Initializable{
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
             javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
             this.previewImage.setImage(image);
+            String basePath = "";
+            if (App.appContextHolder.getIs64Bit()) {
+                basePath = "C:\\Program Files (x86)";
+            } else {
+                basePath = "C:\\Program Files";
+            }
+
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(TESSERACT_LOCATION);
+            tesseract.setDatapath(basePath + TESSERACT_LOCATION);
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = null;
@@ -403,9 +410,9 @@ public class SettingsController implements Initializable{
         //Check if user captured temporary values if not get configuration from config file
         if (App.appContextHolder.getOrNumberPosX() != null) {
             //Create image based from temporary ocr config
-            salesX = App.appContextHolder.getOrNumberPosX();
-            salesY = App.appContextHolder.getOrNumberPosY();
-            salesWidth = App.appContextHolder.getOrNumberWidth();
+            salesX      = App.appContextHolder.getOrNumberPosX();
+            salesY      = App.appContextHolder.getOrNumberPosY();
+            salesWidth  = App.appContextHolder.getOrNumberWidth();
             salesHeight = App.appContextHolder.getOrNumberHeight();
         } else {
             try {
@@ -426,14 +433,21 @@ public class SettingsController implements Initializable{
         //then read the text using tesseract
         try {
             Robot robot = new Robot();
-            Toolkit myToolkit = Toolkit.getDefaultToolkit();
             Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
             javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
             this.previewImage.setImage(image);
+
+            String basePath = "";
+            if (App.appContextHolder.getIs64Bit()) {
+                basePath = "C:\\Program Files (x86)";
+            } else {
+                basePath = "C:\\Program Files";
+            }
+
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(TESSERACT_LOCATION);
+            tesseract.setDatapath(basePath + TESSERACT_LOCATION);
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = null;

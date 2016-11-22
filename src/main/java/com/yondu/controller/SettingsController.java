@@ -138,9 +138,9 @@ public class SettingsController implements Initializable{
             this.previewImage.setImage(image);
             String basePath = "";
             if (App.appContextHolder.getIs64Bit()) {
-                basePath = "C:\\Program Files (x86)";
+                basePath = "C:\\Program Files (x86)\\Rush-POS-Sync";
             } else {
-                basePath = "C:\\Program Files";
+                basePath = "C:\\Program Files\\Rush-POS-Sync";
             }
 
             ITesseract tesseract = new Tesseract();
@@ -380,9 +380,13 @@ public class SettingsController implements Initializable{
                 alert.showAndWait();
                 if (alert.getResult() == ButtonType.OK) {
 
+                    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                    double width = screenSize.getWidth();
+                    double height = screenSize.getHeight();
                     Stage stage = new Stage();
-                    stage.setScene(new Scene(new Browser(),750,500, javafx.scene.paint.Color.web("#666970")));
                     stage.setMaximized(true);
+                    stage.setTitle("Rush");
+                    stage.setScene(new Scene(new Browser(),width - 20,height - 70, javafx.scene.paint.Color.web("#666970")));
                     stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                     stage.show();
                     App.appContextHolder.setHomeStage(stage);
@@ -440,9 +444,9 @@ public class SettingsController implements Initializable{
 
             String basePath = "";
             if (App.appContextHolder.getIs64Bit()) {
-                basePath = "C:\\Program Files (x86)";
+                basePath = "C:\\Program Files (x86)\\Rush-POS-Sync";
             } else {
-                basePath = "C:\\Program Files";
+                basePath = "C:\\Program Files\\Rush-POS-Sync";
             }
 
             ITesseract tesseract = new Tesseract();
@@ -464,8 +468,12 @@ public class SettingsController implements Initializable{
 
     public void exit() {
 
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
         Stage stage = new Stage();
-        stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
+        stage.setScene(new Scene(new Browser(),width - 20, height - 70, Color.web("#666970")));
+        stage.setTitle("Rush");
         stage.setMaximized(true);
         stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
         stage.show();

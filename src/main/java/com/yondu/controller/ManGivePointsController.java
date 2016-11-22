@@ -56,6 +56,9 @@ public class ManGivePointsController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
         if (App.appContextHolder.getWithVk() != null && !App.appContextHolder.getWithVk()) {
             orField.focusedProperty().addListener(new ChangeListener<Boolean>()
             {
@@ -117,9 +120,6 @@ public class ManGivePointsController implements Initializable{
             if (App.appContextHolder.getEmployeeId() == null ||
                     (App.appContextHolder.getEmployeeId() != null && App.appContextHolder.getEmployeeId().equals("OFFLINE_EMPLOYEE"))) {
                 try {
-                    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-                    double width = screenSize.getWidth();
-                    double height = screenSize.getHeight();
                     Stage primaryStage = new Stage();
                     Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
                     primaryStage.setScene(new Scene(root, 600,400));
@@ -132,9 +132,9 @@ public class ManGivePointsController implements Initializable{
                 }
             } else {
                 Stage stage = new Stage();
-                stage.setScene(new Scene(new Browser(),750,500, javafx.scene.paint.Color.web("#666970")));
-                stage.setMaximized(true);
+                stage.setScene(new Scene(new Browser(),width - 20, height - 70, javafx.scene.paint.Color.web("#666970")));
                 stage.setTitle("Rush");
+                stage.setMaximized(true);
                 stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                 stage.show();
                 App.appContextHolder.setHomeStage(stage);

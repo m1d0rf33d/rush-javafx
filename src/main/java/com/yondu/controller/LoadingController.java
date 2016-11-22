@@ -170,9 +170,9 @@ public class LoadingController implements Initializable{
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
             String basePath = "";
             if (App.appContextHolder.getIs64Bit()) {
-                basePath = "C:\\Program Files (x86)";
+                basePath = "C:\\Program Files (x86)\\Rush-POS-Sync";
             } else {
-                basePath = "C:\\Program Files";
+                basePath = "C:\\Program Files\\Rush-POS-Sync";
             }
 
             ITesseract tesseract = new Tesseract();
@@ -213,9 +213,9 @@ public class LoadingController implements Initializable{
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
             String basePath = "";
             if (App.appContextHolder.getIs64Bit()) {
-                basePath = "C:\\Program Files (x86)";
+                basePath = "C:\\Program Files (x86)\\Rush-POS-Sync";
             } else {
-                basePath = "C:\\Program Files";
+                basePath = "C:\\Program Files\\Rush-POS-Sync";
             }
 
             ITesseract tesseract = new Tesseract();

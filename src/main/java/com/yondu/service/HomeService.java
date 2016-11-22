@@ -146,9 +146,7 @@ public class HomeService {
 
             httpClient.close();
             new Thread( () -> {
-                Platform.runLater(()->
-                        Java2JavascriptUtils.call(callbackfunction, jsonObject.toJSONString())
-                );
+                Java2JavascriptUtils.call(callbackfunction, jsonObject.toJSONString());
             }).start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -184,9 +182,7 @@ public class HomeService {
             jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
             final String d = jsonResponse;
             new Thread(()->
-                    Platform.runLater(()->
-                            Java2JavascriptUtils.call(callbackfunction, d)
-                    )
+                    Java2JavascriptUtils.call(callbackfunction, d)
             ).start();
 
             this.webEngine.executeScript("registerResponseHandler('"+d+"')");
@@ -241,9 +237,7 @@ public class HomeService {
             }
             String finalData = result;
             new Thread(()->
-                    Platform.runLater(()->
-                            Java2JavascriptUtils.call(callbackfunction, finalData)
-                    )
+                    Java2JavascriptUtils.call(callbackfunction, finalData)
             ).start();
 
         } catch (IOException e) {
@@ -344,9 +338,7 @@ public class HomeService {
 
             final String data = jsonResponse;
             new Thread(()->
-                    Platform.runLater(()->
-                            Java2JavascriptUtils.call(callbackfunction, data)
-                    )
+                    Java2JavascriptUtils.call(callbackfunction, data)
             ).start();
 
         } catch (IOException e) {
@@ -429,9 +421,7 @@ public class HomeService {
             tempdata = unclaimedJson.toJSONString();
             final String finalData = tempdata;
             new Thread(()->
-                    Platform.runLater(()->
-                            Java2JavascriptUtils.call(callbackfunction, finalData)
-                    )
+                    Java2JavascriptUtils.call(callbackfunction, finalData)
             ).start();
 
         } catch (IOException e) {
@@ -600,9 +590,7 @@ public class HomeService {
                 result = jsonResponse.toJSONString();
                 final String finalData = result;
                 new Thread(()->
-                        Platform.runLater(()->
-                                Java2JavascriptUtils.call(callbackfunction, finalData)
-                        )
+                        Java2JavascriptUtils.call(callbackfunction, finalData)
                 ).start();
 
             } catch(IOException e) {
@@ -631,9 +619,7 @@ public class HomeService {
 
             final String dataStr = responseStr;
             new Thread(()->
-                    Platform.runLater(()->
-                            Java2JavascriptUtils.call(callbackfunction, dataStr)
-                    )
+                    Java2JavascriptUtils.call(callbackfunction, dataStr)
             ).start();
 
         } catch (IOException e) {
@@ -689,9 +675,7 @@ public class HomeService {
             }
             final String finalData = jsonObj.toJSONString();*/
             new Thread(()->
-                    Platform.runLater(()->
-                            Java2JavascriptUtils.call(callbackfunction, jsonObj.toJSONString())
-                    )
+                    Java2JavascriptUtils.call(callbackfunction, jsonObj.toJSONString())
             ).start();
 
         } catch (IOException e) {
@@ -729,9 +713,7 @@ public class HomeService {
 
             final String finalData = jsonArray.toJSONString();
             new Thread(()->
-                    Platform.runLater(()->
-                            Java2JavascriptUtils.call(callbackFunction, finalData)
-                    )
+                    Java2JavascriptUtils.call(callbackFunction, finalData)
             ).start();
 
         }
@@ -877,9 +859,7 @@ public class HomeService {
             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
             String result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
             new Thread(()->
-                    Platform.runLater(()->
-                            Java2JavascriptUtils.call(callbackFunction, result)
-                    )
+                    Java2JavascriptUtils.call(callbackFunction, result)
             ).start();
 
         } catch (IOException e) {

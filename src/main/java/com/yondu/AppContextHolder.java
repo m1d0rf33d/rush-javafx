@@ -71,11 +71,20 @@ public class AppContextHolder {
     private String customerAppKey;
     private String customerAppSecret;
     private String authorizationEndpoint;
+    private String guestEarnEndpoint;
 
     private boolean isActivated;
     private String previousStage;
     private Boolean withVk;
     private Boolean is64Bit;
+
+    public String getGuestEarnEndpoint() {
+        return guestEarnEndpoint;
+    }
+
+    public void setGuestEarnEndpoint(String guestEarnEndpoint) {
+        this.guestEarnEndpoint = guestEarnEndpoint;
+    }
 
     public Boolean getIs64Bit() {
         return is64Bit;

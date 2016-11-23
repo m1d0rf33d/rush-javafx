@@ -120,6 +120,9 @@
             </a>
             <a   class="menu-a" ng-hide="account.give_points_ocr != '1'" id="gio-a" href="" ng-click="loadGivePointsView()" >
                 <li class="menu-li"id="gio-li">GIVE POINTS (OCR)</li>
+            </a>
+            <a   class="menu-a" id="giog-a" href="" ng-click="goToGivePointsGuestView()" >
+                <li class="menu-li"id="giog-li">GIVE POINTS GUEST</li>
             </a><!--
             <a href="" ng-disabled="!memberProfile.id" >
                 <li>GIVE POINTS (OCR)</li>
@@ -142,9 +145,7 @@
             <a  class="menu-a" ng-hide="account.setup_ocr != '1'" id="so-a" href="" ng-click="loadSettingsView()">
                 <li class="menu-li"id="so-li" class="yellow-bg">SETUP (OCR)</li>
             </a>
-            <a class="menu-a"  ng-hide="account.exit_member_details != '1'" href="" ng-click="logoutMember()">
-                <li class="menu-li" class="red-bg">EXIT MEMBER DETAILS</li>
-            </a>
+
         </ul>
     </div>
 
@@ -181,20 +182,18 @@
     <!-- End -->
 
     <!-- Offline transactions -->
-    <div  id="offlineModal" class="modal fade" role="dialog"  tabindex="-1"  >
-        <div class="modal-dialog">
+    <div  id="offlineModal" class="modal fade" role="dialog"  tabindex="-1" >
+        <div class="modal-dialog" style="margin-left: 50px !important;margin-top: 50px !important;">
 
             <!-- Modal content-->
-            <div class="modal-content" style="background: white !important;width: 800px !important;">
+            <div class="modal-content" style="background: white !important;width: 1200px !important;">
                 <div class="modal-header offline-result-header">
 
                 </div>
                 <div class="modal-body offline-result-body" style="height: 300px; overflow: auto;">
 
                 </div>
-                <div class="modal-footer">
-                    <button class="btn-send" type="button" data-dismiss="modal">Okay</button>
-                </div>
+
             </div>
 
         </div>

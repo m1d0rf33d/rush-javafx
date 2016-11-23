@@ -284,7 +284,7 @@ public class SplashController implements Initializable{
            App.appContextHolder.setAuthorizationEndpoint(prop.getProperty("authorization_endpoint"));
            App.appContextHolder.setMerchantDesignsEndpoint(prop.getProperty("merchant_designs"));
            App.appContextHolder.setMerchantSettingsEndpoint(prop.getProperty("merchant_settings"));
-
+           App.appContextHolder.setGuestEarnEndpoint(prop.getProperty("earn_guest_endpoint"));
        } catch(IOException e) {
            e.printStackTrace();
        }

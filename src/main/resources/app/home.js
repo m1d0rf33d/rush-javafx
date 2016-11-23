@@ -53,6 +53,10 @@ var homeModule = angular.module('HomeModule', ['ui.router','datatables','datatab
         .state('manual-givepoints-view', {
             url: '/manual-givepoints-view',
             templateUrl: 'manual-givepoints.html'
+        })
+        .state('guest-givepoints-view', {
+            url: '/guest-givepoints-view',
+            templateUrl: 'give-points-guest.html'
         }).state("otherwise", {
             url: "*path",
             templateUrl: "default.html"
@@ -137,6 +141,10 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     }
 
    //State transition bindings because a href binding is not working wtf..
+    $scope.goToGivePointsGuestView = function() {
+        $state.go('guest-givepoints-view');
+        $scope.highlightButton('guest-givepoints');
+    }
     $scope.goToRegisterView = function() {
         $state.go('register-view');
         $scope.highlightButton('register');
@@ -256,6 +264,10 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
          } else if (view === 'offlinetransactions') {
              angular.element('#otv-a').addClass('selected-button');
              angular.element('#otv-li').addClass('selected-button');
+         }
+         else if (view === 'guest-givepoints') {
+             angular.element('#giog-a').addClass('selected-button');
+             angular.element('#giog-li').addClass('selected-button');
          }
      }
 

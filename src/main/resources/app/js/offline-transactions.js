@@ -45,7 +45,7 @@ function sendOfflinePointsResponse(resp) {
     $(".temp").remove();
 
     var successArray = resp.successArray;
-    var htmlStr = '<div class="temp"><h4><b>Successful transmission - '+successArray.length+' results</b></b></h4></div>';
+    var htmlStr = '<div class="temp"><h4 style="font-weight:600;font-size:20px;color:#393939;">Successful transmission - '+successArray.length+' results</h4></div>';
     if (successArray.length > 0) {
         var successTable = '<table class="table table-striped temp"><tr><th>Mobile Number</th><th>Total Amount</th><th>OR Number</th><th>Date</th></tr>';
         $.each(successArray, function(index, item) {
@@ -61,7 +61,7 @@ function sendOfflinePointsResponse(resp) {
     htmlStr += '<br/><br/>';
 
     var failedArray = resp.failedArray;
-    htmlStr += '<div class="temp"><h4><b>Failed transmission - '+failedArray.length+' results</b></h4></div>';
+    htmlStr += '<div class="temp"><h4 style="font-weight:600;font-size:20px;color:#393939;">Failed transmission - '+failedArray.length+' results</h4></div>';
     if (failedArray.length > 0) {
         var failedTable = '<table class="table table-striped temp"><tr><th>Mobile Number</th><th>Total Amount</th><th>OR Number</th><th>Date</th><th>Message</th></tr>';
         $.each(failedArray, function(index, item) {
@@ -77,7 +77,7 @@ function sendOfflinePointsResponse(resp) {
     }
 
     $(".offline-result-body").prepend(htmlStr);
-    $(".offline-result-header").prepend('<div class="alert alert-success temp"> <strong>SEND OFFLINE POINTS RESULT</strong> </div>');
+    $(".offline-result-header").prepend('<div class="alert alert-success temp"> <strong>OFFLINE TRANSACTIONS - GIVE POINTS</strong> </div>');
 
     var d = $("#offline-table").dataTable();
     d.fnClearTable();

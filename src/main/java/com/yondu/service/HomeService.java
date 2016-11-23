@@ -898,4 +898,25 @@ public class HomeService {
             FXVK.detach();
         }
     }
+
+
+    public void givePointsGuest(String mobileNo, String orNumber, String amount) {
+
+        try {
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileNo));
+            params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
+            params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount.replace(",","")));
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGuestEarnEndpoint();
+            url = url.replace(":employee_id",App.appContextHolder.getEmployeeId());
+            String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+            responseStr = responseStr.replace("'","");
+            webEngine.executeScript("givePointsGuestResponse('"+responseStr+"')");
+        } catch (IOException e) {
+            e.printStackTrace();
+            App.appContextHolder.setOnlineMode(false);
+        }
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
+    }
 }

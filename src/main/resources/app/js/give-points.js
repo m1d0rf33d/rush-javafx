@@ -1,5 +1,21 @@
 
 angular.module('HomeModule')
+    .controller('GivePointsGuestCtrl', function($scope) {
+        $scope.resetFields = function() {
+            angular.element("#mobile_no").val('');
+            angular.element("#or_no").val('');
+            angular.element("#amount").val('');
+        }
+
+        $scope.givePointsGuest = function() {
+
+            var orNumber = angular.element("#or_no").val(),
+                amount = angular.element("#amount").val(),
+                mobileNo = angular.element("#mobile_no").val();
+
+            homeService.givePointsGuest(mobileNo, orNumber, amount);
+        }
+    })
 .controller('GivePointsCtrl', function($scope) {
     $scope.earningPeso = '';
     homeService.fetchCustomerData(function(resp) {
@@ -30,6 +46,8 @@ angular.module('HomeModule')
         homeService.givePointsManual(orNumber, amount);
     }
 
+
+
     $scope.resetFields = function() {
         angular.element("#or_no").val('');
         angular.element("#points").val('');
@@ -38,6 +56,26 @@ angular.module('HomeModule')
     }
 
 });
+
+function givePointsGuestResponse(jsonResponse) {
+    $(".temp").remove();
+    var resp = JSON.parse(jsonResponse);
+    if (resp.error_code == '0x0') {
+        $(".home-modal-body").prepend('<div class="temp"><p> Points has been awarded to customer. </p></div>');
+        $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>GIVE POINTS TO GUEST</strong> </div>');
+    } else {
+        var message = '';
+        if (resp.message != undefined) {
+            message =resp.message;
+        }
+        $(".home-modal-body").prepend('<div class="temp"><p> '+ message +' </p></div>');
+        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>GIVE POINTS TO GUEST</strong> </div>');
+    }
+    $("#myModal").modal('show');
+    $("#or_no").val('');
+    $("#amount").val('');
+    $("#mobile_no").val('');
+}
 
 function givePointsManualResponse(jsonResponse) {
     $(".temp").remove();

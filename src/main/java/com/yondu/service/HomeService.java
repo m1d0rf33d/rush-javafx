@@ -465,7 +465,7 @@ public class HomeService {
             ocrConfigStage = new Stage();
             Parent root = FXMLLoader.load(App.class.getResource(SETTINGS_FXML));
             ocrConfigStage.setScene(new Scene(root, 700,500));
-            ocrConfigStage.setTitle("Rush");
+            ocrConfigStage.setTitle("Rush POS Sync");
             ocrConfigStage.resizableProperty().setValue(Boolean.FALSE);
             ocrConfigStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             ocrConfigStage.show();
@@ -483,7 +483,7 @@ public class HomeService {
             givePointsStage = new Stage();
             Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
             givePointsStage.setScene(new Scene(root, 400,220));
-            givePointsStage.setTitle("Rush");
+            givePointsStage.setTitle("Rush POS Sync");
             givePointsStage.resizableProperty().setValue(Boolean.FALSE);
 
             givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));

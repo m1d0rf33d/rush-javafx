@@ -99,7 +99,7 @@ public class LoginController implements Initializable {
               Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.GIVE_POINTS_FXML));
               givePointsStage.setScene(new Scene(root, 400,220));
 
-              givePointsStage.setTitle("Rush");
+              givePointsStage.setTitle("Rush POS Sync");
               givePointsStage.resizableProperty().setValue(Boolean.FALSE);
               givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
               givePointsStage.show();
@@ -219,7 +219,7 @@ public class LoginController implements Initializable {
 
                         Stage stage = new Stage();
                         stage.setScene(new Scene(new Browser(),width - 20,height - 70, javafx.scene.paint.Color.web("#666970")));
-                        stage.setTitle("Rush");
+                        stage.setTitle("Rush POS Sync");
                         stage.setMaximized(true);
                         stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                         stage.show();
@@ -274,7 +274,7 @@ public class LoginController implements Initializable {
             RequirePinController controller = new RequirePinController(overlayPane, loginTextField.getText(), branchId );
             loader.setController(controller);
             stage.setScene(new Scene(loader.load(), 900,600));
-            stage.setTitle("Rush");
+            stage.setTitle("Rush POS Sync");
             stage.initStyle(StageStyle.UNDECORATED);
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(
@@ -295,7 +295,7 @@ public class LoginController implements Initializable {
             CustomDialogController controller = new CustomDialogController(message, overlayPane);
             loader.setController(controller);
             stage.setScene(new Scene(loader.load(), 500,350));
-            stage.setTitle("Rush");
+            stage.setTitle("Rush POS Sync");
             stage.initStyle(StageStyle.UNDECORATED);
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(

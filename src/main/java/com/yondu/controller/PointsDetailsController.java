@@ -118,7 +118,7 @@ public class PointsDetailsController implements Initializable{
                             Stage givePointsStage = new Stage();
                             Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
                             givePointsStage.setScene(new Scene(root, 400,220));
-                            givePointsStage.setTitle("Rush");
+                            givePointsStage.setTitle("Rush POS Sync");
                             givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                             givePointsStage.show();
 
@@ -170,7 +170,7 @@ public class PointsDetailsController implements Initializable{
                         Stage givePointsStage = new Stage();
                         Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
                         givePointsStage.setScene(new Scene(root, 400,220));
-                        givePointsStage.setTitle("Rush");
+                        givePointsStage.setTitle("Rush POS Sync");
                         givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                         givePointsStage.show();
                     } else {
@@ -178,7 +178,7 @@ public class PointsDetailsController implements Initializable{
                         Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
                         givePointsStage.setScene(new Scene(root, 500,300));
 
-                        givePointsStage.setTitle("Rush");
+                        givePointsStage.setTitle("Rush POS Sync");
                         givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                         givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                         givePointsStage.show();
@@ -217,7 +217,7 @@ public class PointsDetailsController implements Initializable{
                     Stage givePointsStage = new Stage();
                     Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
                     givePointsStage.setScene(new Scene(root, 400,220));
-                    givePointsStage.setTitle("Rush");
+                    givePointsStage.setTitle("Rush POS Sync");
                     givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                     givePointsStage.show();
                 } else {
@@ -225,7 +225,7 @@ public class PointsDetailsController implements Initializable{
                     Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
                     givePointsStage.setScene(new Scene(root, 500,300));
 
-                    givePointsStage.setTitle("Rush");
+                    givePointsStage.setTitle("Rush POS Sync");
                     givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                     givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                     givePointsStage.show();

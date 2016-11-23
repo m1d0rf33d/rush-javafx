@@ -72,7 +72,7 @@ public class SplashController implements Initializable{
                         Stage stage = new Stage();
                         Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.LOGIN_FXML));
                         stage.setScene(new Scene(root, width,height - 70));
-                        stage.setTitle("Rush");
+                        stage.setTitle("Rush POS Sync");
                         stage.getIcons().add(new Image(App.class.getResource(AppConfigConstants.R_LOGO).toExternalForm()));
                         stage.show();
                         App.appContextHolder.setHomeStage(stage);
@@ -89,7 +89,7 @@ public class SplashController implements Initializable{
                         Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.GIVE_POINTS_MANUAL_FXML));
                         givePointsStage.setScene(new Scene(root, 500,300));
 
-                        givePointsStage.setTitle("Rush");
+                        givePointsStage.setTitle("Rush POS Sync");
                         givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                         givePointsStage.getIcons().add(new Image(App.class.getResource(AppConfigConstants.R_LOGO).toExternalForm()));
                         givePointsStage.show();
@@ -104,7 +104,7 @@ public class SplashController implements Initializable{
                    Stage stage = new Stage();
                    Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.ACTIVATION_FXML));
                    stage.setScene(new Scene(root, 400,200));
-                   stage.setTitle("Rush");
+                   stage.setTitle("Rush POS Sync");
                    stage.resizableProperty().setValue(Boolean.FALSE);
                    stage.getIcons().add(new Image(App.class.getResource(AppConfigConstants.R_LOGO).toExternalForm()));
                    stage.show();

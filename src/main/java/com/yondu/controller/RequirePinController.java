@@ -132,7 +132,7 @@ public class RequirePinController  implements Initializable {
                     //Redirect to home page
                     Stage stage = new Stage();
                     stage.setScene(new Scene(new Browser(),width - 20,(height - 70), javafx.scene.paint.Color.web("#666970")));
-                    stage.setTitle("Rush");
+                    stage.setTitle("Rush POS Sync");
                     stage.setMaximized(true);
                     stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                     stage.show();
@@ -173,7 +173,7 @@ public class RequirePinController  implements Initializable {
             CustomDialogController controller = new CustomDialogController(message, overlayPane2);
             loader.setController(controller);
             stage.setScene(new Scene(loader.load(), 500,350));
-            stage.setTitle("Rush");
+            stage.setTitle("Rush POS Sync");
             stage.initStyle(StageStyle.UNDECORATED);
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(

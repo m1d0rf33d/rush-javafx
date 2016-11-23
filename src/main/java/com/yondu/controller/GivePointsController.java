@@ -123,7 +123,7 @@ public class GivePointsController implements Initializable {
             } else {
                 Stage stage = new Stage();
                 stage.setScene(new Scene(new Browser(),width - 20, height - 70, Color.web("#666970")));
-                stage.setTitle("Rush");
+                stage.setTitle("Rush POS Sync");
                 stage.setMaximized(true);
                 stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                 stage.show();
@@ -143,7 +143,7 @@ public class GivePointsController implements Initializable {
                Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
                givePointsStage.setScene(new Scene(root, 500,300));
 
-               givePointsStage.setTitle("Rush");
+               givePointsStage.setTitle("Rush POS Sync");
                givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                givePointsStage.show();

@@ -385,7 +385,7 @@ public class SettingsController implements Initializable{
                     double height = screenSize.getHeight();
                     Stage stage = new Stage();
                     stage.setMaximized(true);
-                    stage.setTitle("Rush");
+                    stage.setTitle("Rush POS Sync");
                     stage.setScene(new Scene(new Browser(),width - 20,height - 70, javafx.scene.paint.Color.web("#666970")));
                     stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                     stage.show();
@@ -473,7 +473,7 @@ public class SettingsController implements Initializable{
         double height = screenSize.getHeight();
         Stage stage = new Stage();
         stage.setScene(new Scene(new Browser(),width - 20, height - 70, Color.web("#666970")));
-        stage.setTitle("Rush");
+        stage.setTitle("Rush POS Sync");
         stage.setMaximized(true);
         stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
         stage.show();

@@ -63,6 +63,9 @@ function givePointsGuestResponse(jsonResponse) {
     if (resp.error_code == '0x0') {
         $(".home-modal-body").prepend('<div class="temp"><p> Points has been awarded to customer. </p></div>');
         $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>GIVE POINTS TO GUEST</strong> </div>');
+        $("#or_no").val('');
+        $("#amount").val('');
+        $("#mobile_no").val('');
     } else {
         var message = '';
         if (resp.message != undefined) {
@@ -72,9 +75,7 @@ function givePointsGuestResponse(jsonResponse) {
         $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>GIVE POINTS TO GUEST</strong> </div>');
     }
     $("#myModal").modal('show');
-    $("#or_no").val('');
-    $("#amount").val('');
-    $("#mobile_no").val('');
+
 }
 
 function givePointsManualResponse(jsonResponse) {

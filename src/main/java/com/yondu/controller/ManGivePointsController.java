@@ -56,6 +56,18 @@ public class ManGivePointsController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+   /*     if (App.appContextHolder.getFirstDisconnect() != null && App.appContextHolder.getFirstDisconnect()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "You have been redirected to offline mode due to network connection failure Check your internet connection and press home button to reconnect.", ButtonType.OK);
+            alert.setTitle(AppConfigConstants.APP_TITLE);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.showAndWait();
+
+            if (alert.getResult() == ButtonType.OK) {
+                alert.close();
+            }
+            App.appContextHolder.setFirstDisconnect(false);
+        }*/
+
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();

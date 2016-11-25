@@ -61,8 +61,8 @@ function givePointsGuestResponse(jsonResponse) {
     $(".temp").remove();
     var resp = JSON.parse(jsonResponse);
     if (resp.error_code == '0x0') {
-        $(".home-modal-body").prepend('<div class="temp"><p> Points has been awarded to customer. </p></div>');
-        $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>GIVE POINTS TO GUEST</strong> </div>');
+        $(".home-modal-body").prepend('<div class="temp"><p> Points has been provisioned to customer. </p></div>');
+        $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>GUEST PURCHASE</strong> </div>');
         $("#or_no").val('');
         $("#amount").val('');
         $("#mobile_no").val('');
@@ -72,7 +72,7 @@ function givePointsGuestResponse(jsonResponse) {
             message =resp.message;
         }
         $(".home-modal-body").prepend('<div class="temp"><p> '+ message +' </p></div>');
-        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>GIVE POINTS TO GUEST</strong> </div>');
+        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>GUEST PURCHASE</strong> </div>');
     }
     $("#myModal").modal('show');
 
@@ -98,11 +98,11 @@ function givePointsManualResponse(jsonResponse) {
         }
 
         $(".home-modal-body").prepend('<div class="temp"><p>'+message+' </p></div>');
-        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Give Points failed</strong> </div>');
+        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>GIVE POINTS</strong> </div>');
 
     } else {
         $(".home-modal-body").prepend('<div class="temp"><p> Points have been awarded to customer. </p></div>');
-        $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>Give Points successful</strong> </div>');
+        $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>GIVE POINTS</strong> </div>');
         $("#points-span").text(resp.points);
     }
     $("#myModal").modal('show');

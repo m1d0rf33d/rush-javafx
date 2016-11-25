@@ -77,6 +77,15 @@ public class AppContextHolder {
     private String previousStage;
     private Boolean withVk;
     private Boolean is64Bit;
+    private Boolean isFirstDisconnect;
+
+    public Boolean getFirstDisconnect() {
+        return isFirstDisconnect;
+    }
+
+    public void setFirstDisconnect(Boolean firstDisconnect) {
+        isFirstDisconnect = firstDisconnect;
+    }
 
     public String getGuestEarnEndpoint() {
         return guestEarnEndpoint;

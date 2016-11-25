@@ -27,4 +27,7 @@ public class AppConfigConstants {
     public static final String R_LOGO = "/app/images/r_logo.png";
     public static final String GIVE_POINTS_MANUAL_FXML = "/app/fxml/give-points-manual.fxml";
     public static final String ACTIVATION_FXML = "/app/fxml/activation.fxml";
+
+
+    public static final String APP_TITLE = "Rush POS Sync";
 }

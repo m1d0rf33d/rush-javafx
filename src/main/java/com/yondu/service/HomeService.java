@@ -19,6 +19,8 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
@@ -189,7 +191,7 @@ public class HomeService {
         } catch (IOException e) {
             e.printStackTrace();
             App.appContextHolder.setOnlineMode(false);
-            redirectToSplash();
+            goToOfflineMode();
         }
         webEngine.executeScript("closeLoadingModal('"+ App.appContextHolder.isOnlineMode()+"')");
     }
@@ -242,9 +244,9 @@ public class HomeService {
 
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
-            redirectToSplash();
+            goToOfflineMode();
             e.printStackTrace();
-            //offline mode
+
         } catch (ParseException e) {
             //invalid response format
             e.printStackTrace();
@@ -318,7 +320,7 @@ public class HomeService {
            webEngine.executeScript("payWithPointsResponse('"+jsonResponse+"')");
        } catch (IOException e) {
            App.appContextHolder.setOnlineMode(false);
-           redirectToSplash();
+           goToOfflineMode();
            e.printStackTrace();
        } catch (ParseException e) {
            e.printStackTrace();
@@ -343,7 +345,7 @@ public class HomeService {
 
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
-            redirectToSplash();
+            goToOfflineMode();
             e.printStackTrace();
         }
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
@@ -381,7 +383,7 @@ public class HomeService {
             this.webEngine.executeScript("redeemRewardsResponseHandler('"+responseStr+"')");
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
-            redirectToSplash();
+            goToOfflineMode();
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
@@ -427,6 +429,7 @@ public class HomeService {
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
             e.printStackTrace();
+            goToOfflineMode();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -451,6 +454,7 @@ public class HomeService {
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
             e.printStackTrace();
+            goToOfflineMode();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -471,6 +475,7 @@ public class HomeService {
             ocrConfigStage.show();
             App.appContextHolder.getHomeStage().close();
         } catch (IOException e) {
+            goToOfflineMode();
             e.printStackTrace();
         }
     }
@@ -493,6 +498,7 @@ public class HomeService {
 
         } catch (IOException e) {
             e.printStackTrace();
+            goToOfflineMode();
 
         }
     }
@@ -519,6 +525,7 @@ public class HomeService {
             App.appContextHolder.setHomeStage(stage);
         } catch (IOException e) {
             e.printStackTrace();
+            goToOfflineMode();
         }
     }
 
@@ -596,6 +603,7 @@ public class HomeService {
             } catch(IOException e) {
                 App.appContextHolder.setOnlineMode(false);
                 e.printStackTrace();
+                goToOfflineMode();
             } catch (ParseException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -625,6 +633,7 @@ public class HomeService {
         } catch (IOException e) {
             e.printStackTrace();
             App.appContextHolder.setOnlineMode(false);
+            goToOfflineMode();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -681,6 +690,7 @@ public class HomeService {
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
             e.printStackTrace();
+            goToOfflineMode();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -805,7 +815,7 @@ public class HomeService {
                 this.webEngine.executeScript("sendOfflinePointsResponse('"+ finalJson.toJSONString().replace("'","")+"')");
             } catch (IOException e) {
                 App.appContextHolder.setOnlineMode(false);
-                redirectToSplash();
+                goToOfflineMode();
                 e.printStackTrace();
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -845,6 +855,7 @@ public class HomeService {
         } catch (IOException e) {
             e.printStackTrace();
             App.appContextHolder.setOnlineMode(false);
+            goToOfflineMode();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -865,6 +876,7 @@ public class HomeService {
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
             e.printStackTrace();
+            goToOfflineMode();
         }
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
@@ -916,7 +928,57 @@ public class HomeService {
         } catch (IOException e) {
             e.printStackTrace();
             App.appContextHolder.setOnlineMode(false);
+            goToOfflineMode();
         }
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
+    }
+
+    public void goToOfflineMode() {
+        //Logout employee
+        App.appContextHolder.setEmployeeId(null);
+        App.appContextHolder.setEmployeeName(null);
+        App.appContextHolder.setCustomerMobile(null);
+        App.appContextHolder.setOnlineMode(false);
+
+
+        try {
+            App.appContextHolder.getHomeStage().close();
+
+
+            Stage givePointsStage = new Stage();
+            Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
+            givePointsStage.setScene(new Scene(root, 500,300));
+            givePointsStage.setTitle("Rush POS Sync");
+            givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+            givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+            givePointsStage.show();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "You have been redirected to offline mode due to network connection failure. Check your internet connection and press home button to reconnect.", ButtonType.OK);
+            alert.setTitle(AppConfigConstants.APP_TITLE);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.initOwner(givePointsStage);
+            alert.show();
+
+            if (alert.getResult() == ButtonType.OK) {
+                alert.close();
+            }
+            App.appContextHolder.setHomeStage(givePointsStage);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public boolean checkConnectivity() {
+        try {
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
+            java.util.List<NameValuePair> params = new ArrayList<>();
+            String jsonResponse = App.appContextHolder.getApiService().call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

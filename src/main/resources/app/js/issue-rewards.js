@@ -39,11 +39,11 @@ function issueRewardsResponseHandler (jsonResponse) {
     var resp = JSON.parse(jsonResponse);
     if (resp.error_code != '0x0') {
         $(".home-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
-        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Issue reward failed</strong> </div>');
+        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>ISSUE REWARD</strong> </div>');
     } else {
         $("#points-span").text(resp.points);
         $(".home-modal-body").prepend('<div class="temp"><p> Issue reward successful.</p></div>');
-        $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>Issue reward successful</strong> </div>');
+        $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>ISSUE REWARD</strong> </div>');
         $("#"+resp.redeemId+"_div").hide();
     }
     $("#myModal").modal('show');

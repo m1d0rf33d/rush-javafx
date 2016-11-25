@@ -58,11 +58,11 @@ function redeemRewardsResponseHandler (jsonResponse) {
     var resp = JSON.parse(jsonResponse);
     if (resp.error_code != '0x0') {
         $(".home-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
-        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Redeem item failed</strong> </div>');
+        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>REDEEM REWARD</strong> </div>');
     } else {
         $("#points-span").text(resp.points);
         $(".home-modal-body").prepend('<div class="temp"><p> Redeem item successful</p></div>');
-        $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>Redeem item successful</strong> </div>');
+        $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>REDEEM REWARD</strong> </div>');
 
     }
     $("#myModal").modal('show');

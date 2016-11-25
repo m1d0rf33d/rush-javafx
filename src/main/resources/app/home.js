@@ -291,18 +291,26 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
         $scope.employeeId = $scope.employeeId + num;
     }
     $scope.loadManualGivePoints = function() {
-        if ($rootScope.memberId == undefined) {
-            angular.element(".temp").remove();
-            $(".home-modal-body").prepend('<div class="temp"><p>Please log in customer.</p></div>');
-            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Payment Details</strong> </div>');
-            $("#myModal").modal('show');
-            return;
+
+        //Check network connectivity
+        var isConnected  = homeService.checkConnectivity();
+        if (isConnected == true) {
+            if ($rootScope.memberId == undefined) {
+                angular.element(".temp").remove();
+                $(".home-modal-body").prepend('<div class="temp"><p>Please log in customer.</p></div>');
+                $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Payment Details</strong> </div>');
+                $("#myModal").modal('show');
+                return;
+            }
+            $scope.highlightButton('givepoints');
+            angular.element("#home-loading-modal").modal('show');
+            $timeout(function(){
+                $state.go('manual-givepoints-view',{},{reload:true});
+            },500);
+        } else {
+            homeService.goToOfflineMode();
         }
-        $scope.highlightButton('givepoints');
-        angular.element("#home-loading-modal").modal('show');
-        $timeout(function(){
-            $state.go('manual-givepoints-view',{},{reload:true});
-        },500);
+
     }
 });
 homeModule.directive('backImg', function(){

@@ -57,7 +57,7 @@ function loginResponseHandler(jsonResponse) {
     if (resp.error_code != '0x0') {
         $(".temp").remove();
         $(".login-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
-        $(".login-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Login Failed</strong> </div>');
+        $(".login-modal-body").prepend('<div class="alert alert-warning temp"> <strong>LOGIN</strong> </div>');
         $("#loginModal").modal('show');
     } else {
         location.href = "home.html";

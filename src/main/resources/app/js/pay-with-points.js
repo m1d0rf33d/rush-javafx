@@ -28,7 +28,7 @@ angular.module('HomeModule')
                 angular.element("#home-loading-modal").modal('hide');
                 $(".temp").remove();
                 $(".paypoints-result-body").prepend('<div class="temp"><p> Total points to pay cannot be 0.</p></div>');
-                $(".paypoints-result-body").prepend('<div class="alert alert-warning temp"> <strong>Pay with points failed.</strong> </div>');
+                $(".paypoints-result-body").prepend('<div class="alert alert-warning temp"> <strong>PAY WITH POINTS</strong> </div>');
                 $("#paypoints-result-modal").modal('show');
                 return;
             }
@@ -66,11 +66,11 @@ function payWithPointsResponse (jsonResponse){
             errorMessage = resp.message;
         }
         $(".paypoints-result-body").prepend('<div class="temp"><p>'+ errorMessage+'</p></div>');
-        $(".paypoints-result-body").prepend('<div class="alert alert-warning temp"> <strong>Pay with points failed.</strong> </div>');
+        $(".paypoints-result-body").prepend('<div class="alert alert-warning temp"> <strong>PAY WITH POINTS</strong> </div>');
         $("#paypoints-result-modal").modal('show');
     } else {
         $(".paypoints-result-body").prepend('<div class="temp"><p>Member points remaining '+ resp.points +'</p></div>');
-        $(".paypoints-result-body").prepend('<div class="alert alert-success temp"> <strong>Pay with points successful.</strong> </div>');
+        $(".paypoints-result-body").prepend('<div class="alert alert-success temp"> <strong>PAY WITH POINTS</strong> </div>');
         $("#paypoints-result-modal").modal('show');
         $("#points-span").text(resp.points);
         $("#points-peso-span").text(resp.pointsPesoValue);

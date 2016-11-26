@@ -120,11 +120,12 @@ public class PointsDetailsController implements Initializable{
                             givePointsStage.setScene(new Scene(root, 400,220));
                             givePointsStage.setTitle("Rush POS Sync");
                             givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                            givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                             givePointsStage.show();
 
                             ((Stage)rushLogoImageView.getScene().getWindow()).close();
                         }
-                    } else if (jsonResponse.get("error_code").equals("0x4")) {
+                    } else if (jsonResponse.get("error_code").equals("0x4") || jsonResponse.get("error_code").equals("0x3")) {
                         String errorMessage = (String) jsonResponse.get("message");
                         Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
                         alert.showAndWait();
@@ -172,6 +173,7 @@ public class PointsDetailsController implements Initializable{
                         givePointsStage.setScene(new Scene(root, 400,220));
                         givePointsStage.setTitle("Rush POS Sync");
                         givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                        givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                         givePointsStage.show();
                     } else {
                         Stage givePointsStage = new Stage();
@@ -219,6 +221,7 @@ public class PointsDetailsController implements Initializable{
                     givePointsStage.setScene(new Scene(root, 400,220));
                     givePointsStage.setTitle("Rush POS Sync");
                     givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                    givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                     givePointsStage.show();
                 } else {
                     Stage givePointsStage = new Stage();

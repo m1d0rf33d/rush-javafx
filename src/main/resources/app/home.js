@@ -282,7 +282,15 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     }
 
     $scope.loadGivePointsView = function() {
-       homeService.loadGivePointsView();
+
+        var isOnline = homeService.checkConnectivity();
+        if (isOnline == true) {
+            homeService.loadGivePointsView();
+        } else {
+            homeService.goToOfflineOcrMode();
+        }
+
+
     }
     $scope.clearLoginField = function() {
         $scope.employeeId = '';

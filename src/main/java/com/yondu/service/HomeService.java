@@ -981,4 +981,45 @@ public class HomeService {
         }
         return true;
     }
+
+
+    public void goToOfflineOcrMode() {
+        //Logout employee
+        App.appContextHolder.setEmployeeId(null);
+        App.appContextHolder.setEmployeeName(null);
+        App.appContextHolder.setCustomerMobile(null);
+        App.appContextHolder.setOnlineMode(false);
+
+
+        try {
+            App.appContextHolder.getHomeStage().close();
+
+            if (givePointsStage != null) {
+                givePointsStage.close();
+            }
+            givePointsStage = new Stage();
+            Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+            givePointsStage.setScene(new Scene(root, 400,220));
+            givePointsStage.setTitle("Rush POS Sync");
+            givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+
+            givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+            givePointsStage.show();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "You have been redirected to offline mode due to network connection failure. Check your internet connection and press home button to reconnect.", ButtonType.OK);
+            alert.setTitle(AppConfigConstants.APP_TITLE);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.initOwner(givePointsStage);
+            alert.show();
+
+            if (alert.getResult() == ButtonType.OK) {
+                alert.close();
+            }
+            App.appContextHolder.setHomeStage(givePointsStage);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            goToOfflineMode();
+
+        }
+    }
 }

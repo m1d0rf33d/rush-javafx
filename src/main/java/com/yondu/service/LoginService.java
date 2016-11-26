@@ -137,7 +137,6 @@ public class LoginService {
             givePointsStage.setScene(new Scene(root, 400,220));
             givePointsStage.setTitle("Rush POS Sync");
             givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-
             givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             givePointsStage.show();
 

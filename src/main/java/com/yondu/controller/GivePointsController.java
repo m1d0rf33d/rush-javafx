@@ -170,6 +170,8 @@ public class GivePointsController implements Initializable {
             JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
             if (!(jsonResponse.get("error_code")).equals("0x0")) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) jsonResponse.get("message"), ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
                 alert.showAndWait();
 
                 if (alert.getResult() == ButtonType.OK) {
@@ -202,6 +204,8 @@ public class GivePointsController implements Initializable {
                 loadGivePointsDetailsView();
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) "Invalid mobile number", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
                 alert.showAndWait();
 
                 if (alert.getResult() == ButtonType.OK) {

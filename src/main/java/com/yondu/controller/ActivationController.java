@@ -117,6 +117,8 @@ public class ActivationController implements Initializable{
                 goToLoginPage();
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid merchant key.");
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
                 alert.showAndWait();
             }
 

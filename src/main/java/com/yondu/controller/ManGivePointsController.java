@@ -167,6 +167,8 @@ public class ManGivePointsController implements Initializable{
 
             if (mobileField.getText() == null || mobileField.getText().length() != 11) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, mobile + " is an invalid mobile number.", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
                 alert.showAndWait();
                 return;
             }
@@ -190,6 +192,8 @@ public class ManGivePointsController implements Initializable{
                 ((Stage)ocrBtn.getScene().getWindow()).close();
             } catch (NumberFormatException e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, sales + " is not a valid amount.", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
                 alert.showAndWait();
             } catch (IOException e) {
                 e.printStackTrace();

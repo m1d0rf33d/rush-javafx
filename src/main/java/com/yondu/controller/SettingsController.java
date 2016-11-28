@@ -2,6 +2,7 @@ package com.yondu.controller;
 
 import com.yondu.App;
 import com.yondu.Browser;
+import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.utils.ResizeHelper;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
@@ -178,6 +179,8 @@ public class SettingsController implements Initializable{
                 App.appContextHolder.setSalesHeight(height.intValue());
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION,"Target screen area captured.", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
                 alert.showAndWait();
                 if (alert.getResult() == ButtonType.OK) {
                     alert.close();
@@ -202,6 +205,8 @@ public class SettingsController implements Initializable{
                 App.appContextHolder.setOrNumberHeight(height.intValue());
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION,"Target screen area captured.", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
                 alert.showAndWait();
                 if (alert.getResult() == ButtonType.OK) {
                     alert.close();
@@ -358,6 +363,8 @@ public class SettingsController implements Initializable{
 
             if (orPosX ==null  || salesPosX == null || orPosX.equals("") || salesPosX.equals("")) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION,"You have not completed assigning target screen area.", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
                 alert.showAndWait();
                 if (alert.getResult() == ButtonType.OK) {
                     alert.close();
@@ -377,6 +384,8 @@ public class SettingsController implements Initializable{
                 fstream.close();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION,"OCR settings updated.", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
                 alert.showAndWait();
                 if (alert.getResult() == ButtonType.OK) {
 

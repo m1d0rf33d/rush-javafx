@@ -3,6 +3,7 @@ package com.yondu.controller;
 import com.yondu.App;
 import com.yondu.model.Account;
 import com.yondu.model.constants.ApiFieldContants;
+import com.yondu.model.constants.AppConfigConstants;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -16,6 +17,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -122,6 +124,8 @@ public class LoadingController implements Initializable{
 
     private void handleError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR,message, ButtonType.OK);
+        alert.setTitle(AppConfigConstants.APP_TITLE);
+        alert.initStyle(StageStyle.UTILITY);
         alert.showAndWait();
         if (alert.getResult() == ButtonType.OK) {
             alert.close();
@@ -362,6 +366,8 @@ public class LoadingController implements Initializable{
             App.appContextHolder.setOnlineMode(false);
             //Alert to offline mode
             Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to reach server. You are now in offline mode.", ButtonType.OK);
+            alert.setTitle(AppConfigConstants.APP_TITLE);
+            alert.initStyle(StageStyle.UTILITY);
             alert.showAndWait();
         }
     }

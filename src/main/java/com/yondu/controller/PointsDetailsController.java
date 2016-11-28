@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.apache.commons.codec.binary.*;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -111,6 +112,8 @@ public class PointsDetailsController implements Initializable{
                     JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
                     if (jsonResponse.get("error_code").equals("0x0")) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION,"Points has been successfully given to customer.", ButtonType.OK);
+                        alert.setTitle(AppConfigConstants.APP_TITLE);
+                        alert.initStyle(StageStyle.UTILITY);
                         alert.showAndWait();
 
                         if (alert.getResult() == ButtonType.OK) {
@@ -128,6 +131,8 @@ public class PointsDetailsController implements Initializable{
                     } else if (jsonResponse.get("error_code").equals("0x4") || jsonResponse.get("error_code").equals("0x3")) {
                         String errorMessage = (String) jsonResponse.get("message");
                         Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
+                        alert.setTitle(AppConfigConstants.APP_TITLE);
+                        alert.initStyle(StageStyle.UTILITY);
                         alert.showAndWait();
 
                         if (alert.getResult() == ButtonType.OK) {
@@ -145,6 +150,8 @@ public class PointsDetailsController implements Initializable{
                             errorMessage = l.get(0);
                         }
                         Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
+                        alert.setTitle(AppConfigConstants.APP_TITLE);
+                        alert.initStyle(StageStyle.UTILITY);
                         alert.showAndWait();
 
                         if (alert.getResult() == ButtonType.OK) {
@@ -211,6 +218,8 @@ public class PointsDetailsController implements Initializable{
             fstream.close();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION,"Give points data has been recorded, you may view this on offline transactions.", ButtonType.OK);
+            alert.setTitle(AppConfigConstants.APP_TITLE);
+            alert.initStyle(StageStyle.UTILITY);
             alert.showAndWait();
 
             if (alert.getResult() == ButtonType.OK) {

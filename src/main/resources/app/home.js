@@ -167,7 +167,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
         if ($rootScope.memberId == undefined) {
             angular.element(".temp").remove();
             $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
-            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Unable to give points</strong> </div>');
+            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>PAY WITH POINTS</strong> </div>');
             $("#myModal").modal('show');
             return;
         }
@@ -183,7 +183,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
         if ($rootScope.memberId == undefined) {
             angular.element(".temp").remove();
             $(".home-modal-body").prepend('<div class="temp"><p>Please log in customer.</p></div>');
-            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Redeem Voucher</strong> </div>');
+            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>REDEEM VOUCHER</strong> </div>');
             $("#myModal").modal('show');
             return;
         }
@@ -199,7 +199,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
         if ($rootScope.memberId == undefined) {
             angular.element(".temp").remove();
             $(".home-modal-body").prepend('<div class="temp"><p>Please log in customer.</p></div>');
-            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Issue Rewards</strong> </div>');
+            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>ISSUE REWARDS</strong> </div>');
             $("#myModal").modal('show');
             return;
         }
@@ -214,7 +214,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
          if ($rootScope.memberId == undefined) {
              angular.element(".temp").remove();
              $(".home-modal-body").prepend('<div class="temp"><p>Please log in customer.</p></div>');
-             $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Transactions View</strong> </div>');
+             $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>TRANSACTIONS VIEW</strong> </div>');
              $("#myModal").modal('show');
              return;
          }
@@ -306,7 +306,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
             if ($rootScope.memberId == undefined) {
                 angular.element(".temp").remove();
                 $(".home-modal-body").prepend('<div class="temp"><p>Please log in customer.</p></div>');
-                $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Payment Details</strong> </div>');
+                $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>GIVE POINTS</strong> </div>');
                 $("#myModal").modal('show');
                 return;
             }

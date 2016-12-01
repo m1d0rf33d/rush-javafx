@@ -12,6 +12,9 @@ angular.module('HomeModule')
         }, 500);
     }
     $scope.addNumber = function(num) {
+        if ($scope.mobile == null) {
+            $scope.mobile = '';
+        }
         $scope.mobile = $scope.mobile + num;
     }
     $scope.clearLoginField = function() {

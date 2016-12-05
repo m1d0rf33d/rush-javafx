@@ -242,6 +242,7 @@ public class LoadingController implements Initializable{
         if (App.appContextHolder.isOnlineMode()) {
            try {
                String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
+               url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
                String result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                JSONParser parser = new JSONParser();
                JSONObject jsonResponse = (JSONObject) parser.parse(result);

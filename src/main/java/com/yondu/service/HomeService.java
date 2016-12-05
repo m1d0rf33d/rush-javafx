@@ -46,10 +46,8 @@ import java.awt.*;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.Properties;
 
 import static com.yondu.model.constants.AppConfigConstants.GIVE_POINTS_FXML;
 import static com.yondu.model.constants.AppConfigConstants.SETTINGS_FXML;
@@ -289,6 +287,7 @@ public class HomeService {
                }
                //Convert to peso value
                url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
+               url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
                result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                JSONObject obj1 = (JSONObject) parser.parse(result);
                JSONObject d1 = (JSONObject) obj1.get("data");
@@ -534,7 +533,7 @@ public class HomeService {
         if (App.appContextHolder.getCustomerMobile() != null && App.appContextHolder.getCustomerUUID() != null) {
 
             try {
-                DecimalFormat formatter = new DecimalFormat("#,###.00");
+                DecimalFormat formatter = new DecimalFormat("#,###,###.00");
                 //Build request body
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
@@ -552,7 +551,8 @@ public class HomeService {
                 result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
                 JSONObject json = (JSONObject) parser.parse(result);
-                data.put("points",  formatter.format(json.get("data")));
+                Double p = (Double) json.get("data");
+                data.put("points",  formatter.format(p));
                 if (data.get("points").equals(".00")) {
                     data.put("points",  "0");
                 }
@@ -568,6 +568,7 @@ public class HomeService {
                 data.put("activeVouchers", responseStr);
                 //Convert to peso value
                 url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
+                url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
                 result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                 JSONObject obj1 = (JSONObject) parser.parse(result);
                 JSONObject d1 = (JSONObject) obj1.get("data");
@@ -868,6 +869,7 @@ public class HomeService {
 
         try {
             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
+            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
             String result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
             new Thread(()->
                     Java2JavascriptUtils.call(callbackFunction, result)

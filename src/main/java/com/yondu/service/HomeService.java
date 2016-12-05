@@ -222,7 +222,12 @@ public class HomeService {
                 url = url.replace(":customer_uuid", App.appContextHolder.getCustomerUUID());
                 String jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                 JSONObject json = (JSONObject) parser.parse(jsonResponse);
-                data.put("points", json.get("data"));
+                DecimalFormat formatter = new DecimalFormat("#,###,###.00");
+                String points = formatter.format(Double.parseDouble((String) json.get("data")));
+                if (points.equals(".00")) {
+                    points = "0";
+                }
+                data.put("points", points);
 
                 //get member rewards
                 url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getCustomerRewardsEndpoint();
@@ -281,7 +286,8 @@ public class HomeService {
                String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                //Parse response
                JSONObject resultJson = (JSONObject) parser.parse(result);
-               jsonObj.put("points", formatter.format(resultJson.get("data")));
+               String strPoints = (String) resultJson.get("data");
+               jsonObj.put("points", formatter.format(Double.parseDouble(strPoints)));
                if(jsonObj.get("points").equals(".00")) {
                    jsonObj.put("points", "0");
                }
@@ -293,15 +299,10 @@ public class HomeService {
                JSONObject d1 = (JSONObject) obj1.get("data");
 
 
-               Double dPoints = null;
+               Double dPoints = Double.parseDouble(strPoints);
                Double redemptionPeso = null;
                Long redemptionPoints = (Long) d1.get("redemption_points");
-               try {
-                   dPoints = (Double) resultJson.get("data");
-               } catch (ClassCastException e) {
-                   Long po = (Long) resultJson.get("data");
-                   dPoints = po.doubleValue();
-               }
+
                dPoints = dPoints / redemptionPoints;
                try {
                    redemptionPeso = (Double) d1.get("redemption_peso");
@@ -551,8 +552,8 @@ public class HomeService {
                 result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
                 JSONObject json = (JSONObject) parser.parse(result);
-                Double p = (Double) json.get("data");
-                data.put("points",  formatter.format(p));
+                String strPoints = (String) json.get("data");
+                data.put("points",  formatter.format(Double.parseDouble(strPoints)));
                 if (data.get("points").equals(".00")) {
                     data.put("points",  "0");
                 }
@@ -574,15 +575,9 @@ public class HomeService {
                 JSONObject d1 = (JSONObject) obj1.get("data");
 
 
-                Double dPoints = null;
-                Double redemptionPeso = null;
+                Double dPoints = Double.parseDouble(strPoints);
+                Double redemptionPeso;
                 Long redemptionPoints = (Long) d1.get("redemption_points");
-                try {
-                    dPoints = (Double) json.get("data");
-                } catch (ClassCastException e) {
-                    Long po = (Long) json.get("data");
-                    dPoints = po.doubleValue();
-                }
                 dPoints = dPoints / redemptionPoints;
                 try {
                     redemptionPeso = (Double) d1.get("redemption_peso");
@@ -871,6 +866,7 @@ public class HomeService {
             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
             url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
             String result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
             new Thread(()->
                     Java2JavascriptUtils.call(callbackFunction, result)
             ).start();

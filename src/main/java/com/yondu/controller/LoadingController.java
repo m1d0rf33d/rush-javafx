@@ -322,7 +322,7 @@ public class LoadingController implements Initializable{
                    } else {
                        customer = new Account();
                        customer.setMobileNumber(App.appContextHolder.getCustomerMobile());
-                       customer.setCurrentPoints(0d);
+                       customer.setCurrentPoints("0");
                        customer.setName("");
                    }
                     return null;
@@ -352,14 +352,10 @@ public class LoadingController implements Initializable{
             responseStr = App.appContextHolder.getApiService().call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
             jsonResponse = (JSONObject) parser.parse(responseStr);
-            Double points = null;
-            try {
-                points = (Double) jsonResponse.get("data");
-            }catch (Exception e) {
-                points = Double.parseDouble(String.valueOf((Long) jsonResponse.get("data")));
-            }
-
-            customer.setCurrentPoints(points);
+            DecimalFormat formatter = new DecimalFormat("#,###,###.00");
+            String strPoints = (String) jsonResponse.get("data");
+            String formattedStr = formatter.format(Double.parseDouble(strPoints));
+            customer.setCurrentPoints(formattedStr);
         } catch (ParseException e) {
             e.printStackTrace();
         } catch (IOException e) {

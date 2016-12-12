@@ -73,15 +73,56 @@
                                <h4 class="modal-header-h4 red-text">{{item.points_required}} Points</h4>
                                <p>{{item.details}}</p>
                                <div class="modal-buttons">
-                                   <button data-target="#{{item.id}}_pin_modal" data-toggle="modal" type="button" class="btn btn-default orange-btn btn-lg">Redeem Voucher</button>
+                                   <button ng-click="showPinModal(item.id)" type="button" class="btn btn-default orange-btn btn-lg">Redeem Voucher</button>
                                </div>
                            </div>
                            <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="images/close.png" alt=""></a>
                        </div>
                    </div>
                </div>
+               <div  class="modal fade" id="{{item.id}}_pin_modal" tabindex="-1" role="dialog" aria-labelledby="myModal2">
+                   <div class="modal-dialog" role="document">
+                       <div class="modal-content row">
+                           <div class="col-md-12  col-sm-12 details" style="text-align: center;">
+                               <br><br>
+                               <h3 class="modal-header-h3">Enter 4-digit M-PIN</h3>
+                               <br>
+                               <form  class="form">
 
-               <div class="modal fade" id="{{item.id}}_pin_modal" tabindex="-2" role="dialog" aria-labelledby="myModal2">
+                                   <div class="row">
+                                       <div class="col-sm-2"></div>
+                                       <div class="col-sm-8">
+                                           <input ng-model="test" numeric-only type="password" class="w100 pin-field" value="" id="{{item.id}}_pin" maxlength="4">
+                                       </div>
+                                   </div>
+
+                                   <div class="row">
+                                       <div class="col-sm-2"></div>
+                                       <div class="col-sm-4">
+                                           <label></label>
+                                           <button class="btn-send" type="button"  ng-click="redeemRewards(item.id)">Submit</button>
+                                       </div>
+                                       <div class="col-sm-4" style="margin-left: -20px !important;">
+                                           <label></label>
+                                           <button class="btn-clear" type="button" ng-click="closeModal(item.id)">Cancel</button>
+                                       </div>
+                                   </div>
+                                   <br>
+                               </form>
+                           </div>
+                           <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="images/close.png" alt=""></a>
+                       </div>
+                   </div>
+                   <script>
+                       $("input").focus(function(){
+                           homeService.showVirtualKeyboard();
+                       });
+                       $("input").focusout(function(){
+                           homeService.hideVirtualKeyboard();
+                       });
+                   </script>
+               </div>
+               <!--<div class="modal fade" id="{{item.id}}_pin_modal" tabindex="-2" role="dialog" aria-labelledby="myModal2">
                    <div class="modal-dialog" role="document">
                        <div class="modal-content row" style="background: white;text-align: center;padding: 20px; width: 900px !important;">
                            <div class="col-sm-6" style="margin-top: 100px;">
@@ -138,7 +179,7 @@
                            <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="images/close.png" alt=""></a>
                        </div>
                    </div>
-               </div>
+               </div>-->
 
                <!-- END MODAL -->
            </div>

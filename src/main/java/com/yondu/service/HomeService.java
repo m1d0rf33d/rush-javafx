@@ -261,7 +261,7 @@ public class HomeService {
     /** Pay using points
      *
      */
-    public void payWithPoints(String points, String orNumber, String amount) {
+    public void payWithPoints(String points, String orNumber, String amount, String pin) {
        try {
            DecimalFormat formatter = new DecimalFormat("#,###.00");
            List<NameValuePair> params = new ArrayList<>();
@@ -269,6 +269,7 @@ public class HomeService {
            params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
            params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount.replace(",","")));
            params.add(new BasicNameValuePair(ApiFieldContants.POINTS, points.replace(",","")));
+           params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin.replace(",","")));
 
            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPayWithPointsEndpoint();
            url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());

@@ -204,7 +204,8 @@ public class SplashController implements Initializable{
 
         //Get authorization to call from RUSH POS Sync API
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost httpPost = new HttpPost(prop.getProperty("oauth_endpoint"));
+        String url = prop.getProperty("cms_url") + prop.getProperty("tomcat_port") + prop.getProperty("oauth_endpoint");
+        HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("content-type", "application/json");
         httpPost.addHeader("authorization", prop.getProperty("oauth_secret"));
         HttpResponse response = httpClient.execute(httpPost);
@@ -225,7 +226,8 @@ public class SplashController implements Initializable{
 
         //Get merchant and customer API details from RUSH POS Sync server
         httpClient = HttpClientBuilder.create().build();
-        httpPost = new HttpPost(prop.getProperty("validate_merchant_endpoint"));
+        url = prop.getProperty("cms_url") + prop.getProperty("tomcat_port") + prop.getProperty("validate_merchant_endpoint");
+        httpPost = new HttpPost(url);
         StringEntity entity = new StringEntity(jsonObject.toJSONString());
         httpPost.addHeader("content-type", "application/json");
         httpPost.addHeader("authorization", "Bearer "+ json1.get("access_token"));

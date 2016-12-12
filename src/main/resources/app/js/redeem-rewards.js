@@ -29,8 +29,8 @@ angular.module('HomeModule')
     $scope.redeemRewards = function(rewardId) {
         var pin = angular.element("#"+rewardId+"_pin").val();
         angular.element("#"+rewardId+"_pin").val('');
-        $("#"+rewardId).modal('hide');
-        $("#"+rewardId+"_pin_modal").modal('hide');
+        angular.element("#"+rewardId).modal('hide');
+        angular.element("#"+rewardId+"_pin_modal").modal('hide');
         angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
             homeService.redeemRewards(rewardId, pin);
@@ -49,12 +49,23 @@ angular.module('HomeModule')
         angular.element("#"+id+"_pin").val('');
     }
 
+    $scope.showPinModal = function(id) {
+        angular.element('.pin-field').val('');
+        angular.element('#' + id + '_pin_modal').modal('show');
+
+    }
+
+    $scope.closeModal = function(id) {
+        angular.element('#' + id + '_pin_modal').modal('hide');
+    }
+
 
 });
 
 function redeemRewardsResponseHandler (jsonResponse) {
     $(".modal").modal('hide');
     $(".temp").remove();
+    $('#pin').val('');
     var resp = JSON.parse(jsonResponse);
     if (resp.error_code != '0x0') {
         $(".home-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');

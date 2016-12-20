@@ -50,6 +50,25 @@ public class ActivationController implements Initializable{
     public ImageView rushLogo;
 
 
+    private Properties prop = new Properties();
+
+    public ActivationController() {
+       try {
+           InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
+           if (inputStream != null) {
+               prop.load(inputStream);
+               inputStream.close();
+           } else {
+               throw new FileNotFoundException("property file api.properties not found in the classpath");
+           }
+       } catch (FileNotFoundException e) {
+           e.printStackTrace();
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+    }
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         rushLogo.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
@@ -60,10 +79,11 @@ public class ActivationController implements Initializable{
     }
     private void activate() {
         try {
+            String url = prop.getProperty("cms_url") + prop.getProperty("tomcat_port") + prop.getProperty("oauth_endpoint");
 
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost httpPost = new HttpPost("http://52.74.203.202:8080/rush-pos-sync/oauth/token?grant_type=password&username=admin&password=admin&client_id=clientIdPassword");
-            httpPost.addHeader("Authorization", "Basic Y2xpZW50SWRQYXNzd29yZDpzZWNyZXQ=");
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.addHeader("Authorization", prop.getProperty("oauth_secret"));
             httpPost.addHeader("Content-Type", "application/json");
             HttpResponse response = httpClient.execute(httpPost);
             // use httpClient (no need to close it explicitly)
@@ -83,7 +103,9 @@ public class ActivationController implements Initializable{
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("uniqueKey", inputKey);
             httpClient = HttpClientBuilder.create().build();
-            httpPost = new HttpPost("http://52.74.203.202:8080/rush-pos-sync/api/merchant/validate");
+
+            url = prop.getProperty("cms_url") + prop.getProperty("tomcat_port") + prop.getProperty("validate_merchant_endpoint");
+            httpPost = new HttpPost(url);
             StringEntity entity = new StringEntity(jsonObject.toJSONString());
             httpPost.addHeader("content-type", "application/json");
             httpPost.addHeader("authorization", "Bearer " + token);

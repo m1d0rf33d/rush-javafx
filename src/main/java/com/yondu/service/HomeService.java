@@ -67,11 +67,26 @@ public class HomeService {
     private Stage ocrConfigStage;
     private Stage givePointsStage;
     private WebView webView;
+    private Properties prop = new Properties();
 
     public HomeService(WebEngine webEngine,
                        WebView webView) {
         this.webView = webView;
         this.webEngine = webEngine;
+
+        try {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
+            if (inputStream != null) {
+                prop.load(inputStream);
+                inputStream.close();
+            } else {
+                throw new FileNotFoundException("property file api.properties not found in the classpath");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /** Load employee data that will be sent back to the calling javascript. Target page view-> home.html
@@ -110,8 +125,10 @@ public class HomeService {
 
 
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost httpPost = new HttpPost("http://52.74.203.202:8080/rush-pos-sync/oauth/token?grant_type=password&username=admin&password=admin&client_id=clientIdPassword");
-            httpPost.addHeader("Authorization", "Basic Y2xpZW50SWRQYXNzd29yZDpzZWNyZXQ=");
+
+            url = prop.getProperty("cms_url") + prop.getProperty("tomcat_port") + prop.getProperty("oauth_endpoint");
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.addHeader("Authorization", prop.getProperty("oauth_secret"));
             httpPost.addHeader("Content-Type", "application/json");
             HttpResponse response = httpClient.execute(httpPost);
             // use httpClient (no need to close it explicitly)
@@ -125,7 +142,10 @@ public class HomeService {
             }
             JSONObject jsonObj1 = (JSONObject) parser.parse(result.toString());
             String token = (String) jsonObj1.get("access_token");
-            HttpGet httpGet = new HttpGet("http://52.74.203.202:8080/rush-pos-sync/api/merchant/access/" + App.appContextHolder.getEmployeeId() +"/" + App.appContextHolder.getBranchId());
+
+            url = prop.getProperty("cms_url") + prop.getProperty("tomcat_port") + prop.getProperty("access_endpoint");
+            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":branch_id", App.appContextHolder.getBranchId());
+            HttpGet httpGet = new HttpGet(url);
             httpGet.addHeader("Authorization", "Bearer " + token);
             httpGet.addHeader("Content-Type", "application/json");
             response = httpClient.execute(httpGet);

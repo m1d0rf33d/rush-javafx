@@ -68,11 +68,51 @@ public class LoginController implements Initializable {
     public Button givePointsBtn;
     @FXML
     public Button reconnectBtn;
+    @FXML
+    public Label employeeLbl;
+    @FXML
+    public Button oneBtn;
+    @FXML
+    public Button twoBtn;
+    @FXML
+    public Button threeBtn;
+    @FXML
+    public Button fourBtn;
+    @FXML
+    public Button fiveBtn;
+    @FXML
+    public Button sixBtn;
+    @FXML
+    public Button sevenBtn;
+    @FXML
+    public Button eightBtn;
+    @FXML
+    public Button nineBtn;
+    @FXML
+    public Button delBtn;
+    @FXML
+    public Button zeroBtn;
+    @FXML
+    public Button dotBtn;
+
+
 
     private List<JSONObject> branches;
 
+    private double width;
+    private double height;
+
+    public LoginController() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.width = screenSize.getWidth();
+        this.height = screenSize.getHeight();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        this.setLayout();
+
         loginTextField.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
@@ -120,16 +160,7 @@ public class LoginController implements Initializable {
         }
 
         overlayPane.setVisible(false);
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        double width = screenSize.getWidth();
-        double height = screenSize.getHeight();
-        mainPane.setPrefWidth(width);
-        mainPane.setPrefHeight(height);
-        rightPane.setPrefHeight(height);
-        rightPane.setPrefWidth(width / 2);
-        rightPane.setLayoutX(width / 2);
-        overlayPane.setPrefHeight(height);
-        overlayPane.setPrefWidth(width);
+
 
         rushLogo.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
         removeImage.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/remove.png").toExternalForm()));
@@ -290,6 +321,7 @@ public class LoginController implements Initializable {
     private void prompt(String message, MouseEvent event) {
 
         try {
+            overlayPane.setVisible(true);
             Stage stage = new Stage();
             FXMLLoader  loader  = new FXMLLoader(App.class.getResource("/app/fxml/custom-dialog.fxml"));
             CustomDialogController controller = new CustomDialogController(message, overlayPane);
@@ -306,6 +338,60 @@ public class LoginController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setLayout() {
+
+        mainPane.setPrefWidth(width);
+        mainPane.setPrefHeight(height);
+        rightPane.setPrefHeight(height);
+        rightPane.setPrefWidth(width / 2);
+        rightPane.setLayoutX(width / 2);
+        overlayPane.setPrefHeight(height);
+        overlayPane.setPrefWidth(width);
+
+        branchBox.setLayoutX((width / 2) / 5);
+        branchBox.setPrefWidth(branchBox.getLayoutX() * 3);
+        loginBtn.setLayoutX((width / 2) / 5);
+        loginBtn.setPrefWidth(loginBtn.getLayoutX() * 3);
+        loginTextField.setLayoutX((width / 2) / 5);
+        loginTextField.setPrefWidth(loginBtn.getLayoutX() * 3);
+        givePointsBtn.setLayoutX((width / 2) / 5);
+        givePointsBtn.setPrefWidth(givePointsBtn.getLayoutX() * 3);
+        reconnectBtn.setLayoutX((width / 2) / 5);
+        reconnectBtn.setPrefWidth(reconnectBtn.getLayoutX() * 3);
+        offlineLbl.setLayoutX((width / 2) / 7);
+        offlineLbl.setPrefWidth(loginBtn.getLayoutX() * 4);
+        rushLogo.setLayoutX(((width / 2) / 5) * 1.5);
+        rushLogo.setFitWidth(((width / 2) / 5) * 2);
+        employeeLbl.setLayoutX(((width / 2) / 5) * 1.5);
+
+        double numberBtnWidth = rightPane.getPrefWidth() / 4;
+        oneBtn.setPrefWidth(numberBtnWidth);
+        oneBtn.setLayoutX(numberBtnWidth / 4);
+        twoBtn.setPrefWidth(numberBtnWidth);
+        twoBtn.setLayoutX(oneBtn.getLayoutX() + oneBtn.getPrefWidth() + numberBtnWidth / 4);
+        threeBtn.setPrefWidth(numberBtnWidth);
+        threeBtn.setLayoutX(twoBtn.getLayoutX() + twoBtn.getPrefWidth() + numberBtnWidth / 4);
+        fourBtn.setPrefWidth(numberBtnWidth);
+        fourBtn.setLayoutX(numberBtnWidth / 4);
+        fiveBtn.setPrefWidth(numberBtnWidth);
+        fiveBtn.setLayoutX(oneBtn.getLayoutX() + oneBtn.getPrefWidth() + numberBtnWidth / 4);
+        sixBtn.setPrefWidth(numberBtnWidth);
+        sixBtn.setLayoutX(twoBtn.getLayoutX() + twoBtn.getPrefWidth() + numberBtnWidth / 4);
+        sevenBtn.setPrefWidth(numberBtnWidth);
+        sevenBtn.setLayoutX(numberBtnWidth / 4);
+        eightBtn.setPrefWidth(numberBtnWidth);
+        eightBtn.setLayoutX(oneBtn.getLayoutX() + oneBtn.getPrefWidth() + numberBtnWidth / 4);
+        nineBtn.setPrefWidth(numberBtnWidth);
+        nineBtn.setLayoutX(twoBtn.getLayoutX() + twoBtn.getPrefWidth() + numberBtnWidth / 4);
+        delBtn.setPrefWidth(numberBtnWidth);
+        delBtn.setLayoutX(numberBtnWidth / 4);
+        zeroBtn.setPrefWidth(numberBtnWidth);
+        zeroBtn.setLayoutX(oneBtn.getLayoutX() + oneBtn.getPrefWidth() + numberBtnWidth / 4);
+        dotBtn.setPrefWidth(numberBtnWidth);
+        dotBtn.setLayoutX(twoBtn.getLayoutX() + twoBtn.getPrefWidth() + numberBtnWidth / 4);
+        removeImage.setLayoutX(numberBtnWidth / 4 + (numberBtnWidth/3));
     }
 
 }

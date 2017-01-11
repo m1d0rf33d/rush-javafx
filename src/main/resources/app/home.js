@@ -116,6 +116,9 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
                if (value == 'ISSUE_REWARDS') {
                    $scope.account.issue_rewards = '1';
                }
+               if (value == 'ISSUE_REWARDS') {
+                   $scope.account.issue_rewards = '1';
+               }
                if (value == 'TRANSACTIONS_VIEW') {
                    $scope.account.transaction_view = '1';
                }
@@ -125,8 +128,8 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
                if (value == 'OFFLINE_TRANSACTIONS') {
                    $scope.account.offline_transactions = '1';
                }
-               if (value == 'EXIT_MEMBER') {
-                   $scope.account.exit_member_details = '1';
+               if (value == 'GUEST_PURCHASE') {
+                   $scope.account.guest_purchase = '1';
                }
            });
        })

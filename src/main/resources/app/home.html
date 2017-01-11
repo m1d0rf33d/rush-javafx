@@ -51,7 +51,7 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#" style="width: 400px; padding: 0 !important;"> <img ng-src="{{account.branchLogo}}" style="height: 50px;width: 50px;margin-left: 0;padding-left: 0;"/>{{account.branchName}}</a>
+            <a class="navbar-brand" href="#" style="width: 400px; padding: 0 !important;"> <img ng-src="{{account.branchLogo}}" style="height: 50px;width: 50px;margin-left: -200px;padding-left: 0;"/>&nbsp;{{account.branchName}}</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -121,7 +121,7 @@
             <a   class="menu-a" ng-hide="account.give_points_ocr != '1'" id="gio-a" href="" ng-click="loadGivePointsView()" >
                 <li class="menu-li"id="gio-li">GIVE POINTS (OCR)</li>
             </a>
-            <a   class="menu-a" id="giog-a" href="" ng-click="goToGivePointsGuestView()" >
+            <a   class="menu-a" ng-hide="account.guest_purchase != '1'" id="giog-a" href="" ng-click="goToGivePointsGuestView()" >
                 <li class="menu-li"id="giog-li">GUEST PURCHASE</li>
             </a><!--
             <a href="" ng-disabled="!memberProfile.id" >

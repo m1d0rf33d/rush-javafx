@@ -10,7 +10,7 @@
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="500.0" style="-fx-background-color: #fafafa;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fx:id="rushLogo" fitHeight="50.0" fitWidth="188.0" layoutX="176.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="okayBtn" layoutX="155.0" layoutY="280.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="OKAY" textFill="#fffdfd">
+      <Button fx:id="okayBtn" layoutX="155.0" layoutY="280.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="CLOSE" textFill="#fffdfd">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>

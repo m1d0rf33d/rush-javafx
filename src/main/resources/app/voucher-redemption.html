@@ -1,4 +1,4 @@
-<div ng-controller="RedeemRewardsCtrl">
+<div id="voucherRedemptionCtrl" ng-controller="RedeemRewardsCtrl">
     <div ng-if="member.id">
        <div class="row">
            <div class="col-sm-12">
@@ -73,7 +73,8 @@
                                <h4 class="modal-header-h4 red-text">{{item.points_required}} Points</h4>
                                <p>{{item.details}}</p>
                                <div class="modal-buttons">
-                                   <button ng-click="showPinModal(item.id)" type="button" class="btn btn-default orange-btn btn-lg">Redeem Voucher</button>
+                                   <h4 ng-hide="{{item.points_required <= member.points}}">You have insufficient points for this reward.</h4>
+                                   <button ng-hide="{{item.points_required > member.points}}" ng-click="showPinModal(item.id)" type="button" class="btn btn-default orange-btn btn-lg">Redeem Voucher</button>
                                </div>
                            </div>
                            <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="images/close.png" alt=""></a>

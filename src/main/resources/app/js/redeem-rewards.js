@@ -1,6 +1,6 @@
 
 angular.module('HomeModule')
-.controller('RedeemRewardsCtrl', function($scope, $rootScope, $timeout) {
+.controller('RedeemRewardsCtrl', function($scope, $rootScope, $timeout, $state) {
     $scope.merchantRewards = [];
     //Load merchant rewards
     homeService.loadRewards(function(resp){
@@ -58,7 +58,9 @@ angular.module('HomeModule')
     $scope.closeModal = function(id) {
         angular.element('#' + id + '_pin_modal').modal('hide');
     }
-
+    $scope.refreshPage = function() {
+        $state.go('voucher-redemption-view',{},{reload:true});
+    }
 
 });
 
@@ -70,11 +72,15 @@ function redeemRewardsResponseHandler (jsonResponse) {
     if (resp.error_code != '0x0') {
         $(".home-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
         $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>REDEEM REWARD</strong> </div>');
+        $("#myModal").modal('show');
+
     } else {
-        $("#points-span").text(resp.points);
         $(".home-modal-body").prepend('<div class="temp"><p> Redeem item successful</p></div>');
         $(".home-modal-body").prepend('<div class="alert alert-success temp"> <strong>REDEEM REWARD</strong> </div>');
-
+        setTimeout(function(){
+            $("#voucherRedemptionCtrl").scope().refreshPage();
+        }, 500);
+        $("#myModal").modal('show');
     }
-    $("#myModal").modal('show');
+
 }

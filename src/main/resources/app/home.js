@@ -308,9 +308,8 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
         if (isConnected == true) {
             if ($rootScope.memberId == undefined) {
                 angular.element(".temp").remove();
-                $(".home-modal-body").prepend('<div class="temp"><p>Please log in customer.</p></div>');
-                $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>GIVE POINTS</strong> </div>');
-                $("#myModal").modal('show');
+                $("#loginMobile").val('');
+                $("#loginModal").modal('show');
                 return;
             }
             $scope.highlightButton('givepoints');
@@ -321,7 +320,10 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
         } else {
             homeService.goToOfflineMode();
         }
+    }
 
+    $scope.closeLoginModal = function() {
+        $("#loginModal").modal('hide');
     }
 });
 homeModule.directive('backImg', function(){

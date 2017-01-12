@@ -1041,4 +1041,39 @@ public class HomeService {
 
         }
     }
+
+    public void loginMember(String mobileNumber) {
+        try {
+            String message = "";
+            //Build request body
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileNumber));
+
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
+            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+            String result = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            JSONParser parser = new JSONParser();
+            JSONObject responseJSON = (JSONObject) parser.parse(result);
+            if (responseJSON.get("error_code").equals("0x0")) {
+                JSONObject data = (JSONObject) responseJSON.get(ApiFieldContants.DATA);
+                App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
+                App.appContextHolder.setCustomerUUID((String) data.get("id"));
+            } else {
+                message = (String) responseJSON.get("message");
+                result = "failed";
+            }
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("result", result);
+            jsonObject.put("mobileNumber", mobileNumber);
+            jsonObject.put("message", message);
+            this.webEngine.executeScript("loginMemberResponseHandler('"+jsonObject.toJSONString()+"')");
+        } catch (IOException e) {
+            e.printStackTrace();
+            goToOfflineMode();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        webEngine.executeScript("closeLoadingModal('" + App.appContextHolder.isOnlineMode() + "')");
+    }
+
 }

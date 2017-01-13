@@ -199,6 +199,40 @@
         </div>
     </div>
     <!-- End -->
+
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content row">
+                <div class="col-md-12  col-sm-12 details" style="text-align: center;">
+                    <br><br>
+                    <h3 class="modal-header-h3">Enter mobile number</h3>
+                    <br>
+                    <form  class="form">
+
+                        <div class="row">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-8">
+                                <input ng-model="test" type="text" class="w100 pin-field" value="" id="loginMobile" maxlength="11">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-4">
+                                <label></label>
+                                <button class="btn-send" type="button"  ng-click="loginMember()">Submit</button>
+                            </div>
+                            <div class="col-sm-4" style="margin-left: -20px !important;">
+                                <label></label>
+                                <button class="btn-clear" type="button" ng-click="closeLoginModal()">Cancel</button>
+                            </div>
+                        </div>
+                        <br>
+                    </form>
+                </div>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="images/close.png" alt=""></a>
+            </div>
+    </div>
 </main>
 
 

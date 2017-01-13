@@ -366,32 +366,45 @@ public class LoginController implements Initializable {
         rushLogo.setFitWidth(((width / 2) / 5) * 2);
         employeeLbl.setLayoutX(((width / 2) / 5) * 1.5);
 
-        double numberBtnWidth = rightPane.getPrefWidth() / 4;
+        double numberBtnWidth = rightPane.getPrefWidth() / 5;
         oneBtn.setPrefWidth(numberBtnWidth);
+        oneBtn.setPrefHeight(numberBtnWidth);
         oneBtn.setLayoutX(numberBtnWidth / 4);
         twoBtn.setPrefWidth(numberBtnWidth);
+        twoBtn.setPrefHeight(numberBtnWidth);
         twoBtn.setLayoutX(oneBtn.getLayoutX() + oneBtn.getPrefWidth() + numberBtnWidth / 4);
         threeBtn.setPrefWidth(numberBtnWidth);
+        threeBtn.setPrefHeight(numberBtnWidth);
         threeBtn.setLayoutX(twoBtn.getLayoutX() + twoBtn.getPrefWidth() + numberBtnWidth / 4);
         fourBtn.setPrefWidth(numberBtnWidth);
+        fourBtn.setPrefHeight(numberBtnWidth);
         fourBtn.setLayoutX(numberBtnWidth / 4);
         fiveBtn.setPrefWidth(numberBtnWidth);
+        fiveBtn.setPrefHeight(numberBtnWidth);
         fiveBtn.setLayoutX(oneBtn.getLayoutX() + oneBtn.getPrefWidth() + numberBtnWidth / 4);
         sixBtn.setPrefWidth(numberBtnWidth);
+        sixBtn.setPrefHeight(numberBtnWidth);
         sixBtn.setLayoutX(twoBtn.getLayoutX() + twoBtn.getPrefWidth() + numberBtnWidth / 4);
         sevenBtn.setPrefWidth(numberBtnWidth);
+        sevenBtn.setPrefHeight(numberBtnWidth);
         sevenBtn.setLayoutX(numberBtnWidth / 4);
         eightBtn.setPrefWidth(numberBtnWidth);
+        eightBtn.setPrefHeight(numberBtnWidth);
         eightBtn.setLayoutX(oneBtn.getLayoutX() + oneBtn.getPrefWidth() + numberBtnWidth / 4);
         nineBtn.setPrefWidth(numberBtnWidth);
+        nineBtn.setPrefHeight(numberBtnWidth);
         nineBtn.setLayoutX(twoBtn.getLayoutX() + twoBtn.getPrefWidth() + numberBtnWidth / 4);
         delBtn.setPrefWidth(numberBtnWidth);
+        delBtn.setPrefHeight(numberBtnWidth);
         delBtn.setLayoutX(numberBtnWidth / 4);
         zeroBtn.setPrefWidth(numberBtnWidth);
+        zeroBtn.setPrefHeight(numberBtnWidth);
         zeroBtn.setLayoutX(oneBtn.getLayoutX() + oneBtn.getPrefWidth() + numberBtnWidth / 4);
         dotBtn.setPrefWidth(numberBtnWidth);
+        dotBtn.setPrefHeight(numberBtnWidth);
         dotBtn.setLayoutX(twoBtn.getLayoutX() + twoBtn.getPrefWidth() + numberBtnWidth / 4);
-        removeImage.setLayoutX(numberBtnWidth / 4 + (numberBtnWidth/3));
+        removeImage.setLayoutX(numberBtnWidth / 5 + (numberBtnWidth/2.5));
+        removeImage.setLayoutY(delBtn.getLayoutY() + (numberBtnWidth/ 2.5));
     }
 
 }

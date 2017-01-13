@@ -155,6 +155,11 @@ public class SplashController implements Initializable{
                             fstream.flush();
                             fstream.close();
                         }
+                        //check if api.properties is present
+                        File apiProp = new File(System.getProperty("user.home") +  "\\Rush-POS-Sync\\api.properties");
+                        if(apiProp.exists()) {
+                            apiProp.delete();
+                        }
 
                         App.appContextHolder.setOcrFullPath(file.getAbsolutePath());
                         App.appContextHolder.setOfflinePath(System.getProperty("user.home") + AppConfigConstants.OFFLINE_LOCATION);

@@ -46,8 +46,8 @@
         }
     </style>
 </head>
-<body ng-controller="HomeController"  ng-cloak>
-
+<body>
+<div id="homeControllerContainer" ng-controller="HomeController"  ng-cloak>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -115,7 +115,7 @@
             <a   class="menu-a" ng-hide="account.member_inquiry != '1'" id="mi-a" href="" ng-click="goToMemberLoginView()">
                 <li class="menu-li"id="mi-li">MEMBER INQUIRY</li>
             </a>
-            <a  class="menu-a" ng-hide="account.give_points != '1'" id="gi-a" href="" ng-click="loadManualGivePoints()()" >
+            <a  class="menu-a" ng-hide="account.give_points != '1'" id="gi-a" href="" ng-click="loadManualGivePoints()" >
                 <li class="menu-li"id="gi-li">GIVE POINTS</li>
             </a>
             <a   class="menu-a" ng-hide="account.give_points_ocr != '1'" id="gio-a" href="" ng-click="loadGivePointsView()" >
@@ -203,9 +203,9 @@
     <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content row">
-                <div class="col-md-12  col-sm-12 details" style="text-align: center;">
+                <div class="col-md-12  col-sm-12 details" style="text-align: center;height: 320px;">
                     <br><br>
-                    <h3 class="modal-header-h3">Enter mobile number</h3>
+                    <h3 class="modal-header-h3">Enter Mobile Number</h3>
                     <br>
                     <form  class="form">
 
@@ -280,5 +280,5 @@
 
     document.oncontextmenu = document.body.oncontextmenu = function() {return false;}
 </script><!--<script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>-->
-
+</div>
 </body></html>

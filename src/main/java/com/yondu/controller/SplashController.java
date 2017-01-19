@@ -155,7 +155,7 @@ public class SplashController implements Initializable{
                             fstream.flush();
                             fstream.close();
                         }
-                        //check if api.properties is present
+                        //check if api.properties is present -> Fix the stupid security issue i had on the updater :(
                         File apiProp = new File(System.getProperty("user.home") +  "\\Rush-POS-Sync\\api.properties");
                         if(apiProp.exists()) {
                             apiProp.delete();

@@ -17,6 +17,8 @@ angular.module('HomeModule')
         }
     })
 .controller('GivePointsCtrl', function($scope) {
+
+
     $scope.earningPeso = '';
     homeService.fetchCustomerData(function(resp) {
         if (resp.data != undefined) {

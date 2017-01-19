@@ -166,15 +166,15 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     }
 
     $scope.goToPayWithPointsView = function() {
-
+        $scope.highlightButton('paywithpoints');
         if ($rootScope.memberId == undefined) {
             angular.element(".temp").remove();
-            $(".home-modal-body").prepend('<div class="temp"><p>No customer is logged in</p></div>');
-            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>PAY WITH POINTS</strong> </div>');
-            $("#myModal").modal('show');
+            $("#loginMobile").val('');
+            $("#loginModal").modal('show');
+            $rootScope.module = 'payWithPoints';
             return;
         }
-        $scope.highlightButton('paywithpoints');
+
         angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
             $state.go('pay-points-view',{},{reload:true});
@@ -183,14 +183,15 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     }
 
     $scope.goToVoucherRedemptionView = function() {
+        $scope.highlightButton('redeemrewards');
         if ($rootScope.memberId == undefined) {
+            $rootScope.module= 'voucherRedemption';
             angular.element(".temp").remove();
-            $(".home-modal-body").prepend('<div class="temp"><p>Please log in customer.</p></div>');
-            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>REDEEM VOUCHER</strong> </div>');
-            $("#myModal").modal('show');
+            $("#loginMobile").val('');
+            $("#loginModal").modal('show');
             return;
         }
-        $scope.highlightButton('redeemrewards');
+
         angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
             $state.go('voucher-redemption-view',{},{reload:true});
@@ -198,15 +199,15 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     }
 
     $scope.goToIssueRewardsView = function() {
-
+        $scope.highlightButton('issuerewards');
         if ($rootScope.memberId == undefined) {
+            $rootScope.module = 'issueRewards';
             angular.element(".temp").remove();
-            $(".home-modal-body").prepend('<div class="temp"><p>Please log in customer.</p></div>');
-            $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>ISSUE REWARDS</strong> </div>');
-            $("#myModal").modal('show');
+            $("#loginMobile").val('');
+            $("#loginModal").modal('show');
             return;
         }
-        $scope.highlightButton('issuerewards');
+
         angular.element("#home-loading-modal").modal('show');
         $timeout(function(){
             $state.go('issue-rewards-view',{},{reload:true});
@@ -214,14 +215,15 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     }
 
      $scope.goToTransactionsView = function() {
+         $scope.highlightButton('transactionview');
          if ($rootScope.memberId == undefined) {
+             $rootScope.module = 'transactionView';
              angular.element(".temp").remove();
-             $(".home-modal-body").prepend('<div class="temp"><p>Please log in customer.</p></div>');
-             $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>TRANSACTIONS VIEW</strong> </div>');
-             $("#myModal").modal('show');
+             $("#loginMobile").val('');
+             $("#loginModal").modal('show');
              return;
          }
-         $scope.highlightButton('transactionview');
+
          angular.element("#home-loading-modal").modal('show');
          $timeout(function(){
              $state.go('transactions-view',{},{reload:true});
@@ -244,8 +246,8 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
              angular.element('#mi-a').addClass('selected-button');
              angular.element('#mi-li').addClass('selected-button');
          }  else if (view === 'givepoints') {
-             angular.element('#gp-a').addClass('selected-button');
-             angular.element('#gp-li').addClass('selected-button');
+             angular.element('#gi-a').addClass('selected-button');
+             angular.element('#gi-li').addClass('selected-button');
          }  else if (view === 'givepointsocr') {
              angular.element('#gpo-a').addClass('selected-button');
              angular.element('#gpo-li').addClass('selected-button');
@@ -277,6 +279,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
     $scope.logoutMember = function() {
         $rootScope.memberId = undefined;
         homeService.logoutMember();
+        $scope.highlightButton('memberinquiry');
         $state.go('member-login-view');
     }
 
@@ -295,6 +298,15 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
 
 
     }
+    $scope.loginMember = function() {
+        $("#loginModal").modal('hide');
+        angular.element("#home-loading-modal").modal('show');
+        $timeout(function(){
+            var mobileNumber = angular.element('#loginMobile').val();
+
+            homeService.loginMember(mobileNumber,$rootScope.module);
+        }, 500);
+    }
     $scope.clearLoginField = function() {
         $scope.employeeId = '';
     }
@@ -302,7 +314,7 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
         $scope.employeeId = $scope.employeeId + num;
     }
     $scope.loadManualGivePoints = function() {
-
+        $scope.highlightButton('givepoints');
         //Check network connectivity
         var isConnected  = homeService.checkConnectivity();
         if (isConnected == true) {
@@ -310,9 +322,10 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
                 angular.element(".temp").remove();
                 $("#loginMobile").val('');
                 $("#loginModal").modal('show');
+                $rootScope.module = 'givePoints';
                 return;
             }
-            $scope.highlightButton('givepoints');
+
             angular.element("#home-loading-modal").modal('show');
             $timeout(function(){
                 $state.go('manual-givepoints-view',{},{reload:true});
@@ -324,6 +337,27 @@ homeModule.controller('HomeController', function($scope, $state, $rootScope, $ti
 
     $scope.closeLoginModal = function() {
         $("#loginModal").modal('hide');
+    }
+    $scope.loginResponse = function(mobileNumber, module) {
+        $rootScope.memberId = mobileNumber;
+        if (module == 'givePoints') {
+            $scope.loadManualGivePoints();
+        }
+        if (module == 'memberInquiry') {
+            $scope.goToMemberLoginView();
+        }
+        if (module == 'payWithPoints') {
+            $scope.goToPayWithPointsView();
+        }
+        if (module == 'voucherRedemption') {
+            $scope.goToVoucherRedemptionView();
+        }
+        if (module == 'issueRewards') {
+            $scope.goToIssueRewardsView();
+        }
+        if (module == 'transactionView') {
+            $scope.goToTransactionsView();
+        }
     }
 });
 homeModule.directive('backImg', function(){
@@ -425,4 +459,16 @@ function closeLoadingModal(resp) {
         $("#mode").text("");
     }
     $("#home-loading-modal").modal('hide');
+}
+function loginMemberResponseHandler(resp) {
+    $(".temp").remove();
+    var response = JSON.parse(resp);
+    if (response.result == 'success') {
+        $("#homeControllerContainer").scope().loginResponse(response.mobileNumber, response.module);
+    } else {
+        $("#home-loading-modal").modal('hide');
+        $(".home-modal-body").prepend('<div class="temp"><p>' + response.message + '</p></div>');
+        $(".home-modal-body").prepend('<div class="alert alert-warning temp"> <strong>MEMBER INQUIRY</strong> </div>');
+        $("#myModal").modal('show');
+    }
 }

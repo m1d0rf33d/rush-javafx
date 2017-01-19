@@ -45,7 +45,7 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <Button  fx:id="fourBtn" layoutX="402.0" layoutY="203.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="6" textFill="#71747a">
+            <Button fx:id="fourBtn" layoutX="402.0" layoutY="203.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="6" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
@@ -89,7 +89,7 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <Button  fx:id="eightBtn" layoutX="247.0" layoutY="359.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="8" textFill="#71747a">
+            <Button fx:id="eightBtn" layoutX="247.0" layoutY="359.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="8" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
@@ -159,7 +159,7 @@
             <Font name="System Bold" size="23.0" />
          </font>
          <cursor>
-            <Cursor fx:constant="CLOSED_HAND" />
+            <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
       <ImageView fx:id="rushLogo" fitHeight="88.0" fitWidth="245.0" layoutX="217.0" layoutY="171.0" pickOnBounds="true" preserveRatio="true" />
@@ -169,14 +169,14 @@
             <Font size="20.0" />
          </font></TextField>
       <Pane fx:id="overlayPane" opacity="0.51" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #222;" />
-      <Label fx:id="offlineLbl" layoutX="170.0" layoutY="300.0" prefHeight="50.0" prefWidth="341.0" text="YOU ARE CURRENTLY OFFLINE" textFill="#f20606">
+      <Label fx:id="offlineLbl" layoutX="170.0" layoutY="300.0" prefHeight="50.0" prefWidth="341.0" text="OFFLINE" textFill="#f20606">
          <font>
             <Font name="System Bold" size="23.0" />
          </font>
       </Label>
       <Button fx:id="givePointsBtn" layoutX="109.0" layoutY="363.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="450.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="GIVE POINTS" textFill="#f5f2f2">
          <cursor>
-            <Cursor fx:constant="CLOSED_HAND" />
+            <Cursor fx:constant="HAND" />
          </cursor>
          <font>
             <Font name="System Bold" size="23.0" />
@@ -184,7 +184,7 @@
       </Button>
       <Button fx:id="reconnectBtn" layoutX="109.0" layoutY="426.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="450.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="RECONNECT" textFill="#f5f2f2">
          <cursor>
-            <Cursor fx:constant="CLOSED_HAND" />
+            <Cursor fx:constant="HAND" />
          </cursor>
          <font>
             <Font name="System Bold" size="23.0" />

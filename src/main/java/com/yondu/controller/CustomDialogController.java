@@ -26,8 +26,6 @@ public class CustomDialogController implements Initializable{
     @FXML
     public Label messageLbl;
     @FXML
-    public ImageView rushLogo;
-    @FXML
     public Button okayBtn;
 
     private String message;
@@ -43,7 +41,6 @@ public class CustomDialogController implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
         messageLbl.setText(message);
         messageLbl.setWrapText(true);
-        this.rushLogo.setImage(new Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
 
         okayBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
             overlayPane.setVisible(false);

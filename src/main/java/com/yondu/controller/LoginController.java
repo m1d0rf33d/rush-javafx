@@ -140,6 +140,14 @@ public class LoginController implements Initializable {
                 if (ke.getCode().equals(KeyCode.ENTER)) {
                     loginEmployee(ke);
                 }
+                if (ke.getCode().equals(KeyCode.TAB)) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            branchBox.requestFocus();
+                        }
+                    });
+                }
             }
         });
 
@@ -354,8 +362,24 @@ public class LoginController implements Initializable {
     }
 
     private void prompt(String message, InputEvent event) {
+        overlayPane.setVisible(true);
+        Alert alert = new Alert(Alert.AlertType.ERROR, message);
+        alert.setTitle("Rush POS Sync");
+        alert.initStyle(StageStyle.UTILITY);
+        alert.initOwner(
+                ((Node)event.getSource()).getScene().getWindow() );
 
-        try {
+        alert.setOnCloseRequest((DialogEvent e) -> {
+            overlayPane.setVisible(false);
+        });
+        alert.setHeaderText("LOGIN FAILED");
+
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.OK) {
+            overlayPane.setVisible(false);
+        }
+
+       /* try {
             overlayPane.setVisible(true);
             Stage stage = new Stage();
             FXMLLoader  loader  = new FXMLLoader(App.class.getResource("/app/fxml/custom-dialog.fxml"));
@@ -372,7 +396,7 @@ public class LoginController implements Initializable {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void setLayout() {
@@ -395,11 +419,11 @@ public class LoginController implements Initializable {
         givePointsBtn.setPrefWidth(givePointsBtn.getLayoutX() * 3);
         reconnectBtn.setLayoutX((width / 2) / 5);
         reconnectBtn.setPrefWidth(reconnectBtn.getLayoutX() * 3);
-        offlineLbl.setLayoutX((width / 2) / 7);
+        offlineLbl.setLayoutX(loginBtn.getLayoutX() + loginBtn.getPrefWidth() / 3);
         offlineLbl.setPrefWidth(loginBtn.getLayoutX() * 4);
         rushLogo.setLayoutX(((width / 2) / 5) * 1.5);
         rushLogo.setFitWidth(((width / 2) / 5) * 2);
-        employeeLbl.setLayoutX(((width / 2) / 5) * 1.5);
+        employeeLbl.setLayoutX(loginBtn.getLayoutX() + loginBtn.getPrefWidth() / 5);
 
         double numberBtnWidth = rightPane.getPrefWidth() / 5;
         oneBtn.setPrefWidth(numberBtnWidth);

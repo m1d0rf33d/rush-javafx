@@ -2,9 +2,20 @@
     <div ng-if="member.id">
         <div class="row">
             <div class="col-sm-12">
-                <h4 class="content-title">
-                    ISSUE REWARDS
-                </h4>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h4 class="content-title">ISSUE REWARDS<!-- <img src="images/sample_user.png" class="profile-picture-thumb pull-right" alt="">--></h4>
+                    </div>
+                    <div class="col-sm-4">
+
+                    </div>
+                    <div class="col-sm-2">
+                        <a ng-click="logoutMember()" href="" style="text-align:center;border-radius:30px;padding-left: 10px;padding-top: 10px;display: inline-block;height: 40px;width: 200px;background-color:#ed2828; color: white;"><b>EXIT MEMBER</b></a>
+                    </div>
+                    <div class="col-sm-2">
+
+                    </div>
+                </div>
                 <hr>
             </div>
         </div>
@@ -26,7 +37,7 @@
                 <label class="d-label">Mobile Number</label>
                 <span class="d-value">{{member.mobile_no}}</span>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-3" style="word-wrap: break-word;">
                 <label class="d-label">Email</label>
                 <span class="d-value">{{member.email}}</span>
             </div>
@@ -55,7 +66,7 @@
             <div class="col-sm-4" ng-repeat="item in activeVouchers" id="{{item.id}}_div">
                 <div class="item"  data-toggle="modal" data-target="#{{item.id}}">
                     <figure>
-                        <img ng-src="{{item.reward.image_url}}"/>
+                        <img style="width: 300px;height: 171px;" ng-src="{{item.reward.image_url}}"/>
                     </figure>
                     <figcaption>
                         {{item.reward.name}}
@@ -92,3 +103,15 @@
     </div>
 
 </div>
+
+<script>
+    $(document).ready(function(){
+
+        $("input").focus(function(){
+            homeService.showVirtualKeyboard();
+        });
+        $("input").focusout(function(){
+            homeService.hideVirtualKeyboard();
+        });
+    });
+</script>

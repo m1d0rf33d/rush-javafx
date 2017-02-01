@@ -5,13 +5,18 @@
     <title>Rush - Register User</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/custom2.css">
     <link rel="stylesheet" href="css/dataTables.bootstrap.min.css">
     <link rel="stylesheet" href="css/angular-datatables.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/bootstrap-datepicker.min.css">
+
 
     <script src="js/lib/jquery.min.js"></script>
+    <script src="js/lib/moment.min.js"></script>
     <script src="js/lib/jquery.dataTables.min.js"></script>
     <script src="js/lib/bootstrap.js"></script>
+    <script src="js/lib/bootstrap-datepicker.js"></script>
     <script src="js/lib/angular.min.js"></script>
     <script src="js/lib/angular-datatables.min.js"></script>
     <script src="js/lib/angular-datatables.columnfilter.min.js"></script>
@@ -41,12 +46,12 @@
         }
     </style>
 </head>
-<body ng-controller="HomeController"  ng-cloak>
-
+<body>
+<div id="homeControllerContainer" ng-controller="HomeController"  ng-cloak>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#" style="width: 400px; margin-left: 0 !important;padding: 0 !important;"> <img ng-src="{{account.branchLogo}}" style="height: 50px;width: 50px;margin-left: 0;padding-left: 0;"/>{{account.branchName}}</a>
+            <a class="navbar-brand" href="#" style="width: 400px; padding: 0 !important;"> <img ng-src="{{account.branchLogo}}" style="height: 80px;width: 80px;margin-left: -130px;padding-left: 0;margin-top: -10px;"/>&nbsp;{{account.branchName}}</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -102,47 +107,49 @@
 
 
 <main>
-    <div id="sidebar">
+    <div id="sidebar" style="height: 1100px;min-height: 1100px;">
         <ul id="sidebar-links">
-            <a href="" ng-click="goToRegisterView()">
-                <li>REGISTRATION</li>
+            <a  class="menu-a" ng-hide="account.registration != '1'" id="reg-a"  href="" ng-click="goToRegisterView()">
+                <li class="menu-li" id="reg-li">REGISTRATION</li>
             </a>
-            <a href="" ng-click="goToMemberLoginView()">
-                <li>MEMBER INQUIRY</li>
+            <a   class="menu-a" ng-hide="account.member_inquiry != '1'" id="mi-a" href="" ng-click="goToMemberLoginView()">
+                <li class="menu-li"id="mi-li">MEMBER INQUIRY</li>
             </a>
-            <a href="" ng-click="loadManualGivePoints()()" >
-                <li>GIVE POINTS</li>
+            <a  class="menu-a" ng-hide="account.give_points != '1'" id="gi-a" href="" ng-click="loadManualGivePoints()" >
+                <li class="menu-li"id="gi-li">GIVE POINTS</li>
             </a>
-            <a href="" ng-click="loadGivePointsView()" >
-                <li>GIVE POINTS (OCR)</li>
+            <a   class="menu-a" ng-hide="account.give_points_ocr != '1'" id="gio-a" href="" ng-click="loadGivePointsView()" >
+                <li class="menu-li"id="gio-li">GIVE POINTS (OCR)</li>
+            </a>
+            <a   class="menu-a" ng-hide="account.guest_purchase != '1'" id="giog-a" href="" ng-click="goToGivePointsGuestView()" >
+                <li class="menu-li"id="giog-li">GUEST PURCHASE</li>
             </a><!--
             <a href="" ng-disabled="!memberProfile.id" >
                 <li>GIVE POINTS (OCR)</li>
             </a>-->
-            <a href="" ng-click="goToPayWithPointsView()">
-                <li>PAY WITH POINTS</li>
+            <a  class="menu-a" ng-hide="account.pay_with_points != '1'" id="pwp-a" href="" ng-click="goToPayWithPointsView()">
+                <li class="menu-li"id="pwp-li">PAY WITH POINTS</li>
             </a>
-            <a href="" ng-click="goToVoucherRedemptionView()">
-                <li>REDEEM REWARDS</li>
+            <a  class="menu-a" ng-hide="account.redeem_rewards != '1'" id="rr-a" href="" ng-click="goToVoucherRedemptionView()">
+                <li class="menu-li"id="rr-li">REDEEM REWARDS</li>
             </a>
-            <a href="" ng-click="goToIssueRewardsView()">
-                <li>ISSUE REWARDS</li>
+            <a  class="menu-a" ng-hide="account.issue_rewards != '1'" id="ir-a" href="" ng-click="goToIssueRewardsView()">
+                <li class="menu-li"id="ir-li">ISSUE REWARDS</li>
             </a>
-            <a href="" ng-click="goToTransactionsView()">
-                <li>TRANSACTION VIEW</li>
+            <a  class="menu-a" ng-hide="account.transaction_view != '1'" id="tv-a" href="" ng-click="goToTransactionsView()">
+                <li class="menu-li"id="tv-li">TRANSACTION VIEW</li>
             </a>
-            <a href="" ng-click="goToOfflineTransactionsView()">
-                <li>OFFLINE TRANSACTIONS</li>
+            <a  class="menu-a" ng-hide="account.offline_transactions != '1'" id="otv-a" href="" ng-click="goToOfflineTransactionsView()">
+                <li class="menu-li"id="otv-li">OFFLINE TRANSACTIONS</li>
             </a>
-            <a href="" ng-click="loadSettingsView()">
-                <li class="yellow-bg">SETUP (OCR)</li>
+            <a  class="menu-a" ng-hide="account.setup_ocr != '1'" id="so-a" href="" ng-click="loadSettingsView()">
+                <li class="menu-li"id="so-li" class="yellow-bg">SETUP (OCR)</li>
             </a>
-            <a href="" ng-click="logoutMember()">
-                <li class="red-bg">EXIT MEMBER DETAILS</li>
-            </a>
+
         </ul>
     </div>
-    <div id="content-wrapper" ui-view>
+
+    <div style="height: 100%;" id="content-wrapper" ui-view >
 
     </div>
     <!-- Modal -->
@@ -175,34 +182,103 @@
     <!-- End -->
 
     <!-- Offline transactions -->
-    <div  id="offlineModal" class="modal fade" role="dialog"  tabindex="-1"  >
-        <div class="modal-dialog">
+    <div  id="offlineModal" class="modal fade" role="dialog"  tabindex="-1" >
+        <div class="modal-dialog" style="margin-left: 50px !important;margin-top: 50px !important;">
 
             <!-- Modal content-->
-            <div class="modal-content" style="background: white !important;width: 800px !important;">
+            <div class="modal-content" style="background: white !important;width: 1200px !important;">
                 <div class="modal-header offline-result-header">
 
                 </div>
                 <div class="modal-body offline-result-body" style="height: 300px; overflow: auto;">
 
                 </div>
-                <div class="modal-footer">
-                    <button class="btn-send" type="button" data-dismiss="modal">Okay</button>
-                </div>
+
             </div>
 
         </div>
     </div>
     <!-- End -->
+
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content row">
+                <div class="col-md-12  col-sm-12 details" style="text-align: center;height: 320px;">
+                    <br><br>
+                    <h3 class="modal-header-h3">Enter Mobile Number</h3>
+                    <br>
+                    <form  class="form">
+
+                        <div class="row">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-8">
+                                <input ng-model="test" type="text" class="w100 pin-field" value="" id="loginMobile" maxlength="11">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-4">
+                                <label></label>
+                                <button class="btn-send" type="button"  ng-click="loginMember()">Submit</button>
+                            </div>
+                            <div class="col-sm-4" style="margin-left: -20px !important;">
+                                <label></label>
+                                <button class="btn-clear" type="button" ng-click="closeLoginModal()">Cancel</button>
+                            </div>
+                        </div>
+                        <br>
+                    </form>
+                </div>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="images/close.png" alt=""></a>
+            </div>
+    </div>
 </main>
 
 
 <script>
+    $(document).ready(function(){
+
+        $("input").focus(function(){
+            homeService.showVirtualKeyboard();
+        });
+        $("input").focusout(function(){
+            homeService.hideVirtualKeyboard();
+        });
+
+
+        $('.menu-li').mousedown(function() {
+            $(this).css('border', '2px solid #e7e7e7');
+        });
+        $('.menu-li').mouseup(function() {
+            $(this).css('border', '0');
+        });
+
+        var clicked = false, clickY;
+        $(document).on({
+            'mousemove': function(e) {
+                clicked && updateScrollPos(e);
+            },
+            'mousedown': function(e) {
+                clicked = true;
+                clickY = e.pageY;
+            },
+            'mouseup': function() {
+                clicked = false;
+                $('html').css('cursor', 'auto');
+            }
+        });
+
+        var updateScrollPos = function(e) {
+            $('html').css('cursor', 'row-resize');
+            $(window).scrollTop($(window).scrollTop() + (clickY - e.pageY));
+        }
+    });
     $("#number-pad-wrapper button").mouseup(function(){
         $(this).blur();
     });
 
     document.oncontextmenu = document.body.oncontextmenu = function() {return false;}
 </script><!--<script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>-->
-
+</div>
 </body></html>

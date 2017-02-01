@@ -9,6 +9,11 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 /** This is where the fun begins..
  *
  *  @author m1d0rf33d
@@ -18,7 +23,42 @@ public class App extends Application{
     public static final AppContextHolder appContextHolder = new AppContextHolder();
 
     public static void main(String[] args) {
-        launch(args);
+
+        boolean is64bit = false;
+        if (System.getProperty("os.name").contains("Windows")) {
+            is64bit = (System.getenv("ProgramFiles(x86)") != null);
+            App.appContextHolder.setIs64Bit(is64bit);
+            File file = new File(System.getProperty("user.home") + AppConfigConstants.LOCK_LOCATION);
+            if (file.exists()) {
+                try {
+                    if (is64bit) {
+                        Runtime.getRuntime().exec("cmd /c start  C:\\\"Program Files (x86)\"" + AppConfigConstants.VBS_LOCATION);
+                    } else {
+                        Runtime.getRuntime().exec("cmd /c start C:\\\"Program Files\"" + AppConfigConstants.VBS_LOCATION);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
+            } else {
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Runtime.getRuntime().addShutdownHook(new Thread() {
+                    @Override
+                    public void run() {
+                        File file = new File(System.getProperty("user.home") + AppConfigConstants.LOCK_LOCATION);
+                        if (file.exists()) {
+                            file.delete();
+                        }
+                    }
+                });
+                launch(args);
+            }
+        }
+
     }
 
     @Override
@@ -32,6 +72,14 @@ public class App extends Application{
         primaryStage.show();
     }
 
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        File file = new File(System.getProperty("user.home") + AppConfigConstants.LOCK_LOCATION);
+        if (file.exists()) {
+            file.delete();
+        }
+    }
 }
 
 

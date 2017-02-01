@@ -1,4 +1,4 @@
-<div ng-controller="RegisterCtrl">
+<div ng-controller="RegisterCtrl" id="parent">
     <div class="row">
         <div class="col-sm-6">
             <h4 class="content-title">REGISTER NEW MEMBER</h4>
@@ -10,9 +10,9 @@
         <form action="http://54.169.103.206/design/rush-pos/register.html" class="form">
             <div class="col-sm-6">
                 <label>Member Name</label>
-                <input type="text" class="w100" id="name">
+                <input letters-only ng-model="memberName" type="text" class="w100" id="name" maxlength="50">
                 <label>EMAIL</label>
-                <input type="text" class="w100" id="email">
+                <input type="text" class="w100" id="email" maxlength="40">
                 <label>GENDER</label>
                <!-- <select name="" id="gender" class="w100">
                     <option value="-1">Select Gender</option>
@@ -27,11 +27,12 @@
                </div>
             </div>
             <div class="col-sm-6">
-                <label>Mobile Numbers</label>
+                <label>Mobile Number</label>
                 <input type="text" class="w100" id="mobile_no" numeric-only maxlength="11" ng-model="mobilenumber">
                 <label>Birthdate</label>
-                <input id="birthdate" type="text" placeholder="MM/DD/YY" class="w100 date-field">
-                <label>4-Digit M-Pin (App Password)</label>
+           <!--     <input id="birthdate"  class="datepicker" type="text" placeholder="MM/DD/YY" class="w100 date-field">-->
+                <input id="birthdate"  type='text' class="datetimepicker1" style="width: 100%!important;"/>
+                <label>4-Digit M-PIN (App Password)</label>
                 <input maxlength="4" numeric-only ng-model="mpin" type="text" class="w100" id="mpin">
             </div>
         </form>
@@ -43,3 +44,21 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(function () {
+        $('.datetimepicker1').datetimepicker({
+            format: 'MM/DD/YYYY'
+        });
+    });
+
+    $(document).ready(function(){
+
+        $("input").focus(function(){
+            homeService.showVirtualKeyboard();
+        });
+        $("input").focusout(function(){
+            homeService.hideVirtualKeyboard();
+        });
+    });
+</script>

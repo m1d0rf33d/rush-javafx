@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
@@ -12,6 +13,9 @@
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Button>
       <Label layoutX="75.0" layoutY="51.0" prefHeight="38.0" prefWidth="258.0" text="ENTER MERCHANT KEY">
          <font>

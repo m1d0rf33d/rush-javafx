@@ -3,6 +3,7 @@ package com.yondu.controller;
 import com.yondu.App;
 import com.yondu.model.Account;
 import com.yondu.model.constants.ApiFieldContants;
+import com.yondu.model.constants.AppConfigConstants;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -16,6 +17,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -122,6 +124,8 @@ public class LoadingController implements Initializable{
 
     private void handleError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR,message, ButtonType.OK);
+        alert.setTitle(AppConfigConstants.APP_TITLE);
+        alert.initStyle(StageStyle.UTILITY);
         alert.showAndWait();
         if (alert.getResult() == ButtonType.OK) {
             alert.close();
@@ -133,7 +137,7 @@ public class LoadingController implements Initializable{
                 e.printStackTrace();
             }
             givePointsStage.setScene(new Scene(root, 400,220));
-            givePointsStage.setTitle("Give Points");
+            givePointsStage.setTitle("Rush POS Sync");
             givePointsStage.resizableProperty().setValue(Boolean.FALSE);
             givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             givePointsStage.show();
@@ -168,8 +172,15 @@ public class LoadingController implements Initializable{
             Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
+            String basePath = "";
+            if (App.appContextHolder.getIs64Bit()) {
+                basePath = "C:\\Program Files (x86)\\Rush-POS-Sync";
+            } else {
+                basePath = "C:\\Program Files\\Rush-POS-Sync";
+            }
+
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(TESSERACT_LOCATION);
+            tesseract.setDatapath(basePath + TESSERACT_LOCATION);
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = tesseract.doOCR(screenFullImage);
@@ -204,8 +215,15 @@ public class LoadingController implements Initializable{
             Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
+            String basePath = "";
+            if (App.appContextHolder.getIs64Bit()) {
+                basePath = "C:\\Program Files (x86)\\Rush-POS-Sync";
+            } else {
+                basePath = "C:\\Program Files\\Rush-POS-Sync";
+            }
+
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(TESSERACT_LOCATION);
+            tesseract.setDatapath(basePath + TESSERACT_LOCATION);
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = null;
@@ -224,6 +242,7 @@ public class LoadingController implements Initializable{
         if (App.appContextHolder.isOnlineMode()) {
            try {
                String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
+               url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
                String result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                JSONParser parser = new JSONParser();
                JSONObject jsonResponse = (JSONObject) parser.parse(result);
@@ -303,7 +322,7 @@ public class LoadingController implements Initializable{
                    } else {
                        customer = new Account();
                        customer.setMobileNumber(App.appContextHolder.getCustomerMobile());
-                       customer.setCurrentPoints(0d);
+                       customer.setCurrentPoints("0");
                        customer.setName("");
                    }
                     return null;
@@ -333,14 +352,10 @@ public class LoadingController implements Initializable{
             responseStr = App.appContextHolder.getApiService().call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
             jsonResponse = (JSONObject) parser.parse(responseStr);
-            Double points = null;
-            try {
-                points = (Double) jsonResponse.get("data");
-            }catch (Exception e) {
-                points = Double.parseDouble(String.valueOf((Long) jsonResponse.get("data")));
-            }
-
-            customer.setCurrentPoints(points);
+            DecimalFormat formatter = new DecimalFormat("#,###,###.00");
+            String strPoints = (String) jsonResponse.get("data");
+            String formattedStr = formatter.format(Double.parseDouble(strPoints));
+            customer.setCurrentPoints(formattedStr);
         } catch (ParseException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -348,6 +363,8 @@ public class LoadingController implements Initializable{
             App.appContextHolder.setOnlineMode(false);
             //Alert to offline mode
             Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to reach server. You are now in offline mode.", ButtonType.OK);
+            alert.setTitle(AppConfigConstants.APP_TITLE);
+            alert.initStyle(StageStyle.UTILITY);
             alert.showAndWait();
         }
     }

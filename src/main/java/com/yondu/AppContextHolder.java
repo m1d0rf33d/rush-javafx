@@ -63,15 +63,69 @@ public class AppContextHolder {
     private String customerTransactionsEndpoint;
     private String getBranchesEndpoint;
     private String loginEndpoint;
+    private String merchantDesignsEndpoint;
+    private String merchantSettingsEndpoint;
 
     private String appKey;
     private String appSecret;
     private String customerAppKey;
     private String customerAppSecret;
     private String authorizationEndpoint;
+    private String guestEarnEndpoint;
 
     private boolean isActivated;
     private String previousStage;
+    private Boolean withVk;
+    private Boolean is64Bit;
+    private Boolean isFirstDisconnect;
+
+    public Boolean getFirstDisconnect() {
+        return isFirstDisconnect;
+    }
+
+    public void setFirstDisconnect(Boolean firstDisconnect) {
+        isFirstDisconnect = firstDisconnect;
+    }
+
+    public String getGuestEarnEndpoint() {
+        return guestEarnEndpoint;
+    }
+
+    public void setGuestEarnEndpoint(String guestEarnEndpoint) {
+        this.guestEarnEndpoint = guestEarnEndpoint;
+    }
+
+    public Boolean getIs64Bit() {
+        return is64Bit;
+    }
+
+    public void setIs64Bit(Boolean is64Bit) {
+        this.is64Bit = is64Bit;
+    }
+
+    public Boolean getWithVk() {
+        return withVk;
+    }
+
+    public void setWithVk(Boolean withVk) {
+        this.withVk = withVk;
+    }
+
+    public String getMerchantSettingsEndpoint() {
+        return merchantSettingsEndpoint;
+    }
+
+    public void setMerchantSettingsEndpoint(String merchantSettingsEndpoint) {
+        this.merchantSettingsEndpoint = merchantSettingsEndpoint;
+    }
+
+    public String getMerchantDesignsEndpoint() {
+        return merchantDesignsEndpoint;
+    }
+
+    public void setMerchantDesignsEndpoint(String merchantDesignsEndpoint) {
+        this.merchantDesignsEndpoint = merchantDesignsEndpoint;
+    }
 
     public String getPreviousStage() {
         return previousStage;

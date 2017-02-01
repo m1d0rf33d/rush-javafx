@@ -17,6 +17,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import org.apache.commons.codec.binary.*;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
@@ -110,6 +112,8 @@ public class PointsDetailsController implements Initializable{
                     JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
                     if (jsonResponse.get("error_code").equals("0x0")) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION,"Points has been successfully given to customer.", ButtonType.OK);
+                        alert.setTitle(AppConfigConstants.APP_TITLE);
+                        alert.initStyle(StageStyle.UTILITY);
                         alert.showAndWait();
 
                         if (alert.getResult() == ButtonType.OK) {
@@ -117,11 +121,22 @@ public class PointsDetailsController implements Initializable{
                             Stage givePointsStage = new Stage();
                             Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
                             givePointsStage.setScene(new Scene(root, 400,220));
-                            givePointsStage.setTitle("Give Points");
+                            givePointsStage.setTitle("Rush POS Sync");
                             givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                            givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                             givePointsStage.show();
 
                             ((Stage)rushLogoImageView.getScene().getWindow()).close();
+                        }
+                    } else if (jsonResponse.get("error_code").equals("0x4") || jsonResponse.get("error_code").equals("0x3")) {
+                        String errorMessage = (String) jsonResponse.get("message");
+                        Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
+                        alert.setTitle(AppConfigConstants.APP_TITLE);
+                        alert.initStyle(StageStyle.UTILITY);
+                        alert.showAndWait();
+
+                        if (alert.getResult() == ButtonType.OK) {
+                            alert.close();
                         }
                     } else {
                         JSONObject error = (JSONObject) jsonResponse.get("errors");
@@ -135,6 +150,8 @@ public class PointsDetailsController implements Initializable{
                             errorMessage = l.get(0);
                         }
                         Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
+                        alert.setTitle(AppConfigConstants.APP_TITLE);
+                        alert.initStyle(StageStyle.UTILITY);
                         alert.showAndWait();
 
                         if (alert.getResult() == ButtonType.OK) {
@@ -161,15 +178,16 @@ public class PointsDetailsController implements Initializable{
                         Stage givePointsStage = new Stage();
                         Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
                         givePointsStage.setScene(new Scene(root, 400,220));
-                        givePointsStage.setTitle("Give Points");
+                        givePointsStage.setTitle("Rush POS Sync");
                         givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                        givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                         givePointsStage.show();
                     } else {
                         Stage givePointsStage = new Stage();
                         Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
                         givePointsStage.setScene(new Scene(root, 500,300));
 
-                        givePointsStage.setTitle("Give Points (OCR)");
+                        givePointsStage.setTitle("Rush POS Sync");
                         givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                         givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                         givePointsStage.show();
@@ -193,11 +211,15 @@ public class PointsDetailsController implements Initializable{
             String date = df.format(new Date());
 
             PrintWriter fstream = new PrintWriter(new FileWriter(file,true));
-            fstream.println("mobileNumber=" + customer.getMobileNumber()+ ",totalAmount=" + totalAmount + ", orNumber=" + orNumber + ", date=" + date);
+            String line = "mobileNumber=" + customer.getMobileNumber().replace(":", "")+ ":totalAmount=" + totalAmount.replace(":", "") + ":orNumber=" + orNumber.replace(":", "") + ":date=" + date;
+            byte[] encodedBytes = org.apache.commons.codec.binary.Base64.encodeBase64(line.getBytes());
+            fstream.println(new String(encodedBytes));
             fstream.flush();
             fstream.close();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION,"Give points data has been recorded, you may view this on offline transactions.", ButtonType.OK);
+            alert.setTitle(AppConfigConstants.APP_TITLE);
+            alert.initStyle(StageStyle.UTILITY);
             alert.showAndWait();
 
             if (alert.getResult() == ButtonType.OK) {
@@ -206,15 +228,16 @@ public class PointsDetailsController implements Initializable{
                     Stage givePointsStage = new Stage();
                     Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
                     givePointsStage.setScene(new Scene(root, 400,220));
-                    givePointsStage.setTitle("Give Points");
+                    givePointsStage.setTitle("Rush POS Sync");
                     givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+                    givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                     givePointsStage.show();
                 } else {
                     Stage givePointsStage = new Stage();
                     Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
                     givePointsStage.setScene(new Scene(root, 500,300));
 
-                    givePointsStage.setTitle("Give Points (OCR)");
+                    givePointsStage.setTitle("Rush POS Sync");
                     givePointsStage.resizableProperty().setValue(Boolean.FALSE);
                     givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                     givePointsStage.show();

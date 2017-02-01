@@ -2,7 +2,20 @@
     <div ng-if="member.id">
         <div class="row">
             <div class="col-sm-12">
-                <h4 class="content-title">VIEW MEMBER'S TRANSACTIONS<!-- <img src="images/sample_user.png" class="profile-picture-thumb pull-right" alt="">--></h4>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h4 class="content-title">TRANSACTIONS VIEW<!-- <img src="images/sample_user.png" class="profile-picture-thumb pull-right" alt="">--></h4>
+                    </div>
+                    <div class="col-sm-4">
+
+                    </div>
+                    <div class="col-sm-2">
+                        <a ng-click="logoutMember()" href="" style="text-align:center;border-radius:30px;padding-left: 10px;padding-top: 10px;display: inline-block;height: 40px;width: 200px;background-color:#ed2828; color: white;"><b>EXIT MEMBER</b></a>
+                    </div>
+                    <div class="col-sm-2">
+
+                    </div>
+                </div>
                 <hr>
             </div>
         </div>
@@ -25,7 +38,7 @@
                 <label class="d-label">Mobile Number</label>
                 <span class="d-value">{{member.mobile_no}}</span>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-3" style="word-wrap: break-word;">
                 <label class="d-label">Email</label>
                 <span class="d-value">{{member.email}}</span>
             </div>
@@ -88,7 +101,6 @@
                   <span class="d-value"></span>
               </div>
           </div>-->
-        <br><br><br>
         <div class="row">
             <div class="col-sm-12">
                 <h5 class="sub-title">TRANSACTIONS</h5>
@@ -97,7 +109,7 @@
         <div class="row">
             <div class="col-sm-12">
 
-                <div ng-controller="MemberTransactionsCtrl as showCase">
+                <div ng-controller="MemberTransactionsCtrl as showCase" style="height: 700px; overflow: auto;">
                     <br>
                     <table  class="table table-stripped active-table" datatable dt-options="showCase.dtOptions" dt-columns="showCase.dtColumns" dt-instance="showCase.dtInstanceCallback" class="row-border hover"></table>
                 </div>

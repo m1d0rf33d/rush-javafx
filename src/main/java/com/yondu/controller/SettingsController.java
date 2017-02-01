@@ -11,12 +11,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.image.*;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -49,8 +49,6 @@ public class SettingsController implements Initializable{
     public javafx.scene.control.TextArea previewText;
     @FXML
     public ImageView previewImage;
-    @FXML
-    public ImageView rushLogoImageView;
     @FXML
     public javafx.scene.control.Button setOrButton;
     @FXML
@@ -139,8 +137,15 @@ public class SettingsController implements Initializable{
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
             javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
             this.previewImage.setImage(image);
+            String basePath = "";
+            if (App.appContextHolder.getIs64Bit()) {
+                basePath = "C:\\Program Files (x86)\\Rush-POS-Sync";
+            } else {
+                basePath = "C:\\Program Files\\Rush-POS-Sync";
+            }
+
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(TESSERACT_LOCATION);
+            tesseract.setDatapath(basePath + TESSERACT_LOCATION);
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = null;
@@ -174,6 +179,8 @@ public class SettingsController implements Initializable{
                 App.appContextHolder.setSalesHeight(height.intValue());
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION,"Target screen area captured.", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
                 alert.showAndWait();
                 if (alert.getResult() == ButtonType.OK) {
                     alert.close();
@@ -198,6 +205,8 @@ public class SettingsController implements Initializable{
                 App.appContextHolder.setOrNumberHeight(height.intValue());
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION,"Target screen area captured.", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
                 alert.showAndWait();
                 if (alert.getResult() == ButtonType.OK) {
                     alert.close();
@@ -208,7 +217,7 @@ public class SettingsController implements Initializable{
             }
         });
 
-        this.rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
+
         //Load ocr-properties saved config
         try {
             Properties prop = new Properties();
@@ -328,10 +337,10 @@ public class SettingsController implements Initializable{
                 salesWidth = prop.getProperty("sales_width");
                 salesHeight = prop.getProperty("sales_height");
 
-                orPosX = prop.getProperty("orPosX");
-                orPosY = prop.getProperty("orPosY");
-                orWidth = prop.getProperty("orWidth");
-                orHeight = prop.getProperty("orHeight");
+                orPosX = prop.getProperty("or_pos_x");
+                orPosY = prop.getProperty("or_pos_y");
+                orWidth = prop.getProperty("or_width");
+                orHeight = prop.getProperty("or_height");
             }
             if (!file.exists()) {
                 file.createNewFile();
@@ -344,7 +353,6 @@ public class SettingsController implements Initializable{
                 salesPosY = String.valueOf(App.appContextHolder.getSalesPosY());
                 salesWidth = String.valueOf(App.appContextHolder.getSalesWidth());
                 salesHeight = String.valueOf(App.appContextHolder.getSalesHeight());
-
             }
             if (App.appContextHolder.getOrNumberPosX() != null) {
                 orPosX = String.valueOf(App.appContextHolder.getOrNumberPosX());
@@ -353,26 +361,56 @@ public class SettingsController implements Initializable{
                 orHeight = String.valueOf(App.appContextHolder.getOrNumberHeight());
             }
 
-            //recreate file
-            PrintWriter fstream = new PrintWriter(new FileWriter(file));
-            fstream.println("sales_pos_x=" + salesPosX);
-            fstream.println("sales_pos_y=" + salesPosY);
-            fstream.println("sales_width=" + salesWidth);
-            fstream.println("sales_height=" + salesHeight);
-            fstream.println("or_pos_x=" + orPosX);
-            fstream.println("or_pos_y=" + orPosY);
-            fstream.println("or_width=" + orWidth);
-            fstream.println("or_height=" + orHeight);
-            fstream.flush();
-            fstream.close();
+            if (orPosX ==null  || salesPosX == null || orPosX.equals("") || salesPosX.equals("")) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION,"You have not completed assigning target screen area.", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
+                alert.showAndWait();
+                if (alert.getResult() == ButtonType.OK) {
+                    alert.close();
+                }
+            } else {
+                //recreate file
+                PrintWriter fstream = new PrintWriter(new FileWriter(file));
+                fstream.println("sales_pos_x=" + salesPosX);
+                fstream.println("sales_pos_y=" + salesPosY);
+                fstream.println("sales_width=" + salesWidth);
+                fstream.println("sales_height=" + salesHeight);
+                fstream.println("or_pos_x=" + orPosX);
+                fstream.println("or_pos_y=" + orPosY);
+                fstream.println("or_width=" + orWidth);
+                fstream.println("or_height=" + orHeight);
+                fstream.flush();
+                fstream.close();
 
-            Stage stage = new Stage();
-            stage.setScene(new Scene(new Browser(),750,500, javafx.scene.paint.Color.web("#666970")));
-            stage.setMaximized(true);
-            stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-            stage.show();
-            App.appContextHolder.setHomeStage(stage);
-            ((Stage)this.previewText.getScene().getWindow()).close();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION,"OCR settings updated.", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
+                alert.showAndWait();
+                if (alert.getResult() == ButtonType.OK) {
+
+                    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                    double width = screenSize.getWidth();
+                    double height = screenSize.getHeight();
+                    Stage stage = new Stage();
+                    stage.setMaximized(true);
+                    stage.setTitle("Rush POS Sync");
+                    stage.setScene(new Scene(new Browser(),width - 20,height - 70, javafx.scene.paint.Color.web("#666970")));
+                    stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                    stage.show();
+                    App.appContextHolder.setHomeStage(stage);
+                    if (salesCaptureStage != null) {
+                        ((Stage)salesCaptureStage.getScene().getWindow()).close();
+                    }
+                    if (orCaptureStage != null) {
+                        ((Stage)orCaptureStage.getScene().getWindow()).close();
+                    }
+                    ((Stage)this.previewText.getScene().getWindow()).close();
+                    alert.close();
+                }
+
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -384,9 +422,9 @@ public class SettingsController implements Initializable{
         //Check if user captured temporary values if not get configuration from config file
         if (App.appContextHolder.getOrNumberPosX() != null) {
             //Create image based from temporary ocr config
-            salesX = App.appContextHolder.getOrNumberPosX();
-            salesY = App.appContextHolder.getOrNumberPosY();
-            salesWidth = App.appContextHolder.getOrNumberWidth();
+            salesX      = App.appContextHolder.getOrNumberPosX();
+            salesY      = App.appContextHolder.getOrNumberPosY();
+            salesWidth  = App.appContextHolder.getOrNumberWidth();
             salesHeight = App.appContextHolder.getOrNumberHeight();
         } else {
             try {
@@ -407,14 +445,21 @@ public class SettingsController implements Initializable{
         //then read the text using tesseract
         try {
             Robot robot = new Robot();
-            Toolkit myToolkit = Toolkit.getDefaultToolkit();
             Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
             javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
             this.previewImage.setImage(image);
+
+            String basePath = "";
+            if (App.appContextHolder.getIs64Bit()) {
+                basePath = "C:\\Program Files (x86)\\Rush-POS-Sync";
+            } else {
+                basePath = "C:\\Program Files\\Rush-POS-Sync";
+            }
+
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(TESSERACT_LOCATION);
+            tesseract.setDatapath(basePath + TESSERACT_LOCATION);
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = null;
@@ -432,12 +477,23 @@ public class SettingsController implements Initializable{
 
     public void exit() {
 
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
         Stage stage = new Stage();
-        stage.setScene(new Scene(new Browser(),750,500, Color.web("#666970")));
+        stage.setScene(new Scene(new Browser(),width - 20, height - 70, Color.web("#666970")));
+        stage.setTitle("Rush POS Sync");
         stage.setMaximized(true);
         stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
         stage.show();
         App.appContextHolder.setHomeStage(stage);
+
+        if (salesCaptureStage != null) {
+            ((Stage)salesCaptureStage.getScene().getWindow()).close();
+        }
+        if (orCaptureStage != null) {
+            ((Stage)orCaptureStage.getScene().getWindow()).close();
+        }
         ((Stage)this.previewText.getScene().getWindow()).close();
     }
 

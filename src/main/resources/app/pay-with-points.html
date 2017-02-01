@@ -2,7 +2,20 @@
     <div ng-if="member.id">
         <div>
             <div class="col-sm-12">
-                <h4 class="content-title">PAY WITH POINTS</h4>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h4 class="content-title">PAY WITH POINTS<!-- <img src="images/sample_user.png" class="profile-picture-thumb pull-right" alt="">--></h4>
+                    </div>
+                    <div class="col-sm-4">
+
+                    </div>
+                    <div class="col-sm-2">
+                        <a ng-click="logoutMember()" href="" style="text-align:center;border-radius:30px;padding-left: 10px;padding-top: 10px;display: inline-block;height: 40px;width: 200px;background-color:#ed2828; color: white;"><b>EXIT MEMBER</b></a>
+                    </div>
+                    <div class="col-sm-2">
+
+                    </div>
+                </div>
                 <!--  <h4 class="content-title">PAY WITH POINTS <img src="images/sample_user.png" class="profile-picture-thumb pull-right" alt=""></h4>-->
                 <hr>
             </div>
@@ -25,7 +38,7 @@
                 <label class="d-label">Mobile Number</label>
                 <span class="d-value">{{member.mobile_no}}</span>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-3" style="word-wrap: break-word;">
                 <label class="d-label">Email</label>
                 <span class="d-value">{{member.email}}</span>
             </div>
@@ -48,21 +61,36 @@
                 <label class="d-label">Available Points</label>
                 <span class="d-value" id="points-span">{{member.points}}</span>
             </div>
+        </div> <br>
+        <div class="row">
+            <div class="col-sm-3">
+
+            </div>
+            <div class="col-sm-3">
+
+            </div>
+            <div class="col-sm-3">
+
+            </div>
+            <div class="col-sm-3">
+                <label class="d-label">Points in Peso value</label>
+                <span id="points-peso-span" class="d-value" style="background-color: yellow">{{member.pointsPesoValue}}</span>
+            </div>
         </div>
         <br><br><br>
         <form action="http://54.169.103.206/design/rush-pos/pay-with-points.html" class="form">
             <div class="row">
                 <div class="col-sm-4">
                     <label>Receipt No.</label>
-                    <input id="or_no" type="text" class="w100" value="">
+                    <input onfocus="homeService.showVirtualKeyboard()" onfocusout="homeService.hideVirtualKeyboard()" id="or_no" type="text" class="w100" value="">
                 </div>
                 <div class="col-sm-4">
                     <label>Purchase Amount</label>
-                    <input fcsa-number="{maxDecimals: 2, preventInvalidInput: true,min: 0}"  ng-model="amount" id="amount" type="text" class="w100" value="">
+                    <input onfocus="homeService.showVirtualKeyboard()" onfocusout="homeService.hideVirtualKeyboard()" amount-only  ng-model="amount" id="amount" type="text" class="w100" value="">
                 </div>
                 <div class="col-sm-4">
                     <label>Total Points to Pay</label>
-                    <input fcsa-number="{maxDecimals: 2, preventInvalidInput: true,min: 0}" ng-model="points" id="points" type="text" class="w100" value="">
+                    <input onfocus="homeService.showVirtualKeyboard()" onfocusout="homeService.hideVirtualKeyboard()" amount-only ng-model="points" id="points" type="text" class="w100" value="">
                 </div>
             </div>
             <br>
@@ -70,9 +98,51 @@
         <div class="row">
             <div class="col-md-12 center">
                 <button class="btn-clear" type="button" ng-click="payWithPointsReset()">Reset</button>
-                <button class="btn-send" type="button" ng-click="payWithPoints()">Submit</button>
+                <button class="btn-send" type="button" ng-click="showPinModal()" data-toggle="modal">Submit</button>
             </div>
         </div>
+        <div  class="modal fade" id="pin_modal" tabindex="-1" role="dialog" aria-labelledby="myModal2">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content row">
+                    <div class="col-md-12  col-sm-12 details" style="text-align: center;">
+                        <br><br>
+                        <h3 class="modal-header-h3">Enter 4-digit M-PIN</h3>
+                        <br>
+                        <form  class="form">
+
+                            <div class="row">
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-8">
+                                    <input ng-model="test" numeric-only type="password" class="w100" value="" id="pin" maxlength="4">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-4">
+                                    <label></label>
+                                    <button class="btn-send" type="button" ng-click="payWithPoints()">Submit</button>
+                                </div>
+                                <div class="col-sm-4" style="margin-left: -20px !important;">
+                                    <label></label>
+                                    <button class="btn-clear" type="button" ng-click="closeModal()">Cancel</button>
+                                </div>
+                            </div>
+                            <br>
+                        </form>
+                    </div>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close"><img src="images/close.png" alt=""></a>
+                </div>
+            </div>
+            <script>
+                $("input").focus(function(){
+                    homeService.showVirtualKeyboard();
+                });
+                $("input").focusout(function(){
+                    homeService.hideVirtualKeyboard();
+                });
+            </script>
+          </div>
         <!-- Result Modal -->
         <div id="paypoints-result-modal" class="modal fade" role="dialog"  tabindex="-1"  >
             <div class="modal-dialog">
@@ -106,3 +176,4 @@
         <h1>You are currently offline.</h1>
     </div>
 </div>
+

@@ -11,16 +11,8 @@ public class Account {
     private String birthdate;
     private String gender;
     private String mobileNumber;
-    private Double currentPoints;
+    private String currentPoints;
     private String currentDate;
-
-    public String getCurrentDate() {
-        return currentDate;
-    }
-
-    public void setCurrentDate(String currentDate) {
-        this.currentDate = currentDate;
-    }
 
     public String getId() {
         return id;
@@ -70,11 +62,19 @@ public class Account {
         this.mobileNumber = mobileNumber;
     }
 
-    public Double getCurrentPoints() {
+    public String getCurrentPoints() {
         return currentPoints;
     }
 
-    public void setCurrentPoints(Double currentPoints) {
+    public void setCurrentPoints(String currentPoints) {
         this.currentPoints = currentPoints;
+    }
+
+    public String getCurrentDate() {
+        return currentDate;
+    }
+
+    public void setCurrentDate(String currentDate) {
+        this.currentDate = currentDate;
     }
 }

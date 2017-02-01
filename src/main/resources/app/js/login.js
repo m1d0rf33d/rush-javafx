@@ -1,6 +1,5 @@
 //Trigger the alert listener on our backend to bind loginService
 alert("__CONNECT__BACKEND__loginService");
-alert("__CONNECT__BACKEND__homeService");
 //Create our angular login module
 var loginModule = angular.module('LoginModule',[]);
 
@@ -58,7 +57,7 @@ function loginResponseHandler(jsonResponse) {
     if (resp.error_code != '0x0') {
         $(".temp").remove();
         $(".login-modal-body").prepend('<div class="temp"><p>'+resp.message+'</p></div>');
-        $(".login-modal-body").prepend('<div class="alert alert-warning temp"> <strong>Login Failed</strong> </div>');
+        $(".login-modal-body").prepend('<div class="alert alert-warning temp"> <strong>LOGIN</strong> </div>');
         $("#loginModal").modal('show');
     } else {
         location.href = "home.html";

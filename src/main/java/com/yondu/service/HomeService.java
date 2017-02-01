@@ -3,10 +3,14 @@ package com.yondu.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.sun.javafx.scene.control.skin.FXVK;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import com.yondu.App;
+import com.yondu.AppContextHolder;
 import com.yondu.Browser;
 import com.yondu.model.Account;
 import com.yondu.model.constants.ApiFieldContants;
+import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.utils.Java2JavascriptUtils;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
@@ -15,11 +19,21 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -30,11 +44,10 @@ import org.w3c.dom.html.HTMLSelectElement;
 
 import java.awt.*;
 import java.io.*;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.Properties;
 
 import static com.yondu.model.constants.AppConfigConstants.GIVE_POINTS_FXML;
 import static com.yondu.model.constants.AppConfigConstants.SETTINGS_FXML;
@@ -53,9 +66,27 @@ public class HomeService {
 
     private Stage ocrConfigStage;
     private Stage givePointsStage;
+    private WebView webView;
+    private Properties prop = new Properties();
 
-    public HomeService(WebEngine webEngine) {
+    public HomeService(WebEngine webEngine,
+                       WebView webView) {
+        this.webView = webView;
         this.webEngine = webEngine;
+
+        try {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api.properties");
+            if (inputStream != null) {
+                prop.load(inputStream);
+                inputStream.close();
+            } else {
+                throw new FileNotFoundException("property file api.properties not found in the classpath");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /** Load employee data that will be sent back to the calling javascript. Target page view-> home.html
@@ -69,7 +100,6 @@ public class HomeService {
             jsonObject.put("id", App.appContextHolder.getEmployeeId());
             jsonObject.put("name",App.appContextHolder.getEmployeeName());
             jsonObject.put("currentDate",formatter.format(new Date()));
-
             //Load branches
             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
             List<NameValuePair> params = new ArrayList<>();
@@ -85,14 +115,63 @@ public class HomeService {
                 }
             }
 
+            url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMerchantDesignsEndpoint();
+            params = new ArrayList<>();
+            jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            jsonObj = (JSONObject) parser.parse(jsonResponse);
+            JSONObject d = (JSONObject) jsonObj.get("data");
+            JSONObject merchant = (JSONObject) d.get("merchant");
+            jsonObject.put("backgroundUrl", merchant.get("background_url"));
+
+
+            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+
+            url = prop.getProperty("cms_url") + prop.getProperty("tomcat_port") + prop.getProperty("oauth_endpoint");
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.addHeader("Authorization", prop.getProperty("oauth_secret"));
+            httpPost.addHeader("Content-Type", "application/json");
+            HttpResponse response = httpClient.execute(httpPost);
+            // use httpClient (no need to close it explicitly)
+            BufferedReader rd = new BufferedReader(
+                    new InputStreamReader(response.getEntity().getContent()));
+
+            StringBuffer result = new StringBuffer();
+            String line = "";
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+            JSONObject jsonObj1 = (JSONObject) parser.parse(result.toString());
+            String token = (String) jsonObj1.get("access_token");
+
+            url = prop.getProperty("cms_url") + prop.getProperty("tomcat_port") + prop.getProperty("access_endpoint");
+            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":branch_id", App.appContextHolder.getBranchId());
+            HttpGet httpGet = new HttpGet(url);
+            httpGet.addHeader("Authorization", "Bearer " + token);
+            httpGet.addHeader("Content-Type", "application/json");
+            response = httpClient.execute(httpGet);
+            rd = new BufferedReader(
+                    new InputStreamReader(response.getEntity().getContent()));
+
+             result = new StringBuffer();
+             line = "";
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+            JSONObject j = (JSONObject) parser.parse(result.toString());
+            JSONObject dataJson = (JSONObject) j.get("data");
+            List<String> screens = (ArrayList) dataJson.get("access");
+            Boolean withVk = (Boolean) dataJson.get("withVk");
+            App.appContextHolder.setWithVk(withVk);
+            jsonObject.put("screens", screens);
+
+            httpClient.close();
             new Thread( () -> {
-                Platform.runLater(()->
-                        Java2JavascriptUtils.call(callbackfunction, jsonObject.toJSONString())
-                );
+                Java2JavascriptUtils.call(callbackfunction, jsonObject.toJSONString());
             }).start();
         } catch (IOException e) {
             e.printStackTrace();
             App.appContextHolder.setOnlineMode(false);
+            redirectToSplash();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -102,121 +181,51 @@ public class HomeService {
      *
      */
     public void register(String name, String email, String mobile, String mpin, String birthdate, String gender, Object callbackfunction) {
-        Service<String> service = new Service<String>() {
-            @Override
-            protected Task<String> createTask() {
-                return new Task<String>() {
-                    @Override
-                    protected String call() throws Exception {
-                        String jsonResponse = null;
-                        try {
-                            //Build request body
-                            List<NameValuePair> params = new ArrayList<>();
-                            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_NAME, name));
-                            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_EMAIL, email));
-                            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobile));
-                            params.add(new BasicNameValuePair(ApiFieldContants.MPIN, mpin));
-                            //Optional fields
-                            if (birthdate != null && !birthdate.isEmpty()) {
-                                params.add(new BasicNameValuePair(ApiFieldContants.BIRTHDATE, birthdate));
-                            }
-                            if (gender != null && !gender.isEmpty()) {
-                                params.add(new BasicNameValuePair(ApiFieldContants.GENDER, gender));
-                            }
+        String jsonResponse = null;
+        try {
+            //Build request body
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_NAME, name));
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_EMAIL, email));
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobile));
+            params.add(new BasicNameValuePair(ApiFieldContants.PIN, mpin));
+            //Optional fields
+            if (birthdate != null && !birthdate.isEmpty()) {
 
-                            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getRegisterEndpoint();
-                            jsonResponse = apiService.call(url, params, "post", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
-                            final String d = jsonResponse;
-                            Platform.runLater(()->
-                                    Java2JavascriptUtils.call(callbackfunction, d)
-                            );
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            App.appContextHolder.setOnlineMode(false);
-                        }
-                        return jsonResponse;
-                    }
-                };
+                params.add(new BasicNameValuePair(ApiFieldContants.BIRTHDATE, birthdate));
             }
-        };
-        service.setOnSucceeded((WorkerStateEvent e) -> {
-            if (e.getSource().getValue() != null) {
-                this.webEngine.executeScript("registerResponseHandler('"+e.getSource().getValue()+"')");
+            if (gender != null && !gender.isEmpty()) {
+                params.add(new BasicNameValuePair(ApiFieldContants.GENDER, gender));
             }
-            webEngine.executeScript("closeLoadingModal('"+ App.appContextHolder.isOnlineMode()+"')");
-        });
-        service.start();
-    }
 
-    /** Login member
-     *
-     * @param callbackfunction
-     */
-    public void loginMember(String mobileNumber, final Object callbackfunction) {
-        new Thread( () -> {
-            runLater( () -> {
-                try {
-                    //Build request body
-                    List<NameValuePair> params = new ArrayList<>();
-                    params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileNumber));
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getRegisterEndpoint().replace(":employee_id", App.appContextHolder.getEmployeeId());
+            jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            final String d = jsonResponse;
+            new Thread(()->
+                    Java2JavascriptUtils.call(callbackfunction, d)
+            ).start();
 
-                    String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
-                    url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-                    String result = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-                    JSONParser parser = new JSONParser();
-                    JSONObject jsonObject = (JSONObject) parser.parse(result);
-                    String error = (String) jsonObject.get(ApiFieldContants.ERROR_CODE);
-                    if (error.equals(ApiFieldContants.NO_ERROR)) {
-                        JSONObject data = (JSONObject) jsonObject.get(ApiFieldContants.DATA);
-                        App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
-                        App.appContextHolder.setCustomerUUID((String) data.get("id"));
-
-                        //get current points
-                        params = new ArrayList<>();
-                        url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetPointsEndpoint();
-                        url = url.replace(":customer_uuid", App.appContextHolder.getCustomerUUID());
-                        String jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-                        JSONObject json = (JSONObject) parser.parse(jsonResponse);
-                        data.put("points", json.get("data"));
-
-                        //get member rewards
-                        url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getCustomerRewardsEndpoint();
-                        url = url.replace(":id", App.appContextHolder.getCustomerUUID());
-                        String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
-                        //Parse results
-                        JSONObject j = (JSONObject) parser.parse(responseStr);
-                        List<JSONObject> d = (ArrayList) j.get("data");
-                        responseStr = new Gson().toJson(d);
-                        data.put("activeVouchers", responseStr);
-                        result = jsonObject.toJSONString();
-                    }
-                    Java2JavascriptUtils.call(callbackfunction, result);
-
-                } catch (IOException e) {
-                    App.appContextHolder.setOnlineMode(false);
-                    e.printStackTrace();
-                    //offline mode
-                } catch (ParseException e) {
-                    //invalid response format
-                    e.printStackTrace();
-                }
-                webEngine.executeScript("closeLoadingModal('" + App.appContextHolder.isOnlineMode() + "')");
-            });
-        }).start();
-
+            this.webEngine.executeScript("registerResponseHandler('"+d+"')");
+        } catch (IOException e) {
+            e.printStackTrace();
+            App.appContextHolder.setOnlineMode(false);
+            goToOfflineMode();
+        }
+        webEngine.executeScript("closeLoadingModal('"+ App.appContextHolder.isOnlineMode()+"')");
     }
 
     /** Pay using points
      *
      */
-    public void payWithPoints(String points, String orNumber, String amount) {
+    public void payWithPoints(String points, String orNumber, String amount, String pin) {
        try {
+           DecimalFormat formatter = new DecimalFormat("#,###.00");
            List<NameValuePair> params = new ArrayList<>();
            params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
            params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
            params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount.replace(",","")));
            params.add(new BasicNameValuePair(ApiFieldContants.POINTS, points.replace(",","")));
+           params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin.replace(",","")));
 
            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPayWithPointsEndpoint();
            url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
@@ -234,13 +243,41 @@ public class HomeService {
                String result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                //Parse response
                JSONObject resultJson = (JSONObject) parser.parse(result);
-               jsonObj.put("points", resultJson.get("data"));
+               String strPoints = (String) resultJson.get("data");
+               jsonObj.put("points", formatter.format(Double.parseDouble(strPoints)));
+               if(jsonObj.get("points").equals(".00")) {
+                   jsonObj.put("points", "0");
+               }
+               //Convert to peso value
+               url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
+               url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
+               result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+               JSONObject obj1 = (JSONObject) parser.parse(result);
+               JSONObject d1 = (JSONObject) obj1.get("data");
+
+
+               Double dPoints = Double.parseDouble(strPoints);
+               Double redemptionPeso = null;
+               Long redemptionPoints = (Long) d1.get("redemption_points");
+
+               dPoints = dPoints / redemptionPoints;
+               try {
+                   redemptionPeso = (Double) d1.get("redemption_peso");
+               } catch (ClassCastException e) {
+                   Long ex = (Long) d1.get("redemption_peso");
+                   redemptionPeso = ex.doubleValue();
+               }
+               jsonObj.put("pointsPesoValue", formatter.format( dPoints * redemptionPeso));
+               if (jsonObj.get("pointsPesoValue").equals(".00")) {
+                   jsonObj.put("pointsPesoValue","0");
+               }
                jsonResponse = jsonObj.toJSONString();
            }
 
            webEngine.executeScript("payWithPointsResponse('"+jsonResponse+"')");
        } catch (IOException e) {
            App.appContextHolder.setOnlineMode(false);
+           goToOfflineMode();
            e.printStackTrace();
        } catch (ParseException e) {
            e.printStackTrace();
@@ -259,11 +296,13 @@ public class HomeService {
             String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
             final String data = jsonResponse;
-            new Thread( () -> {
-                Java2JavascriptUtils.call(callbackfunction, data);
-            }).start();
+            new Thread(()->
+                    Java2JavascriptUtils.call(callbackfunction, data)
+            ).start();
+
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
+            goToOfflineMode();
             e.printStackTrace();
         }
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
@@ -301,6 +340,7 @@ public class HomeService {
             this.webEngine.executeScript("redeemRewardsResponseHandler('"+responseStr+"')");
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
+            goToOfflineMode();
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
@@ -339,12 +379,14 @@ public class HomeService {
             }
             tempdata = unclaimedJson.toJSONString();
             final String finalData = tempdata;
-            new Thread( () -> {
-                Java2JavascriptUtils.call(callbackfunction, finalData);
-            }).start();
+            new Thread(()->
+                    Java2JavascriptUtils.call(callbackfunction, finalData)
+            ).start();
+
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
             e.printStackTrace();
+            goToOfflineMode();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -369,6 +411,7 @@ public class HomeService {
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
             e.printStackTrace();
+            goToOfflineMode();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -383,13 +426,13 @@ public class HomeService {
             ocrConfigStage = new Stage();
             Parent root = FXMLLoader.load(App.class.getResource(SETTINGS_FXML));
             ocrConfigStage.setScene(new Scene(root, 700,500));
-            ocrConfigStage.setTitle("Setup OCR");
-            ocrConfigStage.getScene().getStylesheets().add(App.class.getResource("/app/css/fxml.css").toExternalForm());
+            ocrConfigStage.setTitle("Rush POS Sync");
             ocrConfigStage.resizableProperty().setValue(Boolean.FALSE);
             ocrConfigStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             ocrConfigStage.show();
             App.appContextHolder.getHomeStage().close();
         } catch (IOException e) {
+            goToOfflineMode();
             e.printStackTrace();
         }
     }
@@ -402,7 +445,7 @@ public class HomeService {
             givePointsStage = new Stage();
             Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
             givePointsStage.setScene(new Scene(root, 400,220));
-            givePointsStage.setTitle("Give Points");
+            givePointsStage.setTitle("Rush POS Sync");
             givePointsStage.resizableProperty().setValue(Boolean.FALSE);
 
             givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
@@ -412,6 +455,7 @@ public class HomeService {
 
         } catch (IOException e) {
             e.printStackTrace();
+            goToOfflineMode();
 
         }
     }
@@ -427,16 +471,18 @@ public class HomeService {
             double width = screenSize.getWidth();
             double height = screenSize.getHeight();
             Stage stage = new Stage();
-            Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/login.fxml"));
-            stage.setScene(new Scene(root, width,height));
-            stage.setTitle("Rush");
-            stage.resizableProperty().setValue(Boolean.FALSE);
+            //Let's get the party started
+            Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
+            stage.setScene(new Scene(root, 600,400));
+            stage.resizableProperty().setValue(false);
+            stage.initStyle(StageStyle.UNDECORATED);
             stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             stage.show();
             App.appContextHolder.getHomeStage().close();
             App.appContextHolder.setHomeStage(stage);
         } catch (IOException e) {
             e.printStackTrace();
+            goToOfflineMode();
         }
     }
 
@@ -445,6 +491,7 @@ public class HomeService {
         if (App.appContextHolder.getCustomerMobile() != null && App.appContextHolder.getCustomerUUID() != null) {
 
             try {
+                DecimalFormat formatter = new DecimalFormat("#,###,###.00");
                 //Build request body
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
@@ -462,7 +509,12 @@ public class HomeService {
                 result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
                 JSONObject json = (JSONObject) parser.parse(result);
-                data.put("points",  json.get("data"));
+                String strPoints = (String) json.get("data");
+                data.put("points",  formatter.format(Double.parseDouble(strPoints)));
+                if (data.get("points").equals(".00")) {
+                    data.put("points",  "0");
+                }
+
                 //get member rewards
                 url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getCustomerRewardsEndpoint();
                 url = url.replace(":id",App.appContextHolder.getCustomerUUID());
@@ -472,15 +524,42 @@ public class HomeService {
                 List<JSONObject> d = (ArrayList) j.get("data");
                 responseStr = new Gson().toJson(d);
                 data.put("activeVouchers", responseStr);
+                //Convert to peso value
+                url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
+                url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
+                result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                JSONObject obj1 = (JSONObject) parser.parse(result);
+                JSONObject d1 = (JSONObject) obj1.get("data");
+
+
+                Double dPoints = Double.parseDouble(strPoints);
+                Double redemptionPeso;
+                Long redemptionPoints = (Long) d1.get("redemption_points");
+                dPoints = dPoints / redemptionPoints;
+                try {
+                    redemptionPeso = (Double) d1.get("redemption_peso");
+                } catch (ClassCastException e) {
+                    Long ex = (Long) d1.get("redemption_peso");
+                    redemptionPeso = ex.doubleValue();
+                }
+                data.put("pointsPesoValue", formatter.format( dPoints * redemptionPeso));
+                if (data.get("pointsPesoValue").equals(".00")) {
+                    data.put("pointsPesoValue","0");
+                }
+
                 result = jsonResponse.toJSONString();
                 final String finalData = result;
-                new Thread( () -> {
-                    Java2JavascriptUtils.call(callbackfunction, finalData);
-                }).start();
+                new Thread(()->
+                        Java2JavascriptUtils.call(callbackfunction, finalData)
+                ).start();
+
             } catch(IOException e) {
                 App.appContextHolder.setOnlineMode(false);
                 e.printStackTrace();
+                goToOfflineMode();
             } catch (ParseException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -500,12 +579,14 @@ public class HomeService {
             responseStr = new Gson().toJson(data);
 
             final String dataStr = responseStr;
-            new Thread( () -> {
-                Java2JavascriptUtils.call(callbackfunction, dataStr);
-            }).start();
+            new Thread(()->
+                    Java2JavascriptUtils.call(callbackfunction, dataStr)
+            ).start();
+
         } catch (IOException e) {
             e.printStackTrace();
             App.appContextHolder.setOnlineMode(false);
+            goToOfflineMode();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -524,7 +605,14 @@ public class HomeService {
             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getCustomerTransactionsEndpoint();
             url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
             String responseStr = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
-
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObj = (JSONObject) parser.parse(responseStr);
+            List<JSONObject> arr = (ArrayList) jsonObj.get("data");
+            for (JSONObject obj : arr) {
+                if (obj.get("receipt_no") == null) {
+                    obj.put("receipt_no", obj.get("reference_code"));
+                }
+            }
            /* JSONParser parser = new JSONParser();
             JSONObject jsonObj = (JSONObject) parser.parse(responseStr);
             List<JSONObject> data = (ArrayList) jsonObj.get("data");
@@ -548,11 +636,15 @@ public class HomeService {
                 }
             }
             final String finalData = jsonObj.toJSONString();*/
-            new Thread( () -> {
-                Java2JavascriptUtils.call(callbackfunction, responseStr);
-            }).start();
+            new Thread(()->
+                    Java2JavascriptUtils.call(callbackfunction, jsonObj.toJSONString())
+            ).start();
+
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
+            e.printStackTrace();
+            goToOfflineMode();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
@@ -566,7 +658,9 @@ public class HomeService {
             try (BufferedReader br = new BufferedReader(new FileReader(file))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    String[] arr = line.split(",");
+                    byte[] decoded = org.apache.commons.codec.binary.Base64.decodeBase64(line.getBytes());
+                    line = new String(decoded);
+                    String[] arr = line.split(":");
 
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("mobileNumber", arr[0].split("=")[1]);
@@ -575,15 +669,16 @@ public class HomeService {
                     jsonObject.put("date", arr[3].split("=")[1]);
                     jsonArray.add(jsonObject);
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 App.appContextHolder.setOnlineMode(false);
                 e.printStackTrace();
             }
 
             final String finalData = jsonArray.toJSONString();
-            new Thread( () -> {
-                Java2JavascriptUtils.call(callbackFunction, finalData);
-            }).start();
+            new Thread(()->
+                    Java2JavascriptUtils.call(callbackFunction, finalData)
+            ).start();
+
         }
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
@@ -598,7 +693,9 @@ public class HomeService {
             try (BufferedReader br = new BufferedReader(new FileReader(file))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    String[] arr = line.split(",");
+                    byte[] decoded = org.apache.commons.codec.binary.Base64.decodeBase64(line.getBytes());
+                    line = new String(decoded);
+                    String[] arr = line.split(":");
 
                     String mobileNumber = arr[0].split("=")[1];
                     String totalAmount = arr[1].split("=")[1];
@@ -630,7 +727,7 @@ public class HomeService {
                         params = new ArrayList<>();
                         params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
                         params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
-                        params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmount));
+                        params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmount.replace(",","")));
                         url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGivePointsEndpoint();
                         url = url.replace(":customer_uuid", (String) data.get("id"));
                         resultJson = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
@@ -639,17 +736,22 @@ public class HomeService {
                         if (!jsonObject.get("error_code").equals("0x0")) {
                             JSONObject error = (JSONObject) jsonObject.get("errors");
                             String errorMessage = "";
-                            if (error.get("or_no") != null) {
-                                List<String> l = (ArrayList<String>) error.get("or_no");
-                                errorMessage = l.get(0);
-                            }
-                            if (error.get("amount") != null) {
-                                List<String> l = (ArrayList<String>) error.get("amount");
-                                errorMessage = l.get(0);
-                            }
+                           if (error != null) {
+                               if (error.get("or_no") != null) {
+                                   List<String> l = (ArrayList<String>) error.get("or_no");
+                                   errorMessage = l.get(0);
+                               }
+                               if (error.get("amount") != null) {
+                                   List<String> l = (ArrayList<String>) error.get("amount");
+                                   errorMessage = l.get(0);
+                               }
+                           }
+                           if (jsonObject.get("message") != null) {
+                               errorMessage = (String)jsonObject.get("message");
+                           }
                             json.put("message", errorMessage);
                             failedArray.add(json);
-                        } else {
+                        }  else {
                             successArray.add(json);
                         }
                     }
@@ -663,9 +765,10 @@ public class HomeService {
                 JSONObject finalJson = new JSONObject();
                 finalJson.put("successArray", successArray);
                 finalJson.put("failedArray", failedArray);
-                this.webEngine.executeScript("sendOfflinePointsResponse('"+ finalJson.toJSONString()+"')");
+                this.webEngine.executeScript("sendOfflinePointsResponse('"+ finalJson.toJSONString().replace("'","")+"')");
             } catch (IOException e) {
                 App.appContextHolder.setOnlineMode(false);
+                goToOfflineMode();
                 e.printStackTrace();
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -683,7 +786,9 @@ public class HomeService {
             params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount.replace(",","")));
             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGivePointsEndpoint();
             url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
             String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(responseStr);
             if (jsonObject.get("error_code").equals("0x0")) {
@@ -695,12 +800,16 @@ public class HomeService {
                 JSONObject json = (JSONObject) parser.parse(jsonResponse);
                 jsonObject.put("points", json.get("data"));
                 responseStr = jsonObject.toJSONString();
-            }
+            } else {
+                responseStr = jsonObject.toJSONString();
 
+            }
+            responseStr = responseStr.replace("'","");
             webEngine.executeScript("givePointsManualResponse('"+responseStr+"')");
         } catch (IOException e) {
             e.printStackTrace();
             App.appContextHolder.setOnlineMode(false);
+            goToOfflineMode();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -713,16 +822,200 @@ public class HomeService {
 
         try {
             String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
+            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
             String result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
-            new Thread( () -> {
-                Java2JavascriptUtils.call(callbackFunction, result);
-            }).start();
+            new Thread(()->
+                    Java2JavascriptUtils.call(callbackFunction, result)
+            ).start();
+
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
             e.printStackTrace();
+            goToOfflineMode();
         }
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
+    }
+    private void redirectToSplash() {
+        App.appContextHolder.setEmployeeId(null);
+        App.appContextHolder.setEmployeeName(null);
+        App.appContextHolder.setCustomerMobile(null);
+        try {
+            App.appContextHolder.getHomeStage().close();
+            Stage primaryStage = new Stage();
+            Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
+            primaryStage.setScene(new Scene(root, 600,400));
+            primaryStage.resizableProperty().setValue(false);
+            primaryStage.initStyle(StageStyle.UNDECORATED);
+            primaryStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showVirtualKeyboard() {
+       if(App.appContextHolder.getWithVk()) {
+           FXVK.init(webView);
+           FXVK.attach(webView);
+       }
+    }
+    public void hideVirtualKeyboard() {
+
+        if (App.appContextHolder.getWithVk()) {
+            FXVK.detach();
+        }
+    }
+
+
+    public void givePointsGuest(String mobileNo, String orNumber, String amount) {
+
+        try {
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileNo));
+            params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
+            params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount.replace(",","")));
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGuestEarnEndpoint();
+            url = url.replace(":employee_id",App.appContextHolder.getEmployeeId());
+            String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+            responseStr = responseStr.replace("'","");
+            webEngine.executeScript("givePointsGuestResponse('"+responseStr+"')");
+        } catch (IOException e) {
+            e.printStackTrace();
+            App.appContextHolder.setOnlineMode(false);
+            goToOfflineMode();
+        }
+        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
+    }
+
+    public void goToOfflineMode() {
+        //Logout employee
+        App.appContextHolder.setEmployeeId(null);
+        App.appContextHolder.setEmployeeName(null);
+        App.appContextHolder.setCustomerMobile(null);
+        App.appContextHolder.setOnlineMode(false);
+
+
+        try {
+            App.appContextHolder.getHomeStage().close();
+
+
+            Stage givePointsStage = new Stage();
+            Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
+            givePointsStage.setScene(new Scene(root, 500,300));
+            givePointsStage.setTitle("Rush POS Sync");
+            givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+            givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+            givePointsStage.show();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "You have been redirected to offline mode due to network connection failure. Check your internet connection and press home button to reconnect.", ButtonType.OK);
+            alert.setTitle(AppConfigConstants.APP_TITLE);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.initOwner(givePointsStage);
+            alert.show();
+
+            if (alert.getResult() == ButtonType.OK) {
+                alert.close();
+            }
+            App.appContextHolder.setHomeStage(givePointsStage);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public boolean checkConnectivity() {
+        try {
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
+            java.util.List<NameValuePair> params = new ArrayList<>();
+            String jsonResponse = App.appContextHolder.getApiService().call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+
+    public void goToOfflineOcrMode() {
+        //Logout employee
+        App.appContextHolder.setEmployeeId(null);
+        App.appContextHolder.setEmployeeName(null);
+        App.appContextHolder.setCustomerMobile(null);
+        App.appContextHolder.setOnlineMode(false);
+
+
+        try {
+            App.appContextHolder.getHomeStage().close();
+
+            if (givePointsStage != null) {
+                givePointsStage.close();
+            }
+            givePointsStage = new Stage();
+            Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+            givePointsStage.setScene(new Scene(root, 400,220));
+            givePointsStage.setTitle("Rush POS Sync");
+            givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+
+            givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+            givePointsStage.show();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "You have been redirected to offline mode due to network connection failure. Check your internet connection and press home button to reconnect.", ButtonType.OK);
+            alert.setTitle(AppConfigConstants.APP_TITLE);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.initOwner(givePointsStage);
+            alert.show();
+
+            if (alert.getResult() == ButtonType.OK) {
+                alert.close();
+            }
+            App.appContextHolder.setHomeStage(givePointsStage);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            goToOfflineMode();
+
+        }
+    }
+
+    public void loginMember(String mobileNumber, String module) {
+        try {
+            String result = "";
+            String message = "";
+            //Build request body
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileNumber));
+
+            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
+            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+            String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            JSONParser parser = new JSONParser();
+            JSONObject responseJSON = (JSONObject) parser.parse(jsonResponse);
+            if (responseJSON.get("error_code").equals("0x0")) {
+                JSONObject data = (JSONObject) responseJSON.get(ApiFieldContants.DATA);
+                App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
+                App.appContextHolder.setCustomerUUID((String) data.get("id"));
+                result = "success";
+            } else {
+                message = (String) responseJSON.get("message");
+                result = "failed";
+            }
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("result", result);
+            jsonObject.put("mobileNumber", mobileNumber);
+            jsonObject.put("message", message);
+            jsonObject.put("module", module);
+            this.webEngine.executeScript("loginMemberResponseHandler('"+jsonObject.toJSONString()+"')");
+        } catch (IOException e) {
+            e.printStackTrace();
+            goToOfflineMode();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+      /*  if (module.equals("memberInquiry")) {
+            webEngine.executeScript("closeLoadingModal('" + App.appContextHolder.isOnlineMode() + "')");
+        }*/
     }
 
 

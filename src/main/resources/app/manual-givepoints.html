@@ -2,7 +2,20 @@
     <div ng-if="member.id">
         <div>
             <div class="col-sm-12">
-                <h4 class="content-title">PAYMENT DETAILS</h4>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h4 class="content-title">PAYMENT DETAILS<!-- <img src="images/sample_user.png" class="profile-picture-thumb pull-right" alt="">--></h4>
+                    </div>
+                    <div class="col-sm-4">
+
+                    </div>
+                    <div class="col-sm-2">
+                        <a ng-click="logoutMember()" href="" style="text-align:center;border-radius:30px;padding-left: 10px;padding-top: 10px;display: inline-block;height: 40px;width: 200px;background-color:#ed2828; color: white;"><b>EXIT MEMBER</b></a>
+                    </div>
+                    <div class="col-sm-2">
+
+                    </div>
+                </div>
                 <!--  <h4 class="content-title">PAY WITH POINTS <img src="images/sample_user.png" class="profile-picture-thumb pull-right" alt=""></h4>-->
                 <hr>
             </div>
@@ -25,7 +38,7 @@
                 <label class="d-label">Mobile Number</label>
                 <span class="d-value">{{member.mobile_no}}</span>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-3" style="word-wrap: break-word;">
                 <label class="d-label">Email</label>
                 <span class="d-value">{{member.email}}</span>
             </div>
@@ -54,11 +67,11 @@
             <div class="row">
                 <div class="col-sm-4">
                     <label>Receipt No.</label>
-                    <input id="or_no" type="text" class="w100" value="">
+                    <input onfocus="homeService.showVirtualKeyboard()" onfocusout="homeService.hideVirtualKeyboard()"   id="or_no" type="text" class="w100" value="">
                 </div>
                 <div class="col-sm-4">
                     <label>Purchase Amount</label>
-                    <input fcsa-number="{maxDecimals: 2, preventInvalidInput: true,min: 0}" id="amount" type="text" class="w100" value="" ng-model='totalSales' ng-keyup="pointsToEarn = (totalSales / earningPeso)">
+                    <input onfocus="homeService.showVirtualKeyboard()" onfocusout="homeService.hideVirtualKeyboard()" amount-only id="amount" type="text" class="w100" value="" ng-model='totalSales' ng-change="pointsToEarn = (totalSales.replace(',', '') / earningPeso) | number: 2">
                 </div>
                 <div class="col-sm-4">
                     <label>Points to earn</label>
@@ -66,12 +79,7 @@
                 </div>
             </div>
             <br>
-            <div class="row">
-                <div class="col-sm-12">
-                    <label>Remarks</label>
-                    <textarea name="" class="w100" id="remarks"></textarea>
-                </div>
-            </div>
+
         </form>
 
 
@@ -88,3 +96,14 @@
     </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function(){
+        $("input").focus(function(){
+            homeService.showVirtualKeyboard();
+        });
+        $("input").focusout(function(){
+            homeService.hideVirtualKeyboard();
+        });
+    });
+</script>

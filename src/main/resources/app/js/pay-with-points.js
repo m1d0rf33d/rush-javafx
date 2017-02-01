@@ -11,7 +11,8 @@ angular.module('HomeModule')
                 points: resp.data.points,
                 birthdate: resp.data.birthdate,
                 gender: resp.data.gender,
-                registration_date: resp.data.registration_date
+                registration_date: resp.data.registration_date,
+                pointsPesoValue: resp.data.pointsPesoValue
             }
 
         }
@@ -21,9 +22,20 @@ angular.module('HomeModule')
         $timeout(function(){
             var points = angular.element("#points").val(),
                 orNumber = angular.element("#or_no").val(),
-                amount = angular.element("#amount").val();
+                amount = angular.element("#amount").val(),
+                pin = angular.element('#pin').val();
+            angular.element('#pin').val('');
             //Call java method
-            homeService.payWithPoints(points, orNumber, amount);
+            if (points == '0') {
+                angular.element("#home-loading-modal").modal('hide');
+                $(".temp").remove();
+                $(".paypoints-result-body").prepend('<div class="temp"><p> Total points to pay cannot be 0.</p></div>');
+                $(".paypoints-result-body").prepend('<div class="alert alert-warning temp"> <strong>PAY WITH POINTS</strong> </div>');
+                $("#paypoints-result-modal").modal('show');
+                return;
+            }
+
+            homeService.payWithPoints(points, orNumber, amount, pin);
         },1000);
 
     }
@@ -33,11 +45,20 @@ angular.module('HomeModule')
         angular.element("#points").val('');
     }
 
+    $scope.closeModal = function() {
+        angular.element('#pin_modal').modal('hide');
+        angular.element('#pin').val('');
+    }
+    $scope.showPinModal = function() {
+        angular.element('#pin').val('');
+        angular.element('#pin_modal').modal('show');
+    }
 });
 
 function payWithPointsResponse (jsonResponse){
     $(".temp").remove();
-    angular.element("#home-loading-modal").modal('hide');
+    $("#home-loading-modal").modal('hide');
+    $("#pin_modal").modal('hide');
     var resp = JSON.parse(jsonResponse);
     if (resp.error_code != '0x0') {
         var errorMessage = '';
@@ -56,16 +77,18 @@ function payWithPointsResponse (jsonResponse){
             errorMessage = resp.message;
         }
         $(".paypoints-result-body").prepend('<div class="temp"><p>'+ errorMessage+'</p></div>');
-        $(".paypoints-result-body").prepend('<div class="alert alert-warning temp"> <strong>Pay with points failed.</strong> </div>');
+        $(".paypoints-result-body").prepend('<div class="alert alert-warning temp"> <strong>PAY WITH POINTS</strong> </div>');
         $("#paypoints-result-modal").modal('show');
     } else {
         $(".paypoints-result-body").prepend('<div class="temp"><p>Member points remaining '+ resp.points +'</p></div>');
-        $(".paypoints-result-body").prepend('<div class="alert alert-success temp"> <strong>Pay with points successful.</strong> </div>');
+        $(".paypoints-result-body").prepend('<div class="alert alert-success temp"> <strong>PAY WITH POINTS</strong> </div>');
         $("#paypoints-result-modal").modal('show');
         $("#points-span").text(resp.points);
+        $("#points-peso-span").text(resp.pointsPesoValue);
     }
 
     $("#or_no").val('');
     $("#amount").val('');
     $("#points").val('');
 }
+

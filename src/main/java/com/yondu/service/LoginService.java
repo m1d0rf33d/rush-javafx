@@ -9,7 +9,12 @@ import com.yondu.utils.Java2JavascriptUtils;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.web.WebEngine;
+import javafx.stage.Stage;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
@@ -25,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import static com.yondu.model.constants.AppConfigConstants.GIVE_POINTS_FXML;
 import static java.lang.Thread.sleep;
 import static javafx.application.Platform.runLater;
 import static org.json.simple.JSONValue.parse;
@@ -124,5 +130,21 @@ public class LoginService {
         service.start();
 
     }
+    public void loadGivePointsView() {
+        try {
+            Stage givePointsStage = new Stage();
+            Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
+            givePointsStage.setScene(new Scene(root, 400,220));
+            givePointsStage.setTitle("Rush POS Sync");
+            givePointsStage.resizableProperty().setValue(Boolean.FALSE);
+            givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+            givePointsStage.show();
 
+            App.appContextHolder.getHomeStage().close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+    }
 }

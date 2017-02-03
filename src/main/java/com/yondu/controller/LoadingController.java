@@ -228,25 +228,18 @@ public class LoadingController implements Initializable{
     }
     public void convertPoints() throws ParseException {
         if (App.appContextHolder.isOnlineMode()) {
-           try {
-               String url = BASE_URL + POINTS_CONVERSION_ENDPOINT;
-               url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
-               String result = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-               JSONParser parser = new JSONParser();
-               JSONObject jsonResponse = (JSONObject) parser.parse(result);
-               JSONObject data = (JSONObject) jsonResponse.get("data");
-               Long earningPeso = (Long) data.get("earning_peso");
-               Double totalAmount = Double.parseDouble(totalAmountStr);
-               Double points = totalAmount / earningPeso;
+            String url = BASE_URL + POINTS_CONVERSION_ENDPOINT;
+            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
+            JSONObject jsonObject = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
-               DecimalFormat formatter = new DecimalFormat("#,###.00");
-               totalAmountStr = formatter.format(totalAmount);
-               convertedPoints = formatter.format(points);
-           } catch (IOException e) {
-               e.printStackTrace();
-               App.appContextHolder.setOnlineMode(false);
+            JSONObject data = (JSONObject) jsonObject.get("data");
+            Long earningPeso = (Long) data.get("earning_peso");
+            Double totalAmount = Double.parseDouble(totalAmountStr);
+            Double points = totalAmount / earningPeso;
 
-           }
+            DecimalFormat formatter = new DecimalFormat("#,###.00");
+            totalAmountStr = formatter.format(totalAmount);
+            convertedPoints = formatter.format(points);
         } else {
             convertedPoints = "0";
         }
@@ -321,40 +314,25 @@ public class LoadingController implements Initializable{
 
     private void getCustomerInformation() {
 
-        try {
-            java.util.List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
+        java.util.List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
 
-            String url = BASE_URL + MEMBER_LOGIN_ENDPOINT;
-            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-            String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-            JSONParser parser = new JSONParser();
-            JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
-            JSONObject data = (JSONObject) jsonResponse.get("data");
-            customer = new Account();
-            customer.setName((String)data.get("name"));
-            customer.setMobileNumber((String) data.get("mobile_no"));
-            //get customer current points
-            params = new ArrayList<>();
-            url = BASE_URL + GET_POINTS_ENDPOINT;
-            url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-            responseStr = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        String url = BASE_URL + MEMBER_LOGIN_ENDPOINT;
+        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+        JSONObject jsonObject = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        JSONObject data = (JSONObject) jsonObject.get("data");
+        customer = new Account();
+        customer.setName((String)data.get("name"));
+        customer.setMobileNumber((String) data.get("mobile_no"));
+        //get customer current points
+        params = new ArrayList<>();
+        url = BASE_URL + GET_POINTS_ENDPOINT;
+        url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+        jsonObject = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
-            jsonResponse = (JSONObject) parser.parse(responseStr);
-            DecimalFormat formatter = new DecimalFormat("#,###,###.00");
-            String strPoints = (String) jsonResponse.get("data");
-            String formattedStr = formatter.format(Double.parseDouble(strPoints));
-            customer.setCurrentPoints(formattedStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-            App.appContextHolder.setOnlineMode(false);
-            //Alert to offline mode
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to reach server. You are now in offline mode.", ButtonType.OK);
-            alert.setTitle(AppConfigConstants.APP_TITLE);
-            alert.initStyle(StageStyle.UTILITY);
-            alert.showAndWait();
-        }
+        DecimalFormat formatter = new DecimalFormat("#,###,###.00");
+        String strPoints = (String) jsonObject.get("data");
+        String formattedStr = formatter.format(Double.parseDouble(strPoints));
+        customer.setCurrentPoints(formattedStr);
     }
 }

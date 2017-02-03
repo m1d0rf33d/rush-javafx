@@ -20,8 +20,8 @@ public class NotificationService {
         Alert alert = new Alert(alertType, message, buttonTypes);
         alert.setTitle(AppConfigConstants.APP_TITLE);
         alert.initStyle(StageStyle.UTILITY);
-        alert.showAndWait();
         alert.initOwner(window);
+        alert.showAndWait();
 
         if (alert.getResult() == ButtonType.OK) {
             alert.close();

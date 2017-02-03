@@ -54,7 +54,7 @@ public class RouteService {
             //Launch activation window
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.ACTIVATION_FXML));
-            stage.setScene(new Scene(root, 400,200));
+            stage.setScene(new Scene(root, 800,500));
             stage.setTitle(APP_TITLE);
             stage.resizableProperty().setValue(Boolean.FALSE);
             stage.getIcons().add(new Image(App.class.getResource(AppConfigConstants.R_LOGO).toExternalForm()));

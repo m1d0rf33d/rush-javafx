@@ -112,10 +112,11 @@ public class SplashController implements Initializable{
                             apiProp.delete();
                         }
 
+                        loadEndpointsFromConfig();
+
                         file = new File(System.getenv("RUSH_HOME") + DIVIDER + ACTIVATION_FILE);
                         if (file.exists()) {
                             App.appContextHolder.setActivated(true);
-                            loadEndpointsFromConfig();
                             loadMerchantKeys();
                             App.appContextHolder.setOnlineMode(true);
                         } else {

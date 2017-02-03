@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
+<?import java.lang.*?>
 <?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" style="-fx-background-color: #fafafa;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.ActivationController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="472.0" prefWidth="796.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.ActivationController">
    <children>
-      <Button fx:id="activateBtn" layoutX="121.0" layoutY="143.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="158.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="ACTIVATE" textFill="#fcf9f9">
+      <Label layoutX="182.0" layoutY="259.0" prefHeight="38.0" prefWidth="141.0" style="-fx-background-color: #7EA9DD;" text=" MERCHANT KEY:">
          <font>
-            <Font name="System Bold" size="17.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </Button>
-      <Label layoutX="75.0" layoutY="51.0" prefHeight="38.0" prefWidth="258.0" text="ENTER MERCHANT KEY">
-         <font>
-            <Font name="System Bold" size="23.0" />
+            <Font size="15.0" />
          </font>
       </Label>
-      <TextField fx:id="merchantKey" layoutX="45.0" layoutY="90.0" prefHeight="40.0" prefWidth="310.0" />
-      <ImageView fx:id="rushLogo" fitHeight="38.0" fitWidth="51.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+      <TextField fx:id="merchantKey" layoutX="322.0" layoutY="258.0" prefHeight="40.0" prefWidth="416.0" />
+      <Button fx:id="activateButton" layoutX="625.0" layoutY="420.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="123.0" text="ACTIVATE NOW" />
+      <Button layoutX="498.0" layoutY="420.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="123.0" text="CANCEL" />
+      <ImageView fx:id="logoImageView" fitHeight="75.0" fitWidth="94.0" layoutX="33.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="182.0" layoutY="135.0" prefHeight="101.0" prefWidth="557.0" style="-fx-background-color: #DBD5D4;" text=" To activate RUSH POS Sync please enter your merchant key." />
+      <Label layoutX="163.0" layoutY="30.0" text="RUSH POS Sync ">
+         <font>
+            <Font name="System Bold" size="25.0" />
+         </font>
+      </Label>
+      <Pane layoutX="163.0" layoutY="81.0" prefHeight="311.0" prefWidth="592.0" style="-fx-border-color: #DBD5D4;" />
+
    </children>
 </Pane>

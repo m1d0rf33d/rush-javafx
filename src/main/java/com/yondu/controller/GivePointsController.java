@@ -129,14 +129,13 @@ public class GivePointsController implements Initializable {
             params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getText()));
             String url = BASE_URL + MEMBER_LOGIN_ENDPOINT;
             url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-            String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-            JSONParser parser = new JSONParser();
-            JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
-            if (!(jsonResponse.get("error_code")).equals("0x0")) {
-                notificationService.showMessagePrompt((String) jsonResponse.get("message"), Alert.AlertType.INFORMATION, currentStage, ButtonType.OK);
+            JSONObject jsonObject = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+            if (!(jsonObject.get("error_code")).equals("0x0")) {
+                notificationService.showMessagePrompt((String) jsonObject.get("message"), Alert.AlertType.INFORMATION, currentStage, ButtonType.OK);
             } else {
 
-                JSONObject data = (JSONObject) jsonResponse.get("data");
+                JSONObject data = (JSONObject) jsonObject.get("data");
                 App.appContextHolder.setCustomerUUID((String)data.get("id"));
                 App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
                 ((Stage)givePointsButton.getScene().getWindow()).close();
@@ -162,8 +161,6 @@ public class GivePointsController implements Initializable {
             } else {
                 notificationService.showMessagePrompt("Invalid mobile number.", Alert.AlertType.INFORMATION, currentStage, ButtonType.OK);
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
     }
 

@@ -1,10 +1,7 @@
 package com.yondu.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yondu.App;
 import com.yondu.model.constants.ApiFieldContants;
-import com.yondu.model.ApiResponse;
-import com.yondu.model.Branch;
 import com.yondu.utils.Java2JavascriptUtils;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -20,21 +17,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.w3c.dom.html.HTMLInputElement;
-import org.w3c.dom.html.HTMLSelectElement;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import static com.yondu.model.constants.AppConfigConstants.GIVE_POINTS_FXML;
-import static java.lang.Thread.sleep;
 import static javafx.application.Platform.runLater;
-import static org.json.simple.JSONValue.parse;
-import static org.json.simple.JSONValue.toJSONString;
+import static com.yondu.AppContextHolder.*;
 
 /** Service for Login Module / Java2Javascript Bridge
  *  Methods inside this class can be invoked in javascript using alert("__CONNECT__BACKEND__loginService")
@@ -57,32 +47,19 @@ public class LoginService {
                 return new Task<String>() {
                     @Override
                     protected String call() throws Exception {
-                        String jsonResponse = null;
-                        try {
-                            //Build request body
-                            List<NameValuePair> params = new ArrayList<>();
-                            params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, employeeId));
-                            params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, branchId));
-                            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getLoginEndpoint();
-                            jsonResponse = apiService.call((url), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-                            JSONParser parser = new JSONParser();
-                            JSONObject jsonObject = (JSONObject) parser.parse(jsonResponse);
-                            if (jsonObject.get("error_code").equals("0x0")) {
-                                JSONObject data = (JSONObject) jsonObject.get("data");
-                                App.appContextHolder.setEmployeeName(((String) data.get("name")));
-                                App.appContextHolder.setEmployeeId((String) data.get("id"));
-                                App.appContextHolder.setBranchId((String) data.get("branch_id"));
-                            }
-
-                        } catch (IOException e) {
-                            //LOG here
-                            jsonResponse = null;
-                            App.appContextHolder.setOnlineMode(false);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                        //Build request body
+                        List<NameValuePair> params = new ArrayList<>();
+                        params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, employeeId));
+                        params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, branchId));
+                        String url = BASE_URL + LOGIN_ENDPOINT;
+                        JSONObject jsonObject = apiService.call((url), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                        if (jsonObject.get("error_code").equals("0x0")) {
+                            JSONObject data = (JSONObject) jsonObject.get("data");
+                            App.appContextHolder.setEmployeeName(((String) data.get("name")));
+                            App.appContextHolder.setEmployeeId((String) data.get("id"));
+                            App.appContextHolder.setBranchId((String) data.get("branch_id"));
                         }
-                        return jsonResponse;
+                        return jsonObject.toJSONString();
                     }
                 };
             }
@@ -105,20 +82,15 @@ public class LoginService {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        try {
-                            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
-                            List<NameValuePair> params = new ArrayList<>();
-                            String jsonResponse = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-                            Thread thread = new Thread(()->{
-                                runLater( () ->
-                                        Java2JavascriptUtils.call(callbackfunction, jsonResponse)
-                                );
-                            });
-                            thread.start();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            App.appContextHolder.setOnlineMode(false);
-                        }
+                        String url = BASE_URL + GET_BRANCHES_ENDPOINT;
+                        List<NameValuePair> params = new ArrayList<>();
+                        JSONObject jsonObject = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                        Thread thread = new Thread(()->{
+                            runLater( () ->
+                                    Java2JavascriptUtils.call(callbackfunction, jsonObject.toJSONString())
+                            );
+                        });
+                        thread.start();
                         return null;
                     }
                 };

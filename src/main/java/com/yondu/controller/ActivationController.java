@@ -2,6 +2,7 @@ package com.yondu.controller;
 
 import com.yondu.App;
 import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.service.NotificationService;
 import com.yondu.service.RouteService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -38,20 +40,22 @@ import static com.yondu.model.constants.AppConfigConstants.*;
 public class ActivationController implements Initializable{
 
     @FXML
-    public Button activateBtn;
+    public Button activateButton;
     @FXML
     public TextField merchantKey;
     @FXML
-    public ImageView rushLogo;
+    public ImageView logoImageView;
 
     private RouteService routeService = new RouteService();
-
+    private NotificationService notificationService = new NotificationService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        rushLogo.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
 
-        activateBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+
+        logoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+
+        activateButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
             activate();
         });
     }
@@ -98,13 +102,10 @@ public class ActivationController implements Initializable{
                 CUSTOMER_APP_KEY =(String) data.get("customerApiKey");
                 CUSTOMER_APP_SECRET = (String) data.get("customerApiSecret");
 
-                Stage currentStage = ((Stage) activateBtn.getScene().getWindow());
+                Stage currentStage = ((Stage) activateButton.getScene().getWindow());
                 routeService.goToLoginScreen(currentStage);
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid merchant key.");
-                alert.setTitle(AppConfigConstants.APP_TITLE);
-                alert.initStyle(StageStyle.UTILITY);
-                alert.showAndWait();
+                notificationService.showMessagePrompt("Invalid merchant key.", Alert.AlertType.ERROR, activateButton.getScene().getWindow(), ButtonType.OK);
             }
 
         } catch (FileNotFoundException e) {

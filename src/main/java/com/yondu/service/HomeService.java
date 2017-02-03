@@ -38,6 +38,8 @@ import static com.yondu.model.constants.AppConfigConstants.SETTINGS_FXML;
 /** Home Module services / Java2Javascript bridge
  *  Methods inside this class can be invoked inside a javascript using alert("__CONNECT__BACKEND__homeService")
  *
+ *  ITSUMO KOKORO..  yeah..
+ *
  *  @author m1d0rf33d
  */
 public class HomeService {
@@ -56,18 +58,19 @@ public class HomeService {
 
     }
 
-    /** Load employee data that will be sent back to the calling javascript. Target page view-> home.html
+    /** Method name is loadEmployeeData but all needed information on home page including branch and merchant images are already
+     * being retrieved on this method. I should probably rename this method but I'm too lazy to do that ryt now..
      *
      * @param callbackfunction
      */
     public void loadEmployeeData(final Object callbackfunction) {
         SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-YYYY");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", App.appContextHolder.getEmployeeId());
-        jsonObject.put("name",App.appContextHolder.getEmployeeName());
-        jsonObject.put("currentDate",formatter.format(new Date()));
+        JSONObject responseObj = new JSONObject();
+        responseObj.put("id", App.appContextHolder.getEmployeeId());
+        responseObj.put("name",App.appContextHolder.getEmployeeName());
+        responseObj.put("currentDate",formatter.format(new Date()));
 
-        //Get branch details
+        //Get branch details too..
         String url = BASE_URL + GET_BRANCHES_ENDPOINT;
         List<NameValuePair> params = new ArrayList<>();
         JSONObject jsonObj = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
@@ -75,42 +78,52 @@ public class HomeService {
             List<JSONObject> data = (ArrayList) jsonObj.get("data");
             for (JSONObject branch : data) {
                 if (branch.get("id").equals(App.appContextHolder.getBranchId())) {
-                    jsonObject.put("branchName", branch.get("name"));
-                    jsonObject.put("branchLogo", branch.get("logo_url"));
+                    responseObj.put("branchName", branch.get("name"));
+                    responseObj.put("branchLogo", branch.get("logo_url"));
                     break;
                 }
             }
         }
 
-        //Get some extra bullshit
+        //Get some extra bullshit.. :)
         url = BASE_URL + MERCHANT_DESIGNS_ENDPOINT;
         params = new ArrayList<>();
         jsonObj = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
         if (jsonObj != null) {
             JSONObject d = (JSONObject) jsonObj.get("data");
             JSONObject merchant = (JSONObject) d.get("merchant");
-            jsonObject.put("backgroundUrl", merchant.get("background_url"));
+            responseObj.put("backgroundUrl", merchant.get("background_url"));
         }
 
-        //Get screen access
+        //Get employee screen access
         url = CMS_URL + TOMCAT_PORT + ACCESS_ENDPOINT;
         jsonObj = apiService.callWidgetAPI(url, "get");
 
         JSONObject dataJson = (JSONObject) jsonObj.get("data");
         List<String> screens = (ArrayList) dataJson.get("access");
+
+        //WithVk means with virtual keyboard yeah that's configurable too..
         Boolean withVk = (Boolean) dataJson.get("withVk");
         App.appContextHolder.setWithVk(withVk);
-        jsonObject.put("screens", screens);
+        responseObj.put("screens", screens);
 
         new Thread( () -> {
-            Java2JavascriptUtils.call(callbackfunction, jsonObject.toJSONString());
+            Java2JavascriptUtils.call(callbackfunction, responseObj.toJSONString());
         }).start();
     }
 
     /** Register new member, a javascript response handler function will be called to handle the result.
+     * I hate it when methods have so many parameters like this wtf? place it on a map or a container object or something bruh?
      *
      */
-    public void register(String name, String email, String mobile, String mpin, String birthdate, String gender, Object callbackfunction) {
+    public void register(String name,
+                         String email,
+                         String mobile,
+                         String mpin,
+                         String birthdate,
+                         String gender,
+                         Object callbackfunction) {
+
         //Build request body
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_NAME, name));
@@ -143,66 +156,23 @@ public class HomeService {
      *
      */
     public void payWithPoints(String points, String orNumber, String amount, String pin) {
-       try {
-           DecimalFormat formatter = new DecimalFormat("#,###.00");
-           List<NameValuePair> params = new ArrayList<>();
-           params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
-           params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
-           params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount.replace(",","")));
-           params.add(new BasicNameValuePair(ApiFieldContants.POINTS, points.replace(",","")));
-           params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin.replace(",","")));
 
-           String url = BASE_URL + PAY_WITH_POINTS_ENDPOINT;
-           url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-           JSONObject jsonObject = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-           String error =  (String) jsonObject.get(ApiFieldContants.ERROR_CODE);
-           if (error.equals(ApiFieldContants.NO_ERROR)) {
-               //get current points
-               params = new ArrayList<>();
-               url =  BASE_URL + GET_POINTS_ENDPOINT;
-               url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-               JSONObject jsonObj = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-               //Parse response
-               JSONObject resultJson = (JSONObject) parser.parse(result);
-               String strPoints = (String) resultJson.get("data");
-               jsonObj.put("points", formatter.format(Double.parseDouble(strPoints)));
-               if(jsonObj.get("points").equals(".00")) {
-                   jsonObj.put("points", "0");
-               }
-               //Convert to peso value
-               url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
-               url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
-               result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-               JSONObject obj1 = (JSONObject) parser.parse(result);
-               JSONObject d1 = (JSONObject) obj1.get("data");
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
+        params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumber));
+        params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, amount.replace(",","")));
+        params.add(new BasicNameValuePair(ApiFieldContants.POINTS, points.replace(",","")));
+        params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin.replace(",","")));
 
+        String url = BASE_URL + PAY_WITH_POINTS_ENDPOINT;
+        url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+        JSONObject jsonObject = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        if (jsonObject != null) {
+            webEngine.executeScript("payWithPointsResponse('" + jsonObject.toJSONString() + "')");
+        } else {
+            //TODO: Offline mode
+        }
 
-               Double dPoints = Double.parseDouble(strPoints);
-               Double redemptionPeso = null;
-               Long redemptionPoints = (Long) d1.get("redemption_points");
-
-               dPoints = dPoints / redemptionPoints;
-               try {
-                   redemptionPeso = (Double) d1.get("redemption_peso");
-               } catch (ClassCastException e) {
-                   Long ex = (Long) d1.get("redemption_peso");
-                   redemptionPeso = ex.doubleValue();
-               }
-               jsonObj.put("pointsPesoValue", formatter.format( dPoints * redemptionPeso));
-               if (jsonObj.get("pointsPesoValue").equals(".00")) {
-                   jsonObj.put("pointsPesoValue","0");
-               }
-               jsonResponse = jsonObj.toJSONString();
-           }
-
-           webEngine.executeScript("payWithPointsResponse('"+jsonResponse+"')");
-       } catch (IOException e) {
-           App.appContextHolder.setOnlineMode(false);
-           goToOfflineMode();
-           e.printStackTrace();
-       } catch (ParseException e) {
-           e.printStackTrace();
-       }
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
 
@@ -212,20 +182,12 @@ public class HomeService {
      */
     public void loadRewards(final Object callbackfunction) {
 
-        try {
-            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetRewardsMerchantEndpoint();
-            String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        String url = BASE_URL + GET_REWARDS_MERCHANT_ENDPOINT;
+        JSONObject jsonObject = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
-            final String data = jsonResponse;
-            new Thread(()->
-                    Java2JavascriptUtils.call(callbackfunction, data)
-            ).start();
-
-        } catch (IOException e) {
-            App.appContextHolder.setOnlineMode(false);
-            goToOfflineMode();
-            e.printStackTrace();
-        }
+        new Thread(()->
+                Java2JavascriptUtils.call(callbackfunction, jsonObject.toJSONString())
+        ).start();
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
 
@@ -236,107 +198,53 @@ public class HomeService {
      */
     public void redeemRewards(String rewardId, String pin) {
 
-        try {
-            List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin));
-            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getRedeemRewardsEndpoint();
-            url = url.replace(":customer_id",App.appContextHolder.getCustomerUUID());
-            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-            url = url.replace(":reward_id", rewardId);
-            String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-            responseStr  = responseStr.replace("'","");
-            //retrieve current points
-            JSONParser parser = new JSONParser();
-            JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
-            //get current points
-            params = new ArrayList<>();
-            url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetPointsEndpoint();
-            url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-            String res = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-            JSONObject json = (JSONObject) parser.parse(res);
-            jsonResponse.put("points",  json.get("data"));
-            responseStr = jsonResponse.toJSONString();
-
-            this.webEngine.executeScript("redeemRewardsResponseHandler('"+responseStr+"')");
-        } catch (IOException e) {
-            App.appContextHolder.setOnlineMode(false);
-            goToOfflineMode();
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin));
+        String url = BASE_URL + REDEEM_REWARDS_ENDPOINT;
+        url = url.replace(":customer_id",App.appContextHolder.getCustomerUUID());
+        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+        url = url.replace(":reward_id", rewardId);
+        JSONObject jsonObject = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        this.webEngine.executeScript("redeemRewardsResponseHandler('"+jsonObject.toJSONString()+"')");
     }
 
     public void loadCustomerRewards(final Object callbackfunction) {
-        try {
-            String tempdata = "";
-            //Retrieve all rewards
-            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetRewardsEndpoint();
-            String jsonResponse = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
-            JSONParser parser = new JSONParser();
-            JSONObject rewardsJson = (JSONObject) parser.parse(jsonResponse);
-            List<JSONObject> rewardsDataList = (ArrayList) rewardsJson.get("data");
+        String url = BASE_URL + GET_REWARDS_ENDPOINT;
+        JSONObject jsonObj = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+        List<JSONObject> rewardsDataList = (ArrayList) jsonObj.get("data");
 
-            url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getUnclaimedRewardsEndpoint();
-            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-            url = url.replace(":customer_id", App.appContextHolder.getCustomerUUID());
-            String responseStr = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        url = BASE_URL + UNCLAIMED_REWARDS_ENDPOINT;
+        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+        url = url.replace(":customer_id", App.appContextHolder.getCustomerUUID());
+        JSONObject jsonObject = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
-            JSONObject unclaimedJson = (JSONObject) parser.parse(responseStr);
-            List<JSONObject> unclaimedDataList = (ArrayList) unclaimedJson.get("data");
-            for (JSONObject unclaimedData : unclaimedDataList) {
-                JSONObject reward = (JSONObject) unclaimedData.get("reward");
-                String rewardName = (String) reward.get("name");
-                for (JSONObject rewardsData: rewardsDataList) {
-                    String rName = (String) rewardsData.get("name");
-                    if (rName.equals(rewardName)) {
-                        reward.put("details", (String) rewardsData.get("details"));
-                        reward.put("image_url", (String) rewardsData.get("image_url"));
-                        break;
-                    }
+        List<JSONObject> unclaimedDataList = (ArrayList) jsonObject.get("data");
+        for (JSONObject unclaimedData : unclaimedDataList) {
+            JSONObject reward = (JSONObject) unclaimedData.get("reward");
+            String rewardName = (String) reward.get("name");
+            for (JSONObject rewardsData: rewardsDataList) {
+                String rName = (String) rewardsData.get("name");
+                if (rName.equals(rewardName)) {
+                    reward.put("details", rewardsData.get("details"));
+                    reward.put("image_url", rewardsData.get("image_url"));
+                    break;
                 }
             }
-            tempdata = unclaimedJson.toJSONString();
-            final String finalData = tempdata;
-            new Thread(()->
-                    Java2JavascriptUtils.call(callbackfunction, finalData)
-            ).start();
-
-        } catch (IOException e) {
-            App.appContextHolder.setOnlineMode(false);
-            e.printStackTrace();
-            goToOfflineMode();
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
-        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
+        new Thread(()->
+                Java2JavascriptUtils.call(callbackfunction, jsonObject.toJSONString())
+        ).start();
     }
 
 
     public void issueReward(String redeemId) {
-        try {
-            List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair(ApiFieldContants.REDEEM_ID, redeemId));
-            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getClaimRewardsEndpoint();
-            url = url.replace(":customer_id",App.appContextHolder.getCustomerUUID());
-            url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-            String jsonResponse = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-            //Parse response
-            JSONParser parser = new JSONParser();
-            JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
-            jsonObj.put("redeemId", redeemId);
-            jsonResponse = jsonObj.toJSONString();
-            this.webEngine.executeScript("issueRewardsResponseHandler('"+jsonResponse+"')");
-        } catch (IOException e) {
-            App.appContextHolder.setOnlineMode(false);
-            e.printStackTrace();
-            goToOfflineMode();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(ApiFieldContants.REDEEM_ID, redeemId));
+        String url = BASE_URL + CLAIM_REWARDS_ENDPOINT;
+        url = url.replace(":customer_id",App.appContextHolder.getCustomerUUID());
+        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+        JSONObject jsonObject = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        this.webEngine.executeScript("issueRewardsResponseHandler('"+jsonObject.toJSONString()+"')");
     }
 
     public void loadSettingsView() {
@@ -353,7 +261,7 @@ public class HomeService {
             ocrConfigStage.show();
             App.appContextHolder.getHomeStage().close();
         } catch (IOException e) {
-            goToOfflineMode();
+           
             e.printStackTrace();
         }
     }
@@ -376,7 +284,7 @@ public class HomeService {
 
         } catch (IOException e) {
             e.printStackTrace();
-            goToOfflineMode();
+           
 
         }
     }
@@ -403,34 +311,44 @@ public class HomeService {
             App.appContextHolder.setHomeStage(stage);
         } catch (IOException e) {
             e.printStackTrace();
-            goToOfflineMode();
+           //
         }
     }
 
-    public void fetchCustomerData(Object callbackfunction) {
-        String result = "";
+  /*  public void fetchCustomerData(Object callbackfunction) {
+
+        //Get logged in member updated details
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
+
+        String url = BASE_URL + MEMBER_LOGIN_ENDPOINT;
+        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+        JSONObject jsonObject = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+        //Now we get member current points because for some reason it is on a separate API wat the actual fck?
+        url = BASE_URL + GET_POINTS_ENDPOINT;
+        url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+        JSONObject jsonObj = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        String strPoints = (String) jsonObj.get("data");
+
+        //This is the most annoying part. The return data type of points is not consistent sometimes it's with decimals (double) sometimes in long. Can you believe this shit?
+        //I mean can't they just use a consistent data type? :)
+
+
         if (App.appContextHolder.getCustomerMobile() != null && App.appContextHolder.getCustomerUUID() != null) {
 
             try {
                 DecimalFormat formatter = new DecimalFormat("#,###,###.00");
-                //Build request body
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
 
-                String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
-                url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-                result = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                 JSONParser parser = new JSONParser();
                 JSONObject jsonResponse = (JSONObject) parser.parse(result);
                 JSONObject data = (JSONObject) jsonResponse.get("data");
                 //get current points
                 params = new ArrayList<>();
-                url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetPointsEndpoint();
-                url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-                result = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
 
                 JSONObject json = (JSONObject) parser.parse(result);
-                String strPoints = (String) json.get("data");
+                S
                 data.put("points",  formatter.format(Double.parseDouble(strPoints)));
                 if (data.get("points").equals(".00")) {
                     data.put("points",  "0");
@@ -477,7 +395,7 @@ public class HomeService {
             } catch(IOException e) {
                 App.appContextHolder.setOnlineMode(false);
                 e.printStackTrace();
-                goToOfflineMode();
+               
             } catch (ParseException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -507,7 +425,7 @@ public class HomeService {
         } catch (IOException e) {
             e.printStackTrace();
             App.appContextHolder.setOnlineMode(false);
-            goToOfflineMode();
+           
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -534,7 +452,7 @@ public class HomeService {
                     obj.put("receipt_no", obj.get("reference_code"));
                 }
             }
-           /* JSONParser parser = new JSONParser();
+           *//* JSONParser parser = new JSONParser();
             JSONObject jsonObj = (JSONObject) parser.parse(responseStr);
             List<JSONObject> data = (ArrayList) jsonObj.get("data");
             for (JSONObject j : data) {
@@ -556,7 +474,7 @@ public class HomeService {
                     j.put("typeStr", "Void-Redeem");
                 }
             }
-            final String finalData = jsonObj.toJSONString();*/
+            final String finalData = jsonObj.toJSONString();*//*
             new Thread(()->
                     Java2JavascriptUtils.call(callbackfunction, jsonObj.toJSONString())
             ).start();
@@ -564,7 +482,7 @@ public class HomeService {
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
             e.printStackTrace();
-            goToOfflineMode();
+           
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -689,7 +607,7 @@ public class HomeService {
                 this.webEngine.executeScript("sendOfflinePointsResponse('"+ finalJson.toJSONString().replace("'","")+"')");
             } catch (IOException e) {
                 App.appContextHolder.setOnlineMode(false);
-                goToOfflineMode();
+               
                 e.printStackTrace();
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -730,7 +648,7 @@ public class HomeService {
         } catch (IOException e) {
             e.printStackTrace();
             App.appContextHolder.setOnlineMode(false);
-            goToOfflineMode();
+           
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -753,7 +671,7 @@ public class HomeService {
         } catch (IOException e) {
             App.appContextHolder.setOnlineMode(false);
             e.printStackTrace();
-            goToOfflineMode();
+           
         }
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
@@ -805,7 +723,7 @@ public class HomeService {
         } catch (IOException e) {
             e.printStackTrace();
             App.appContextHolder.setOnlineMode(false);
-            goToOfflineMode();
+           
         }
         this.webEngine.executeScript("closeLoadingModal('"+App.appContextHolder.isOnlineMode()+"')");
     }
@@ -895,7 +813,7 @@ public class HomeService {
 
         } catch (IOException e) {
             e.printStackTrace();
-            goToOfflineMode();
+           
 
         }
     }
@@ -930,11 +848,11 @@ public class HomeService {
             this.webEngine.executeScript("loginMemberResponseHandler('"+jsonObject.toJSONString()+"')");
         } catch (IOException e) {
             e.printStackTrace();
-            goToOfflineMode();
+           
         } catch (ParseException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 
 }

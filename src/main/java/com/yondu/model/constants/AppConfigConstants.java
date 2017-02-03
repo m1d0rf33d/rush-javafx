@@ -5,13 +5,14 @@ package com.yondu.model.constants;
  */
 public class AppConfigConstants {
 
-    public static final String LOCK_LOCATION = "\\Rush-POS-Sync\\lock.txt";
-    public static final String VBS_LOCATION =  "\\Rush-POS-Sync\\max.vbs";
+    public static final String LOCK_FILE = "lock.txt";
+    public static final String VBS_FILE =  "max.vbs";
 
-    public static final String OCR_CONFIG_LOCATION = "\\Rush-POS-Sync\\ocr.properties";
-    public static final String OFFLINE_LOCATION = "\\Rush-POS-Sync\\offline.txt";
-    public static final String ACTIVATION_LOCATION = "\\Rush-POS-Sync\\activation.txt";
-    public static final String TESSERACT_LOCATION = "\\Tesseract-OCR";
+    public static final String OCR_PROPERTIES = "ocr.properties";
+    public static final String OFFLINE_TRANSACTION_FILE = "offline.txt";
+    public static final String API_PROPERTIES = "api.properties";
+    public static final String ACTIVATION_FILE = "activation.txt";
+    public static final String TESSERACT_FOLDER = "Tesseract-OCR";
 
     public static final String SPLASH_FXML        = "/app/fxml/splash.fxml";
     public static final String SALES_CAPTURE_FXML = "/app/fxml/sales-capture.fxml";
@@ -30,4 +31,7 @@ public class AppConfigConstants {
 
 
     public static final String APP_TITLE = "Rush POS Sync";
+    public static String DIVIDER = "";
+    public static String RUSH_HOME = "";
+    public static final String RUSH_FOLDER = "Rush-POS-Sync";
 }

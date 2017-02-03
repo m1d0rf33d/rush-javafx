@@ -4,7 +4,8 @@ import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
 import com.yondu.Browser;
 import com.yondu.model.constants.ApiFieldContants;
-import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.service.ApiService;
+import com.yondu.service.RouteService;
 import com.yondu.utils.ButtonEventHandler;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -14,40 +15,36 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
-import static com.yondu.model.constants.AppConfigConstants.GIVE_POINTS_DETAILS_FXML;
+import static com.yondu.AppContextHolder.*;
 
 /**
- * Created by erwin on 10/10/2016.
+ * Created by lynx on 10/10/2016.
  */
 public class LoginController implements Initializable {
 
@@ -60,7 +57,7 @@ public class LoginController implements Initializable {
     @FXML
     public Pane rightPane;
     @FXML
-    public javafx.scene.control.Button loginBtn;
+    public Button loginBtn;
     @FXML
     public TextField loginTextField;
     @FXML
@@ -102,22 +99,35 @@ public class LoginController implements Initializable {
 
     private List<JSONObject> branches;
 
-    private double width;
-    private double height;
+    private RouteService routeService = new RouteService();
+    private ApiService apiService = new ApiService();
+    private Stage currentStage;
+    private Double width;
+    private Double height;
 
     public LoginController() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.width = screenSize.getWidth();
-        this.height = screenSize.getHeight();
+        width = screenSize.getWidth();
+        height = screenSize.getHeight();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        //Adjust window size based from machine screen resolution
         this.setLayout();
 
-        loginTextField.focusedProperty().addListener(new ChangeListener<Boolean>()
-        {
+        //We need a reference for the current window
+        currentStage = (Stage) dotBtn.getScene().getWindow();
+
+        //Just some extra bullshit
+        overlayPane.setVisible(false);
+        rushLogo.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
+        removeImage.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/remove.png").toExternalForm()));
+
+        loadBranches();
+
+        //Event handlers for clickable nodes
+        loginTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
             {
                 if (newPropertyValue)
@@ -151,8 +161,7 @@ public class LoginController implements Initializable {
             }
         });
 
-        branchBox.setOnKeyPressed(new EventHandler<KeyEvent>()
-        {
+        branchBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent ke) {
                 if (ke.getCode().equals(KeyCode.ENTER)) {
@@ -163,29 +172,10 @@ public class LoginController implements Initializable {
         removeImage.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
             this.loginTextField.setText("");
         });
-        if (App.appContextHolder.isOnlineMode()) {
-            offlineLbl.setVisible(false);
-            givePointsBtn.setVisible(false);
-            reconnectBtn.setVisible(false);
-        } else {
-            loginTextField.setVisible(false);
-            loginBtn.setVisible(false);
-            branchBox.setVisible(false);
-        }
-        givePointsBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
-          try {
-              Stage givePointsStage = new Stage();
-              Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.GIVE_POINTS_FXML));
-              givePointsStage.setScene(new Scene(root, 400,220));
 
-              givePointsStage.setTitle("Rush POS Sync");
-              givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-              givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-              givePointsStage.show();
-              ((Stage) branchBox.getScene().getWindow()).close();
-          } catch (IOException e) {
-              e.printStackTrace();
-          }
+        givePointsBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+            routeService.goToGivePointsScreen(currentStage);
+
         });
 
         List<Node> buttons = rightPane.getChildren();
@@ -198,70 +188,49 @@ public class LoginController implements Initializable {
             }
         }
 
-        overlayPane.setVisible(false);
+        reconnectBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+            branchBox.getItems().clear();
+            if (checkNetwork()) {
+                goOnline();
+            } else {
+                goOffline(event);
+            }
+        });
+
+        loginBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+            loginEmployee(event);
+        });
+    }
+
+    private boolean checkNetwork() {
+        String url = BASE_URL + GET_BRANCHES_ENDPOINT;
+        java.util.List<NameValuePair> params = new ArrayList<>();
+        JSONObject jsonObject = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+        if (jsonObject != null) {
+            List<JSONObject> data = (ArrayList) jsonObject.get("data");
+            branches = data;
+            for (JSONObject branch : data) {
+                branchBox.getItems().add(branch.get("name"));
+            }
+            return true;
+        }
+        return false;
+    }
 
 
-        rushLogo.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
-        removeImage.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/remove.png").toExternalForm()));
-        try {
-            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
-            java.util.List<NameValuePair> params = new ArrayList<>();
-            String jsonResponse = App.appContextHolder.getApiService().call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-            JSONParser parser = new JSONParser();
-            JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
-            List<JSONObject> data = (ArrayList) jsonObj.get("data");
+    private void loadBranches() {
+        String url = BASE_URL + GET_BRANCHES_ENDPOINT;
+        java.util.List<NameValuePair> params = new ArrayList<>();
+        JSONObject jsonObject = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        if (jsonObject != null) {
+            List<JSONObject> data = (ArrayList) jsonObject.get("data");
             branches = data;
             for (JSONObject branch : data) {
                 branchBox.getItems().add(branch.get("name"));
             }
             branchBox.getSelectionModel().selectFirst();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
-
-        reconnectBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
-            try {
-                branchBox.getItems().clear();
-                String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetBranchesEndpoint();
-                java.util.List<NameValuePair> params = new ArrayList<>();
-                String jsonResponse = App.appContextHolder.getApiService().call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-                JSONParser parser = new JSONParser();
-                JSONObject jsonObj = (JSONObject) parser.parse(jsonResponse);
-                List<JSONObject> data = (ArrayList) jsonObj.get("data");
-                branches = data;
-                for (JSONObject branch : data) {
-                    branchBox.getItems().add(branch.get("name"));
-                }
-                branchBox.getSelectionModel().selectFirst();
-                offlineLbl.setVisible(false);
-                givePointsBtn.setVisible(false);
-                reconnectBtn.setVisible(false);
-                loginTextField.setVisible(true);
-                loginBtn.setVisible(true);
-                branchBox.setVisible(true);
-            } catch (IOException e) {
-                e.printStackTrace();
-                prompt("Unable to connect to Rush Server due to network connection problem. Please check your internet connection and try again.", event);
-                offlineLbl.setVisible(true);
-                givePointsBtn.setVisible(true);
-                reconnectBtn.setVisible(true);
-                loginTextField.setVisible(false);
-                loginBtn.setVisible(false);
-                branchBox.setVisible(false);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        });
-
-
-
-        loginBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
-            loginEmployee(event);
-        });
     }
 
     private void loginEmployee(InputEvent event) {
@@ -274,61 +243,32 @@ public class LoginController implements Initializable {
                 }
             }
 
-            String jsonResponse = null;
-            try {
-                //Build request body
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, loginTextField.getText()));
-                params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, branchId));
-                String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getLoginEndpoint();
-                jsonResponse = App.appContextHolder.getApiService().call((url), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-                JSONParser parser = new JSONParser();
-                JSONObject jsonObject = (JSONObject) parser.parse(jsonResponse);
+            //Build request body
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, loginTextField.getText()));
+            params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, branchId));
+            String url = BASE_URL + LOGIN_ENDPOINT;
+            JSONObject jsonObject = apiService.call((url), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            if (jsonObject != null) {
                 if (jsonObject.get("error_code").equals("0x0")) {
                     JSONObject data = (JSONObject) jsonObject.get("data");
                     App.appContextHolder.setEmployeeName(((String) data.get("name")));
                     App.appContextHolder.setEmployeeId((String) data.get("id"));
                     App.appContextHolder.setBranchId(branchId);
-                    //Redirect to home page
 
-                    Stage stage = new Stage();
-                    stage.setScene(new Scene(new Browser(),width - 20,height - 70, javafx.scene.paint.Color.web("#666970")));
-                    stage.setTitle("Rush POS Sync");
-                    stage.setMaximized(true);
-                    stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                    stage.show();
-                    App.appContextHolder.setHomeStage(stage);
+                    routeService.goToHomeScreen(currentStage);
                     ((Stage) branchBox.getScene().getWindow()).close();
                 } else if (jsonObject.get("error_code").equals("0x2")) {
                     showRequirePinModal(event);
                 } else {
                     prompt((String) jsonObject.get("message"), event);
                 }
-
-            } catch (IOException e) {
-
-                jsonResponse = null;
-                App.appContextHolder.setOnlineMode(false);
-                prompt("Unable to connect to Rush Server due to network connection problem. Please check your internet connection and try again.", event);
-                offlineLbl.setVisible(true);
-                givePointsBtn.setVisible(true);
-                reconnectBtn.setVisible(true);
-                loginTextField.setVisible(false);
-                loginBtn.setVisible(false);
-                branchBox.setVisible(false);
-            } catch (ParseException e) {
-                e.printStackTrace();
+            } else {
+                goOffline(event);
             }
 
         } else {
-            prompt("Unable to connect to Rush Server due to network connection problem. Please check your internet connection and try again.", event);
-            offlineLbl.setVisible(true);
-            givePointsBtn.setVisible(true);
-            reconnectBtn.setVisible(true);
-            loginTextField.setVisible(false);
-            loginBtn.setVisible(false);
-            branchBox.setVisible(false);
+            goOffline(event);
         }
     }
 
@@ -378,25 +318,6 @@ public class LoginController implements Initializable {
         if (alert.getResult() == ButtonType.OK) {
             overlayPane.setVisible(false);
         }
-
-       /* try {
-            overlayPane.setVisible(true);
-            Stage stage = new Stage();
-            FXMLLoader  loader  = new FXMLLoader(App.class.getResource("/app/fxml/custom-dialog.fxml"));
-            CustomDialogController controller = new CustomDialogController(message, overlayPane);
-            loader.setController(controller);
-            stage.setScene(new Scene(loader.load(), 500,350));
-            stage.setTitle("Rush POS Sync");
-            stage.initStyle(StageStyle.UNDECORATED);
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(
-                    ((Node)event.getSource()).getScene().getWindow() );
-            stage.resizableProperty().setValue(Boolean.FALSE);
-            stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
     }
 
     private void setLayout() {
@@ -466,5 +387,25 @@ public class LoginController implements Initializable {
         removeImage.setLayoutY(delBtn.getLayoutY() + (numberBtnWidth/ 2.5));
     }
 
+    public void goOnline() {
+        branchBox.getSelectionModel().selectFirst();
+        offlineLbl.setVisible(false);
+        givePointsBtn.setVisible(false);
+        reconnectBtn.setVisible(false);
+        loginTextField.setVisible(true);
+        loginBtn.setVisible(true);
+        branchBox.setVisible(true);
+    }
+
+
+    public void goOffline(InputEvent event) {
+        prompt("Unable to connect to Rush Server due to network connection problem. Please check your internet connection and try again.", event);
+        offlineLbl.setVisible(true);
+        givePointsBtn.setVisible(true);
+        reconnectBtn.setVisible(true);
+        loginTextField.setVisible(false);
+        loginBtn.setVisible(false);
+        branchBox.setVisible(false);
+    }
 
 }

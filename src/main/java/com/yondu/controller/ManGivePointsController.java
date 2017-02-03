@@ -5,6 +5,7 @@ import com.yondu.App;
 import com.yondu.Browser;
 import com.yondu.model.Account;
 import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.service.RouteService;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -52,14 +53,20 @@ public class ManGivePointsController implements Initializable{
     @FXML
     public Label mode;
 
+    private RouteService routeService = new RouteService();
+    private Stage currentStage;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        currentStage = (Stage) ocrBtn.getScene().getWindow();
+
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();
+
         if (App.appContextHolder.getWithVk() != null && !App.appContextHolder.getWithVk()) {
+            //Bind virtual keyboard shit
             orField.focusedProperty().addListener(new ChangeListener<Boolean>()
             {
                 public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
@@ -119,43 +126,16 @@ public class ManGivePointsController implements Initializable{
             //Open home stage
             if (App.appContextHolder.getEmployeeId() == null ||
                     (App.appContextHolder.getEmployeeId() != null && App.appContextHolder.getEmployeeId().equals("OFFLINE_EMPLOYEE"))) {
-                try {
-                    Stage primaryStage = new Stage();
-                    Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
-                    primaryStage.setScene(new Scene(root, 600,400));
-                    primaryStage.resizableProperty().setValue(false);
-                    primaryStage.initStyle(StageStyle.UNDECORATED);
-                    primaryStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                    primaryStage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                routeService.goToSplashScreen(currentStage);
             } else {
-                Stage stage = new Stage();
-                stage.setScene(new Scene(new Browser(),width - 20, height - 70, javafx.scene.paint.Color.web("#666970")));
-                stage.setTitle("Rush POS Sync");
-                stage.setMaximized(true);
-                stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                stage.show();
-                App.appContextHolder.setHomeStage(stage);
+                routeService.goToHomeScreen(currentStage);
             }
 
             ((Stage) homeBtn.getScene().getWindow()).close();
         });
 
         this.ocrBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
-            try {
-                Stage givePointsStage = new Stage();
-                Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.GIVE_POINTS_FXML));
-                givePointsStage.setScene(new Scene(root, 400,220));
-                givePointsStage.setTitle("Rush POS Sync");
-                givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-                givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                givePointsStage.show();
-                ((Stage) ocrBtn.getScene().getWindow()).close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            routeService.goToGivePointsScreen(currentStage);
         });
 
         this.givePointsBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {

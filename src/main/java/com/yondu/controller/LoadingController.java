@@ -4,6 +4,7 @@ import com.yondu.App;
 import com.yondu.model.Account;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.service.ApiService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -40,6 +41,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 import static com.yondu.model.constants.AppConfigConstants.*;
+import static com.yondu.AppContextHolder.*;
 
 /**
  * Created by erwin on 10/2/2016.
@@ -48,6 +50,8 @@ public class LoadingController implements Initializable{
 
     @FXML
     public ImageView rushLogoImage;
+
+    private ApiService apiService = new ApiService();
 
     private String orStr;
     private String totalAmountStr;
@@ -63,10 +67,6 @@ public class LoadingController implements Initializable{
         myService.setOnSucceeded((WorkerStateEvent t) ->{
             //validate captured totalAmount
             try {
-             /*   if (!totalAmountStr.contains(".")) {
-                    Long l = Long.parseLong(totalAmountStr);
-                    totalAmountStr = String.valueOf(l.doubleValue());
-                }*/
                 Double.parseDouble(totalAmountStr);
                 //Screen shot and read or number
                 OrCaptureService orCaptureService = new OrCaptureService();
@@ -152,7 +152,7 @@ public class LoadingController implements Initializable{
 
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(App.appContextHolder.getOcrFullPath());
+            InputStream inputStream = new FileInputStream(System.getenv("RUSH_HOME") + DIVIDER + OCR_PROPERTIES);
             prop.load(inputStream);
             salesX = ((Double)Double.parseDouble(prop.getProperty("sales_pos_x"))).intValue();
             salesY =((Double) Double.parseDouble(prop.getProperty("sales_pos_y"))).intValue();
@@ -172,15 +172,9 @@ public class LoadingController implements Initializable{
             Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
-            String basePath = "";
-            if (App.appContextHolder.getIs64Bit()) {
-                basePath = "C:\\Program Files (x86)\\Rush-POS-Sync";
-            } else {
-                basePath = "C:\\Program Files\\Rush-POS-Sync";
-            }
 
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(basePath + TESSERACT_LOCATION);
+            tesseract.setDatapath(System.getenv("RUSH_HOME") + DIVIDER + TESSERACT_FOLDER);
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = tesseract.doOCR(screenFullImage);
@@ -195,7 +189,7 @@ public class LoadingController implements Initializable{
 
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(App.appContextHolder.getOcrFullPath());
+            InputStream inputStream = new FileInputStream(System.getenv("RUSH_HOME") + DIVIDER + OCR_PROPERTIES);
             prop.load(inputStream);
             salesX = ((Double)Double.parseDouble(prop.getProperty("or_pos_x"))).intValue();
             salesY =((Double) Double.parseDouble(prop.getProperty("or_pos_y"))).intValue();
@@ -215,15 +209,9 @@ public class LoadingController implements Initializable{
             Rectangle screen = new Rectangle(salesX, salesY, salesWidth, salesHeight);
 
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
-            String basePath = "";
-            if (App.appContextHolder.getIs64Bit()) {
-                basePath = "C:\\Program Files (x86)\\Rush-POS-Sync";
-            } else {
-                basePath = "C:\\Program Files\\Rush-POS-Sync";
-            }
 
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(basePath + TESSERACT_LOCATION);
+            tesseract.setDatapath(System.getenv("RUSH_HOME") + DIVIDER + TESSERACT_FOLDER);
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = null;
@@ -241,9 +229,9 @@ public class LoadingController implements Initializable{
     public void convertPoints() throws ParseException {
         if (App.appContextHolder.isOnlineMode()) {
            try {
-               String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getPointsConversionEndpoint();
+               String url = BASE_URL + POINTS_CONVERSION_ENDPOINT;
                url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
-               String result = App.appContextHolder.getApiService().call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+               String result = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
                JSONParser parser = new JSONParser();
                JSONObject jsonResponse = (JSONObject) parser.parse(result);
                JSONObject data = (JSONObject) jsonResponse.get("data");
@@ -337,9 +325,9 @@ public class LoadingController implements Initializable{
             java.util.List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, App.appContextHolder.getCustomerMobile()));
 
-            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
+            String url = BASE_URL + MEMBER_LOGIN_ENDPOINT;
             url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-            String responseStr = App.appContextHolder.getApiService().call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
             JSONParser parser = new JSONParser();
             JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
             JSONObject data = (JSONObject) jsonResponse.get("data");
@@ -348,8 +336,9 @@ public class LoadingController implements Initializable{
             customer.setMobileNumber((String) data.get("mobile_no"));
             //get customer current points
             params = new ArrayList<>();
-            url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGetPointsEndpoint().replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-            responseStr = App.appContextHolder.getApiService().call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            url = BASE_URL + GET_POINTS_ENDPOINT;
+            url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+            responseStr = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
             jsonResponse = (JSONObject) parser.parse(responseStr);
             DecimalFormat formatter = new DecimalFormat("#,###,###.00");

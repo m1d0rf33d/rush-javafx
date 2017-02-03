@@ -4,6 +4,8 @@ import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
 import com.yondu.Browser;
 import com.yondu.model.constants.ApiFieldContants;
+import com.yondu.service.ApiService;
+import com.yondu.service.RouteService;
 import com.yondu.utils.ButtonEventHandler;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -36,6 +38,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static com.yondu.AppContextHolder.*;
+import static com.yondu.model.constants.AppConfigConstants.*;
+
 /**
  * Created by erwin on 10/27/2016.
  */
@@ -61,6 +66,10 @@ public class RequirePinController  implements Initializable {
     private String login;
     private String branchId;
 
+    private RouteService routeService = new RouteService();
+    private ApiService apiService = new ApiService();
+    private Stage currentStage;
+
     public RequirePinController(Pane overlayPane, String login, String branchId) {
         this.overlayPane = overlayPane;
         this.login = login;
@@ -70,6 +79,8 @@ public class RequirePinController  implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        currentStage = (Stage) cancelBtn.getScene().getWindow();
         pinTextField.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
@@ -112,45 +123,28 @@ public class RequirePinController  implements Initializable {
                 });
 
         proceedBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
-            String jsonResponse = "";
-            try {
-                //Build request body
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, this.login));
-                params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, branchId));
-                params.add(new BasicNameValuePair(ApiFieldContants.PIN, this.pinTextField.getText()));
-                String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getLoginEndpoint();
-                jsonResponse = App.appContextHolder.getApiService().call((url), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            //Build request body
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, this.login));
+            params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, branchId));
+            params.add(new BasicNameValuePair(ApiFieldContants.PIN, this.pinTextField.getText()));
+            String url = BASE_URL + LOGIN_ENDPOINT;
+            JSONObject jsonObject = apiService.call((url), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
-                JSONParser parser = new JSONParser();
-                JSONObject jsonObject = (JSONObject) parser.parse(jsonResponse);
+            if (jsonObject != null) {
                 if (jsonObject.get("error_code").equals("0x0")) {
                     JSONObject data = (JSONObject) jsonObject.get("data");
                     App.appContextHolder.setEmployeeName(((String) data.get("name")));
                     App.appContextHolder.setEmployeeId((String) data.get("id"));
                     App.appContextHolder.setBranchId(branchId);
                     //Redirect to home page
-                    Stage stage = new Stage();
-                    stage.setScene(new Scene(new Browser(),width - 20,(height - 70), javafx.scene.paint.Color.web("#666970")));
-                    stage.setTitle("Rush POS Sync");
-                    stage.setMaximized(true);
-                    stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                    stage.show();
-                    App.appContextHolder.setHomeStage(stage);
-                    ((Stage) overlayPane.getScene().getWindow()).close();
-                    ((Stage) rushLogo.getScene().getWindow()).close();
+                    routeService.goToHomeScreen(currentStage);
                 } else {
                     overlayPane2.setVisible(true);
                     prompt((String) jsonObject.get("message"), event);
                 }
-
-            } catch (IOException e) {
-                //LOG here
-                jsonResponse = null;
-                App.appContextHolder.setOnlineMode(false);
-                prompt("Unable to connect to Rush Server due to network connection problem. Please check your internet connection and try again.", event);
-            } catch (ParseException e) {
-                e.printStackTrace();
+            } else {
+                //TODO: offline
             }
         });
 

@@ -2,22 +2,29 @@ package com.yondu.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yondu.App;
-import com.yondu.AppContextHolder;
-import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.Token;
+import com.yondu.model.constants.ApiFieldContants;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+
+import static com.yondu.AppContextHolder.*;
 
 /** All API calls that will be made going to Rush API should be here / API Module
  *
@@ -25,20 +32,15 @@ import java.util.Properties;
  */
 public class ApiService {
 
-    public String call(String url, List<NameValuePair> params, String method, String resourceOwner) throws IOException {
-        //Validate token
-        String token = "";
-        if (resourceOwner.equals(ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER)) {
-            App.appContextHolder.setAuthorizationToken(getToken(resourceOwner));
-            token = App.appContextHolder.getAuthorizationToken();
-        } else {
-            App.appContextHolder.setCustomerAppAuthToken(getToken(resourceOwner));
-            token = App.appContextHolder.getCustomerAppAuthToken();
-        }
 
 
-        HttpResponse response = null;
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+    public JSONObject call(String url, List<NameValuePair> params, String method, String resourceOwner) {
+
+        try {
+            String token = getToken(resourceOwner);
+
+            HttpResponse response = null;
+            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
             //POST request
             if (method.equalsIgnoreCase("post")) {
                 HttpPost httpPost = new HttpPost(url);
@@ -60,28 +62,38 @@ public class ApiService {
                     new InputStreamReader(response.getEntity().getContent()));
 
             StringBuffer result = new StringBuffer();
-            String line = "";
+            String line;
             while ((line = rd.readLine()) != null) {
                 result.append(line);
             }
-            //Set application state to online
-            App.appContextHolder.setOnlineMode(true);
-            return result.toString();
+
+            JSONParser parser = new JSONParser();
+            return (JSONObject) parser.parse(result.toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
     public String getToken(String resourceOwner) throws IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        String appKey = "", appSecret = "";
+        String appKey, appSecret;
         if (resourceOwner.equals(ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER)) {
-            appKey = App.appContextHolder.getAppKey();
-            appSecret = App.appContextHolder.getAppSecret();
+            appKey = MERCHANT_APP_KEY;
+            appSecret = MERCHANT_APP_SECRET;
         } else {
-            appKey = App.appContextHolder.getCustomerAppKey();
-            appSecret = App.appContextHolder.getCustomerAppSecret();
+            appKey = CUSTOMER_APP_KEY;
+            appSecret = CUSTOMER_APP_SECRET;
         }
 
-        String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getAuthorizationEndpoint();
+        String url = BASE_URL + AUTHORIZATION_ENDPOINT;
         HttpPost httpPost = new HttpPost(url);
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("app_key", appKey));
@@ -93,12 +105,73 @@ public class ApiService {
                 new InputStreamReader(response.getEntity().getContent()));
 
         StringBuffer result = new StringBuffer();
-        String line = "";
+        String line;
         while ((line = rd.readLine()) != null) {
             result.append(line);
         }
         ObjectMapper mapper = new ObjectMapper();
         Token token = mapper.readValue(result.toString(), Token.class);
         return token.getToken();
+    }
+
+    public JSONObject getOauth2Token() {
+        try {
+            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            String url = CMS_URL + TOMCAT_PORT + OAUTH_ENDPOINT;
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.addHeader("Authorization", OAUTH_SECRET);
+            httpPost.addHeader("Content-Type", "application/json");
+            HttpResponse response = httpClient.execute(httpPost);
+            // use httpClient (no need to close it explicitly)
+            BufferedReader rd = new BufferedReader(
+                    new InputStreamReader(response.getEntity().getContent()));
+
+            StringBuffer result = new StringBuffer();
+            String line = "";
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+            JSONParser parser = new JSONParser();
+            return (JSONObject) parser.parse(result.toString());
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public JSONObject callWidgetAPI(String url, String type) {
+
+        try {
+            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            HttpResponse response = null;
+            if (type.equalsIgnoreCase("get")) {
+                HttpGet httpGet = new HttpGet(url);
+                httpGet.addHeader("Authorization", "Bearer " + getOauth2Token());
+                httpGet.addHeader("Content-Type", "application/json");
+                response = httpClient.execute(httpGet);
+            }
+
+            BufferedReader rd = new BufferedReader(
+                    new InputStreamReader(response.getEntity().getContent()));
+
+            StringBuffer sb = new StringBuffer();
+            String line;
+            while ((line = rd.readLine()) != null) {
+                sb.append(line);
+            }
+            JSONParser parser = new JSONParser();
+            return (JSONObject) parser.parse(sb.toString());
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

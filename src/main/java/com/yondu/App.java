@@ -9,10 +9,9 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import static com.yondu.model.constants.AppConfigConstants.*;
 
 /** This is where the fun begins..
  *
@@ -23,19 +22,15 @@ public class App extends Application{
     public static final AppContextHolder appContextHolder = new AppContextHolder();
 
     public static void main(String[] args) {
-
-        boolean is64bit = false;
+        //Forgive the hard coded values guys im tired :(
         if (System.getProperty("os.name").contains("Windows")) {
-            is64bit = (System.getenv("ProgramFiles(x86)") != null);
-            App.appContextHolder.setIs64Bit(is64bit);
-            File file = new File(System.getProperty("user.home") + AppConfigConstants.LOCK_LOCATION);
+
+            DIVIDER = "\\";
+
+            File file = new File(System.getenv("RUSH_HOME") + DIVIDER + LOCK_FILE);
             if (file.exists()) {
                 try {
-                    if (is64bit) {
-                        Runtime.getRuntime().exec("cmd /c start  C:\\\"Program Files (x86)\"" + AppConfigConstants.VBS_LOCATION);
-                    } else {
-                        Runtime.getRuntime().exec("cmd /c start C:\\\"Program Files\"" + AppConfigConstants.VBS_LOCATION);
-                    }
+                    Runtime.getRuntime().exec("cmd /c start  " + System.getenv("RUSH_HOME") + DIVIDER + VBS_FILE);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -49,7 +44,7 @@ public class App extends Application{
                 Runtime.getRuntime().addShutdownHook(new Thread() {
                     @Override
                     public void run() {
-                        File file = new File(System.getProperty("user.home") + AppConfigConstants.LOCK_LOCATION);
+                        File file = new File(System.getenv("RUSH_HOME") + DIVIDER + LOCK_FILE);
                         if (file.exists()) {
                             file.delete();
                         }
@@ -57,6 +52,10 @@ public class App extends Application{
                 });
                 launch(args);
             }
+        } else {
+            //TODO: Add locking and maximizer
+            AppConfigConstants.DIVIDER = "//";
+            launch(args);
         }
 
     }
@@ -75,7 +74,7 @@ public class App extends Application{
     @Override
     public void stop() throws Exception {
         super.stop();
-        File file = new File(System.getProperty("user.home") + AppConfigConstants.LOCK_LOCATION);
+        File file = new File(System.getenv("RUSH_HOME") + DIVIDER + LOCK_FILE);
         if (file.exists()) {
             file.delete();
         }

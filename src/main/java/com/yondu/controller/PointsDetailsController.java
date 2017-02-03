@@ -5,36 +5,41 @@ import com.yondu.model.Account;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.service.ApiService;
+import com.yondu.service.RouteService;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.image.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.apache.commons.codec.binary.*;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import static com.yondu.model.constants.AppConfigConstants.*;
-import static org.bytedeco.javacpp.lept.pixDestroy;
-import static org.bytedeco.javacpp.lept.pixRead;
+import static com.yondu.AppContextHolder.*;
 
 /**
  * Created by erwin on 10/2/2016.
@@ -62,13 +67,14 @@ public class PointsDetailsController implements Initializable{
     @FXML
     public Label mode;
 
-    private ApiService apiService;
+    private RouteService routeService = new RouteService();
+    private ApiService apiService = new ApiService();
 
     private String orNumber;
     private String totalAmount;
     private String convertedPoints;
     private Account customer;
-
+    private Stage currentStage;
 
 
     public PointsDetailsController(String orNumber, String totalAmount, String convertedPoints, Account customer) {
@@ -81,7 +87,8 @@ public class PointsDetailsController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        apiService = new ApiService();
+
+        currentStage = (Stage) continueButton.getScene().getWindow();
         this.rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
 
 
@@ -99,18 +106,16 @@ public class PointsDetailsController implements Initializable{
 
         this.continueButton.addEventHandler(MouseEvent.MOUSE_CLICKED,(MouseEvent event) ->{
             if (App.appContextHolder.isOnlineMode()) {
-                try{
-                    java.util.List<NameValuePair> params = new ArrayList<>();
-                    params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
-                    params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberLbl.getText().trim()));
-                    params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmountLbl.getText().trim().replace(",","")));
-                    String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getGivePointsEndpoint();
-                    url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-                    String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-                    JSONParser parser = new JSONParser();
+                java.util.List<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
+                params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, orNumberLbl.getText().trim()));
+                params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, totalAmountLbl.getText().trim().replace(",","")));
+                String url = BASE_URL + GIVE_POINTS_ENDPOINT;
+                url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+                JSONObject jsonObject = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
-                    JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
-                    if (jsonResponse.get("error_code").equals("0x0")) {
+                if (jsonObject != null) {
+                    if (jsonObject.get("error_code").equals("0x0")) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION,"Points has been successfully given to customer.", ButtonType.OK);
                         alert.setTitle(AppConfigConstants.APP_TITLE);
                         alert.initStyle(StageStyle.UTILITY);
@@ -118,18 +123,10 @@ public class PointsDetailsController implements Initializable{
 
                         if (alert.getResult() == ButtonType.OK) {
                             alert.close();
-                            Stage givePointsStage = new Stage();
-                            Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
-                            givePointsStage.setScene(new Scene(root, 400,220));
-                            givePointsStage.setTitle("Rush POS Sync");
-                            givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-                            givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                            givePointsStage.show();
-
-                            ((Stage)rushLogoImageView.getScene().getWindow()).close();
+                            routeService.goToGivePointsScreen(currentStage);
                         }
-                    } else if (jsonResponse.get("error_code").equals("0x4") || jsonResponse.get("error_code").equals("0x3")) {
-                        String errorMessage = (String) jsonResponse.get("message");
+                    } else if (jsonObject.get("error_code").equals("0x4") || jsonObject.get("error_code").equals("0x3")) {
+                        String errorMessage = (String) jsonObject.get("message");
                         Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage, ButtonType.OK);
                         alert.setTitle(AppConfigConstants.APP_TITLE);
                         alert.initStyle(StageStyle.UTILITY);
@@ -139,7 +136,7 @@ public class PointsDetailsController implements Initializable{
                             alert.close();
                         }
                     } else {
-                        JSONObject error = (JSONObject) jsonResponse.get("errors");
+                        JSONObject error = (JSONObject) jsonObject.get("errors");
                         String errorMessage = "";
                         if (error.get("or_no") != null) {
                             List<String> l = (ArrayList<String>) error.get("or_no");
@@ -158,11 +155,7 @@ public class PointsDetailsController implements Initializable{
                             alert.close();
                         }
                     }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    App.appContextHolder.setOnlineMode(false);
+                } else {
                     writeOfflineTransaction();
                 }
             } else {
@@ -173,37 +166,18 @@ public class PointsDetailsController implements Initializable{
         this.cancelButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                try {
-                    if (App.appContextHolder.getPreviousStage().equals("GIVE_POINTS_OCR")) {
-                        Stage givePointsStage = new Stage();
-                        Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
-                        givePointsStage.setScene(new Scene(root, 400,220));
-                        givePointsStage.setTitle("Rush POS Sync");
-                        givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-                        givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                        givePointsStage.show();
-                    } else {
-                        Stage givePointsStage = new Stage();
-                        Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
-                        givePointsStage.setScene(new Scene(root, 500,300));
-
-                        givePointsStage.setTitle("Rush POS Sync");
-                        givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-                        givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                        givePointsStage.show();
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (App.appContextHolder.getPreviousStage().equals("GIVE_POINTS_OCR")) {
+                    routeService.goToGivePointsScreen(currentStage);
+                } else {
+                    routeService.goToGivePointsManualScreen(currentStage);
                 }
-                ((Stage)rushLogoImageView.getScene().getWindow()).close();
             }
         });
     }
     private  void writeOfflineTransaction() {
         //write to file
         try {
-            File file = new File(App.appContextHolder.getOfflinePath());
+            File file = new File(System.getenv("RUSH_HOME") + DIVIDER + OFFLINE_TRANSACTION_FILE);
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -225,26 +199,10 @@ public class PointsDetailsController implements Initializable{
             if (alert.getResult() == ButtonType.OK) {
                 alert.close();
                 if (App.appContextHolder.getPreviousStage().equals("GIVE_POINTS_OCR")) {
-                    Stage givePointsStage = new Stage();
-                    Parent root = FXMLLoader.load(App.class.getResource(GIVE_POINTS_FXML));
-                    givePointsStage.setScene(new Scene(root, 400,220));
-                    givePointsStage.setTitle("Rush POS Sync");
-                    givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-                    givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                    givePointsStage.show();
+                    routeService.goToGivePointsScreen(currentStage);
                 } else {
-                    Stage givePointsStage = new Stage();
-                    Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
-                    givePointsStage.setScene(new Scene(root, 500,300));
-
-                    givePointsStage.setTitle("Rush POS Sync");
-                    givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-                    givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                    givePointsStage.show();
+                    routeService.goToGivePointsManualScreen(currentStage);
                 }
-
-
-                ((Stage)rushLogoImageView.getScene().getWindow()).close();
             }
         } catch (IOException e) {
             e.printStackTrace();

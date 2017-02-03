@@ -2,28 +2,22 @@ package com.yondu.controller;
 
 import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
-import com.yondu.Browser;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.service.ApiService;
+import com.yondu.service.NotificationService;
+import com.yondu.service.RouteService;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -33,17 +27,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.awt.*;
-import java.io.*;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
-import static com.yondu.model.constants.AppConfigConstants.*;
-import static org.bytedeco.javacpp.lept.pixDestroy;
-import static org.bytedeco.javacpp.lept.pixRead;
+import static com.yondu.model.constants.AppConfigConstants.LOADING_FXML;
+import static com.yondu.AppContextHolder.*;
 
 /**
  * Created by erwin on 10/2/2016.
@@ -61,15 +52,18 @@ public class GivePointsController implements Initializable {
     @FXML
     public Button manualBtn;
 
+    private ApiService apiService                   = new ApiService();
+    private RouteService routeService               = new RouteService();
+    private NotificationService notificationService = new NotificationService();
+    private Stage currentStage;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        double width = screenSize.getWidth();
-        double height = screenSize.getHeight();
+        currentStage = (Stage) homeBtn.getScene().getWindow();
+
         if (App.appContextHolder.getWithVk() != null && !App.appContextHolder.getWithVk()) {
-            mobileField.focusedProperty().addListener(new ChangeListener<Boolean>()
-            {
+            mobileField.focusedProperty().addListener(new ChangeListener<Boolean>() {
                 public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
                 {
                     if (newPropertyValue)
@@ -109,28 +103,10 @@ public class GivePointsController implements Initializable {
         this.homeBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent t) -> {
             if (App.appContextHolder.getEmployeeId() == null ||
                     (App.appContextHolder.getEmployeeId() != null && App.appContextHolder.getEmployeeId().equals("OFFLINE_EMPLOYEE"))) {
-                try {
-                    Stage primaryStage = new Stage();
-                    Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
-                    primaryStage.setScene(new Scene(root, 600,400));
-                    primaryStage.resizableProperty().setValue(false);
-                    primaryStage.initStyle(StageStyle.UNDECORATED);
-                    primaryStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                    primaryStage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                routeService.goToSplashScreen(currentStage);
             } else {
-                Stage stage = new Stage();
-                stage.setScene(new Scene(new Browser(),width - 20, height - 70, Color.web("#666970")));
-                stage.setTitle("Rush POS Sync");
-                stage.setMaximized(true);
-                stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                stage.show();
-                App.appContextHolder.setHomeStage(stage);
+                routeService.goToHomeScreen(currentStage);
             }
-
-            ((Stage) homeBtn.getScene().getWindow()).close();
         });
 
         this.givePointsButton.addEventHandler(MouseEvent.MOUSE_CLICKED,(MouseEvent t) -> {
@@ -138,19 +114,7 @@ public class GivePointsController implements Initializable {
         });
 
         this.manualBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
-           try {
-               Stage givePointsStage = new Stage();
-               Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/give-points-manual.fxml"));
-               givePointsStage.setScene(new Scene(root, 500,300));
-
-               givePointsStage.setTitle("Rush POS Sync");
-               givePointsStage.resizableProperty().setValue(Boolean.FALSE);
-               givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-               givePointsStage.show();
-               ((Stage) manualBtn.getScene().getWindow()).close();
-           } catch (IOException e) {
-               e.printStackTrace();
-           }
+            routeService.goToManualGivePointsScreen(currentStage);
         });
 
     }
@@ -163,22 +127,15 @@ public class GivePointsController implements Initializable {
 
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileField.getText()));
-            String url = App.appContextHolder.getBaseUrl() + App.appContextHolder.getMemberLoginEndpoint();
+            String url = BASE_URL + MEMBER_LOGIN_ENDPOINT;
             url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-            String responseStr = App.appContextHolder.getApiService().call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            String responseStr = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
             JSONParser parser = new JSONParser();
             JSONObject jsonResponse = (JSONObject) parser.parse(responseStr);
             if (!(jsonResponse.get("error_code")).equals("0x0")) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) jsonResponse.get("message"), ButtonType.OK);
-                alert.setTitle(AppConfigConstants.APP_TITLE);
-                alert.initStyle(StageStyle.UTILITY);
-                alert.showAndWait();
-
-                if (alert.getResult() == ButtonType.OK) {
-                    alert.close();
-                }
+                notificationService.showMessagePrompt((String) jsonResponse.get("message"), Alert.AlertType.INFORMATION, currentStage, ButtonType.OK);
             } else {
-                //Load givepoints result
+
                 JSONObject data = (JSONObject) jsonResponse.get("data");
                 App.appContextHolder.setCustomerUUID((String)data.get("id"));
                 App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
@@ -203,24 +160,16 @@ public class GivePointsController implements Initializable {
                 ((Stage)givePointsButton.getScene().getWindow()).close();
                 loadGivePointsDetailsView();
             } else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,(String) "Invalid mobile number", ButtonType.OK);
-                alert.setTitle(AppConfigConstants.APP_TITLE);
-                alert.initStyle(StageStyle.UTILITY);
-                alert.showAndWait();
-
-                if (alert.getResult() == ButtonType.OK) {
-                    alert.close();
-                }
+                notificationService.showMessagePrompt("Invalid mobile number.", Alert.AlertType.INFORMATION, currentStage, ButtonType.OK);
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
-    private  void loadGivePointsDetailsView() {
+    private void loadGivePointsDetailsView() {
         Stage loadingStage = new Stage();
         try {
-
             Parent root = FXMLLoader.load(App.class.getResource(LOADING_FXML));
             loadingStage.setScene(new Scene(root, 300,100));
             loadingStage.initStyle(StageStyle.UNDECORATED);

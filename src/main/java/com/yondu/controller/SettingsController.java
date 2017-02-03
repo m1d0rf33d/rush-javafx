@@ -115,7 +115,7 @@ public class SettingsController implements Initializable{
         } else {
             try {
                 Properties prop = new Properties();
-                InputStream inputStream = new FileInputStream(App.appContextHolder.getOcrFullPath());
+                InputStream inputStream = new FileInputStream(System.getenv("RUSH_HOME") + DIVIDER + OCR_PROPERTIES);
                 prop.load(inputStream);
                 salesX = ((Double)Double.parseDouble(prop.getProperty("sales_pos_x"))).intValue();
                 salesY =((Double) Double.parseDouble(prop.getProperty("sales_pos_y"))).intValue();
@@ -137,15 +137,9 @@ public class SettingsController implements Initializable{
             BufferedImage screenFullImage = robot.createScreenCapture(screen);
             javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
             this.previewImage.setImage(image);
-            String basePath = "";
-            if (App.appContextHolder.getIs64Bit()) {
-                basePath = "C:\\Program Files (x86)\\Rush-POS-Sync";
-            } else {
-                basePath = "C:\\Program Files\\Rush-POS-Sync";
-            }
 
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(basePath + TESSERACT_LOCATION);
+            tesseract.setDatapath(System.getenv("RUSH_HOME") + DIVIDER + TESSERACT_FOLDER);
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = null;
@@ -221,7 +215,7 @@ public class SettingsController implements Initializable{
         //Load ocr-properties saved config
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(App.appContextHolder.getOcrFullPath());
+            InputStream inputStream = new FileInputStream(System.getenv("RUSH_HOME") + DIVIDER + OCR_PROPERTIES);
             prop.load(inputStream);
             StringBuilder sb = new StringBuilder();
             sb.append(prop.getProperty("sales_pos_x"));
@@ -294,7 +288,7 @@ public class SettingsController implements Initializable{
         //Load ocr-properties saved config
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(App.appContextHolder.getOcrFullPath());
+            InputStream inputStream = new FileInputStream(System.getenv("RUSH_HOME") + DIVIDER + OCR_PROPERTIES);
             prop.load(inputStream);
             StringBuilder sb = new StringBuilder();
             sb.append(prop.getProperty("sales_pos_x"));
@@ -327,7 +321,7 @@ public class SettingsController implements Initializable{
             String salesPosX = "", salesPosY = "", salesWidth = "", salesHeight = "",
                     orPosX = "", orPosY = "", orWidth = "", orHeight = "";
 
-            File file = new File(App.appContextHolder.getOcrFullPath());
+            File file = new File(System.getenv("RUSH_HOME") + DIVIDER + OCR_PROPERTIES);
             if (file.exists()) {
                 Properties prop = new Properties();
                 InputStream inputStream = new FileInputStream(file);
@@ -429,7 +423,7 @@ public class SettingsController implements Initializable{
         } else {
             try {
                 Properties prop = new Properties();
-                InputStream inputStream = new FileInputStream(App.appContextHolder.getOcrFullPath());
+                InputStream inputStream = new FileInputStream(System.getenv("RUSH_HOME") + DIVIDER + OCR_PROPERTIES);
                 prop.load(inputStream);
                 salesX = ((Double)Double.parseDouble(prop.getProperty("or_pos_x"))).intValue();
                 salesY =((Double) Double.parseDouble(prop.getProperty("or_pos_y"))).intValue();
@@ -451,15 +445,8 @@ public class SettingsController implements Initializable{
             javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
             this.previewImage.setImage(image);
 
-            String basePath = "";
-            if (App.appContextHolder.getIs64Bit()) {
-                basePath = "C:\\Program Files (x86)\\Rush-POS-Sync";
-            } else {
-                basePath = "C:\\Program Files\\Rush-POS-Sync";
-            }
-
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(basePath + TESSERACT_LOCATION);
+            tesseract.setDatapath(System.getenv("RUSH_HOME") + DIVIDER + TESSERACT_FOLDER);
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = null;

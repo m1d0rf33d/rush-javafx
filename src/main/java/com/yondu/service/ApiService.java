@@ -104,7 +104,7 @@ public class ApiService {
 
         String url = BASE_URL + AUTHORIZATION_ENDPOINT;
         HttpPost httpPost = new HttpPost(url);
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("app_key", appKey));
         params.add(new BasicNameValuePair("app_secret", appSecret));
         httpPost.setEntity(new UrlEncodedFormEntity(params));
@@ -125,7 +125,11 @@ public class ApiService {
 
     public JSONObject getOauth2Token() {
         try {
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+
+            HttpParams httpParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
+            HttpConnectionParams.setSoTimeout(httpParams, 10000);
+            CloseableHttpClient httpClient = new DefaultHttpClient(httpParams);
             String url = CMS_URL + TOMCAT_PORT + OAUTH_ENDPOINT;
             HttpPost httpPost = new HttpPost(url);
             httpPost.addHeader("Authorization", OAUTH_SECRET);
@@ -155,9 +159,17 @@ public class ApiService {
     public JSONObject callWidgetAPI(String url, JSONObject jsonObject, String type) {
 
         try {
+            JSONObject tokenJSON = getOauth2Token();
+            if (tokenJSON == null) {
+                throw new IOException();
+            }
+
             StringEntity stringEntity = new StringEntity(jsonObject.toJSONString());
-            String token = (String) getOauth2Token().get("access_token");
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            String token = (String) tokenJSON.get("access_token");
+            HttpParams httpParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
+            HttpConnectionParams.setSoTimeout(httpParams, 10000);
+            CloseableHttpClient httpClient = new DefaultHttpClient(httpParams);
             HttpResponse response;
             if (type.equalsIgnoreCase("get")) {
                 HttpGet httpGet = new HttpGet(url);

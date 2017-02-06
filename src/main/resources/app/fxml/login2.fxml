@@ -17,7 +17,7 @@
                <VBox.margin>
                   <Insets top="80.0" />
                </VBox.margin></ImageView>
-            <StackPane maxHeight="600.0" prefHeight="600.0" prefWidth="420.0" VBox.vgrow="ALWAYS">
+            <StackPane alignment="TOP_CENTER" maxHeight="600.0" prefHeight="600.0" prefWidth="420.0" VBox.vgrow="ALWAYS">
                <children>
                   <VBox fx:id="offlineVBox" alignment="TOP_CENTER" prefHeight="600.0" prefWidth="100.0" StackPane.alignment="TOP_CENTER">
                      <children>
@@ -69,7 +69,7 @@
                               <Insets top="20.0" />
                            </VBox.margin>
                         </Button>
-                        <Button fx:id="loginButton11" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="RECONNECT" textFill="#f5f2f2">
+                        <Button fx:id="reconnectButton" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="RECONNECT" textFill="#f5f2f2">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -82,10 +82,10 @@
                         </Button>
                      </children>
                      <StackPane.margin>
-                        <Insets top="50.0" />
+                        <Insets />
                      </StackPane.margin>
                   </VBox>
-                  <VBox fx:id="onlineVBox" alignment="CENTER" maxWidth="+Infinity" prefHeight="200.0" prefWidth="100.0" StackPane.alignment="CENTER" VBox.vgrow="ALWAYS">
+                  <VBox fx:id="onlineVBox" alignment="TOP_CENTER" maxWidth="+Infinity" prefHeight="200.0" prefWidth="100.0" StackPane.alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
                      <children>
                         <Label text="EMPLOYEE LOGIN">
                            <font>
@@ -94,12 +94,12 @@
                         </Label>
                         <TextField fx:id="loginTextField" alignment="CENTER" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="400.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
                            <VBox.margin>
-                              <Insets top="10.0" />
+                              <Insets top="15.0" />
                            </VBox.margin>
                         </TextField>
                         <ComboBox fx:id="branchComboBox" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: f4f4f4;" VBox.vgrow="ALWAYS">
                            <VBox.margin>
-                              <Insets top="10.0" />
+                              <Insets top="15.0" />
                            </VBox.margin>
                         </ComboBox>
                         <Button fx:id="loginButton" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="LOGIN" textFill="#f5f2f2" VBox.vgrow="ALWAYS">
@@ -110,12 +110,15 @@
                               <Font name="System Bold" size="23.0" />
                            </font>
                            <VBox.margin>
-                              <Insets top="10.0" />
+                              <Insets top="15.0" />
                            </VBox.margin>
                         </Button>
                      </children>
+                     <StackPane.margin>
+                        <Insets top="20.0" />
+                     </StackPane.margin>
                   </VBox>
-                  <ImageView fx:id="loadingImageView" fitHeight="112.0" fitWidth="124.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="loadingImageView" fitHeight="112.0" fitWidth="124.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_CENTER" />
                </children>
             </StackPane>
          </children>

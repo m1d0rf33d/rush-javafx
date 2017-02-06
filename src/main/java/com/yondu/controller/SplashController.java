@@ -149,11 +149,13 @@ public class SplashController implements Initializable{
 
         String url = CMS_URL + TOMCAT_PORT + VALIDATE_MERCHANT_ENDPOINT;
         JSONObject jsonObject = apiService.callWidgetAPI(url, payload, "post");
-        JSONObject data = (JSONObject) jsonObject.get("data");
-        MERCHANT_APP_KEY = (String) data.get("merchantApiKey");
-        MERCHANT_APP_SECRET = (String) data.get("merchantApiSecret");
-        CUSTOMER_APP_KEY =(String) data.get("customerApiKey");
-        CUSTOMER_APP_SECRET = (String) data.get("customerApiSecret");
+        if (jsonObject != null) {
+            JSONObject data = (JSONObject) jsonObject.get("data");
+            MERCHANT_APP_KEY = (String) data.get("merchantApiKey");
+            MERCHANT_APP_SECRET = (String) data.get("merchantApiSecret");
+            CUSTOMER_APP_KEY =(String) data.get("customerApiKey");
+            CUSTOMER_APP_SECRET = (String) data.get("customerApiSecret");
+        }
 
     }
 

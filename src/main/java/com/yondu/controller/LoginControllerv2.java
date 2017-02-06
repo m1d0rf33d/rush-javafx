@@ -3,6 +3,7 @@ package com.yondu.controller;
 import com.yondu.App;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.service.ApiService;
+import com.yondu.service.NotificationService;
 import com.yondu.service.RouteService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -50,28 +51,34 @@ public class LoginControllerv2 implements Initializable {
     @FXML
     public VBox offlineVBox;
     @FXML
-    public Label mobileNumberLabel;
-    @FXML
-    public TextField mobileNumberTextField;
+    public Button reconnectButton;
 
     private ApiService apiService = new ApiService();
     private RouteService routeService = new RouteService();
+    private NotificationService notificationService = new NotificationService();
     private List<JSONObject> branches;
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         onlineVBox.setVisible(false);
+        offlineVBox.setVisible(false);
+        loadingImageView.setVisible(true);
 
 
         rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
         loadingImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/loading.gif").toExternalForm()));
+
         loadMerchantBranches();
 
         loginButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             loginEmployee();
         });
-
+        reconnectButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
+            routeService.goToSplashScreen((Stage) offlineVBox.getScene().getWindow());
+        });
     }
 
     private void loginEmployee() {
@@ -122,7 +129,19 @@ public class LoginControllerv2 implements Initializable {
                 branchComboBox.getItems().add(branch.get("name"));
             }
             branchComboBox.getSelectionModel().selectFirst();
+            this.onlineVBox.setVisible(true);
+        } else {
+            showOfflinePrompt();
+           this.offlineVBox.setVisible(true);
         }
+
         this.loadingImageView.setVisible(false);
+    }
+
+    private void showOfflinePrompt() {
+        notificationService.showMessagePrompt("\n  No network connection. You are currently in offline mode.  ",
+                                            Alert.AlertType.INFORMATION,
+                                            null,
+                                            ButtonType.OK);
     }
 }

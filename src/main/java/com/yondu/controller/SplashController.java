@@ -2,6 +2,7 @@ package com.yondu.controller;
 
 import com.yondu.App;
 import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.service.ApiService;
 import com.yondu.service.RouteService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -11,6 +12,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -46,6 +49,7 @@ public class SplashController implements Initializable{
     public ImageView rushLogoImage;
 
     private RouteService routeService = new RouteService();
+    private ApiService apiService     = new ApiService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -139,41 +143,18 @@ public class SplashController implements Initializable{
 
     private void loadMerchantKeys() throws IOException, ParseException {
 
-        String merchant = this.getMerhant();
-        String oauthKey = this.getCMSOauthToken();
+        String merchantKey = this.getMerhant();
+        JSONObject payload = new JSONObject();
+        payload.put("uniqueKey", merchantKey);
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("uniqueKey", merchant);
-
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         String url = CMS_URL + TOMCAT_PORT + VALIDATE_MERCHANT_ENDPOINT;
-        HttpPost httpPost = new HttpPost(url);
-        StringEntity entity = new StringEntity(jsonObject.toJSONString());
-        httpPost.addHeader("content-type", "application/json");
-        httpPost.addHeader("authorization", "Bearer "+ oauthKey);
-        httpPost.setEntity(entity);
-        HttpResponse response = httpClient.execute(httpPost);
-        BufferedReader rd = new BufferedReader(
-                new InputStreamReader(response.getEntity().getContent()));
+        JSONObject jsonObject = apiService.callWidgetAPI(url, payload, "post");
+        JSONObject data = (JSONObject) jsonObject.get("data");
+        MERCHANT_APP_KEY = (String) data.get("merchantApiKey");
+        MERCHANT_APP_SECRET = (String) data.get("merchantApiSecret");
+        CUSTOMER_APP_KEY =(String) data.get("customerApiKey");
+        CUSTOMER_APP_SECRET = (String) data.get("customerApiSecret");
 
-        StringBuffer result = new StringBuffer();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            result.append(line);
-        }
-        rd.close();
-        JSONParser parser = new JSONParser();
-        JSONObject jsonResponse = (JSONObject) parser.parse(result.toString());
-        if (jsonResponse.get("responseCode").equals("200")) {
-            JSONObject data = (JSONObject) jsonResponse.get("data");
-            MERCHANT_APP_KEY = (String) data.get("merchantApiKey");
-            MERCHANT_APP_SECRET = (String) data.get("merchantApiSecret");
-            CUSTOMER_APP_KEY =(String) data.get("customerApiKey");
-            CUSTOMER_APP_SECRET = (String) data.get("customerApiSecret");
-        } else {
-            throw new IOException();
-        }
-        httpClient.close();
     }
 
     private String getMerhant() {
@@ -196,36 +177,6 @@ public class SplashController implements Initializable{
        return null;
     }
 
-    private String getCMSOauthToken() {
-        try {
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            String url = CMS_URL + TOMCAT_PORT + OAUTH_ENDPOINT;
-            HttpPost httpPost = new HttpPost(url);
-            httpPost.addHeader("content-type", "application/json");
-            httpPost.addHeader("authorization", OAUTH_SECRET);
-            HttpResponse response = httpClient.execute(httpPost);
-            BufferedReader rd = new BufferedReader(
-                    new InputStreamReader(response.getEntity().getContent()));
-
-            StringBuffer result = new StringBuffer();
-            String line = "";
-            while ((line = rd.readLine()) != null) {
-                result.append(line);
-            }
-            rd.close();
-
-            JSONParser parser = new JSONParser();
-            JSONObject jsonResponse = (JSONObject) parser.parse(result.toString());
-            return jsonResponse.toString();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     private void loadEndpointsFromConfig() {
        try {

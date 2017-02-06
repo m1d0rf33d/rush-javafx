@@ -8,11 +8,12 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #fafafa;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.LoginController">
+<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #fafafa;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.LoginController">
    <children>
-      <Pane fx:id="rightPane" layoutX="720.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #f4f4f4;">
+      <Pane fx:id="overlayPane" opacity="0.51" prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #222;" />
+      <Pane fx:id="rightPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #f4f4f4;">
          <children>
-            <Button fx:id="oneBtn" layoutX="85.0" layoutY="52.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="1" textFill="#71747a">
+            <Button fx:id="oneBtn" layoutX="537.0" layoutY="56.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="1" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
@@ -23,7 +24,7 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <Button fx:id="twoBtn" layoutX="242.0" layoutY="52.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="2" textFill="#71747a">
+            <Button fx:id="twoBtn" layoutX="694.0" layoutY="56.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="2" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
@@ -34,7 +35,7 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <Button fx:id="threeBtn" layoutX="398.0" layoutY="52.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="3" textFill="#71747a">
+            <Button fx:id="threeBtn" layoutX="850.0" layoutY="56.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="3" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
@@ -45,7 +46,7 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <Button fx:id="fourBtn" layoutX="402.0" layoutY="203.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="6" textFill="#71747a">
+            <Button fx:id="fourBtn" layoutX="854.0" layoutY="207.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="6" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
@@ -56,7 +57,7 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <Button fx:id="fiveBtn" layoutX="246.0" layoutY="203.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="5" textFill="#71747a">
+            <Button fx:id="fiveBtn" layoutX="698.0" layoutY="207.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="5" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
@@ -67,7 +68,7 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <Button fx:id="sixBtn" layoutX="89.0" layoutY="203.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="4" textFill="#71747a">
+            <Button fx:id="sixBtn" layoutX="541.0" layoutY="207.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="4" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
@@ -78,7 +79,7 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <Button fx:id="sevenBtn" layoutX="90.0" layoutY="359.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="7" textFill="#71747a">
+            <Button fx:id="sevenBtn" layoutX="542.0" layoutY="363.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="7" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
@@ -89,7 +90,7 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <Button fx:id="eightBtn" layoutX="247.0" layoutY="359.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="8" textFill="#71747a">
+            <Button fx:id="eightBtn" layoutX="699.0" layoutY="363.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="8" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
@@ -100,7 +101,7 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <Button fx:id="nineBtn" layoutX="403.0" layoutY="359.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="9" textFill="#71747a">
+            <Button fx:id="nineBtn" layoutX="855.0" layoutY="363.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="9" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
@@ -111,7 +112,7 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <Button fx:id="dotBtn" layoutX="404.0" layoutY="510.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="." textFill="#71747a">
+            <Button fx:id="dotBtn" layoutX="856.0" layoutY="514.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="." textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
@@ -122,7 +123,7 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <Button fx:id="zeroBtn" layoutX="248.0" layoutY="510.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="0" textFill="#71747a">
+            <Button fx:id="zeroBtn" layoutX="700.0" layoutY="514.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="0" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
@@ -133,7 +134,7 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <Button fx:id="delBtn" layoutX="91.0" layoutY="510.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" textFill="#71747a">
+            <Button fx:id="delBtn" layoutX="541.0" layoutY="514.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" textFill="#71747a">
                <font>
                   <Font size="51.0" />
                </font>
@@ -144,17 +145,18 @@
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </Button>
-            <ImageView fx:id="removeImage" fitHeight="33.0" fitWidth="47.0" layoutX="133.0" layoutY="559.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="removeImage" fitHeight="33.0" fitWidth="47.0" layoutX="583.0" layoutY="563.0" pickOnBounds="true" preserveRatio="true">
                <cursor>
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor></ImageView>
+            <Label fx:id="employeeLbl" layoutX="202.0" layoutY="247.0" prefHeight="50.0" prefWidth="245.0" text="EMPLOYEE LOGIN">
+               <font>
+                  <Font name="System Bold" size="23.0" />
+               </font>
+            </Label>
+            <ImageView fx:id="rushLogo" fitHeight="88.0" fitWidth="245.0" layoutX="191.0" layoutY="171.0" pickOnBounds="true" preserveRatio="true" />
          </children></Pane>
-      <Label fx:id="employeeLbl" layoutX="237.0" layoutY="250.0" prefHeight="50.0" prefWidth="200.0" text="EMPLOYEE LOGIN">
-         <font>
-            <Font name="System Bold" size="23.0" />
-         </font>
-      </Label>
-      <Button fx:id="loginBtn" layoutX="109.0" layoutY="426.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="450.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="LOGIN" textFill="#f5f2f2">
+      <Button fx:id="loginBtn" layoutX="109.0" layoutY="426.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="LOGIN" textFill="#f5f2f2">
          <font>
             <Font name="System Bold" size="23.0" />
          </font>
@@ -162,19 +164,17 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <ImageView fx:id="rushLogo" fitHeight="88.0" fitWidth="245.0" layoutX="217.0" layoutY="171.0" pickOnBounds="true" preserveRatio="true" />
-      <ComboBox fx:id="branchBox" layoutX="114.0" layoutY="363.0" prefHeight="50.0" prefWidth="450.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: f4f4f4;" />
-      <TextField fx:id="loginTextField" layoutX="115.0" layoutY="300.0" prefHeight="50.0" prefWidth="450.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: f4f4f4;">
+      <ComboBox fx:id="branchBox" layoutX="114.0" layoutY="363.0" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: f4f4f4;" />
+      <TextField fx:id="loginTextField" layoutX="110.0" layoutY="300.0" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: f4f4f4;">
          <font>
             <Font size="20.0" />
          </font></TextField>
-      <Pane fx:id="overlayPane" opacity="0.51" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #222;" />
-      <Label fx:id="offlineLbl" layoutX="170.0" layoutY="300.0" prefHeight="50.0" prefWidth="341.0" text="OFFLINE" textFill="#f20606">
+      <Label fx:id="offlineLbl" layoutX="191.0" layoutY="300.0" prefHeight="50.0" prefWidth="400.0" text="OFFLINE" textFill="#f20606">
          <font>
             <Font name="System Bold" size="23.0" />
          </font>
       </Label>
-      <Button fx:id="givePointsBtn" layoutX="109.0" layoutY="363.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="450.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="GIVE POINTS" textFill="#f5f2f2">
+      <Button fx:id="givePointsBtn" layoutX="109.0" layoutY="363.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="GIVE POINTS" textFill="#f5f2f2">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
@@ -182,7 +182,7 @@
             <Font name="System Bold" size="23.0" />
          </font>
       </Button>
-      <Button fx:id="reconnectBtn" layoutX="109.0" layoutY="426.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="450.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="RECONNECT" textFill="#f5f2f2">
+      <Button fx:id="reconnectBtn" layoutX="109.0" layoutY="426.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="RECONNECT" textFill="#f5f2f2">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>

@@ -4,15 +4,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yondu.App;
 import com.yondu.model.Token;
 import com.yondu.model.constants.ApiFieldContants;
+import org.apache.http.HttpClientConnection;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -40,7 +46,10 @@ public class ApiService {
             String token = getToken(resourceOwner);
 
             HttpResponse response = null;
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            HttpParams httpParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
+            HttpConnectionParams.setSoTimeout(httpParams, 10000);
+            CloseableHttpClient httpClient = new DefaultHttpClient(httpParams);
             //POST request
             if (method.equalsIgnoreCase("post")) {
                 HttpPost httpPost = new HttpPost(url);
@@ -143,16 +152,24 @@ public class ApiService {
         return null;
     }
 
-    public JSONObject callWidgetAPI(String url, String type) {
+    public JSONObject callWidgetAPI(String url, JSONObject jsonObject, String type) {
 
         try {
+            StringEntity stringEntity = new StringEntity(jsonObject.toJSONString());
+            String token = (String) getOauth2Token().get("access_token");
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpResponse response = null;
+            HttpResponse response;
             if (type.equalsIgnoreCase("get")) {
                 HttpGet httpGet = new HttpGet(url);
-                httpGet.addHeader("Authorization", "Bearer " + getOauth2Token());
+                httpGet.addHeader("Authorization", "Bearer " + token);
                 httpGet.addHeader("Content-Type", "application/json");
                 response = httpClient.execute(httpGet);
+            } else {
+                HttpPost httpPost = new HttpPost(url);
+                httpPost.setEntity(stringEntity);
+                httpPost.addHeader("Authorization", "Bearer " + token);
+                httpPost.addHeader("Content-Type", "application/json");
+                response = httpClient.execute(httpPost);
             }
 
             BufferedReader rd = new BufferedReader(

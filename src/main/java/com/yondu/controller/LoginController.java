@@ -27,6 +27,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -101,7 +102,6 @@ public class LoginController implements Initializable {
 
     private RouteService routeService = new RouteService();
     private ApiService apiService = new ApiService();
-    private Stage currentStage;
     private Double width;
     private Double height;
 
@@ -113,11 +113,6 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //Adjust window size based from machine screen resolution
-        this.setLayout();
-
-        //We need a reference for the current window
-        currentStage = (Stage) dotBtn.getScene().getWindow();
 
         //Just some extra bullshit
         overlayPane.setVisible(false);
@@ -174,7 +169,7 @@ public class LoginController implements Initializable {
         });
 
         givePointsBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
-            routeService.goToGivePointsScreen(currentStage);
+            routeService.goToGivePointsScreen((Stage) branchBox.getScene().getWindow());
 
         });
 
@@ -256,7 +251,7 @@ public class LoginController implements Initializable {
                     App.appContextHolder.setEmployeeId((String) data.get("id"));
                     App.appContextHolder.setBranchId(branchId);
 
-                    routeService.goToHomeScreen(currentStage);
+                    routeService.goToHomeScreen((Stage) branchBox.getScene().getWindow());
                     ((Stage) branchBox.getScene().getWindow()).close();
                 } else if (jsonObject.get("error_code").equals("0x2")) {
                     showRequirePinModal(event);

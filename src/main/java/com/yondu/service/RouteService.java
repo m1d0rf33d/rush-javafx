@@ -39,7 +39,7 @@ public class RouteService {
             double height = screenSize.getHeight();
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.LOGIN_FXML));
-            stage.setScene(new Scene(root, width,height - 70));
+            stage.setScene(new Scene(root, 1000,700));
             stage.setTitle(APP_TITLE);
             stage.getIcons().add(new Image(App.class.getResource(AppConfigConstants.R_LOGO).toExternalForm()));
             stage.show();

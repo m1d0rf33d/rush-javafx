@@ -1,7 +1,5 @@
 package com.yondu.service;
 
-import com.google.gson.Gson;
-import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppConfigConstants;
@@ -9,8 +7,6 @@ import com.yondu.utils.Java2JavascriptUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -18,14 +14,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.awt.*;
-import java.io.*;
-import java.text.DecimalFormat;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -97,7 +89,7 @@ public class HomeService {
 
         //Get employee screen access
         url = CMS_URL + TOMCAT_PORT + ACCESS_ENDPOINT;
-        jsonObj = apiService.callWidgetAPI(url, "get");
+        jsonObj = apiService.callWidgetAPI(url, new JSONObject(), "get");
 
         JSONObject dataJson = (JSONObject) jsonObj.get("data");
         List<String> screens = (ArrayList) dataJson.get("access");

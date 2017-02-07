@@ -106,7 +106,7 @@ public class LoginControllerv2 implements Initializable {
                 App.appContextHolder.setEmployeeId((String) data.get("id"));
                 App.appContextHolder.setBranchId(branchId);
 
-                routeService.goToHomeScreen((Stage) branchComboBox.getScene().getWindow());
+                routeService.goToMenuScreen((Stage) branchComboBox.getScene().getWindow());
             } else if (jsonObject.get("error_code").equals("0x2")) {
                // showRequirePinModal(event);
             } else {

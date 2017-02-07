@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.MenuController">
+   <children>
+      <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #e7e7e7;" />
+      <HBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="572.0" prefWidth="895.0" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox maxWidth="340.0" minHeight="700.0" minWidth="240.0" prefHeight="572.0" prefWidth="240.0" style="-fx-background-color: #53585b;" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+               <children>
+                  <Button maxWidth="300.0" minWidth="200.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #333;" text="REGISTER" textFill="#f8f6f6" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets left="20.0" right="20.0" top="20.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #333;" text="MEMBER INQUIRY" textFill="#f8f6f6">
+                     <VBox.margin>
+                        <Insets left="20.0" top="20.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #333;" text="GIVE POINTS" textFill="#f8f6f6">
+                     <VBox.margin>
+                        <Insets left="20.0" top="20.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+            <StackPane fx:id="bodyStackPane" alignment="TOP_LEFT" maxWidth="+Infinity" prefHeight="572.0" prefWidth="650.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

@@ -92,7 +92,10 @@ public class ApiService {
 
 
     public String getToken(String resourceOwner) throws IOException {
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        HttpParams httpParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
+        HttpConnectionParams.setSoTimeout(httpParams, 10000);
+        CloseableHttpClient httpClient = new DefaultHttpClient(httpParams);
         String appKey, appSecret;
         if (resourceOwner.equals(ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER)) {
             appKey = MERCHANT_APP_KEY;
@@ -120,6 +123,7 @@ public class ApiService {
         }
         ObjectMapper mapper = new ObjectMapper();
         Token token = mapper.readValue(result.toString(), Token.class);
+        httpClient.close();
         return token.getToken();
     }
 

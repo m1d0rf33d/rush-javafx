@@ -34,15 +34,13 @@ public class RouteService {
     public void goToLoginScreen(Stage currentStage) {
         try {
 
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            double width = screenSize.getWidth();
-            double height = screenSize.getHeight();
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.LOGIN_FXML));
             stage.setScene(new Scene(root, 1000,700));
             stage.setTitle(APP_TITLE);
             stage.getIcons().add(new Image(App.class.getResource(AppConfigConstants.R_LOGO).toExternalForm()));
             stage.show();
+            stage.setMaximized(true);
             currentStage.close();
             App.appContextHolder.setHomeStage(stage);
         } catch (IOException e) {
@@ -151,6 +149,21 @@ public class RouteService {
             givePointsStage.resizableProperty().setValue(Boolean.FALSE);
             givePointsStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             givePointsStage.show();
+            currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void goToMenuScreen(Stage currentStage) {
+        try {
+            Stage stage = new Stage();
+            Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/menu.fxml"));
+            stage.setScene(new Scene(root, 1000, 700));
+            stage.setTitle(APP_TITLE);
+            stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+            stage.show();
+            stage.setMaximized(true);
             currentStage.close();
         } catch (IOException e) {
             e.printStackTrace();

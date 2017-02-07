@@ -61,7 +61,8 @@ public class SplashController implements Initializable{
             Stage currentStage = ((Stage) rushLogoImage.getScene().getWindow());
             if (App.appContextHolder.isActivated()) {
                 if (App.appContextHolder.isOnlineMode()) {
-                    routeService.goToLoginScreen(currentStage);
+                   routeService.goToLoginScreen(currentStage);
+                   // routeService.goToMenuScreen(currentStage);
                 } else {
                     routeService.goToOfflineScreen(currentStage);
                 }

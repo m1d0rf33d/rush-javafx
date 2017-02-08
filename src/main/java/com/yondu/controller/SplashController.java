@@ -62,7 +62,7 @@ public class SplashController implements Initializable{
             if (App.appContextHolder.isActivated()) {
                 if (App.appContextHolder.isOnlineMode()) {
                    routeService.goToLoginScreen(currentStage);
-                   // routeService.goToMenuScreen(currentStage);
+
                 } else {
                     routeService.goToOfflineScreen(currentStage);
                 }
@@ -72,6 +72,7 @@ public class SplashController implements Initializable{
         });
         progressStatus.textProperty().bind(initService.messageProperty());
         initService.start();
+
     }
 
 

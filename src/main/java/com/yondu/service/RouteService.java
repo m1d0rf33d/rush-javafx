@@ -158,13 +158,19 @@ public class RouteService {
     public void goToMenuScreen(Stage currentStage) {
         try {
             Stage stage = new Stage();
+
             Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/menu.fxml"));
             stage.setScene(new Scene(root, 1000, 700));
             stage.setTitle(APP_TITLE);
             stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+
+            Scene scene = stage.getScene();
+            scene.getStylesheets().add(App.class.getResource("/app/css/register.css").toExternalForm());
             stage.show();
             stage.setMaximized(true);
-            currentStage.close();
+            if (currentStage != null) {
+                currentStage.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

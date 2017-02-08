@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="609.0" prefWidth="839.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:controller="com.yondu.controller.RegisterController" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="609.0" prefWidth="839.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox maxHeight="74" maxWidth="+Infinity" prefHeight="74.0" prefWidth="799.0" VBox.vgrow="ALWAYS">
          <children>
@@ -83,7 +83,7 @@
             <VBox maxWidth="500.0" minWidth="300" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <children>
                   <Label prefHeight="50.0" text="BIRTHDATE" />
-                  <DatePicker maxWidth="450.0" minHeight="50.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" VBox.vgrow="ALWAYS" />
+                  <DatePicker fx:id="birthdatePicker" maxWidth="450.0" minHeight="40.0" minWidth="300.0" prefHeight="40.0" prefWidth="300.0" style="-fx-background-radius: 0;" VBox.vgrow="ALWAYS" />
                </children>
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -149,7 +149,7 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
                <children>
-                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="Button" VBox.vgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="CLEAR ALL" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
             <VBox maxWidth="500.0" minWidth="300" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
@@ -157,7 +157,7 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
                <children>
-                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="Button" VBox.vgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="SEND" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
          </children>

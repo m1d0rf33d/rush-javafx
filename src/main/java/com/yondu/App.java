@@ -1,6 +1,7 @@
 package com.yondu;
 
 import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.service.RouteService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,6 +21,8 @@ import static com.yondu.model.constants.AppConfigConstants.*;
 public class App extends Application{
 
     public static final AppContextHolder appContextHolder = new AppContextHolder();
+
+    private RouteService routeService = new RouteService();
 
     public static void main(String[] args) {
         //Forgive the hard coded values guys im tired :(
@@ -63,12 +66,14 @@ public class App extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception{
         //Let's get the party started
-        Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
+       /* Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
         primaryStage.setScene(new Scene(root, 600,400));
         primaryStage.resizableProperty().setValue(false);
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-        primaryStage.show();
+        primaryStage.show();*/
+
+        routeService.goToMenuScreen(null);
     }
 
     @Override

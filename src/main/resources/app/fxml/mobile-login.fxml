@@ -5,8 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="600.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="600.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.MobileLoginController">
    <children>
       <Label prefHeight="50.0" text="Enter Mobile Number">
          <VBox.margin>
@@ -20,8 +19,8 @@
       </TextField>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Button maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="Button" />
-            <Button maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="Button">
+            <Button fx:id="submitButton" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="SUBMIT" />
+            <Button fx:id="cancelButton" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="CANCEL">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>

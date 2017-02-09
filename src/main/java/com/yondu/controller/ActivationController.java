@@ -99,7 +99,7 @@ public class ActivationController implements Initializable{
                 Stage currentStage = ((Stage) activateButton.getScene().getWindow());
                 routeService.goToLoginScreen(currentStage);
             } else {
-                notificationService.showMessagePrompt("Invalid merchant key.", Alert.AlertType.ERROR, activateButton.getScene().getWindow(), ButtonType.OK);
+                notificationService.showMessagePrompt("Invalid merchant key.", Alert.AlertType.ERROR, activateButton.getScene().getWindow(), null, ButtonType.OK);
             }
 
         } catch (FileNotFoundException e) {

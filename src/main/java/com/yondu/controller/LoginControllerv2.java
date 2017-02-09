@@ -141,7 +141,7 @@ public class LoginControllerv2 implements Initializable {
     private void showOfflinePrompt() {
         notificationService.showMessagePrompt("\n  No network connection. You are currently in offline mode.  ",
                                             Alert.AlertType.INFORMATION,
-                                            null,
+                                            null, null,
                                             ButtonType.OK);
     }
 }

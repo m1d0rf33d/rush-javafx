@@ -1,5 +1,7 @@
 package com.yondu;
 
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /** This will serve as a single instance application context holder that
@@ -41,6 +43,9 @@ public class AppContextHolder {
     private Boolean withVk;
     private Boolean isFirstDisconnect;
 
+    private VBox rootVBox;
+    private StackPane rootStackPane;
+
     //Read endpoints from config file
     public static String BASE_URL;
     public static String CMS_URL;
@@ -75,6 +80,14 @@ public class AppContextHolder {
     public static String CUSTOMER_APP_KEY;
     public static String CUSTOMER_APP_SECRET;
 
+    public StackPane getRootStackPane() {
+        return rootStackPane;
+    }
+
+    public void setRootStackPane(StackPane rootStackPane) {
+        this.rootStackPane = rootStackPane;
+    }
+
     public String getEmployeeId() {
         return employeeId;
     }
@@ -97,6 +110,14 @@ public class AppContextHolder {
 
     public void setBranchId(String branchId) {
         this.branchId = branchId;
+    }
+
+    public VBox getRootVBox() {
+        return rootVBox;
+    }
+
+    public void setRootVBox(VBox rootVBox) {
+        this.rootVBox = rootVBox;
     }
 
     public String getCustomerMobile() {

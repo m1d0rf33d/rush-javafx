@@ -132,7 +132,7 @@ public class GivePointsController implements Initializable {
             JSONObject jsonObject = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
             if (!(jsonObject.get("error_code")).equals("0x0")) {
-                notificationService.showMessagePrompt((String) jsonObject.get("message"), Alert.AlertType.INFORMATION, currentStage, ButtonType.OK);
+                notificationService.showMessagePrompt((String) jsonObject.get("message"), Alert.AlertType.INFORMATION, currentStage, null, ButtonType.OK);
             } else {
 
                 JSONObject data = (JSONObject) jsonObject.get("data");
@@ -159,7 +159,7 @@ public class GivePointsController implements Initializable {
                 ((Stage)givePointsButton.getScene().getWindow()).close();
                 loadGivePointsDetailsView();
             } else {
-                notificationService.showMessagePrompt("Invalid mobile number.", Alert.AlertType.INFORMATION, currentStage, ButtonType.OK);
+                notificationService.showMessagePrompt("Invalid mobile number.", Alert.AlertType.INFORMATION, currentStage,null, ButtonType.OK);
             }
         }
     }

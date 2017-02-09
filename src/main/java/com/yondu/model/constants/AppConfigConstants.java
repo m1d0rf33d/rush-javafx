@@ -29,6 +29,13 @@ public class AppConfigConstants {
     public static final String GIVE_POINTS_MANUAL_FXML = "/app/fxml/give-points-manual.fxml";
     public static final String ACTIVATION_FXML = "/app/fxml/activation.fxml";
 
+    //FXML
+    public static final String REGISTER_SCREEN        = "/app/fxml/register.fxml";
+    public static final String MEMBER_INQUIRY_SCREEN  = "/app/fxml/member-inquiry.fxml";
+    public static final String MEMBER_DETAILS_SCREEN  = "/app/fxml/member-details.fxml";
+    public static final String TRANSACTIONS_SCREEN    = "/app/fxml/transactions.fxml";
+    public static final String MOBILE_LOGIN_SCREEN    = "/app/fxml/mobile-login.fxml";
+
 
     public static final String APP_TITLE = "Rush POS Sync";
     public static String DIVIDER = "";

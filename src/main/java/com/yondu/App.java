@@ -66,14 +66,13 @@ public class App extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception{
         //Let's get the party started
-       /* Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
+        Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
         primaryStage.setScene(new Scene(root, 600,400));
         primaryStage.resizableProperty().setValue(false);
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-        primaryStage.show();*/
-
-        routeService.goToMenuScreen(null);
+        primaryStage.show();
+       //routeService.goToMenuScreen(null);
     }
 
     @Override

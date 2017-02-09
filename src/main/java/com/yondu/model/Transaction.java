@@ -5,27 +5,23 @@ package com.yondu.model;
  */
 public class Transaction {
 
-    private String id;
-    private String type;
+    private String transactionType;
+    private String receiptNumber;
 
-    public Transaction(String id, String type) {
-        this.id =  id;
-        this.type = type;
+    public String getReceiptNumber() {
+        return receiptNumber;
     }
 
-    public String getId() {
-        return id;
+    public void setReceiptNumber(String receiptNumber) {
+        this.receiptNumber = receiptNumber;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getTransactionType() {
+
+        return transactionType;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
     }
 }

@@ -1,10 +1,8 @@
 package com.yondu.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yondu.App;
 import com.yondu.model.Token;
 import com.yondu.model.constants.ApiFieldContants;
-import org.apache.http.HttpClientConnection;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -12,13 +10,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -46,17 +40,17 @@ public class ApiService {
             String token = getToken(resourceOwner);
 
             HttpResponse response = null;
-            HttpParams httpParams = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
-            HttpConnectionParams.setSoTimeout(httpParams, 10000);
-            CloseableHttpClient httpClient = new DefaultHttpClient(httpParams);
+            DefaultHttpClient client = new DefaultHttpClient();
+            DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(50, true);
+            client.setHttpRequestRetryHandler(retryHandler);
+
             //POST request
             if (method.equalsIgnoreCase("post")) {
                 HttpPost httpPost = new HttpPost(url);
                 httpPost.setEntity(new UrlEncodedFormEntity(params));
                 httpPost.addHeader("Authorization", "Bearer "+ token);
                 httpPost.addHeader("X-App", "POS-Sync");
-                response = httpClient.execute(httpPost);
+                response = client.execute(httpPost);
             }
             //GET request
             if (method.equalsIgnoreCase("get")) {
@@ -64,7 +58,7 @@ public class ApiService {
                 request.addHeader("content-type", "application/json");
                 request.addHeader("Authorization", "Bearer "+ token);
                 request.addHeader("X-App", "POS-Sync");
-                response = httpClient.execute(request);
+                response = client.execute(request);
             }
             // use httpClient (no need to close it explicitly)
             BufferedReader rd = new BufferedReader(
@@ -75,7 +69,7 @@ public class ApiService {
             while ((line = rd.readLine()) != null) {
                 result.append(line);
             }
-
+            client.close();
             JSONParser parser = new JSONParser();
             return (JSONObject) parser.parse(result.toString());
         } catch (ParseException e) {
@@ -92,10 +86,9 @@ public class ApiService {
 
 
     public String getToken(String resourceOwner) throws IOException {
-        HttpParams httpParams = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
-        HttpConnectionParams.setSoTimeout(httpParams, 10000);
-        CloseableHttpClient httpClient = new DefaultHttpClient(httpParams);
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(50, true);
+        httpClient.setHttpRequestRetryHandler(retryHandler);
         String appKey, appSecret;
         if (resourceOwner.equals(ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER)) {
             appKey = MERCHANT_APP_KEY;
@@ -111,7 +104,6 @@ public class ApiService {
         params.add(new BasicNameValuePair("app_key", appKey));
         params.add(new BasicNameValuePair("app_secret", appSecret));
         httpPost.setEntity(new UrlEncodedFormEntity(params));
-
         HttpResponse response = httpClient.execute(httpPost);
         BufferedReader rd = new BufferedReader(
                 new InputStreamReader(response.getEntity().getContent()));
@@ -121,24 +113,23 @@ public class ApiService {
         while ((line = rd.readLine()) != null) {
             result.append(line);
         }
+        httpClient.close();
         ObjectMapper mapper = new ObjectMapper();
         Token token = mapper.readValue(result.toString(), Token.class);
-        httpClient.close();
         return token.getToken();
     }
 
     public JSONObject getOauth2Token() {
         try {
+            DefaultHttpClient client = new DefaultHttpClient();
+            DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(50, true);
+            client.setHttpRequestRetryHandler(retryHandler);
 
-            HttpParams httpParams = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
-            HttpConnectionParams.setSoTimeout(httpParams, 10000);
-            CloseableHttpClient httpClient = new DefaultHttpClient(httpParams);
             String url = CMS_URL + TOMCAT_PORT + OAUTH_ENDPOINT;
             HttpPost httpPost = new HttpPost(url);
             httpPost.addHeader("Authorization", OAUTH_SECRET);
             httpPost.addHeader("Content-Type", "application/json");
-            HttpResponse response = httpClient.execute(httpPost);
+            HttpResponse response = client.execute(httpPost);
             // use httpClient (no need to close it explicitly)
             BufferedReader rd = new BufferedReader(
                     new InputStreamReader(response.getEntity().getContent()));
@@ -148,6 +139,7 @@ public class ApiService {
             while ((line = rd.readLine()) != null) {
                 result.append(line);
             }
+            client.close();
             JSONParser parser = new JSONParser();
             return (JSONObject) parser.parse(result.toString());
         } catch (ClientProtocolException e) {
@@ -170,22 +162,22 @@ public class ApiService {
 
             StringEntity stringEntity = new StringEntity(jsonObject.toJSONString());
             String token = (String) tokenJSON.get("access_token");
-            HttpParams httpParams = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
-            HttpConnectionParams.setSoTimeout(httpParams, 10000);
-            CloseableHttpClient httpClient = new DefaultHttpClient(httpParams);
+            DefaultHttpClient client = new DefaultHttpClient();
+            DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(50, true);
+            client.setHttpRequestRetryHandler(retryHandler);
+
             HttpResponse response;
             if (type.equalsIgnoreCase("get")) {
                 HttpGet httpGet = new HttpGet(url);
                 httpGet.addHeader("Authorization", "Bearer " + token);
                 httpGet.addHeader("Content-Type", "application/json");
-                response = httpClient.execute(httpGet);
+                response = client.execute(httpGet);
             } else {
                 HttpPost httpPost = new HttpPost(url);
                 httpPost.setEntity(stringEntity);
                 httpPost.addHeader("Authorization", "Bearer " + token);
                 httpPost.addHeader("Content-Type", "application/json");
-                response = httpClient.execute(httpPost);
+                response = client.execute(httpPost);
             }
 
             BufferedReader rd = new BufferedReader(
@@ -196,6 +188,7 @@ public class ApiService {
             while ((line = rd.readLine()) != null) {
                 sb.append(line);
             }
+            client.close();
             JSONParser parser = new JSONParser();
             return (JSONObject) parser.parse(sb.toString());
         } catch (ClientProtocolException e) {

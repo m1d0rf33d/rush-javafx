@@ -4,6 +4,7 @@ import com.yondu.App;
 import com.yondu.model.Customer;
 import com.yondu.service.MenuService;
 import com.yondu.service.NotificationService;
+import com.yondu.service.RouteService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -34,29 +35,20 @@ public class MemberInquiryController implements Initializable {
 
     private MenuService menuService = new MenuService();
     private NotificationService notificationService = new NotificationService();
+    private RouteService routeService = new RouteService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         viewMemberButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             JSONObject jsonObject = menuService.loginCustomer(mobileTextField.getText());
             if (jsonObject.get("customer") != null) {
-                loadContentPage(MEMBER_DETAILS_SCREEN, (Customer) jsonObject.get("customer"));
+                FXMLLoader fxmlLoader = routeService.loadContentPage(App.appContextHolder.getRootStackPane(), MEMBER_DETAILS_SCREEN);
+                MemberDetailsController memberDetailsController = fxmlLoader.getController();
+                memberDetailsController.setCustomer((Customer) jsonObject.get("customer"));
             } else {
                 notificationService.showMessagePrompt((String) jsonObject.get("message"), Alert.AlertType.INFORMATION, viewMemberButton.getScene().getWindow(), App.appContextHolder.getRootVBox(), ButtonType.OK);
             }
         });
     }
-    private void loadContentPage(String page, Customer customer) {
-        try {
-            App.appContextHolder.getRootStackPane().getChildren().clear();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(MEMBER_DETAILS_SCREEN));
 
-            Parent root = (Parent)fxmlLoader.load();
-            MemberDetailsController controller = fxmlLoader.<MemberDetailsController>getController();
-            controller.setCustomer(customer);
-            App.appContextHolder.getRootStackPane().getChildren().add(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

@@ -79,12 +79,12 @@ public class TransactionsController implements Initializable {
         }
 
         TableColumn receiptNoCol = new TableColumn("Receipt No");
-        receiptNoCol.setMinWidth(100);
+        receiptNoCol.setMinWidth(150);
         receiptNoCol.setCellValueFactory(
                 new PropertyValueFactory<>("receiptNo"));
 
         TableColumn transactionTypeCol = new TableColumn("Transaction type");
-        transactionTypeCol.setMinWidth(100);
+        transactionTypeCol.setMinWidth(150);
         transactionTypeCol.setCellValueFactory(
                 new PropertyValueFactory<>("transactionType"));
 

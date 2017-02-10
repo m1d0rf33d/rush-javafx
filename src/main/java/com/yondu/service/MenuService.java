@@ -2,6 +2,7 @@ package com.yondu.service;
 
 import com.yondu.App;
 import com.yondu.model.Customer;
+import com.yondu.model.Reward;
 import com.yondu.model.constants.ApiFieldContants;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -44,6 +45,28 @@ public class MenuService {
                 responseJSON.put("message", jsonObject.get("message"));
             }
 
+        }
+
+        return responseJSON;
+    }
+
+    public JSONObject getRewards() {
+        JSONObject responseJSON = new JSONObject();
+        String url = BASE_URL + GET_REWARDS_MERCHANT_ENDPOINT;
+        JSONObject jsonObject = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        if (jsonObject != null) {
+            List<Reward> rewards = new ArrayList<>();
+            List<JSONObject> dataJSON = (ArrayList) jsonObject.get("data");
+            for (JSONObject rewardJSON : dataJSON) {
+                Reward reward = new Reward();
+                reward.setImageUrl((String) rewardJSON.get("image_url"));
+                reward.setDetails((String) rewardJSON.get("details"));
+                reward.setName((String) rewardJSON.get("name"));
+                reward.setId((String) rewardJSON.get("id"));
+
+                rewards.add(reward);
+            }
+            responseJSON.put("rewards", rewards);
         }
 
         return responseJSON;

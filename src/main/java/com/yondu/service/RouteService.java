@@ -2,19 +2,27 @@ package com.yondu.service;
 
 import com.yondu.App;
 import com.yondu.Browser;
-import com.yondu.controller.MemberDetailsController;
+import com.yondu.controller.RedeemRewardsController;
+import com.yondu.model.Customer;
+import com.yondu.model.Reward;
 import com.yondu.model.constants.AppConfigConstants;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
+import org.json.simple.JSONObject;
 
 import java.awt.*;
 import java.io.IOException;
 
 import static com.yondu.model.constants.AppConfigConstants.APP_TITLE;
+import static com.yondu.model.constants.AppConfigConstants.REDEEM_REWARDS_SCREEN;
 
 /**
  * Created by lynx on 2/1/17.
@@ -25,6 +33,7 @@ public class RouteService {
 
     private Double screenWidth;
     private Double screenHeight;
+    private MenuService menuService = new MenuService();
 
     public RouteService() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -178,5 +187,43 @@ public class RouteService {
     }
 
     //Loaders
+
+
+    public FXMLLoader loadContentPage(StackPane bodyStackPane, String page) {
+        try {
+            bodyStackPane.getChildren().clear();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(page));
+
+            Parent root = (Parent)fxmlLoader.load();
+            bodyStackPane.getChildren().add(root);
+            return fxmlLoader;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void loadRedeemRewardsScreen() {
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(1)
+        );
+        pause.setOnFinished(event -> {
+            FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), REDEEM_REWARDS_SCREEN);
+
+            JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
+            Customer customer = (Customer) jsonObject.get("customer");
+            RedeemRewardsController redeemRewardsController = fxmlLoader.getController();
+            redeemRewardsController.setCustomer(customer);
+
+            jsonObject = menuService.getRewards();
+            redeemRewardsController.setRewards((java.util.List< Reward>)jsonObject.get("rewards"));
+            App.appContextHolder.getRootVBox().setOpacity(1);
+            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                n.setDisable(false);
+            }
+        });
+        pause.play();
+    }
+
 
 }

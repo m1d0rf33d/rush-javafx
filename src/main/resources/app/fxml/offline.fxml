@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="700.0" minHeight="-Infinity" minWidth="500.0" prefHeight="900.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.OfflineController">
+   <children>
+      <Label text="OFFLINE TRANSACTIONS">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <HBox prefHeight="50.0" prefWidth="200.0">
+         <children>
+            <Label prefHeight="50.0" prefWidth="50.0" text="Filter:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <MenuButton fx:id="statusMenuButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+                <MenuItem mnemonicParsing="false" text="Action 2" />
+              </items>
+               <HBox.margin>
+                  <Insets top="5.0" />
+               </HBox.margin>
+            </MenuButton>
+            <TextField fx:id="searchTextField" prefHeight="30.0" prefWidth="200.0">
+               <HBox.margin>
+                  <Insets left="20.0" top="5.0" />
+               </HBox.margin>
+            </TextField>
+         </children>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </HBox>
+      <Pagination fx:id="transactionsPagination" maxHeight="400.0" prefHeight="400.0" prefWidth="200.0" />
+      <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="GIVE POINTS">
+         <VBox.margin>
+            <Insets top="30.0" />
+         </VBox.margin>
+      </Button>
+   </children>
+   <padding>
+      <Insets left="50.0" top="50.0" />
+   </padding>
+</VBox>

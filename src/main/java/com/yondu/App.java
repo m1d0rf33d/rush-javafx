@@ -22,12 +22,9 @@ public class App extends Application{
 
     public static final AppContextHolder appContextHolder = new AppContextHolder();
 
-    private RouteService routeService = new RouteService();
-
     public static void main(String[] args) {
-        //Forgive the hard coded values guys im tired :(
-        if (System.getProperty("os.name").contains("Windows")) {
 
+        if (System.getProperty("os.name").contains("Windows")) {
             DIVIDER = "\\";
 
             File file = new File(System.getenv("RUSH_HOME") + DIVIDER + LOCK_FILE);
@@ -56,7 +53,7 @@ public class App extends Application{
                 launch(args);
             }
         } else {
-            //TODO: Add locking and maximizer
+            // Either MAC or Linux operating system. MAC will crash this is only for linux
             AppConfigConstants.DIVIDER = "//";
             launch(args);
         }
@@ -72,7 +69,6 @@ public class App extends Application{
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
         primaryStage.show();
-       //routeService.goToMenuScreen(null);
     }
 
     @Override

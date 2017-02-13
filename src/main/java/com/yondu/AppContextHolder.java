@@ -5,10 +5,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /** This will serve as a single instance application context holder that
- *  contains shared data within the application. This is the heart of the application.
+ *  contains shared data within the application. I don't want to fckng pass shared variables on every
+ *  component of the application so we create this GLOBAL space that every component can access.
  *
- *  @employeeId - logged in employee
- *  @authorizationToken - we don't want to request for token each api call so we store it here
  */
 public class AppContextHolder {
 

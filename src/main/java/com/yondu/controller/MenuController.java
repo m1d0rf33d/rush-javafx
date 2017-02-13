@@ -2,10 +2,8 @@ package com.yondu.controller;
 
 import com.yondu.App;
 import com.yondu.model.Customer;
-import com.yondu.model.Reward;
 import com.yondu.service.MenuService;
 import com.yondu.service.RouteService;
-import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -19,12 +17,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafx.util.Duration;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.yondu.model.constants.AppConfigConstants.*;
@@ -48,10 +44,16 @@ public class MenuController implements Initializable {
     public Button transactionsButton;
     @FXML
     public Button redeemRewardsButton;
+    @FXML
+    public Button payWithPointsButton;
+    @FXML
+    public Button issueRewardsButton;
+    @FXML
+    public Button offlineButton;
+    @FXML
+    public Button ocrButton;
 
     private RouteService routeService = new RouteService();
-    private MenuService menuService = new MenuService();
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -62,16 +64,13 @@ public class MenuController implements Initializable {
         registerButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             routeService.loadContentPage(bodyStackPane, REGISTER_SCREEN);
         });
+
         memberInquiryButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             disableMenu();
             if (App.appContextHolder.getCustomerMobile() == null) {
                 routeService.loadContentPage(bodyStackPane, MEMBER_INQUIRY_SCREEN);
             } else {
-                JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
-                Customer customer = (Customer) jsonObject.get("customer");
-                FXMLLoader fxmlLoader = routeService.loadContentPage(App.appContextHolder.getRootStackPane(), MEMBER_DETAILS_SCREEN);
-                MemberDetailsController memberDetailsController = fxmlLoader.getController();
-                memberDetailsController.setCustomer(customer);
+                routeService.loadMemberDetailsScreen();
             }
             enableMenu();
         });
@@ -80,24 +79,14 @@ public class MenuController implements Initializable {
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(TRANSACTIONS_SCREEN);
             } else {
-                JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
-                FXMLLoader fxmlLoader = routeService.loadContentPage(bodyStackPane, TRANSACTIONS_SCREEN);
-
-                Customer customer = (Customer) jsonObject.get("customer");
-                TransactionsController transactionsController = fxmlLoader.getController();
-                transactionsController.setCustomer(customer);
+                routeService.loadTransactionsScreen();
             }
         });
         givePointsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(EARN_POINTS_SCREEN);
             } else {
-                JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
-                FXMLLoader fxmlLoader = routeService.loadContentPage(bodyStackPane, EARN_POINTS_SCREEN);
-
-                Customer customer = (Customer) jsonObject.get("customer");
-                EarnPointsController earnPointsController = fxmlLoader.getController();
-                earnPointsController.setCustomer(customer);
+                routeService.loadEarnPointsScreen();
             }
         });
 
@@ -110,6 +99,26 @@ public class MenuController implements Initializable {
                 routeService.loadRedeemRewardsScreen();
             }
 
+        });
+
+        payWithPointsButton.setOnMouseClicked((MouseEvent e) -> {
+            if (App.appContextHolder.getCustomerMobile() == null) {
+                loadMobileLoginDialog(PAY_WITH_POINTS);
+            } else {
+               routeService.loadPayWithPoints();
+            }
+        });
+
+        issueRewardsButton.setOnMouseClicked((MouseEvent e) -> {
+            if (App.appContextHolder.getCustomerMobile() == null) {
+                loadMobileLoginDialog(ISSUE_REWARDS_SCREEN);
+            } else {
+                routeService.loadIssueRewardsScreen();
+            }
+        });
+
+        offlineButton.setOnMouseClicked((MouseEvent e) -> {
+            routeService.loadOfflineTransactionScreen();
         });
     }
 

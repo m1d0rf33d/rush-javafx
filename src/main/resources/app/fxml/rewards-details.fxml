@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.RewardDialogController">
+   <children>
+      <VBox maxHeight="400.0" prefHeight="400.0" prefWidth="250.0">
+         <children>
+            <ImageView fx:id="rewardImageView" fitHeight="400.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </VBox>
+      <VBox maxHeight="400.0" prefHeight="400.0" prefWidth="370.0">
+         <children>
+            <Label fx:id="nameLabel" prefHeight="50.0" prefWidth="300.0" text="Name" />
+            <Label text="Points" />
+            <Label fx:id="detailsLabel" ellipsisString="" maxHeight="500.0" maxWidth="300.0" prefHeight="200.0" prefWidth="200.0" text="Details" textOverrun="CLIP" wrapText="true" />
+            <StackPane prefHeight="50.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="redeemButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="REDEEM REWARD" />
+                  <Label  fx:id="lockLabel" text="You have insufficient points for this reward." />
+               </children>
+            </StackPane>
+         </children>
+      </VBox>
+   </children>
+</HBox>

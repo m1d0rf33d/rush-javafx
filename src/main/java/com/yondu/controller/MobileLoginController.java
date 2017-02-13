@@ -17,7 +17,7 @@ import org.json.simple.JSONObject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static com.yondu.model.constants.AppConfigConstants.REDEEM_REWARDS_SCREEN;
+import static com.yondu.model.constants.AppConfigConstants.*;
 
 /**
  * Created by lynx on 2/8/17.
@@ -37,7 +37,6 @@ public class MobileLoginController implements Initializable {
     private String targetScreen;
     private MenuService menuService = new MenuService();
     private RouteService routeService = new RouteService();
-    private NotificationService notificationService = new NotificationService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -58,7 +57,17 @@ public class MobileLoginController implements Initializable {
                 if (targetScreen.equals(REDEEM_REWARDS_SCREEN)) {
                     ((Stage) submitButton.getScene().getWindow()).close();
                     routeService.loadRedeemRewardsScreen();
+                } else if (targetScreen.equals(EARN_POINTS_SCREEN)) {
+                    ((Stage) submitButton.getScene().getWindow()).close();
+                    routeService.loadEarnPointsScreen();
+                } else if (targetScreen.equals(PAY_WITH_POINTS)) {
+                    ((Stage) submitButton.getScene().getWindow()).close();
+                    routeService.loadPayWithPoints();
+                } else if (targetScreen.equals(ISSUE_REWARDS_SCREEN)) {
+                    ((Stage) submitButton.getScene().getWindow()).close();
+                    routeService.loadIssueRewardsScreen();
                 }
+
             } else {
                 errorLabel.setVisible(true);
             }

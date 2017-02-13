@@ -37,7 +37,7 @@
             <VBox maxWidth="500.0" minWidth="300.0" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <children>
                   <Label prefHeight="50.0" text="MEMBER NAME" />
-                  <TextField maxWidth="450.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
+                  <TextField fx:id="nameTextField" maxWidth="450.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -50,7 +50,7 @@
             <VBox maxWidth="500.0" minWidth="300" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <children>
                   <Label prefHeight="50.0" text="MOBILE NUMBER" />
-                  <TextField maxWidth="450.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
+                  <TextField fx:id="mobileTextField" maxWidth="450.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -70,7 +70,7 @@
             <VBox maxWidth="500.0" minWidth="300.0" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <children>
                   <Label prefHeight="50.0" text="EMAIL" />
-                  <TextField maxWidth="450.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
+                  <TextField  fx:id="emailTextField" maxWidth="450.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -101,12 +101,12 @@
                   <Label prefHeight="50.0" text="GENDER" />
                   <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <RadioButton mnemonicParsing="false" text="Male">
+                        <RadioButton fx:id="maleRadioButton" mnemonicParsing="false" text="Male">
                            <HBox.margin>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </HBox.margin>
                         </RadioButton>
-                        <RadioButton mnemonicParsing="false" text="Female">
+                        <RadioButton fx:id="femaleRadioButton" mnemonicParsing="false" text="Female">
                            <HBox.margin>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </HBox.margin>
@@ -127,7 +127,7 @@
             <VBox maxWidth="500.0" minWidth="300" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <children>
                   <Label prefHeight="50.0" text="4 Digit M-PIN" />
-                  <TextField maxWidth="450.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
+                  <TextField fx:id="mpinTextField" maxWidth="450.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -157,7 +157,7 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
                <children>
-                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="SEND" VBox.vgrow="ALWAYS" />
+                  <Button fx:id="registerButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="SEND" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
          </children>

@@ -1,21 +1,32 @@
 package com.yondu.controller;
 
+import com.yondu.App;
 import com.yondu.model.Customer;
 import com.yondu.model.Reward;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.*;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.awt.*;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import static com.yondu.model.constants.AppConfigConstants.*;
 
 /**
  * Created by lynx on 2/9/17.
@@ -43,7 +54,6 @@ public class RedeemRewardsController implements Initializable {
     public FlowPane rewardsFlowPane;
 
     private Customer customer;
-    private List<Reward> rewards;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -70,6 +80,9 @@ public class RedeemRewardsController implements Initializable {
             ImageView imageView = new ImageView(reward.getImageUrl());
             imageView.setFitWidth(200);
             imageView.setFitHeight(200);
+            imageView.setOnMouseClicked((MouseEvent e) -> {
+                showRewardsDialog(reward);
+            });
             vBox.getChildren().add(imageView);
             Label label = new Label();
             label.setText(reward.getName());
@@ -82,5 +95,40 @@ public class RedeemRewardsController implements Initializable {
         }
 
         rewardsFlowPane.getChildren().addAll(vBoxes);
+    }
+
+
+    private void showRewardsDialog(Reward reward) {
+        App.appContextHolder.getRootVBox().setOpacity(.50);
+        for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+            n.setDisable(true);
+        }
+
+        try {
+
+
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REWARDS_DIALOG_SCREEN));
+            Parent root = fxmlLoader.load();
+            RewardDialogController controller = fxmlLoader.getController();
+            controller.setReward(reward);
+            Scene scene = new Scene(root, 600,400);
+            stage.setScene(scene);
+            stage.setTitle(APP_TITLE);
+            stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+            stage.initOwner(App.appContextHolder.getRootVBox().getScene().getWindow());
+            stage.setOnCloseRequest(new javafx.event.EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    App.appContextHolder.getRootVBox().setOpacity(1);
+                    for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                        n.setDisable(false);
+                    }
+                }
+            });
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

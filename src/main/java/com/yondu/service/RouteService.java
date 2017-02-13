@@ -2,7 +2,7 @@ package com.yondu.service;
 
 import com.yondu.App;
 import com.yondu.Browser;
-import com.yondu.controller.RedeemRewardsController;
+import com.yondu.controller.*;
 import com.yondu.model.Customer;
 import com.yondu.model.Reward;
 import com.yondu.model.constants.AppConfigConstants;
@@ -21,8 +21,7 @@ import org.json.simple.JSONObject;
 import java.awt.*;
 import java.io.IOException;
 
-import static com.yondu.model.constants.AppConfigConstants.APP_TITLE;
-import static com.yondu.model.constants.AppConfigConstants.REDEEM_REWARDS_SCREEN;
+import static com.yondu.model.constants.AppConfigConstants.*;
 
 /**
  * Created by lynx on 2/1/17.
@@ -205,7 +204,7 @@ public class RouteService {
 
     public void loadRedeemRewardsScreen() {
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(1)
+                Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
             FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), REDEEM_REWARDS_SCREEN);
@@ -224,6 +223,117 @@ public class RouteService {
         });
         pause.play();
     }
+    public void loadEarnPointsScreen() {
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), EARN_POINTS_SCREEN);
 
+            JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
+            Customer customer = (Customer) jsonObject.get("customer");
+            EarnPointsController earnPointsController = fxmlLoader.getController();
+            earnPointsController.setCustomer(customer);
+
+            App.appContextHolder.getRootVBox().setOpacity(1);
+            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                n.setDisable(false);
+            }
+        });
+        pause.play();
+    }
+    public void loadPayWithPoints() {
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), PAY_WITH_POINTS);
+
+            JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
+            Customer customer = (Customer) jsonObject.get("customer");
+            PayWithPointsController payWithPointsController = fxmlLoader.getController();
+            payWithPointsController.setCustomer(customer);
+
+            App.appContextHolder.getRootVBox().setOpacity(1);
+            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                n.setDisable(false);
+            }
+        });
+        pause.play();
+    }
+    public void loadIssueRewardsScreen() {
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), PAY_WITH_POINTS);
+
+            JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
+            Customer customer = (Customer) jsonObject.get("customer");
+            IssueRewardsController issueRewardsController = fxmlLoader.getController();
+            issueRewardsController.setCustomer(customer);
+
+            App.appContextHolder.getRootVBox().setOpacity(1);
+            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                n.setDisable(false);
+            }
+        });
+        pause.play();
+    }
+
+    public void loadMemberDetailsScreen() {
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), MEMBER_DETAILS_SCREEN);
+
+            JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
+            Customer customer = (Customer) jsonObject.get("customer");
+            MemberDetailsController memberDetailsController = fxmlLoader.getController();
+            memberDetailsController.setCustomer(customer);
+
+            App.appContextHolder.getRootVBox().setOpacity(1);
+            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                n.setDisable(false);
+            }
+        });
+        pause.play();
+    }
+
+    public void loadTransactionsScreen() {
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), TRANSACTIONS_SCREEN);
+
+            JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
+            Customer customer = (Customer) jsonObject.get("customer");
+            TransactionsController transactionsController = fxmlLoader.getController();
+            transactionsController.setCustomer(customer);
+
+            App.appContextHolder.getRootVBox().setOpacity(1);
+            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                n.setDisable(false);
+            }
+        });
+        pause.play();
+    }
+
+    public void loadOfflineTransactionScreen() {
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), OFFLINE_SCREEN);
+
+            App.appContextHolder.getRootVBox().setOpacity(1);
+            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                n.setDisable(false);
+            }
+        });
+        pause.play();
+    }
 
 }

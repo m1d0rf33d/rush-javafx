@@ -175,37 +175,6 @@ public class PointsDetailsController implements Initializable{
         });
     }
     private  void writeOfflineTransaction() {
-        //write to file
-        try {
-            File file = new File(System.getenv("RUSH_HOME") + DIVIDER + OFFLINE_TRANSACTION_FILE);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            SimpleDateFormat df  = new SimpleDateFormat("MM/dd/YYYY");
-            String date = df.format(new Date());
 
-            PrintWriter fstream = new PrintWriter(new FileWriter(file,true));
-            String line = "mobileNumber=" + customer.getMobileNumber().replace(":", "")+ ":totalAmount=" + totalAmount.replace(":", "") + ":orNumber=" + orNumber.replace(":", "") + ":date=" + date;
-            byte[] encodedBytes = org.apache.commons.codec.binary.Base64.encodeBase64(line.getBytes());
-            fstream.println(new String(encodedBytes));
-            fstream.flush();
-            fstream.close();
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION,"Give points data has been recorded, you may view this on offline transactions.", ButtonType.OK);
-            alert.setTitle(AppConfigConstants.APP_TITLE);
-            alert.initStyle(StageStyle.UTILITY);
-            alert.showAndWait();
-
-            if (alert.getResult() == ButtonType.OK) {
-                alert.close();
-                if (App.appContextHolder.getPreviousStage().equals("GIVE_POINTS_OCR")) {
-                    routeService.goToGivePointsScreen(currentStage);
-                } else {
-                    routeService.goToGivePointsManualScreen(currentStage);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

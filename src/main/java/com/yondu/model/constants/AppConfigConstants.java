@@ -36,7 +36,11 @@ public class AppConfigConstants {
     public static final String TRANSACTIONS_SCREEN    = "/app/fxml/transactions.fxml";
     public static final String MOBILE_LOGIN_SCREEN    = "/app/fxml/mobile-login.fxml";
     public static final String EARN_POINTS_SCREEN     = "/app/fxml/earn-points.fxml";
-    public static final String REDEEM_REWARDS_SCREEN     = "/app/fxml/redeem-rewards.fxml";
+    public static final String REDEEM_REWARDS_SCREEN  = "/app/fxml/redeem-rewards.fxml";
+    public static final String REWARDS_DIALOG_SCREEN  = "/app/fxml/rewards-details.fxml";
+    public static final String PAY_WITH_POINTS        = "/app/fxml/pay-with-points.fxml";
+    public static final String ISSUE_REWARDS_SCREEN        = "/app/fxml/issue-rewards-screen.fxml";
+    public static final String OFFLINE_SCREEN        = "/app/fxml/offline.fxml";
 
     public static final String APP_TITLE = "Rush POS Sync";
     public static String DIVIDER = "";

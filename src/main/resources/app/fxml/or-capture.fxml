@@ -8,7 +8,7 @@
 
 <Pane fx:id="capturePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: #ffb600;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.OrCaptureController">
    <children>
-      <Label layoutX="40.0" layoutY="12.0" prefHeight="77.0" prefWidth="246.0" text="DRAG AND RESIZE TO OR AREA" textFill="#f8f8f8">
+      <Label fx:id="orLabel" layoutX="40.0" layoutY="12.0" prefHeight="77.0" prefWidth="246.0" text="DRAG AND RESIZE TO OR AREA" textFill="#f8f8f8">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>

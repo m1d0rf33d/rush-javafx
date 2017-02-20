@@ -10,6 +10,15 @@ public class Reward {
     private String details;
     private String id;
     private String pointsRequired;
+    private String quantity;
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
 
     public String getName() {
         return name;

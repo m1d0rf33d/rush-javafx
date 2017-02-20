@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
@@ -70,7 +71,7 @@
             <VBox maxWidth="500.0" minWidth="300.0" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <children>
                   <Label prefHeight="50.0" text="EMAIL" />
-                  <TextField  fx:id="emailTextField" maxWidth="450.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
+                  <TextField fx:id="emailTextField" maxWidth="450.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -149,7 +150,13 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
                <children>
-                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="CLEAR ALL" VBox.vgrow="ALWAYS" />
+                  <Button fx:id="clearButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="CLEAR ALL" textFill="#f2ecec" VBox.vgrow="ALWAYS">
+                     <font>
+                        <Font name="System Bold" size="17.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="OPEN_HAND" />
+                     </cursor></Button>
                </children>
             </VBox>
             <VBox maxWidth="500.0" minWidth="300" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
@@ -157,7 +164,13 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
                <children>
-                  <Button fx:id="registerButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="SEND" VBox.vgrow="ALWAYS" />
+                  <Button fx:id="registerButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="SEND" textFill="#f2ecec" VBox.vgrow="ALWAYS">
+                     <font>
+                        <Font name="System Bold" size="17.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="OPEN_HAND" />
+                     </cursor></Button>
                </children>
             </VBox>
          </children>

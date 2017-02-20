@@ -37,10 +37,31 @@ public class MenuService {
                 customer.setName((String) data.get("name"));
                 customer.setDateOfBirth((String) data.get("birthdate"));
                 customer.setEmail((String) data.get("email"));
+                customer.setMemberSince((String) data.get("registration_date"));
                 responseJSON.put("customer", customer);
 
                 App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
                 App.appContextHolder.setCustomerUUID((String) data.get("id"));
+
+                url = BASE_URL + GET_POINTS_ENDPOINT;
+                url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
+                jsonObject = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                String points = (String) jsonObject.get("data");
+                customer.setAvailablePoints(points);
+
+                url = BASE_URL + CUSTOMER_REWARDS_ENDPOINT;
+                url = url.replace(":id",App.appContextHolder.getCustomerUUID());
+                jsonObject = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+                List<JSONObject> dataJSON = (ArrayList) jsonObject.get("data");
+                List<Reward> rewards = new ArrayList<>();
+                for (JSONObject rewardJSON : dataJSON) {
+                    Reward reward = new Reward();
+                    reward.setDetails((String) rewardJSON.get("details"));
+                    reward.setName((String) rewardJSON.get("name"));
+                    reward.setQuantity(((Long) rewardJSON.get("quantity")).toString());
+                    rewards.add(reward);
+                }
+                customer.setActiveVouchers(rewards);
             } else {
                 responseJSON.put("message", jsonObject.get("message"));
             }

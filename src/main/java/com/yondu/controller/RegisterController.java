@@ -4,6 +4,8 @@ import com.yondu.App;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.service.ApiService;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -47,6 +49,8 @@ public class RegisterController implements Initializable {
     public RadioButton maleRadioButton;
     @FXML
     public RadioButton femaleRadioButton;
+    @FXML
+    public Button clearButton;
 
 
     private ApiService apiService = new ApiService();
@@ -68,6 +72,31 @@ public class RegisterController implements Initializable {
 
         registerButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             registerCustomer();
+        });
+        clearButton.setOnMouseClicked((MouseEvent e) -> {
+            clearFields();
+        });
+        mobileTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    mobileTextField.setText(newValue.replaceAll("[^,.\\d]", ""));
+                }
+                if (mobileTextField.getText().length() > 11) {
+                    mobileTextField.setText(mobileTextField.getText().substring(0,11));
+                }
+            }
+        });
+        mpinTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    mpinTextField.setText(newValue.replaceAll("[^,.\\d]", ""));
+                }
+                if (mpinTextField.getText().length() > 4) {
+                    mpinTextField.setText(mpinTextField.getText().substring(0,4));
+                }
+            }
         });
     }
     private void registerCustomer() {
@@ -98,7 +127,7 @@ public class RegisterController implements Initializable {
                 clearFields();
                 notifyRegistrationResult("Registration successful", maleRadioButton.getScene().getWindow());
             } else {
-                notifyRegistrationResult((String)jsonObject.get("message"), maleRadioButton.getScene().getWindow());
+                notifyRegistrationResult("\n" + jsonObject.get("message"), maleRadioButton.getScene().getWindow());
             }
         } else {
 

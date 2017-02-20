@@ -40,7 +40,7 @@
          </VBox.margin>
       </HBox>
       <Pagination fx:id="transactionsPagination" maxHeight="400.0" prefHeight="400.0" prefWidth="200.0" />
-      <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="GIVE POINTS">
+      <Button fx:id="givePointsButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="GIVE POINTS">
          <VBox.margin>
             <Insets top="30.0" />
          </VBox.margin>

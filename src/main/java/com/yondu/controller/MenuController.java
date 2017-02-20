@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -53,10 +54,17 @@ public class MenuController implements Initializable {
     @FXML
     public Button ocrButton;
 
+    @FXML
+    public ScrollPane rootScrollPane;
+
     private RouteService routeService = new RouteService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+
+        rootScrollPane.setFitToHeight(true);
+        rootScrollPane.setFitToWidth(true);
 
         App.appContextHolder.setRootVBox(rootVBox);
         App.appContextHolder.setRootStackPane(bodyStackPane);
@@ -66,13 +74,12 @@ public class MenuController implements Initializable {
         });
 
         memberInquiryButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            disableMenu();
             if (App.appContextHolder.getCustomerMobile() == null) {
                 routeService.loadContentPage(bodyStackPane, MEMBER_INQUIRY_SCREEN);
             } else {
+                disableMenu();
                 routeService.loadMemberDetailsScreen();
             }
-            enableMenu();
         });
 
         transactionsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
@@ -83,6 +90,7 @@ public class MenuController implements Initializable {
             }
         });
         givePointsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
+            disableMenu();
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(EARN_POINTS_SCREEN);
             } else {
@@ -119,6 +127,10 @@ public class MenuController implements Initializable {
 
         offlineButton.setOnMouseClicked((MouseEvent e) -> {
             routeService.loadOfflineTransactionScreen();
+        });
+
+        ocrButton.setOnMouseClicked((MouseEvent e) -> {
+            routeService.loadOCRScreen();
         });
     }
 

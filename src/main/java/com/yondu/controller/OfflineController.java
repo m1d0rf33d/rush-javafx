@@ -1,6 +1,10 @@
 package com.yondu.controller;
 
+import com.yondu.App;
 import com.yondu.model.OfflineTransaction;
+import com.yondu.model.constants.ApiFieldContants;
+import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.service.ApiService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,14 +15,22 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.simple.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import static com.yondu.AppContextHolder.*;
 import static com.yondu.model.constants.AppConfigConstants.DIVIDER;
 import static com.yondu.model.constants.AppConfigConstants.OFFLINE_TRANSACTION_FILE;
 
@@ -33,11 +45,15 @@ public class OfflineController implements Initializable {
     public Pagination transactionsPagination;
     @FXML
     public TextField searchTextField;
+    @FXML
+    public Button givePointsButton;
+
+    private ApiService apiService = new ApiService();
 
     private  ObservableList<OfflineTransaction> masterData =
             FXCollections.observableArrayList();
 
-    private Integer MAX_ENTRIES_COUNT = 1;
+    private Integer MAX_ENTRIES_COUNT = 10;
     private Integer PAGE_COUNT = 0;
 
 
@@ -64,8 +80,141 @@ public class OfflineController implements Initializable {
             }
         });
 
+        givePointsButton.setOnMouseClicked((MouseEvent e) -> {
+            givePoints();
+            loadOfflineTransactions();
+
+            transactionsPagination.setPageFactory((Integer pageIndex) -> createPage(pageIndex));
+            transactionsPagination.setPageCount(PAGE_COUNT);
+        });
+
     }
 
+    private void givePoints() {
+        File file = new File(System.getenv("RUSH_HOME") + DIVIDER + AppConfigConstants.OFFLINE_TRANSACTION_FILE);
+
+        if (file.exists()) {
+            //Read file
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                String line;
+
+                List<String> transactions = new ArrayList<>();
+
+                while ((line = br.readLine()) != null) {
+                    byte[] decoded = org.apache.commons.codec.binary.Base64.decodeBase64(line.getBytes());
+                    line = new String(decoded);
+                    String[] arr = line.split(":");
+
+                    String mobileNumber = arr[0].split("=")[1];
+                    String totalAmount = arr[1].split("=")[1];
+                    String orNumber = arr[2].split("=")[1];
+                    String date = arr[3].split("=")[1];
+                    String status = arr[4].split("=")[1];
+                    String message = arr[5].split("=")[1];
+
+                    OfflineTransaction offlineTransaction = new OfflineTransaction();
+                    offlineTransaction.setAmount(totalAmount);
+                    offlineTransaction.setMobileNumber(mobileNumber);
+                    offlineTransaction.setOrNumber(orNumber);
+                    offlineTransaction.setDate(date);
+                    offlineTransaction.setStatus(status);
+                    offlineTransaction.setMessage(message);
+
+                    if (status.equalsIgnoreCase("Pending")) {
+                        offlineTransaction = sendPoints(offlineTransaction);
+                    }
+
+
+                    String l = "mobileNumber=" + offlineTransaction.getMobileNumber()+
+                            ":totalAmount=" + offlineTransaction.getAmount() +
+                            ":orNumber=" + offlineTransaction.getOrNumber() +
+                            ":date=" + offlineTransaction.getDate() +
+                            ":status=" + offlineTransaction.getStatus() +
+                            ":message=" + offlineTransaction.getMessage();
+
+                    transactions.add(l);
+
+                }
+
+                PrintWriter writer = new PrintWriter(file);
+                writer.print("");
+                writer.close();
+
+                PrintWriter fstream = new PrintWriter(new FileWriter(file,true));
+                for (String trans : transactions) {
+                    byte[] encodedBytes = org.apache.commons.codec.binary.Base64.encodeBase64(trans.getBytes());
+                    fstream.println(new String(encodedBytes));
+                }
+
+                fstream.flush();
+                fstream.close();
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private OfflineTransaction sendPoints(OfflineTransaction offlineTransaction) {
+
+        SimpleDateFormat df  = new SimpleDateFormat("MM/dd/YYYY");
+        String date = df.format(new Date());
+        offlineTransaction.setDate(date);
+
+        offlineTransaction.setMessage("");
+
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, offlineTransaction.getMobileNumber()));
+
+        String url = BASE_URL + MEMBER_LOGIN_ENDPOINT;
+        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+        JSONObject jsonObject = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        if (jsonObject != null) {
+            if (jsonObject.get("error_code").equals("0x0")) {
+                JSONObject data = (JSONObject) jsonObject.get("data");
+                params = new ArrayList<>();
+                params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
+                params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, offlineTransaction.getOrNumber()));
+                params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, offlineTransaction.getAmount().replace(",", "")));
+                url = BASE_URL + GIVE_POINTS_ENDPOINT;
+                url = url.replace(":customer_uuid", (String) data.get("id"));
+                url = url.replace(":employee_id",  App.appContextHolder.getEmployeeId());
+                JSONObject json = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+                if (json != null) {
+                    if (!json.get("error_code").equals("0x0")) {
+                        JSONObject error = (JSONObject) json.get("errors");
+                        String errorMessage = "";
+                        if (error != null) {
+                            if (error.get("or_no") != null) {
+                                List<String> l = (ArrayList<String>) error.get("or_no");
+                                errorMessage = l.get(0);
+                            }
+                            if (error.get("amount") != null) {
+                                List<String> l = (ArrayList<String>) error.get("amount");
+                                errorMessage = l.get(0);
+                            }
+                        }
+                        if (json.get("message") != null) {
+                            errorMessage = (String) json.get("message");
+                        }
+                        offlineTransaction.setMessage(errorMessage);
+                        offlineTransaction.setStatus("Failed");
+                    } else {
+                        offlineTransaction.setStatus("Submitted");
+                        offlineTransaction.setMessage("Points earned");
+                    }
+                } else {
+                    offlineTransaction.setMessage((String) jsonObject.get("message"));
+                    offlineTransaction.setStatus("Failed");
+                }
+            } else {
+                offlineTransaction.setMessage((String) jsonObject.get("message"));
+                offlineTransaction.setStatus("Failed");
+            }
+        }
+        return offlineTransaction;
+    }
 
     private Node createPage(int pageIndex) {
         VBox box = new VBox();
@@ -78,7 +227,7 @@ public class OfflineController implements Initializable {
         String status = statusMenuButton.getText();
 
         TableView<OfflineTransaction> transactionsTableView = new TableView();
-
+        transactionsTableView.setFixedCellSize(Region.USE_COMPUTED_SIZE);
 
         ObservableList<OfflineTransaction> statusFilteredData = FXCollections.observableArrayList();
         for (OfflineTransaction offlineTransaction : masterData) {
@@ -114,21 +263,23 @@ public class OfflineController implements Initializable {
         ObservableList<OfflineTransaction> indexFilteredData = FXCollections.observableArrayList();
         for (OfflineTransaction offlineTransaction : textFilteredData) {
             int objIndex = masterData.indexOf(offlineTransaction);
-            if (objIndex >= pageIndex || objIndex < (pageIndex * MAX_ENTRIES_COUNT -1)) {
+            if (objIndex >= pageIndex && objIndex < ((pageIndex + 1) * MAX_ENTRIES_COUNT -1)) {
                 indexFilteredData.add(offlineTransaction);
             }
-            if (objIndex > (pageIndex * MAX_ENTRIES_COUNT -1)) {
+            if (objIndex > ((pageIndex + 1) * MAX_ENTRIES_COUNT -1)) {
                 break;
             }
         }
 
 
         buildTableColumns(transactionsTableView);
-        transactionsTableView.setItems(textFilteredData);
+        transactionsTableView.setItems(indexFilteredData);
         return transactionsTableView;
     }
 
+
     public void loadOfflineTransactions() {
+        masterData = FXCollections.observableArrayList();
         File file = new File(System.getenv("RUSH_HOME") + DIVIDER + OFFLINE_TRANSACTION_FILE);
         if (file.exists()) {
             try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -144,6 +295,7 @@ public class OfflineController implements Initializable {
                     offlineTransaction.setOrNumber(arr[2].split("=")[1]);
                     offlineTransaction.setDate(arr[3].split("=")[1]);
                     offlineTransaction.setStatus(arr[4].split("=")[1]);
+                    offlineTransaction.setMessage(arr[5].split("=")[1]);
                     masterData.add(offlineTransaction);
                 }
             } catch (Exception e) {
@@ -168,7 +320,7 @@ public class OfflineController implements Initializable {
         });
 
         Label pendingLabel = new Label("PENDING");
-        pendingLabel.setPrefWidth(150);
+        pendingLabel.setPrefWidth(170);
         pendingLabel.setWrapText(true);
         MenuItem pendingItem = new MenuItem();
         pendingItem.setGraphic(pendingLabel);
@@ -235,12 +387,17 @@ public class OfflineController implements Initializable {
 
 
         TableColumn statusCol = new TableColumn("Status");
-        statusCol.setPrefWidth(150);
+        statusCol.setPrefWidth(100);
         statusCol.setCellValueFactory(
                 new PropertyValueFactory<>("status"));
 
+        TableColumn messageCol = new TableColumn("Message");
+        messageCol.setPrefWidth(250);
+        messageCol.setCellValueFactory(
+                new PropertyValueFactory<>("message"));
+
 
         tableView.getColumns().clear();
-        tableView.getColumns().addAll(dateCol, mobileCol, orCol, statusCol);
+        tableView.getColumns().addAll(dateCol, mobileCol, orCol, statusCol, messageCol);
     }
 }

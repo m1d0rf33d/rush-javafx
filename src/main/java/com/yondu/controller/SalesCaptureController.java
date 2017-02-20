@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -22,15 +23,16 @@ public class SalesCaptureController implements Initializable {
 
     @FXML
     public Pane salesPane;
-
+    @FXML
+    public Label orLabel;
 
     private static double xOffset = 0;
     private static double yOffset = 0;
 
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         salesPane.setOnMousePressed((MouseEvent event) -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();

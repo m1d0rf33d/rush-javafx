@@ -10,6 +10,15 @@ public class OfflineTransaction {
     private String amount;
     private String date;
     private String status;
+    private String message;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public String getMobileNumber() {
         return mobileNumber;

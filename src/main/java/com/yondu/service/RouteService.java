@@ -6,6 +6,7 @@ import com.yondu.controller.*;
 import com.yondu.model.Customer;
 import com.yondu.model.Reward;
 import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.utils.ResizeHelper;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -189,6 +190,7 @@ public class RouteService {
 
 
     public FXMLLoader loadContentPage(StackPane bodyStackPane, String page) {
+
         try {
             bodyStackPane.getChildren().clear();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(page));
@@ -200,6 +202,7 @@ public class RouteService {
             e.printStackTrace();
         }
         return null;
+
     }
 
     public void loadRedeemRewardsScreen() {
@@ -290,6 +293,7 @@ public class RouteService {
 
             JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
             Customer customer = (Customer) jsonObject.get("customer");
+
             MemberDetailsController memberDetailsController = fxmlLoader.getController();
             memberDetailsController.setCustomer(customer);
 
@@ -334,6 +338,55 @@ public class RouteService {
             }
         });
         pause.play();
+    }
+    public void loadOCRScreen() {
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), OCR_SCREEN);
+
+            App.appContextHolder.getRootVBox().setOpacity(1);
+            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                n.setDisable(false);
+            }
+        });
+        pause.play();
+    }
+
+    public void loadOrCaptureScreen() {
+        try {
+            Stage orCaptureStage = new Stage();
+            Parent root = FXMLLoader.load(App.class.getResource(OR_CAPTURE_FXML));
+            orCaptureStage.initStyle(StageStyle.UNDECORATED);
+            orCaptureStage.setScene(new Scene(root, 300,100));
+            orCaptureStage.setMaxHeight(100);
+            orCaptureStage.setMaxWidth(300);
+            App.appContextHolder.setOrCaptureStage(orCaptureStage);
+            ResizeHelper.addResizeListener(orCaptureStage);
+            orCaptureStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+            orCaptureStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void loadSalesCaptureScreen() {
+        try {
+            Stage stage = new Stage();
+            Parent root = FXMLLoader.load(App.class.getResource(SALES_CAPTURE_FXML));
+            stage.initStyle(StageStyle.UNDECORATED);
+            stage.setScene(new Scene(root, 300,100));
+            stage.setMaxHeight(100);
+            stage.setMaxWidth(300);
+            App.appContextHolder.setSalesCaptureStage(stage);
+            ResizeHelper.addResizeListener(stage);
+            stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

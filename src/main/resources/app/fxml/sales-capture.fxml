@@ -8,7 +8,7 @@
 
 <Pane fx:id="salesPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="20.0" minWidth="100.0" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: #ffb600;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.SalesCaptureController">
    <children>
-      <Label layoutX="29.0" layoutY="18.0" prefHeight="65.0" prefWidth="257.0" text="DRAG AND RESIZE TO SALES AREA" textFill="#eeeaea">
+      <Label fx:id="orLabel" layoutX="29.0" layoutY="18.0" prefHeight="65.0" prefWidth="257.0" text="DRAG AND RESIZE TO SALES AREA" textFill="#eeeaea">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>

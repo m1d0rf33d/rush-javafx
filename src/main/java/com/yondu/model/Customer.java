@@ -1,5 +1,7 @@
 package com.yondu.model;
 
+import java.util.List;
+
 /**
  * Created by lynx on 2/9/17.
  */
@@ -13,6 +15,15 @@ public class Customer {
     private String gender;
     private String memberSince;
     private String availablePoints;
+    private List<Reward> activeVouchers;
+
+    public List<Reward> getActiveVouchers() {
+        return activeVouchers;
+    }
+
+    public void setActiveVouchers(List<Reward> activeVouchers) {
+        this.activeVouchers = activeVouchers;
+    }
 
     public String getMemberId() {
         return memberId;

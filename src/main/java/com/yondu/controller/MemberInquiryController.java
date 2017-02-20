@@ -5,6 +5,8 @@ import com.yondu.model.Customer;
 import com.yondu.service.MenuService;
 import com.yondu.service.NotificationService;
 import com.yondu.service.RouteService;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -47,6 +49,18 @@ public class MemberInquiryController implements Initializable {
                 memberDetailsController.setCustomer((Customer) jsonObject.get("customer"));
             } else {
                 notificationService.showMessagePrompt((String) jsonObject.get("message"), Alert.AlertType.INFORMATION, viewMemberButton.getScene().getWindow(), App.appContextHolder.getRootVBox(), ButtonType.OK);
+            }
+        });
+
+        mobileTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    mobileTextField.setText(newValue.replaceAll("[^,.\\d]", ""));
+                }
+                if (mobileTextField.getText().length() > 11) {
+                    mobileTextField.setText(mobileTextField.getText().substring(0,11));
+                }
             }
         });
     }

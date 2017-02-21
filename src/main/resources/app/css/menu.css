@@ -1,0 +1,17 @@
+
+.sidebar-selected {
+    -fx-background-color:  #e7e7e7 !important;
+    -fx-text-fill: black !important;
+}
+
+.sidebar-default {
+    -fx-background-color:#333;
+    -fx-text-fill: white;
+    -fx-font-family: 'System';
+    -fx-font-size: 15px;
+}
+
+.table-row-cell {
+    -fx-cell-size: 50px;
+}
+

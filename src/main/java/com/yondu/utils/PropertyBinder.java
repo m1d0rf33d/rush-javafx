@@ -41,7 +41,8 @@ public class PropertyBinder {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (!textField.getText().isEmpty()) {
                     DecimalFormat decimalFormat = new DecimalFormat("###,###,###.##");
-                    textField.setText(decimalFormat.format(Double.parseDouble(textField.getText())));
+                    String removeComma = textField.getText().replaceAll(",", "");
+                    textField.setText(decimalFormat.format(Double.parseDouble(removeComma)));
                 }
             }
         });

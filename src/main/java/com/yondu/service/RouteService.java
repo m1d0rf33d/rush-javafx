@@ -183,7 +183,7 @@ public class RouteService {
             stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
 
             Scene scene = stage.getScene();
-            scene.getStylesheets().add(App.class.getResource("/app/css/register.css").toExternalForm());
+            scene.getStylesheets().add(App.class.getResource("/app/css/menu.css").toExternalForm());
             stage.show();
             stage.setMaximized(true);
             if (currentStage != null) {

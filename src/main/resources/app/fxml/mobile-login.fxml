@@ -8,12 +8,12 @@
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="600.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.MobileLoginController">
    <children>
-      <Label prefHeight="50.0" text="ENTER MOBILE NUMBER">
+      <Label prefHeight="50.0" text="Enter mobile number">
          <VBox.margin>
             <Insets top="10.0" />
          </VBox.margin>
          <font>
-            <Font name="System Bold" size="15.0" />
+            <Font name="System Bold" size="30.0" />
          </font>
       </Label>
       <Label fx:id="errorLabel" alignment="CENTER" maxHeight="50.0" maxWidth="200.0" prefHeight="50.0" text="Invalid mobile number" textFill="#eb0c0c">
@@ -32,7 +32,7 @@
                <font>
                   <Font name="System Bold" size="17.0" />
                </font></Button>
-            <Button fx:id="cancelButton" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="CANCEL" textFill="#fffbfb">
+            <Button fx:id="cancelButton" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #CDD2D6;" text="CANCEL" textFill="#fffbfb">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>

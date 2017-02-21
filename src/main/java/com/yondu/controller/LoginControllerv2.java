@@ -7,6 +7,7 @@ import com.yondu.model.constants.AppState;
 import com.yondu.service.ApiService;
 import com.yondu.service.NotificationService;
 import com.yondu.service.RouteService;
+import com.yondu.utils.PropertyBinder;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -95,6 +96,8 @@ public class LoginControllerv2 implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        PropertyBinder.bindNumberOnly(loginTextField);
+
         App.appContextHolder.setAppState(AppState.LOGIN);
 
         onlineVBox.setVisible(false);
@@ -117,24 +120,10 @@ public class LoginControllerv2 implements Initializable {
             saveOfflineTransaction();
         });
 
-        amountTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    amountTextField.setText(newValue.replaceAll("[^,.\\d]", ""));
-                }
-            }
-        });
+        PropertyBinder.bindAmountOnly(amountTextField);
+        PropertyBinder.addComma(amountTextField);
 
-        amountTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (!newValue) {
-                    DecimalFormat decimalFormat = new DecimalFormat("###,###,###.##");
-                    amountTextField.setText(decimalFormat.format(Double.parseDouble(amountTextField.getText())));
-                }
-            }
-        });
+
     }
 
     private void saveOfflineTransaction() {

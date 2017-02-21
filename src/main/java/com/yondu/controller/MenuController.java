@@ -19,6 +19,7 @@ import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.yondu.model.constants.AppConfigConstants.*;
@@ -53,6 +54,8 @@ public class MenuController implements Initializable {
 
     @FXML
     public ScrollPane rootScrollPane;
+    @FXML
+    public VBox sideBarVBox;
 
     private RouteService routeService = new RouteService();
 
@@ -63,17 +66,21 @@ public class MenuController implements Initializable {
         rootScrollPane.setFitToWidth(true);
 
 
+
+
         App.appContextHolder.setRootVBox(rootVBox);
         App.appContextHolder.setRootStackPane(bodyStackPane);
 
 
         registerButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             App.appContextHolder.setAppState(AppState.REGISTRATION);
+            highlight(registerButton);
             routeService.loadContentPage(bodyStackPane, REGISTER_SCREEN);
         });
 
         memberInquiryButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             App.appContextHolder.setAppState(AppState.MEMBER_INQUIRY);
+            highlight(memberInquiryButton);
             if (App.appContextHolder.getCustomerMobile() == null) {
                 routeService.loadContentPage(bodyStackPane, MEMBER_INQUIRY_SCREEN);
             } else {
@@ -84,6 +91,7 @@ public class MenuController implements Initializable {
 
         transactionsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             App.appContextHolder.setAppState(AppState.TRANSACTIONS);
+            highlight(transactionsButton);
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(TRANSACTIONS_SCREEN);
             } else {
@@ -93,6 +101,7 @@ public class MenuController implements Initializable {
         });
         givePointsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             disableMenu();
+            highlight(givePointsButton);
             App.appContextHolder.setAppState(AppState.EARN_POINTS);
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(EARN_POINTS_SCREEN);
@@ -102,7 +111,7 @@ public class MenuController implements Initializable {
         });
 
         redeemRewardsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-
+            highlight(redeemRewardsButton);
             disableMenu();
             App.appContextHolder.setAppState(AppState.REDEEM_REWARDS);
             if (App.appContextHolder.getCustomerMobile() == null) {
@@ -114,6 +123,7 @@ public class MenuController implements Initializable {
         });
 
         payWithPointsButton.setOnMouseClicked((MouseEvent e) -> {
+            highlight(payWithPointsButton);
             disableMenu();
             App.appContextHolder.setAppState(AppState.PAY_WITH_POINTS);
             if (App.appContextHolder.getCustomerMobile() == null) {
@@ -124,6 +134,7 @@ public class MenuController implements Initializable {
         });
 
         issueRewardsButton.setOnMouseClicked((MouseEvent e) -> {
+            highlight(issueRewardsButton);
             disableMenu();
             App.appContextHolder.setAppState(AppState.ISSUE_REWARDS);
             if (App.appContextHolder.getCustomerMobile() == null) {
@@ -134,10 +145,12 @@ public class MenuController implements Initializable {
         });
 
         offlineButton.setOnMouseClicked((MouseEvent e) -> {
+            highlight(offlineButton);
             routeService.loadOfflineTransactionScreen();
         });
 
         ocrButton.setOnMouseClicked((MouseEvent e) -> {
+            highlight(ocrButton);
             routeService.loadOCRScreen();
         });
     }
@@ -179,6 +192,16 @@ public class MenuController implements Initializable {
             n.setDisable(false);
         }
     }
+    private void highlight (Button button) {
+        List<Node> nodes = sideBarVBox.getChildren();
+        for (Node n : nodes) {
+            if (n instanceof Button) {
+                Button b = (Button) n;
+                b.getStyleClass().remove("sidebar-selected");
+            }
+        }
 
+        button.getStyleClass().add("sidebar-selected");
+    }
 
 }

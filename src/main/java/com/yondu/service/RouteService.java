@@ -3,19 +3,25 @@ package com.yondu.service;
 import com.yondu.App;
 import com.yondu.Browser;
 import com.yondu.controller.*;
+import com.yondu.model.ApiResponse;
 import com.yondu.model.Customer;
 import com.yondu.model.Reward;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.utils.ResizeHelper;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.*;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.*;
 import javafx.util.Duration;
 import org.json.simple.JSONObject;
 
@@ -34,6 +40,8 @@ public class RouteService {
     private Double screenWidth;
     private Double screenHeight;
     private MenuService menuService = new MenuService();
+    private MemberDetailsService memberDetailsService = new MemberDetailsService();
+    private RedeemRewardsService redeemRewardsService = new RedeemRewardsService();
 
     public RouteService() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -189,7 +197,7 @@ public class RouteService {
     //Loaders
 
 
-    public FXMLLoader loadContentPage(StackPane bodyStackPane, String page) {
+    public FXMLLoader loadContentPage(VBox bodyStackPane, String page) {
 
         try {
             bodyStackPane.getChildren().clear();
@@ -212,13 +220,20 @@ public class RouteService {
         pause.setOnFinished(event -> {
             FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), REDEEM_REWARDS_SCREEN);
 
-            JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
-            Customer customer = (Customer) jsonObject.get("customer");
-            RedeemRewardsController redeemRewardsController = fxmlLoader.getController();
-            redeemRewardsController.setCustomer(customer);
+            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomerMobile());
+            if (apiResponse.isSuccess()) {
+                Customer customer = (Customer) apiResponse.getPayload().get("customer");
+                RedeemRewardsController redeemRewardsController = fxmlLoader.getController();
+                redeemRewardsController.setCustomer(customer);
 
-            jsonObject = menuService.getRewards();
-            redeemRewardsController.setRewards((java.util.List< Reward>)jsonObject.get("rewards"));
+                ApiResponse apiResp = redeemRewardsService.getRewards();
+                if (apiResp.isSuccess()) {
+                    redeemRewardsController.setRewards((java.util.List< Reward>)apiResp.getPayload().get("rewards"));
+                }
+            } else {
+                notifyError(apiResponse.getMessage());
+            }
+
             App.appContextHolder.getRootVBox().setOpacity(1);
             for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
                 n.setDisable(false);
@@ -233,11 +248,14 @@ public class RouteService {
         pause.setOnFinished(event -> {
             FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), EARN_POINTS_SCREEN);
 
-            JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
-            Customer customer = (Customer) jsonObject.get("customer");
-            EarnPointsController earnPointsController = fxmlLoader.getController();
-            earnPointsController.setCustomer(customer);
-
+            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomerMobile());
+            if (apiResponse.isSuccess()) {
+                Customer customer = (Customer) apiResponse.getPayload().get("customer");
+                EarnPointsController earnPointsController = fxmlLoader.getController();
+                earnPointsController.setCustomer(customer);
+            } else {
+                notifyError(apiResponse.getMessage());
+            }
             App.appContextHolder.getRootVBox().setOpacity(1);
             for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
                 n.setDisable(false);
@@ -252,10 +270,14 @@ public class RouteService {
         pause.setOnFinished(event -> {
             FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), PAY_WITH_POINTS);
 
-            JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
-            Customer customer = (Customer) jsonObject.get("customer");
-            PayWithPointsController payWithPointsController = fxmlLoader.getController();
-            payWithPointsController.setCustomer(customer);
+            ApiResponse apiResponse  = memberDetailsService.loginCustomer(App.appContextHolder.getCustomerMobile());
+            if (apiResponse.isSuccess()) {
+                Customer customer = (Customer) apiResponse.getPayload().get("customer");
+                PayWithPointsController payWithPointsController = fxmlLoader.getController();
+                payWithPointsController.setCustomer(customer);
+            } else {
+                notifyError(apiResponse.getMessage());
+            }
 
             App.appContextHolder.getRootVBox().setOpacity(1);
             for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
@@ -269,12 +291,18 @@ public class RouteService {
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
-            FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), PAY_WITH_POINTS);
+            FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), ISSUE_REWARDS_SCREEN);
 
-            JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
-            Customer customer = (Customer) jsonObject.get("customer");
-            IssueRewardsController issueRewardsController = fxmlLoader.getController();
-            issueRewardsController.setCustomer(customer);
+            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomerMobile());
+            if (apiResponse.isSuccess()) {
+                Customer customer = (Customer) apiResponse.getPayload().get("customer");
+                IssueRewardsController issueRewardsController = fxmlLoader.getController();
+                issueRewardsController.setCustomer(customer);
+                issueRewardsController.setRewards(customer.getActiveVouchers());
+            } else {
+                notifyError(apiResponse.getMessage());
+            }
+
 
             App.appContextHolder.getRootVBox().setOpacity(1);
             for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
@@ -291,11 +319,15 @@ public class RouteService {
         pause.setOnFinished(event -> {
             FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), MEMBER_DETAILS_SCREEN);
 
-            JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
-            Customer customer = (Customer) jsonObject.get("customer");
+            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomerMobile());
+            if (apiResponse.isSuccess()) {
+                Customer customer = (Customer) apiResponse.getPayload().get("customer");
+                MemberDetailsController memberDetailsController = fxmlLoader.getController();
+                memberDetailsController.setCustomer(customer);
+            } else {
+                notifyError(apiResponse.getMessage());
+            }
 
-            MemberDetailsController memberDetailsController = fxmlLoader.getController();
-            memberDetailsController.setCustomer(customer);
 
             App.appContextHolder.getRootVBox().setOpacity(1);
             for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
@@ -312,10 +344,15 @@ public class RouteService {
         pause.setOnFinished(event -> {
             FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), TRANSACTIONS_SCREEN);
 
-            JSONObject jsonObject = menuService.loginCustomer(App.appContextHolder.getCustomerMobile());
-            Customer customer = (Customer) jsonObject.get("customer");
-            TransactionsController transactionsController = fxmlLoader.getController();
-            transactionsController.setCustomer(customer);
+            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomerMobile());
+            if (apiResponse.isSuccess()) {
+                Customer customer = (Customer) apiResponse.getPayload().get("customer");
+                TransactionsController transactionsController = fxmlLoader.getController();
+                transactionsController.setCustomer(customer);
+            } else {
+                notifyError(apiResponse.getMessage());
+            }
+
 
             App.appContextHolder.getRootVBox().setOpacity(1);
             for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
@@ -389,4 +426,56 @@ public class RouteService {
         }
     }
 
+    public void loadPinScreen(TextField receiptNumber, TextField amount, TextField pointsToPay, javafx.scene.control.Label pointsLabel, Label pesoValueLabel) {
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            try {
+                Stage stage = new Stage();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(PIN_SCREEN));
+                Parent root = fxmlLoader.load();
+                PinController controller = fxmlLoader.getController();
+                controller.setReceiptTextField(receiptNumber);
+                controller.setPointsTextField(pointsToPay);
+                controller.setAmountTextField(amount);
+                controller.setPointsLabel(pointsLabel);
+                controller.setPesoValueLabel(pesoValueLabel);
+                Scene scene = new Scene(root, 600,400);
+                stage.setScene(scene);
+                stage.setTitle(APP_TITLE);
+                stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                stage.initOwner(App.appContextHolder.getRootVBox().getScene().getWindow());
+                stage.setOnCloseRequest(new javafx.event.EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent event) {
+                        App.appContextHolder.getRootVBox().setOpacity(1);
+                        for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                            n.setDisable(false);
+                        }
+
+                    }
+                });
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        });
+        pause.play();
+    }
+
+    private void notifyError(String message) {
+        Text text = new Text(message);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+        alert.setTitle(AppConfigConstants.APP_TITLE);
+        alert.initStyle(StageStyle.UTILITY);
+        alert.initOwner(App.appContextHolder.getRootStackPane().getScene().getWindow());
+        alert.setHeaderText("REGISTER MEMBER");
+        alert.getDialogPane().setPadding(new javafx.geometry.Insets(10,10,10,10));
+        alert.getDialogPane().setContent(text);
+        alert.getDialogPane().setPrefWidth(400);
+        alert.show();
+    }
 }

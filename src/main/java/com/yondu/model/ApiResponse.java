@@ -1,14 +1,31 @@
 package com.yondu.model;
 
-import java.util.LinkedHashMap;
+import org.json.simple.JSONObject;
 
 /**
  * Created by aomine on 9/19/16.
  */
-public class ApiResponse<T> {
-    private T data;
-    private String error_code;
+public class ApiResponse {
+
+    private boolean success;
     private String message;
+    private JSONObject payload;
+
+    public JSONObject getPayload() {
+        return payload;
+    }
+
+    public void setPayload(JSONObject payload) {
+        this.payload = payload;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
 
     public String getMessage() {
         return message;
@@ -16,21 +33,5 @@ public class ApiResponse<T> {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    public String getError_code() {
-        return error_code;
-    }
-
-    public void setError_code(String error_code) {
-        this.error_code = error_code;
     }
 }

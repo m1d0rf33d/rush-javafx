@@ -1,5 +1,7 @@
 package com.yondu;
 
+import com.yondu.model.constants.AppState;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -44,7 +46,8 @@ public class AppContextHolder {
     private Boolean isFirstDisconnect;
 
     private VBox rootVBox;
-    private StackPane rootStackPane;
+    private VBox rootStackPane;
+    private AppState appState;
 
     //Read endpoints from config file
     public static String BASE_URL;
@@ -80,12 +83,19 @@ public class AppContextHolder {
     public static String CUSTOMER_APP_KEY;
     public static String CUSTOMER_APP_SECRET;
 
+    public AppState getAppState() {
+        return appState;
+    }
 
-    public StackPane getRootStackPane() {
+    public void setAppState(AppState appState) {
+        this.appState = appState;
+    }
+
+    public VBox getRootStackPane() {
         return rootStackPane;
     }
 
-    public void setRootStackPane(StackPane rootStackPane) {
+    public void setRootStackPane(VBox rootStackPane) {
         this.rootStackPane = rootStackPane;
     }
 

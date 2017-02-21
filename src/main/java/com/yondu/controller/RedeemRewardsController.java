@@ -3,6 +3,7 @@ package com.yondu.controller;
 import com.yondu.App;
 import com.yondu.model.Customer;
 import com.yondu.model.Reward;
+import com.yondu.model.constants.AppState;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -57,7 +58,7 @@ public class RedeemRewardsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        App.appContextHolder.setAppState(AppState.REDEEM_REWARDS);
     }
 
     public void setCustomer(Customer customer) {
@@ -73,7 +74,6 @@ public class RedeemRewardsController implements Initializable {
     }
 
     public void setRewards(List<Reward> rewards) {
-        List<ImageView> imageViews = new ArrayList<>();
         List<VBox> vBoxes = new ArrayList<>();
         for (Reward reward : rewards) {
             VBox vBox = new VBox();
@@ -105,13 +105,13 @@ public class RedeemRewardsController implements Initializable {
         }
 
         try {
-
-
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REWARDS_DIALOG_SCREEN));
             Parent root = fxmlLoader.load();
             RewardDialogController controller = fxmlLoader.getController();
+            controller.setCustomer(customer);
             controller.setReward(reward);
+            controller.setPointsLabel(pointsLabel);
             Scene scene = new Scene(root, 600,400);
             stage.setScene(scene);
             stage.setTitle(APP_TITLE);
@@ -131,4 +131,6 @@ public class RedeemRewardsController implements Initializable {
             e.printStackTrace();
         }
     }
+
+
 }

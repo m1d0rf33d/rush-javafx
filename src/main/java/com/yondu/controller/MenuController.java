@@ -1,8 +1,7 @@
 package com.yondu.controller;
 
 import com.yondu.App;
-import com.yondu.model.Customer;
-import com.yondu.service.MenuService;
+import com.yondu.model.constants.AppState;
 import com.yondu.service.RouteService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,11 +13,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,7 +29,7 @@ import static com.yondu.model.constants.AppConfigConstants.*;
 public class MenuController implements Initializable {
 
     @FXML
-    public StackPane bodyStackPane;
+    public VBox bodyStackPane;
     @FXML
     public Button registerButton;
     @FXML
@@ -62,18 +59,21 @@ public class MenuController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-
         rootScrollPane.setFitToHeight(true);
         rootScrollPane.setFitToWidth(true);
+
 
         App.appContextHolder.setRootVBox(rootVBox);
         App.appContextHolder.setRootStackPane(bodyStackPane);
 
+
         registerButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
+            App.appContextHolder.setAppState(AppState.REGISTRATION);
             routeService.loadContentPage(bodyStackPane, REGISTER_SCREEN);
         });
 
         memberInquiryButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
+            App.appContextHolder.setAppState(AppState.MEMBER_INQUIRY);
             if (App.appContextHolder.getCustomerMobile() == null) {
                 routeService.loadContentPage(bodyStackPane, MEMBER_INQUIRY_SCREEN);
             } else {
@@ -91,6 +91,7 @@ public class MenuController implements Initializable {
         });
         givePointsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             disableMenu();
+            App.appContextHolder.setAppState(AppState.EARN_POINTS);
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(EARN_POINTS_SCREEN);
             } else {
@@ -101,6 +102,7 @@ public class MenuController implements Initializable {
         redeemRewardsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
 
             disableMenu();
+            App.appContextHolder.setAppState(AppState.REDEEM_REWARDS);
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(REDEEM_REWARDS_SCREEN);
             } else {
@@ -110,6 +112,8 @@ public class MenuController implements Initializable {
         });
 
         payWithPointsButton.setOnMouseClicked((MouseEvent e) -> {
+            disableMenu();
+            App.appContextHolder.setAppState(AppState.PAY_WITH_POINTS);
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(PAY_WITH_POINTS);
             } else {
@@ -118,6 +122,8 @@ public class MenuController implements Initializable {
         });
 
         issueRewardsButton.setOnMouseClicked((MouseEvent e) -> {
+            disableMenu();
+            App.appContextHolder.setAppState(AppState.ISSUE_REWARDS);
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(ISSUE_REWARDS_SCREEN);
             } else {
@@ -143,9 +149,6 @@ public class MenuController implements Initializable {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(MOBILE_LOGIN_SCREEN));
             Parent root = fxmlLoader.load();
-            MobileLoginController controller = fxmlLoader.getController();
-            controller.setRootVBox(rootVBox);
-            controller.setTargetScreen(targetScreen);
             Scene scene = new Scene(root, 600,400);
             stage.setScene(scene);
             stage.setTitle(APP_TITLE);

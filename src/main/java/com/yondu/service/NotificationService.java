@@ -45,7 +45,7 @@ public class NotificationService {
                 }
             }
         });
-        alert.showAndWait();
+        alert.show();
 
         if (alert.getResult() == ButtonType.OK) {
             alert.close();

@@ -1,21 +1,30 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import com.yondu.model.ApiResponse;
 import com.yondu.model.Customer;
+import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.service.MemberDetailsService;
 import com.yondu.service.MenuService;
 import com.yondu.service.NotificationService;
 import com.yondu.service.RouteService;
+import com.yondu.utils.PropertyBinder;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.StageStyle;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -34,35 +43,41 @@ public class MemberInquiryController implements Initializable {
     @FXML
     public Button viewMemberButton;
 
-
-    private MenuService menuService = new MenuService();
-    private NotificationService notificationService = new NotificationService();
-    private RouteService routeService = new RouteService();
+    private MemberDetailsService memberDetailsService = new MemberDetailsService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        viewMemberButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            JSONObject jsonObject = menuService.loginCustomer(mobileTextField.getText());
-            if (jsonObject.get("customer") != null) {
-                FXMLLoader fxmlLoader = routeService.loadContentPage(App.appContextHolder.getRootStackPane(), MEMBER_DETAILS_SCREEN);
-                MemberDetailsController memberDetailsController = fxmlLoader.getController();
-                memberDetailsController.setCustomer((Customer) jsonObject.get("customer"));
+        viewMemberButton.setOnMouseClicked((MouseEvent e) -> {
+            ApiResponse apiResponse = memberDetailsService.loginCustomer(mobileTextField.getText());
+            if (apiResponse.isSuccess()) {
+                try {
+                    VBox bodyStackPane = App.appContextHolder.getRootStackPane();
+                    bodyStackPane.getChildren().clear();
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(MEMBER_DETAILS_SCREEN));
+                    Parent root = fxmlLoader.load();
+                    bodyStackPane.getChildren().add(root);
+                    MemberDetailsController memberDetailsController = fxmlLoader.getController();
+                    memberDetailsController.setCustomer((Customer) apiResponse.getPayload().get("customer"));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             } else {
-                notificationService.showMessagePrompt((String) jsonObject.get("message"), Alert.AlertType.INFORMATION, viewMemberButton.getScene().getWindow(), App.appContextHolder.getRootVBox(), ButtonType.OK);
+                Text text = new Text(apiResponse.getMessage());
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
+                alert.initOwner(viewMemberButton.getScene().getWindow());
+                alert.setHeaderText("REGISTER MEMBER");
+                alert.getDialogPane().setPadding(new Insets(10,10,10,10));
+                alert.getDialogPane().setContent(text);
+                alert.getDialogPane().setPrefWidth(400);
+                alert.show();
             }
+
         });
 
-        mobileTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    mobileTextField.setText(newValue.replaceAll("[^,.\\d]", ""));
-                }
-                if (mobileTextField.getText().length() > 11) {
-                    mobileTextField.setText(mobileTextField.getText().substring(0,11));
-                }
-            }
-        });
+        PropertyBinder.bindNumberOnly(mobileTextField);
+        PropertyBinder.bindMaxLength(11, mobileTextField);
     }
 
 }

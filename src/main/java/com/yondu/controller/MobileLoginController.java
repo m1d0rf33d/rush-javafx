@@ -1,17 +1,25 @@
 package com.yondu.controller;
 
+import com.yondu.App;
+import com.yondu.model.ApiResponse;
+import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.model.constants.AppState;
+import com.yondu.service.MemberDetailsService;
 import com.yondu.service.MenuService;
 import com.yondu.service.NotificationService;
 import com.yondu.service.RouteService;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import org.json.simple.JSONObject;
 
 import java.net.URL;
@@ -33,9 +41,8 @@ public class MobileLoginController implements Initializable {
     @FXML
     public Label errorLabel;
 
-    private VBox rootVBox;
-    private String targetScreen;
-    private MenuService menuService = new MenuService();
+
+    private MemberDetailsService memberDetailsService = new MemberDetailsService();
     private RouteService routeService = new RouteService();
 
     @Override
@@ -44,50 +51,53 @@ public class MobileLoginController implements Initializable {
         errorLabel.setVisible(false);
 
         cancelButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            rootVBox.setOpacity(1);
-            for (Node n : rootVBox.getChildren()) {
+            App.appContextHolder.getRootVBox().setOpacity(1);
+            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
                 n.setDisable(false);
             }
             ((Stage) cancelButton.getScene().getWindow()).close();
         });
 
         submitButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            JSONObject jsonObject = menuService.loginCustomer(mobileTextField.getText());
-            if (jsonObject.get("customer") != null) {
-                if (targetScreen.equals(REDEEM_REWARDS_SCREEN)) {
-                    ((Stage) submitButton.getScene().getWindow()).close();
-                    routeService.loadRedeemRewardsScreen();
-                } else if (targetScreen.equals(EARN_POINTS_SCREEN)) {
-                    ((Stage) submitButton.getScene().getWindow()).close();
-                    routeService.loadEarnPointsScreen();
-                } else if (targetScreen.equals(PAY_WITH_POINTS)) {
-                    ((Stage) submitButton.getScene().getWindow()).close();
-                    routeService.loadPayWithPoints();
-                } else if (targetScreen.equals(ISSUE_REWARDS_SCREEN)) {
-                    ((Stage) submitButton.getScene().getWindow()).close();
-                    routeService.loadIssueRewardsScreen();
-                }
+            ((Stage) submitButton.getScene().getWindow()).close();
+            PauseTransition pause = new PauseTransition(
+                    Duration.seconds(.5)
+            );
+            pause.setOnFinished(event -> {
+                ApiResponse apiResponse = memberDetailsService.loginCustomer(mobileTextField.getText());
+                if (apiResponse.isSuccess()) {
+                    AppState state = App.appContextHolder.getAppState();
+                    if (state.equals(AppState.EARN_POINTS)) {
+                        routeService.loadEarnPointsScreen();
+                    } else if (state.equals(AppState.REDEEM_REWARDS)) {
+                        routeService.loadRedeemRewardsScreen();
+                    } else if (state.equals(AppState.ISSUE_REWARDS)) {
+                        routeService.loadIssueRewardsScreen();
+                    } else if (state.equals(AppState.PAY_WITH_POINTS)) {
+                        routeService.loadPayWithPoints();
+                    }
+                } else {
+                    App.appContextHolder.getRootVBox().setOpacity(1);
+                    for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
+                        n.setDisable(false);
+                    }
 
-            } else {
-                errorLabel.setVisible(true);
-            }
+                    Text text = new Text(apiResponse.getMessage());
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+                    alert.setTitle(AppConfigConstants.APP_TITLE);
+                    alert.initStyle(StageStyle.UTILITY);
+                    alert.initOwner(App.appContextHolder.getRootVBox().getScene().getWindow());
+                    alert.setHeaderText("LOGIN MEMBER");
+                    alert.getDialogPane().setPadding(new Insets(10,10,10,10));
+                    alert.getDialogPane().setContent(text);
+                    alert.getDialogPane().setPrefWidth(400);
+                    alert.show();
+                }
+            });
+            pause.play();
+
         });
 
-    }
-
-    public VBox getRootVBox() {
-        return rootVBox;
-    }
-
-    public void setRootVBox(VBox rootVBox) {
-        this.rootVBox = rootVBox;
-    }
-    public String getTargetScreen() {
-        return targetScreen;
-    }
-
-    public void setTargetScreen(String targetScreen) {
-        this.targetScreen = targetScreen;
     }
 
 }

@@ -3,6 +3,7 @@ package com.yondu.controller;
 import com.yondu.App;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.model.constants.AppState;
 import com.yondu.service.ApiService;
 import com.yondu.service.NotificationService;
 import com.yondu.service.RouteService;
@@ -93,6 +94,8 @@ public class LoginControllerv2 implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        App.appContextHolder.setAppState(AppState.LOGIN);
 
         onlineVBox.setVisible(false);
         offlineVBox.setVisible(false);

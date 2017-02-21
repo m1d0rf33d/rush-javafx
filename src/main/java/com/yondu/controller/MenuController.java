@@ -83,9 +83,11 @@ public class MenuController implements Initializable {
         });
 
         transactionsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
+            App.appContextHolder.setAppState(AppState.TRANSACTIONS);
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(TRANSACTIONS_SCREEN);
             } else {
+                disableMenu();
                 routeService.loadTransactionsScreen();
             }
         });

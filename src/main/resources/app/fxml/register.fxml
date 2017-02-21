@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.*?>
 <?import java.lang.*?>
 <?import javafx.scene.text.*?>
@@ -10,7 +11,7 @@
 
 <VBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="609.0" prefWidth="650.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.RegisterController">
    <children>
-      <VBox maxHeight="74" maxWidth="+Infinity" prefHeight="74.0" prefWidth="799.0" VBox.vgrow="ALWAYS">
+      <VBox maxHeight="50.0" maxWidth="+Infinity" minHeight="50.0" prefHeight="50.0" prefWidth="799.0" VBox.vgrow="ALWAYS">
          <children>
             <Label prefHeight="21.0" prefWidth="256.0" text="REGISTER NEW MEMBER">
                <font>
@@ -20,18 +21,30 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </Label>
-            <Label text="General Information">
-               <font>
-                  <Font size="15.0" />
-               </font>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-            </Label>
          </children>
          <padding>
             <Insets left="20.0" />
          </padding>
+      </VBox>
+      <VBox maxHeight="50.0" prefHeight="100.0" prefWidth="100.0">
+         <children>
+            <Line endX="800.0" startX="-100.0" stroke="#e1dcdc">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Line>
+            <Label text="General Information" textFill="#a19797">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Label>
+         </children>
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" />
+         </VBox.margin>
       </VBox>
       <HBox maxHeight="100" maxWidth="+Infinity" minWidth="200.0" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
          <children>
@@ -66,7 +79,7 @@
             <Insets left="20.0" right="20.0" />
          </VBox.margin>
       </HBox>
-      <HBox maxHeight="100" maxWidth="+Infinity" minWidth="200.0" prefHeight="100.0" prefWidth="200.0">
+      <HBox maxHeight="100" maxWidth="+Infinity" minWidth="200.0" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <children>
             <VBox maxWidth="500.0" minWidth="300.0" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <children>
@@ -95,7 +108,7 @@
             <Insets left="20.0" right="20.0" />
          </VBox.margin>
       </HBox>
-      <HBox maxHeight="100" maxWidth="+Infinity" minWidth="200.0" prefHeight="100.0" prefWidth="200.0">
+      <HBox maxHeight="100" maxWidth="+Infinity" minWidth="200.0" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <children>
             <VBox maxWidth="500.0" minWidth="300.0" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <children>
@@ -143,28 +156,29 @@
             <Insets left="20.0" right="20.0" />
          </VBox.margin>
       </HBox>
-      <HBox maxHeight="100" maxWidth="+Infinity" minWidth="200.0" prefHeight="100.0" prefWidth="200.0">
+      <HBox maxHeight="100" maxWidth="+Infinity" minWidth="200.0" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <children>
-            <VBox alignment="TOP_RIGHT" maxWidth="500.0" minWidth="300.0" prefHeight="100.0" prefWidth="300.0" style="-fx-background-radius: 30;" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-               <HBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </HBox.margin>
+            <VBox alignment="CENTER_RIGHT" maxWidth="500.0" minWidth="300" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="clearButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="CLEAR ALL" textFill="#f2ecec" VBox.vgrow="ALWAYS">
+                  <Button fx:id="registerButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="SEND" textFill="#f2ecec" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="System Bold" size="17.0" />
                      </font>
                      <cursor>
                         <Cursor fx:constant="OPEN_HAND" />
-                     </cursor></Button>
+                     </cursor>
+                  </Button>
                </children>
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
             </VBox>
-            <VBox maxWidth="500.0" minWidth="300" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+            <VBox alignment="CENTER_LEFT" maxWidth="500.0" minWidth="300.0" prefHeight="100.0" prefWidth="300.0" style="-fx-background-radius: 30;" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
                <children>
-                  <Button fx:id="registerButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="SEND" textFill="#f2ecec" VBox.vgrow="ALWAYS">
+                  <Button fx:id="clearButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #CDD2D6;" text="CLEAR ALL" textFill="#f2ecec" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="System Bold" size="17.0" />
                      </font>
@@ -175,7 +189,7 @@
             </VBox>
          </children>
          <VBox.margin>
-            <Insets top="15.0" />
+            <Insets left="20.0" right="20.0" top="15.0" />
          </VBox.margin>
       </HBox>
    </children>

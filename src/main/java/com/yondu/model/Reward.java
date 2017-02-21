@@ -11,6 +11,15 @@ public class Reward {
     private String id;
     private String pointsRequired;
     private String quantity;
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public String getQuantity() {
         return quantity;

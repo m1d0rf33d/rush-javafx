@@ -122,9 +122,17 @@ public class MemberDetailsController implements Initializable {
     }
 
     private void buildTableColumns(TableView tableView) {
-        TableColumn dateCol = new TableColumn("Name");
+
+
+        TableColumn dateCol = new TableColumn("Redemption Date");
         dateCol.setPrefWidth(200);
         dateCol.setCellValueFactory(
+                new PropertyValueFactory<>("date"));
+
+
+        TableColumn rewardCol = new TableColumn("Reward");
+        rewardCol.setPrefWidth(200);
+        rewardCol.setCellValueFactory(
                 new PropertyValueFactory<>("name"));
 
         TableColumn mobileCol = new TableColumn("Details");
@@ -139,7 +147,7 @@ public class MemberDetailsController implements Initializable {
 
 
         tableView.getColumns().clear();
-        tableView.getColumns().addAll(dateCol, mobileCol, orCol);
+        tableView.getColumns().addAll(dateCol, rewardCol, mobileCol, orCol);
     }
 
     public Customer getCustomer() {

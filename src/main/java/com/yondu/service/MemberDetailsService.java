@@ -3,8 +3,10 @@ package com.yondu.service;
 import com.yondu.App;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.Customer;
+import com.yondu.model.Employee;
 import com.yondu.model.Reward;
 import com.yondu.model.constants.ApiFieldContants;
+import javafx.stage.Stage;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
@@ -66,6 +68,7 @@ public class MemberDetailsService {
                     reward.setQuantity((rewardJSON.get("quantity")).toString());
                     reward.setId(String.valueOf((Long) rewardJSON.get("id")));
                     reward.setImageUrl((String) rewardJSON.get("image_url"));
+                    reward.setDate((String) rewardJSON.get("date"));
                     rewards.add(reward);
                 }
                 customer.setActiveVouchers(rewards);
@@ -127,6 +130,37 @@ public class MemberDetailsService {
                 apiResponse.setPayload(payload);
                 apiResponse.setSuccess(true);
             }
+        }
+        return apiResponse;
+    }
+
+    public ApiResponse loginEmployee(String employeeId, String branchId, String pin) {
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setSuccess(false);
+
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, employeeId));
+        params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, branchId));
+        params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin));
+        String url = BASE_URL + LOGIN_ENDPOINT;
+        JSONObject jsonObject = apiService.call((url), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        if (jsonObject != null) {
+            if (jsonObject.get("error_code").equals("0x0")) {
+                JSONObject data = (JSONObject) jsonObject.get("data");
+
+                JSONObject payload = new JSONObject();
+                Employee employee = new Employee();
+                employee.setBranchId(branchId);
+                employee.setEmployeeId((String) data.get("id"));
+                employee.setEmployeeName((String) data.get("name"));
+                payload.put("employee", employee);
+                apiResponse.setSuccess(true);
+                apiResponse.setPayload(payload);
+            } else {
+                apiResponse.setMessage((String) jsonObject.get("message"));
+            }
+        } else {
+            apiResponse.setMessage("Network error");
         }
         return apiResponse;
     }

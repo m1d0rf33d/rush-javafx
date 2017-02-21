@@ -1,17 +1,23 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import com.yondu.model.ApiResponse;
 import com.yondu.model.Customer;
+import com.yondu.model.Reward;
 import com.yondu.model.Transaction;
 import com.yondu.service.ApiService;
+import com.yondu.service.TransactionService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import org.json.simple.JSONObject;
 
 import java.net.URL;
@@ -39,58 +45,143 @@ public class TransactionsController implements Initializable {
     public Label genderLabel;
     @FXML
     public Label birthdateLabel;
-
     @FXML
     public Label emailLabel;
     @FXML
     public Label pointsLabel;
     @FXML
-    public TableView<Transaction> transactionsTableView;
+    public Pagination pagination;
+    @FXML
+    public TextField searchTextField;
 
-    private ApiService apiService = new ApiService();
     private Customer customer;
 
-    private final ObservableList<Transaction> transactionsData =
+    private Integer MAX_ENTRIES_COUNT = 10;
+    private Integer PAGE_COUNT = 0;
+
+    private ObservableList<Transaction> masterData =
             FXCollections.observableArrayList();
+
+    private TransactionService transactionService = new TransactionService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         getTransactions();
 
+        PAGE_COUNT = masterData.size() / MAX_ENTRIES_COUNT;
+        if (PAGE_COUNT == 0) {
+            PAGE_COUNT = 1;
+        }
+        pagination.setPageCount(PAGE_COUNT);
+        pagination.setPageFactory((Integer pageIndex) -> createPage(pageIndex));
+        searchTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                pagination.setPageFactory((Integer pageIndex) -> createPage(pageIndex));
+                pagination.setPageCount(PAGE_COUNT);
+            }
+        });
     }
 
-    public void getTransactions() {
-        List params = new ArrayList<>();
-        String url = BASE_URL + CUSTOMER_TRANSACTION_ENDPOINT;
-        url = url.replace(":customer_uuid", App.appContextHolder.getCustomerUUID());
-        JSONObject jsonObject = apiService.call(url, params, "get", CUSTOMER_APP_RESOUCE_OWNER);
-        if (jsonObject != null) {
-            if (jsonObject.get("error_code").equals("0x0")) {
-                List<JSONObject> data = (ArrayList) jsonObject.get("data");
-                for (JSONObject json : data) {
-                    Transaction transaction = new Transaction();
-                    transaction.setReceiptNumber((String) json.get("receipt_no"));
-                    transaction.setTransactionType((String) json.get("transaction_type"));
-                    transactionsData.add(transaction);
-                }
+    private Node createPage(int pageIndex) {
+        VBox box = new VBox();
+        box.getChildren().addAll(buildTableView());
+        pagination.setPageCount(PAGE_COUNT);
+        return box;
+    }
 
+    private TableView<Transaction> buildTableView() {
+
+
+        TableView<Transaction> transactionsTableView = new TableView();
+        transactionsTableView.setFixedCellSize(Region.USE_COMPUTED_SIZE);
+
+        ObservableList<Transaction> textFilteredData = FXCollections.observableArrayList();
+
+        if (searchTextField.getText() != null && !searchTextField.getText().isEmpty()) {
+            String searchTxt = searchTextField.getText().toLowerCase();
+            for (Transaction transaction : masterData) {
+                String str = "";
+                str = str + (transaction.getTransactionType() != null ? transaction.getTransactionType().toLowerCase() : "");
+                str = str + (transaction.getReceiptNumber() != null ? transaction.getReceiptNumber().toLowerCase() : "");
+                if (str.contains(searchTxt)) {
+                    textFilteredData.addAll(transaction);
+                }
+            }
+        } else {
+            textFilteredData = masterData;
+        }
+
+        PAGE_COUNT = textFilteredData.size() / MAX_ENTRIES_COUNT;
+        if (PAGE_COUNT == 0) {
+            PAGE_COUNT = 1;
+        }
+
+        int pageIndex = pagination.getCurrentPageIndex();
+        ObservableList<Transaction> indexFilteredData = FXCollections.observableArrayList();
+        for (Transaction transaction : textFilteredData) {
+            int objIndex = textFilteredData.indexOf(transaction);
+            if (objIndex >= (pageIndex * MAX_ENTRIES_COUNT)  && objIndex < ((pageIndex + 1) * MAX_ENTRIES_COUNT)) {
+                indexFilteredData.add(transaction);
+            }
+            if (objIndex > ((pageIndex + 1) * MAX_ENTRIES_COUNT -1)) {
+                break;
             }
         }
 
-        TableColumn receiptNoCol = new TableColumn("Receipt No");
-        receiptNoCol.setMinWidth(150);
-        receiptNoCol.setCellValueFactory(
-                new PropertyValueFactory<>("receiptNo"));
 
-        TableColumn transactionTypeCol = new TableColumn("Transaction type");
-        transactionTypeCol.setMinWidth(150);
-        transactionTypeCol.setCellValueFactory(
+        buildTableColumns(transactionsTableView);
+        transactionsTableView.setItems(indexFilteredData);
+        return transactionsTableView;
+    }
+
+    private void buildTableColumns(TableView tableView) {
+        TableColumn typeCol = new TableColumn("Transaction Type");
+        typeCol.setPrefWidth(150);
+        typeCol.setCellValueFactory(
                 new PropertyValueFactory<>("transactionType"));
 
-        transactionsTableView.setItems(transactionsData);
-        transactionsTableView.getColumns().clear();
-        transactionsTableView.getColumns().addAll(receiptNoCol, transactionTypeCol);
+        TableColumn receiptCol = new TableColumn("Receipt Number");
+        receiptCol.setPrefWidth(150);
+        receiptCol.setCellValueFactory(
+                new PropertyValueFactory<>("receiptNumber"));
+
+        TableColumn dateCol = new TableColumn("Date");
+        dateCol.setPrefWidth(150);
+        dateCol.setCellValueFactory(
+                new PropertyValueFactory<>("date"));
+
+
+        TableColumn pointsPaidCol = new TableColumn("Points Paid");
+        pointsPaidCol.setPrefWidth(150);
+        pointsPaidCol.setCellValueFactory(
+                new PropertyValueFactory<>("pointsPaid"));
+
+        TableColumn cashPaidCol = new TableColumn("Cash Paid");
+        cashPaidCol.setPrefWidth(150);
+        cashPaidCol.setCellValueFactory(
+                new PropertyValueFactory<>("cashPaid"));
+
+        TableColumn pointsEarnedCol = new TableColumn("Points Earned");
+        pointsEarnedCol.setPrefWidth(150);
+        pointsEarnedCol.setCellValueFactory(
+                new PropertyValueFactory<>("pointsEarned"));
+
+
+        tableView.getColumns().clear();
+        tableView.getColumns().addAll(dateCol, typeCol, receiptCol, pointsEarnedCol, pointsPaidCol, cashPaidCol);
+    }
+
+
+    public void getTransactions() {
+
+        ApiResponse apiResponse = transactionService.getTransactions();
+        if (apiResponse.isSuccess()) {
+            masterData.addAll((List<Transaction>) apiResponse.getPayload().get("transactions"));
+        } else {
+
+        }
 
     }
 

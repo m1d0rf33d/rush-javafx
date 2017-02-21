@@ -2,6 +2,7 @@ package com.yondu.controller;
 
 import com.yondu.App;
 import com.yondu.model.ApiResponse;
+import com.yondu.model.Employee;
 import com.yondu.model.PointsRule;
 import com.yondu.model.Reward;
 import com.yondu.model.constants.ApiFieldContants;
@@ -43,8 +44,6 @@ public class PinController implements Initializable {
     private Button cancelButton;
     @FXML
     private TextField pinTextField;
-    @FXML
-    private Label errorLabel;
 
     private TextField receiptTextField;
     private TextField amountTextField;
@@ -182,39 +181,39 @@ public class PinController implements Initializable {
     }
 
     private void login() {
-        //Build request body
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, login));
-        params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, branchId));
-        params.add(new BasicNameValuePair(ApiFieldContants.PIN, this.pinTextField.getText()));
-        String url = BASE_URL + LOGIN_ENDPOINT;
-        JSONObject jsonObject = apiService.call((url), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
 
-        if (jsonObject != null) {
-            if (jsonObject.get("error_code").equals("0x0")) {
-                JSONObject data = (JSONObject) jsonObject.get("data");
-                App.appContextHolder.setEmployeeName(((String) data.get("name")));
-                App.appContextHolder.setEmployeeId((String) data.get("id"));
-                App.appContextHolder.setBranchId(branchId);
-                //Redirect to home page
-                routeService.goToMenuScreen((Stage) rootHBox.getScene().getWindow());
-                ((Stage) pinTextField.getScene().getWindow()).close();
-            } else {
-                errorLabel.setText((String) jsonObject.get("message"));
-            }
+        ApiResponse apiResponse = memberDetailsService.loginEmployee(login, branchId, pinTextField.getText());
+        if (apiResponse.isSuccess()) {
+            Employee employee = (Employee) apiResponse.getPayload().get("employee");
+            App.appContextHolder.setEmployeeId(employee.getEmployeeId());
+            App.appContextHolder.setEmployeeName(employee.getEmployeeName());
+            App.appContextHolder.setBranchId(employee.getBranchId());
+
+            routeService.goToMenuScreen((Stage) onlineVBox.getScene().getWindow());
+            ((Stage) cancelButton.getScene().getWindow()).close();
+
         } else {
-            ((Stage) pinTextField.getScene().getWindow()).close();
-            notificationService.showMessagePrompt("\n  No network connection. You are currently in offline mode.  ",
-                    Alert.AlertType.INFORMATION,
-                    null, null,
-                    ButtonType.OK);
-            rootHBox.setOpacity(1);
-            for (Node n : rootHBox.getChildren()) {
-                n.setDisable(false);
+            if (apiResponse.getMessage().contains("Network")) {
+                offlineVBox.setVisible(true);
+                onlineVBox.setVisible(false);
             }
-            offlineVBox.setVisible(true);
-            onlineVBox.setVisible(false);
+
+            Text text = new Text(apiResponse.getMessage());
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+            alert.setTitle(AppConfigConstants.APP_TITLE);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.initOwner((Stage) onlineVBox.getScene().getWindow());
+            alert.setHeaderText("REGISTER MEMBER");
+            alert.getDialogPane().setPadding(new Insets(10,10,10,10));
+            alert.getDialogPane().setContent(text);
+            alert.getDialogPane().setPrefWidth(400);
+            alert.show();
         }
+        rootHBox.setOpacity(1);
+        for (Node n : rootHBox.getChildren()) {
+            n.setDisable(false);
+        }
+
     }
 
 

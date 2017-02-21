@@ -75,6 +75,8 @@ public class MobileLoginController implements Initializable {
                         routeService.loadIssueRewardsScreen();
                     } else if (state.equals(AppState.PAY_WITH_POINTS)) {
                         routeService.loadPayWithPoints();
+                    } else if (state.equals(AppState.TRANSACTIONS)) {
+                        routeService.loadTransactionsScreen();
                     }
                 } else {
                     App.appContextHolder.getRootVBox().setOpacity(1);

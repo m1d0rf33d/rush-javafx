@@ -120,6 +120,7 @@ public class EarnPointsController implements Initializable {
                         receiptTextField.setText(receiptNo);
                         amountTextField.setText(amount);
                     } else {
+                        ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(false);
                         Text text = new Text(apiResp.getMessage());
                         Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
                         alert.setTitle(AppConfigConstants.APP_TITLE);
@@ -132,16 +133,17 @@ public class EarnPointsController implements Initializable {
                         alert.show();
                     }
                     ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(false);
+                    App.appContextHolder.getRootVBox().setOpacity(1);
+                    for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
+                        n.setDisable(false);
+                    }
+
                 }); p.play();
 
-                App.appContextHolder.getRootVBox().setOpacity(1);
-                for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
-                    n.setDisable(false);
-                }
             });
             pause.play();
         });
-
+        ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(false);
         PropertyBinder.bindAmountOnly(amountTextField);
         PropertyBinder.addComma(amountTextField);
     }

@@ -41,7 +41,7 @@
                               <Insets top="10.0" />
                            </VBox.margin>
                         </Label>
-                        <TextField  fx:id="orTextField" maxWidth="500.0" prefHeight="50.0" prefWidth="400.0" style="-fx-background-radius: 30;">
+                        <TextField fx:id="orTextField" maxWidth="500.0" prefHeight="50.0" prefWidth="400.0" style="-fx-background-radius: 30;">
                            <VBox.margin>
                               <Insets top="10.0" />
                            </VBox.margin></TextField>
@@ -290,6 +290,9 @@
                      <HBox.margin>
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </HBox.margin>
+                     <graphic>
+                        <ImageView fx:id="removeImageView" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic>
                   </Button>
                   <Button fx:id="twoBtn21" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="0" textFill="#71747a">
                      <cursor>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.*?>
 <?import javafx.geometry.*?>
@@ -11,7 +12,39 @@
    <content>
       <VBox fx:id="rootVBox" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="900.0" VBox.vgrow="ALWAYS">
          <children>
-            <HBox minHeight="100.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #e7e7e7;" />
+            <HBox minHeight="100.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #e7e7e7;">
+               <children>
+                  <ImageView fx:id="merchantLogoImageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </ImageView>
+                  <VBox alignment="CENTER_LEFT">
+                     <children>
+                        <Label fx:id="branchNameLabel" prefWidth="300.0" text="Label" textFill="#4a4444">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <HBox alignment="CENTER_RIGHT" maxWidth="800.0" prefHeight="100.0" prefWidth="400.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <MenuButton fx:id="employeeMenuButton" mnemonicParsing="false" style="-fx-background-color: transparent;" text="MenuButton">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                            <MenuItem mnemonicParsing="false" text="Action 2" />
+                          </items>
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                        </MenuButton>
+                     </children>
+                  </HBox>
+               </children></HBox>
             <HBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="700" minWidth="1000" prefHeight="700" prefWidth="895.0" VBox.vgrow="ALWAYS">
                <children>
                   <VBox fx:id="sideBarVBox" maxHeight="Infinity" maxWidth="300.0" minHeight="700.0" minWidth="240.0" prefHeight="572.0" prefWidth="240.0" style="-fx-background-color: #53585b;" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
@@ -48,6 +81,17 @@
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
+                        </Button>
+                        <Button fx:id="guestPurchaseButton" maxWidth="260.0" minWidth="200.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #333;" styleClass="sidebar-default" text="GUEST PURCHASE" textFill="#f8f6f6">
+                           <cursor>
+                              <Cursor fx:constant="OPEN_HAND" />
+                           </cursor>
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="20.0" right="20.0" top="20.0" />
+                           </VBox.margin>
                         </Button>
                         <Button fx:id="payWithPointsButton" maxWidth="260.0" minWidth="200.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #333;" styleClass="sidebar-default" text="PAY WITH POINTS" textFill="#f8f6f6" VBox.vgrow="ALWAYS">
                            <cursor>

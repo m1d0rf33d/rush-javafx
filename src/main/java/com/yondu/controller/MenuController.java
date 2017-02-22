@@ -1,27 +1,36 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppState;
+import com.yondu.service.ApiService;
 import com.yondu.service.RouteService;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.apache.http.NameValuePair;
+import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static com.yondu.AppContextHolder.BASE_URL;
+import static com.yondu.AppContextHolder.GET_BRANCHES_ENDPOINT;
 import static com.yondu.model.constants.AppConfigConstants.*;
 
 /**
@@ -56,17 +65,42 @@ public class MenuController implements Initializable {
     public ScrollPane rootScrollPane;
     @FXML
     public VBox sideBarVBox;
+    @FXML
+    public Button guestPurchaseButton;
+    @FXML
+    public MenuButton employeeMenuButton;
+    @FXML
+    public Label branchNameLabel;
+    @FXML
+    public ImageView merchantLogoImageView;
 
     private RouteService routeService = new RouteService();
+    private ApiService apiService = new ApiService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         rootScrollPane.setFitToHeight(true);
         rootScrollPane.setFitToWidth(true);
+        loadMerchantDetails();
 
 
-
+        employeeMenuButton.setText("Hi! " + App.appContextHolder.getEmployeeName());
+        MenuItem logoutMenuItem = new MenuItem();
+        logoutMenuItem.setGraphic(new Label("LOGOUT"));
+        logoutMenuItem.getStyleClass().add("menuitem");
+        logoutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                App.appContextHolder.setEmployeeName(null);
+                App.appContextHolder.setEmployeeId(null);
+                App.appContextHolder.setCustomerUUID(null);
+                App.appContextHolder.setCustomerMobile(null);
+                routeService.goToLoginScreen((Stage) rootVBox.getScene().getWindow());
+            }
+        });
+        employeeMenuButton.getItems().clear();
+        employeeMenuButton.getItems().addAll(logoutMenuItem);
 
         App.appContextHolder.setRootVBox(rootVBox);
         App.appContextHolder.setRootStackPane(bodyStackPane);
@@ -76,6 +110,11 @@ public class MenuController implements Initializable {
             App.appContextHolder.setAppState(AppState.REGISTRATION);
             highlight(registerButton);
             routeService.loadContentPage(bodyStackPane, REGISTER_SCREEN);
+        });
+
+        guestPurchaseButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
+            highlight(guestPurchaseButton);
+            routeService.loadGuestPurchase();
         });
 
         memberInquiryButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
@@ -154,7 +193,21 @@ public class MenuController implements Initializable {
             routeService.loadOCRScreen();
         });
     }
-
+    private void loadMerchantDetails() {
+        String url = BASE_URL + GET_BRANCHES_ENDPOINT;
+        List<NameValuePair> params = new ArrayList<>();
+        JSONObject jsonObj = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        if (jsonObj != null) {
+            List<JSONObject> data = (ArrayList) jsonObj.get("data");
+            for (JSONObject branch : data) {
+                if (branch.get("id").equals(App.appContextHolder.getBranchId())) {
+                    branchNameLabel.setText((String) branch.get("name"));
+                    merchantLogoImageView.setImage(new Image((String) branch.get("logo_url")));
+                    break;
+                }
+            }
+        }
+    }
 
 
     private void loadMobileLoginDialog(String targetScreen) {

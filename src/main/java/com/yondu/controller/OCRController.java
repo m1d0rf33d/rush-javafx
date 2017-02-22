@@ -189,7 +189,7 @@ public class OCRController implements Initializable {
                 );
                 p.setOnFinished(ev -> {
                     ocrService.preview(x, y, width, height, previewImageView, previewLabel);
-                    ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(false);
+
                 });
                 p.play();
 
@@ -217,7 +217,6 @@ public class OCRController implements Initializable {
                 );
                 p.setOnFinished(ev -> {
                     ocrService.preview(x, y, width, height, previewImageView, previewLabel);
-                    ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(false);
                 });
                 p.play();
 
@@ -299,23 +298,26 @@ public class OCRController implements Initializable {
             savedOrHeight = prop.getProperty("or_height").isEmpty() ? null : Double.parseDouble(prop.getProperty("or_height"));
 
             StringBuilder sb = new StringBuilder();
-            sb.append(prop.getProperty("sales_pos_x"));
-            sb.append(", ");
-            sb.append(prop.getProperty("sales_pos_y"));
-            sb.append(", ");
-            sb.append(prop.getProperty("sales_width"));
-            sb.append(", ");
-            sb.append(prop.getProperty("sales_height"));
-            amountPosTextField.setText(sb.toString());
+            if (savedOrPosX != null) {
+                sb.append(prop.getProperty("sales_pos_x"));
+                sb.append(", ");
+                sb.append(prop.getProperty("sales_pos_y"));
+                sb.append(", ");
+                sb.append(prop.getProperty("sales_width"));
+                sb.append(", ");
+                sb.append(prop.getProperty("sales_height"));
+                amountPosTextField.setText(sb.toString());
 
-            sb = new StringBuilder();
-            sb.append(prop.getProperty("or_pos_x"));
-            sb.append(", ");
-            sb.append(prop.getProperty("or_pos_y"));
-            sb.append(", ");
-            sb.append(prop.getProperty("or_width"));
-            sb.append(", ");
-            sb.append(prop.getProperty("or_height"));
+                sb = new StringBuilder();
+                sb.append(prop.getProperty("or_pos_x"));
+                sb.append(", ");
+                sb.append(prop.getProperty("or_pos_y"));
+                sb.append(", ");
+                sb.append(prop.getProperty("or_width"));
+                sb.append(", ");
+                sb.append(prop.getProperty("or_height"));
+            }
+
             orPosTextField.setText(sb.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();

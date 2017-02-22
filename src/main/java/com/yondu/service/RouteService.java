@@ -286,6 +286,21 @@ public class RouteService {
         });
         pause.play();
     }
+    public void loadGuestPurchase() {
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            FXMLLoader fxmlLoader = this.loadContentPage(App.appContextHolder.getRootStackPane(), GUEST_PURCHASE_SCREEN);
+
+            App.appContextHolder.getRootVBox().setOpacity(1);
+            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                n.setDisable(false);
+            }
+        });
+        pause.play();
+    }
+
     public void loadIssueRewardsScreen() {
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.5)

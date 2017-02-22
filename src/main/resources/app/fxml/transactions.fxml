@@ -214,7 +214,7 @@
             </VBox>
             <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label text="Points in Peso value">
+                  <Label>
                      <font>
                         <Font size="15.0" />
                      </font>

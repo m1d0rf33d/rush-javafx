@@ -29,3 +29,8 @@
     -fx-border-radius: 30;
 }
 
+.menuitem {
+    -fx-background-color: #e7e7e7;
+    -fx-border-color: transparent;
+    -fx-font-size: 17px;
+}

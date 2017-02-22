@@ -11,6 +11,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
@@ -58,8 +59,8 @@ public class OcrService {
             if (savedAmountPosX != null && savedOrPosX != null) {
 
                 JSONObject payload = new JSONObject();
-                payload.put("orNumber", getText(savedOrPosX, savedOrPosY, savedOrWidth, savedOrHeight));
-                payload.put("amount", getText(savedAmountPosX, savedAmountPosY, savedAmountWidth, savedAmountHeight));
+                payload.put("orNumber", getText(savedOrPosX, savedOrPosY, savedOrWidth, savedOrHeight).replaceAll("[^a-zA-Z0-9,.]*", ""));
+                payload.put("amount", getText(savedAmountPosX, savedAmountPosY, savedAmountWidth, savedAmountHeight).replaceAll("[^,.\\d]*", ""));
                 apiResponse.setPayload(payload);
                 apiResponse.setSuccess(true);
             } else {
@@ -125,6 +126,7 @@ public class OcrService {
                 ex.printStackTrace();
             }
         } else {
+            ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(false);
             Text text = new Text("No position set.");
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
             alert.setTitle(AppConfigConstants.APP_TITLE);
@@ -136,6 +138,7 @@ public class OcrService {
             alert.getDialogPane().setPrefWidth(400);
             alert.show();
         }
+        ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(false);
         App.appContextHolder.getRootVBox().setOpacity(1);
         for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
             n.setDisable(false);

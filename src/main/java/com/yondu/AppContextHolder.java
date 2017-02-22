@@ -18,6 +18,7 @@ public class AppContextHolder {
     private String employeeId;
     private String employeeName;
     private String branchId;
+    private String branchName;
 
     //Reference for logged in customer
     private String customerMobile;
@@ -283,6 +284,13 @@ public class AppContextHolder {
         isFirstDisconnect = firstDisconnect;
     }
 
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
 
     /*public String getEmployeeId() {
         if (this.employeeId == null) {

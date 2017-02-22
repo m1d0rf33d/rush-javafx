@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -85,6 +86,8 @@ public class LoginControllerv2 implements Initializable {
     public TextField amountTextField;
     @FXML
     public HBox rootHBox;
+    @FXML
+    public ImageView removeImageView;
 
     private ApiService apiService = new ApiService();
     private RouteService routeService = new RouteService();
@@ -103,7 +106,7 @@ public class LoginControllerv2 implements Initializable {
         onlineVBox.setVisible(false);
         offlineVBox.setVisible(false);
         loadingImageView.setVisible(true);
-
+        removeImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/remove.png").toExternalForm()));
 
         rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
         loadingImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/loading.gif").toExternalForm()));
@@ -220,7 +223,7 @@ public class LoginControllerv2 implements Initializable {
                 App.appContextHolder.setEmployeeName(((String) data.get("name")));
                 App.appContextHolder.setEmployeeId((String) data.get("id"));
                 App.appContextHolder.setBranchId(branchId);
-
+                App.appContextHolder.setBranchName(branchName);
                 routeService.goToMenuScreen((Stage) branchComboBox.getScene().getWindow());
             } else if (jsonObject.get("error_code").equals("0x2")) {
                 showPinDialog();

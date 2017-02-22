@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -31,7 +32,10 @@
             <Button fx:id="submitButton" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="SUBMIT" textFill="#fffbfb">
                <font>
                   <Font name="System Bold" size="17.0" />
-               </font></Button>
+               </font>
+               <cursor>
+                  <Cursor fx:constant="OPEN_HAND" />
+               </cursor></Button>
             <Button fx:id="cancelButton" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #CDD2D6;" text="CANCEL" textFill="#fffbfb">
                <HBox.margin>
                   <Insets left="10.0" />
@@ -39,6 +43,9 @@
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
+               <cursor>
+                  <Cursor fx:constant="OPEN_HAND" />
+               </cursor>
             </Button>
          </children>
       </HBox>

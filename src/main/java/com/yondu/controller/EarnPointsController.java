@@ -5,10 +5,7 @@ import com.yondu.model.ApiResponse;
 import com.yondu.model.Customer;
 import com.yondu.model.PointsRule;
 import com.yondu.model.constants.AppConfigConstants;
-import com.yondu.service.EarnPointsService;
-import com.yondu.service.MemberDetailsService;
-import com.yondu.service.MenuService;
-import com.yondu.service.NotificationService;
+import com.yondu.service.*;
 import com.yondu.utils.PropertyBinder;
 import javafx.animation.PauseTransition;
 import javafx.event.EventHandler;
@@ -17,9 +14,11 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.json.simple.JSONObject;
@@ -57,12 +56,15 @@ public class EarnPointsController implements Initializable {
     public Button submitButton;
     @FXML
     public Button clearButton;
+    @FXML
+    public Button ocrButton;
 
     private Customer customer;
     private PointsRule pointsRule;
 
     private EarnPointsService earnPointsService = new EarnPointsService();
     private MemberDetailsService memberDetailsService = new MemberDetailsService();
+    private OcrService ocrService = new OcrService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -83,18 +85,61 @@ public class EarnPointsController implements Initializable {
             receiptTextField.setText(null);
         });
 
-        amountTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-              if (!amountTextField.getText().isEmpty()) {
-                    Double amount = Double.parseDouble(amountTextField.getText().replaceAll("[.,]", ""));
-                    if (pointsRule != null) {
-                        pointsTextField.setText(String.valueOf(amount / pointsRule.getEarningPeso()));
-                    }
-              } else {
-                  pointsTextField.setText(null);
-              }
+        amountTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!amountTextField.getText().isEmpty()) {
+                Double amount = Double.parseDouble(amountTextField.getText().replaceAll("[.,]", ""));
+                if (pointsRule != null) {
+                    pointsTextField.setText(String.valueOf(amount / pointsRule.getEarningPeso()));
+                }
+            } else {
+                pointsTextField.setText(null);
             }
+        });
+
+
+        ocrButton.setOnMouseClicked((MouseEvent e) -> {
+            App.appContextHolder.getRootVBox().setOpacity(.50);
+            for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
+                n.setDisable(true);
+            }
+
+            PauseTransition pause = new PauseTransition(
+                    Duration.seconds(.5)
+            );
+            pause.setOnFinished(event -> {
+
+                ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(true);
+                PauseTransition p = new PauseTransition(
+                        Duration.seconds(.50)
+                );
+                p.setOnFinished(ev -> {
+                    ApiResponse apiResp = ocrService.triggerOCR();
+                    if (apiResp.isSuccess()) {
+                        String receiptNo = (String) apiResp.getPayload().get("orNumber");
+                        String amount = (String) apiResp.getPayload().get("amount");
+                        receiptTextField.setText(receiptNo);
+                        amountTextField.setText(amount);
+                    } else {
+                        Text text = new Text(apiResp.getMessage());
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+                        alert.setTitle(AppConfigConstants.APP_TITLE);
+                        alert.initStyle(StageStyle.UTILITY);
+                        alert.initOwner(receiptTextField.getScene().getWindow());
+                        alert.setHeaderText("OCR CAPTURE");
+                        alert.getDialogPane().setPadding(new Insets(10,10,10,10));
+                        alert.getDialogPane().setContent(text);
+                        alert.getDialogPane().setPrefWidth(400);
+                        alert.show();
+                    }
+                    ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(false);
+                }); p.play();
+
+                App.appContextHolder.getRootVBox().setOpacity(1);
+                for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
+                    n.setDisable(false);
+                }
+            });
+            pause.play();
         });
 
         PropertyBinder.bindAmountOnly(amountTextField);

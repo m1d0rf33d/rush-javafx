@@ -56,7 +56,7 @@ public class RegisterController implements Initializable {
         maleRadioButton.setToggleGroup(toggleGroup);
         femaleRadioButton.setToggleGroup(toggleGroup);
 
-        birthdatePicker.setOnMouseClicked((MouseEvent e) -> {
+        birthdatePicker.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             birthdatePicker.show();
         });
 

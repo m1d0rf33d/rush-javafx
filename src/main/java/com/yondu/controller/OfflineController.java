@@ -5,6 +5,8 @@ import com.yondu.model.OfflineTransaction;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.service.ApiService;
+import com.yondu.service.OfflineService;
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,6 +20,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
@@ -48,7 +51,7 @@ public class OfflineController implements Initializable {
     @FXML
     public Button givePointsButton;
 
-    private ApiService apiService = new ApiService();
+    private OfflineService offlineService = new OfflineService();
 
     private  ObservableList<OfflineTransaction> masterData =
             FXCollections.observableArrayList();
@@ -81,140 +84,31 @@ public class OfflineController implements Initializable {
         });
 
         givePointsButton.setOnMouseClicked((MouseEvent e) -> {
-            givePoints();
-            loadOfflineTransactions();
+            App.appContextHolder.getRootVBox().setOpacity(.50);
+            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                n.setDisable(true);
+            }
+            PauseTransition pause = new PauseTransition(
+                    Duration.seconds(.5)
+            );
+            pause.setOnFinished(event -> {
+                offlineService.givePoints();
+                loadOfflineTransactions();
+            });
+            pause.play();
+
+
 
             transactionsPagination.setPageFactory((Integer pageIndex) -> createPage(pageIndex));
             transactionsPagination.setPageCount(PAGE_COUNT);
+            App.appContextHolder.getRootVBox().setOpacity(1);
+            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                n.setDisable(false);
+            }
         });
 
     }
 
-    private void givePoints() {
-        File file = new File(System.getenv("RUSH_HOME") + DIVIDER + AppConfigConstants.OFFLINE_TRANSACTION_FILE);
-
-        if (file.exists()) {
-            //Read file
-            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-                String line;
-
-                List<String> transactions = new ArrayList<>();
-
-                while ((line = br.readLine()) != null) {
-                    byte[] decoded = org.apache.commons.codec.binary.Base64.decodeBase64(line.getBytes());
-                    line = new String(decoded);
-                    String[] arr = line.split(":");
-
-                    String mobileNumber = arr[0].split("=")[1];
-                    String totalAmount = arr[1].split("=")[1];
-                    String orNumber = arr[2].split("=")[1];
-                    String date = arr[3].split("=")[1];
-                    String status = arr[4].split("=")[1];
-                    String message = arr[5].split("=")[1];
-
-                    OfflineTransaction offlineTransaction = new OfflineTransaction();
-                    offlineTransaction.setAmount(totalAmount);
-                    offlineTransaction.setMobileNumber(mobileNumber);
-                    offlineTransaction.setOrNumber(orNumber);
-                    offlineTransaction.setDate(date);
-                    offlineTransaction.setStatus(status);
-                    offlineTransaction.setMessage(message);
-
-                    if (status.equalsIgnoreCase("Pending")) {
-                        offlineTransaction = sendPoints(offlineTransaction);
-                    }
-
-
-                    String l = "mobileNumber=" + offlineTransaction.getMobileNumber()+
-                            ":totalAmount=" + offlineTransaction.getAmount() +
-                            ":orNumber=" + offlineTransaction.getOrNumber() +
-                            ":date=" + offlineTransaction.getDate() +
-                            ":status=" + offlineTransaction.getStatus() +
-                            ":message=" + offlineTransaction.getMessage();
-
-                    transactions.add(l);
-
-                }
-
-                PrintWriter writer = new PrintWriter(file);
-                writer.print("");
-                writer.close();
-
-                PrintWriter fstream = new PrintWriter(new FileWriter(file,true));
-                for (String trans : transactions) {
-                    byte[] encodedBytes = org.apache.commons.codec.binary.Base64.encodeBase64(trans.getBytes());
-                    fstream.println(new String(encodedBytes));
-                }
-
-                fstream.flush();
-                fstream.close();
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private OfflineTransaction sendPoints(OfflineTransaction offlineTransaction) {
-
-        SimpleDateFormat df  = new SimpleDateFormat("MM/dd/YYYY");
-        String date = df.format(new Date());
-        offlineTransaction.setDate(date);
-
-        offlineTransaction.setMessage("");
-
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, offlineTransaction.getMobileNumber()));
-
-        String url = BASE_URL + MEMBER_LOGIN_ENDPOINT;
-        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-        JSONObject jsonObject = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-        if (jsonObject != null) {
-            if (jsonObject.get("error_code").equals("0x0")) {
-                JSONObject data = (JSONObject) jsonObject.get("data");
-                params = new ArrayList<>();
-                params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
-                params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, offlineTransaction.getOrNumber()));
-                params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, offlineTransaction.getAmount().replace(",", "")));
-                url = BASE_URL + GIVE_POINTS_ENDPOINT;
-                url = url.replace(":customer_uuid", (String) data.get("id"));
-                url = url.replace(":employee_id",  App.appContextHolder.getEmployeeId());
-                JSONObject json = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-                if (json != null) {
-                    if (!json.get("error_code").equals("0x0")) {
-                        JSONObject error = (JSONObject) json.get("errors");
-                        String errorMessage = "";
-                        if (error != null) {
-                            if (error.get("or_no") != null) {
-                                List<String> l = (ArrayList<String>) error.get("or_no");
-                                errorMessage = l.get(0);
-                            }
-                            if (error.get("amount") != null) {
-                                List<String> l = (ArrayList<String>) error.get("amount");
-                                errorMessage = l.get(0);
-                            }
-                        }
-                        if (json.get("message") != null) {
-                            errorMessage = (String) json.get("message");
-                        }
-                        offlineTransaction.setMessage(errorMessage);
-                        offlineTransaction.setStatus("Failed");
-                    } else {
-                        offlineTransaction.setStatus("Submitted");
-                        offlineTransaction.setMessage("Points earned");
-                    }
-                } else {
-                    offlineTransaction.setMessage((String) jsonObject.get("message"));
-                    offlineTransaction.setStatus("Failed");
-                }
-            } else {
-                offlineTransaction.setMessage((String) jsonObject.get("message"));
-                offlineTransaction.setStatus("Failed");
-            }
-        }
-        return offlineTransaction;
-    }
 
     private Node createPage(int pageIndex) {
         VBox box = new VBox();

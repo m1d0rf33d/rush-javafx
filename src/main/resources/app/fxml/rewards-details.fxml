@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
@@ -14,16 +16,34 @@
       </VBox>
       <VBox maxHeight="400.0" prefHeight="400.0" prefWidth="370.0">
          <children>
-            <Label fx:id="nameLabel" prefHeight="50.0" prefWidth="300.0" text="Name" />
-            <Label text="Points" />
-            <Label fx:id="detailsLabel" ellipsisString="" maxHeight="500.0" maxWidth="300.0" prefHeight="200.0" prefWidth="200.0" text="Details" textOverrun="CLIP" wrapText="true" />
+            <Label fx:id="nameLabel" prefHeight="50.0" prefWidth="300.0" text="Name">
+               <font>
+                  <Font size="17.0" />
+               </font></Label>
+            <Label fx:id="requiredPointsLabel" text="Points" textFill="#cd0b0b">
+               <font>
+                  <Font size="15.0" />
+               </font></Label>
+            <Label fx:id="detailsLabel" ellipsisString="" maxHeight="500.0" maxWidth="300.0" prefHeight="200.0" prefWidth="200.0" text="Details" textFill="#514646" textOverrun="CLIP" wrapText="true">
+               <font>
+                  <Font size="15.0" />
+               </font></Label>
             <StackPane prefHeight="50.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="redeemButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="REDEEM REWARD" />
-                  <Label  fx:id="lockLabel" text="You have insufficient points for this reward." />
+                  <Button fx:id="redeemButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="REDEEM" textFill="#fffbfb">
+                     <font>
+                        <Font name="System Bold" size="17.0" />
+                     </font></Button>
+                  <Label fx:id="lockLabel" text="You have insufficient points for this reward.">
+                     <font>
+                        <Font size="15.0" />
+                     </font></Label>
                </children>
             </StackPane>
          </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
       </VBox>
    </children>
 </HBox>

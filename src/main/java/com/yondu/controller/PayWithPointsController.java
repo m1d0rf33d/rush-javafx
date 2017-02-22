@@ -4,26 +4,31 @@ import com.yondu.App;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.Customer;
 import com.yondu.model.PointsRule;
+import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.model.constants.AppState;
 import com.yondu.service.EarnPointsService;
 import com.yondu.service.MenuService;
+import com.yondu.service.OcrService;
 import com.yondu.service.RouteService;
+import javafx.animation.PauseTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -66,11 +71,14 @@ public class PayWithPointsController implements Initializable {
     public Button clearButton;
     @FXML
     public Button submitButton;
+    @FXML
+    public Button ocrButton;
 
     private Customer customer;
     private RouteService routeService = new RouteService();
     private MenuService menuService = new MenuService();
     private EarnPointsService earnPointsService = new EarnPointsService();
+    private OcrService ocrService = new OcrService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -114,6 +122,51 @@ public class PayWithPointsController implements Initializable {
 
 
             routeService.loadPinScreen(receiptTextField, amountTextField, pointsTextField, pointsLabel, pesoValueLabel);
+        });
+
+        ocrButton.setOnMouseClicked((MouseEvent e) -> {
+            App.appContextHolder.getRootVBox().setOpacity(.50);
+            for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
+                n.setDisable(true);
+            }
+
+            PauseTransition pause = new PauseTransition(
+                    Duration.seconds(.5)
+            );
+            pause.setOnFinished(event -> {
+
+                ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(true);
+                PauseTransition p = new PauseTransition(
+                        Duration.seconds(.50)
+                );
+                p.setOnFinished(ev -> {
+                    ApiResponse apiResp = ocrService.triggerOCR();
+                    if (apiResp.isSuccess()) {
+                        String receiptNo = (String) apiResp.getPayload().get("orNumber");
+                        String amount = (String) apiResp.getPayload().get("amount");
+                        receiptTextField.setText(receiptNo);
+                        amountTextField.setText(amount);
+                    } else {
+                        Text text = new Text(apiResp.getMessage());
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+                        alert.setTitle(AppConfigConstants.APP_TITLE);
+                        alert.initStyle(StageStyle.UTILITY);
+                        alert.initOwner(receiptTextField.getScene().getWindow());
+                        alert.setHeaderText("OCR CAPTURE");
+                        alert.getDialogPane().setPadding(new Insets(10,10,10,10));
+                        alert.getDialogPane().setContent(text);
+                        alert.getDialogPane().setPrefWidth(400);
+                        alert.show();
+                    }
+                    ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(false);
+                }); p.play();
+
+                App.appContextHolder.getRootVBox().setOpacity(1);
+                for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
+                    n.setDisable(false);
+                }
+            });
+            pause.play();
         });
 
         clearButton.setOnMouseClicked((MouseEvent e) -> {

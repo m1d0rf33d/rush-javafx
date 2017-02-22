@@ -65,6 +65,8 @@ public class RewardDialogController implements Initializable {
     public Button redeemButton;
     @FXML
     public Label lockLabel;
+    @FXML
+    public Label requiredPointsLabel;
 
     private Customer customer;
     private Reward reward;
@@ -224,6 +226,7 @@ public class RewardDialogController implements Initializable {
         this.rewardImageView.setFitHeight(400);
         this.nameLabel.setText(reward.getName());
         this.detailsLabel.setText(reward.getDetails());
+        this.requiredPointsLabel.setText(reward.getPointsRequired() + " points");
         this.reward = reward;
 
         if (App.appContextHolder.getAppState().equals(AppState.REDEEM_REWARDS)) {

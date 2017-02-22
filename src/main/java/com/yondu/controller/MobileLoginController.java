@@ -8,6 +8,7 @@ import com.yondu.service.MemberDetailsService;
 import com.yondu.service.MenuService;
 import com.yondu.service.NotificationService;
 import com.yondu.service.RouteService;
+import com.yondu.utils.PropertyBinder;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -47,7 +48,8 @@ public class MobileLoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        PropertyBinder.bindNumberOnly(mobileTextField);
+        PropertyBinder.bindMaxLength(11, mobileTextField);
         errorLabel.setVisible(false);
 
         cancelButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {

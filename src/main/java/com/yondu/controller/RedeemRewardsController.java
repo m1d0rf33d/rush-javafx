@@ -85,8 +85,8 @@ public class RedeemRewardsController implements Initializable {
             });
             vBox.getChildren().add(imageView);
             Label label = new Label();
-            label.setText(reward.getName());
-            vBox.getChildren().addAll(label);
+            label.setText(reward.getName());/*
+            vBox.getChildren().addAll(label);*/
             vBox.setPrefWidth(200);
             vBox.setMargin(imageView, new Insets(10,10,10,10));
             vBox.setMargin(label, new Insets(10,10,10,10));

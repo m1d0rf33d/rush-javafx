@@ -4,6 +4,7 @@ import com.yondu.App;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppState;
 import com.yondu.service.ApiService;
+import com.yondu.service.CommonService;
 import com.yondu.service.RouteService;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -76,6 +77,7 @@ public class MenuController implements Initializable {
 
     private RouteService routeService = new RouteService();
     private ApiService apiService = new ApiService();
+    private CommonService commonService = new CommonService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -108,18 +110,18 @@ public class MenuController implements Initializable {
 
         registerButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             App.appContextHolder.setAppState(AppState.REGISTRATION);
-            highlight(registerButton);
+            commonService.highlight(registerButton);
             routeService.loadContentPage(bodyStackPane, REGISTER_SCREEN);
         });
 
         guestPurchaseButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            highlight(guestPurchaseButton);
+            commonService.highlight(guestPurchaseButton);
             routeService.loadGuestPurchase();
         });
 
         memberInquiryButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             App.appContextHolder.setAppState(AppState.MEMBER_INQUIRY);
-            highlight(memberInquiryButton);
+            commonService.highlight(memberInquiryButton);
             if (App.appContextHolder.getCustomerMobile() == null) {
                 routeService.loadContentPage(bodyStackPane, MEMBER_INQUIRY_SCREEN);
             } else {
@@ -130,7 +132,7 @@ public class MenuController implements Initializable {
 
         transactionsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             App.appContextHolder.setAppState(AppState.TRANSACTIONS);
-            highlight(transactionsButton);
+            commonService.highlight(transactionsButton);
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(TRANSACTIONS_SCREEN);
             } else {
@@ -140,7 +142,7 @@ public class MenuController implements Initializable {
         });
         givePointsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             disableMenu();
-            highlight(givePointsButton);
+            commonService.highlight(givePointsButton);
             App.appContextHolder.setAppState(AppState.EARN_POINTS);
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(EARN_POINTS_SCREEN);
@@ -150,7 +152,7 @@ public class MenuController implements Initializable {
         });
 
         redeemRewardsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            highlight(redeemRewardsButton);
+            commonService.highlight(redeemRewardsButton);
             disableMenu();
             App.appContextHolder.setAppState(AppState.REDEEM_REWARDS);
             if (App.appContextHolder.getCustomerMobile() == null) {
@@ -162,7 +164,7 @@ public class MenuController implements Initializable {
         });
 
         payWithPointsButton.setOnMouseClicked((MouseEvent e) -> {
-            highlight(payWithPointsButton);
+            commonService.highlight(payWithPointsButton);
             disableMenu();
             App.appContextHolder.setAppState(AppState.PAY_WITH_POINTS);
             if (App.appContextHolder.getCustomerMobile() == null) {
@@ -173,7 +175,7 @@ public class MenuController implements Initializable {
         });
 
         issueRewardsButton.setOnMouseClicked((MouseEvent e) -> {
-            highlight(issueRewardsButton);
+            commonService.highlight(issueRewardsButton);
             disableMenu();
             App.appContextHolder.setAppState(AppState.ISSUE_REWARDS);
             if (App.appContextHolder.getCustomerMobile() == null) {
@@ -184,12 +186,12 @@ public class MenuController implements Initializable {
         });
 
         offlineButton.setOnMouseClicked((MouseEvent e) -> {
-            highlight(offlineButton);
+            commonService.highlight(offlineButton);
             routeService.loadOfflineTransactionScreen();
         });
 
         ocrButton.setOnMouseClicked((MouseEvent e) -> {
-            highlight(ocrButton);
+            commonService.highlight(ocrButton);
             routeService.loadOCRScreen();
         });
     }
@@ -217,7 +219,7 @@ public class MenuController implements Initializable {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(MOBILE_LOGIN_SCREEN));
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 600,400);
+            Scene scene = new Scene(root, 500,300);
             stage.setScene(scene);
             stage.setTitle(APP_TITLE);
             stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
@@ -245,16 +247,6 @@ public class MenuController implements Initializable {
             n.setDisable(false);
         }
     }
-    private void highlight (Button button) {
-        List<Node> nodes = sideBarVBox.getChildren();
-        for (Node n : nodes) {
-            if (n instanceof Button) {
-                Button b = (Button) n;
-                b.getStyleClass().remove("sidebar-selected");
-            }
-        }
 
-        button.getStyleClass().add("sidebar-selected");
-    }
 
 }

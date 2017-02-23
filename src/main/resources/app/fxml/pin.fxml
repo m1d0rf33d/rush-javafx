@@ -9,13 +9,18 @@
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.PinController">
    <children>
-      <Label prefHeight="50.0" text="Enter PIN ">
+      <Label prefHeight="50.0" text="ENTER PIN" textFill="#4d4a4a">
          <font>
             <Font name="System Bold" size="25.0" />
          </font>
       </Label>
-      <Label fx:id="errorLabel" prefHeight="50.0" textFill="#ee0a0a" />
-      <PasswordField fx:id="pinTextField" alignment="CENTER" maxHeight="50.0" maxWidth="400.0" prefHeight="50.0" prefWidth="400.0" style="-fx-background-radius: 30;" />
+      <PasswordField fx:id="pinTextField" alignment="CENTER" maxHeight="50.0" maxWidth="400.0" prefHeight="50.0" prefWidth="400.0" style="-fx-background-radius: 30;">
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+         <font>
+            <Font size="17.0" />
+         </font></PasswordField>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
             <Button fx:id="submitButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="190.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="SUBMIT" textFill="#eeecec">

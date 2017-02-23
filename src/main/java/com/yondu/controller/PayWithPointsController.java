@@ -6,10 +6,7 @@ import com.yondu.model.Customer;
 import com.yondu.model.PointsRule;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.model.constants.AppState;
-import com.yondu.service.EarnPointsService;
-import com.yondu.service.MenuService;
-import com.yondu.service.OcrService;
-import com.yondu.service.RouteService;
+import com.yondu.service.*;
 import javafx.animation.PauseTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -37,6 +34,7 @@ import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 import static com.yondu.model.constants.AppConfigConstants.APP_TITLE;
+import static com.yondu.model.constants.AppConfigConstants.MEMBER_INQUIRY_SCREEN;
 import static com.yondu.model.constants.AppConfigConstants.PIN_SCREEN;
 
 /**
@@ -73,17 +71,23 @@ public class PayWithPointsController implements Initializable {
     public Button submitButton;
     @FXML
     public Button ocrButton;
+    @FXML
+    public Button exitButton;
 
     private Customer customer;
     private RouteService routeService = new RouteService();
-    private MenuService menuService = new MenuService();
     private EarnPointsService earnPointsService = new EarnPointsService();
     private OcrService ocrService = new OcrService();
-
+    private CommonService commonService = new CommonService();
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        App.appContextHolder.setAppState(AppState.PAY_WITH_POINTS);
+        exitButton.setOnMouseClicked((MouseEvent e) -> {
+            commonService.exitMember();
+        });
+
+
+            App.appContextHolder.setAppState(AppState.PAY_WITH_POINTS);
 
 
         amountTextField.textProperty().addListener(new ChangeListener<String>() {

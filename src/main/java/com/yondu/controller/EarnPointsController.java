@@ -26,6 +26,8 @@ import org.json.simple.JSONObject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static com.yondu.model.constants.AppConfigConstants.MEMBER_INQUIRY_SCREEN;
+
 /**
  * Created by lynx on 2/9/17.
  */
@@ -58,6 +60,8 @@ public class EarnPointsController implements Initializable {
     public Button clearButton;
     @FXML
     public Button ocrButton;
+    @FXML
+    public Button exitButton;
 
     private Customer customer;
     private PointsRule pointsRule;
@@ -65,9 +69,15 @@ public class EarnPointsController implements Initializable {
     private EarnPointsService earnPointsService = new EarnPointsService();
     private MemberDetailsService memberDetailsService = new MemberDetailsService();
     private OcrService ocrService = new OcrService();
-
+    private CommonService commonService = new CommonService();
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        exitButton.setOnMouseClicked((MouseEvent e) -> {
+            commonService.exitMember();
+        });
+
+
         pointsTextField.setDisable(true);
         ApiResponse apiResponse = earnPointsService.getPointsRule();
         if (apiResponse.isSuccess()) {

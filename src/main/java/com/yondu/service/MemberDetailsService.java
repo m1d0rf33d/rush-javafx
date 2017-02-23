@@ -69,6 +69,7 @@ public class MemberDetailsService {
                     reward.setId(String.valueOf((Long) rewardJSON.get("id")));
                     reward.setImageUrl((String) rewardJSON.get("image_url"));
                     reward.setDate((String) rewardJSON.get("date"));
+                    reward.setPointsRequired(String.valueOf((Long) rewardJSON.get("points_requried")));
                     rewards.add(reward);
                 }
                 customer.setActiveVouchers(rewards);

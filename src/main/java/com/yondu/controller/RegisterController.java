@@ -47,8 +47,6 @@ public class RegisterController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        App.appContextHolder.getRootVBox().setMinHeight(900);
-
         birthdatePicker.setEditable(true);
         maleRadioButton.setUserData("Male");
         femaleRadioButton.setUserData("Female");

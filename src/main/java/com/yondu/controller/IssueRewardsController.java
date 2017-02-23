@@ -7,6 +7,8 @@ import com.yondu.model.Reward;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppState;
 import com.yondu.service.ApiService;
+import com.yondu.service.CommonService;
+import com.yondu.service.RouteService;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -16,6 +18,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -37,6 +40,7 @@ import static com.yondu.AppContextHolder.BASE_URL;
 import static com.yondu.AppContextHolder.CLAIM_REWARDS_ENDPOINT;
 import static com.yondu.AppContextHolder.UNCLAIMED_REWARDS_ENDPOINT;
 import static com.yondu.model.constants.AppConfigConstants.APP_TITLE;
+import static com.yondu.model.constants.AppConfigConstants.MEMBER_INQUIRY_SCREEN;
 import static com.yondu.model.constants.AppConfigConstants.REWARDS_DIALOG_SCREEN;
 
 /**
@@ -66,15 +70,22 @@ public class IssueRewardsController implements Initializable{
     public FlowPane rewardsFlowPane;
     @FXML
     public VBox issueRootVBox;
+    @FXML
+    public Button exitButton;
 
     private Customer customer;
     private ApiService apiService = new ApiService();
 
     private List<Reward> unclaimedRewards = new ArrayList<>();
-
+    private CommonService commonService = new CommonService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        exitButton.setOnMouseClicked((MouseEvent e) -> {
+            commonService.exitMember();
+        });
+
 
         rewardsFlowPane.heightProperty().addListener(new ChangeListener<Number>() {
             @Override

@@ -42,9 +42,6 @@ import static com.yondu.model.constants.AppConfigConstants.*;
  *  @author m1d0rf33d
  */
 public class SplashController implements Initializable{
-
-    @FXML
-    public Label progressStatus;
     @FXML
     public ImageView rushLogoImage;
 
@@ -70,7 +67,7 @@ public class SplashController implements Initializable{
                 routeService.goToActivationScreen(currentStage);
             }
         });
-        progressStatus.textProperty().bind(initService.messageProperty());
+     
         initService.start();
 
     }

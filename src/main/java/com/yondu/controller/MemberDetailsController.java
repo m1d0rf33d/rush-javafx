@@ -1,8 +1,11 @@
 package com.yondu.controller;
 
+import com.yondu.App;
 import com.yondu.model.Customer;
 import com.yondu.model.OfflineTransaction;
 import com.yondu.model.Reward;
+import com.yondu.service.CommonService;
+import com.yondu.service.RouteService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -12,11 +15,15 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static com.yondu.model.constants.AppConfigConstants.MEMBER_INQUIRY_SCREEN;
 
 /**
  * Created by lynx on 2/9/17.
@@ -43,6 +50,8 @@ public class MemberDetailsController implements Initializable {
     public Pagination pagination;
     @FXML
     public TextField searchTextField;
+    @FXML
+    public Button exitButton;
 
     private Customer customer;
     private Integer MAX_ENTRIES_COUNT = 1;
@@ -51,8 +60,15 @@ public class MemberDetailsController implements Initializable {
     private ObservableList<Reward> masterData =
             FXCollections.observableArrayList();
 
+    private RouteService routeService = new RouteService();
+    private CommonService commonService = new CommonService();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        exitButton.setOnMouseClicked((MouseEvent e) -> {
+            commonService.exitMember();
+        });
 
         PAGE_COUNT = masterData.size() / MAX_ENTRIES_COUNT;
         if (PAGE_COUNT == 0) {
@@ -141,13 +157,13 @@ public class MemberDetailsController implements Initializable {
                 new PropertyValueFactory<>("details"));
 
         TableColumn orCol = new TableColumn("Quantity");
-        orCol.setPrefWidth(150);
+        orCol.setPrefWidth(100);
         orCol.setCellValueFactory(
                 new PropertyValueFactory<>("quantity"));
 
 
         tableView.getColumns().clear();
-        tableView.getColumns().addAll(dateCol, rewardCol, mobileCol, orCol);
+        tableView.getColumns().addAll(dateCol,orCol, rewardCol, mobileCol);
     }
 
     public Customer getCustomer() {

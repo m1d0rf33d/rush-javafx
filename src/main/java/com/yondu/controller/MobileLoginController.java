@@ -39,9 +39,6 @@ public class MobileLoginController implements Initializable {
     public Button submitButton;
     @FXML
     public TextField mobileTextField;
-    @FXML
-    public Label errorLabel;
-
 
     private MemberDetailsService memberDetailsService = new MemberDetailsService();
     private RouteService routeService = new RouteService();
@@ -50,7 +47,6 @@ public class MobileLoginController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         PropertyBinder.bindNumberOnly(mobileTextField);
         PropertyBinder.bindMaxLength(11, mobileTextField);
-        errorLabel.setVisible(false);
 
         cancelButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             App.appContextHolder.getRootVBox().setOpacity(1);

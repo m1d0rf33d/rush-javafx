@@ -6,6 +6,7 @@ import com.yondu.model.Customer;
 import com.yondu.model.Reward;
 import com.yondu.model.Transaction;
 import com.yondu.service.ApiService;
+import com.yondu.service.CommonService;
 import com.yondu.service.TransactionService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -53,6 +54,8 @@ public class TransactionsController implements Initializable {
     public Pagination pagination;
     @FXML
     public TextField searchTextField;
+    @FXML
+    public Button exitButton;
 
     private Customer customer;
 
@@ -61,7 +64,7 @@ public class TransactionsController implements Initializable {
 
     private ObservableList<Transaction> masterData =
             FXCollections.observableArrayList();
-
+    private CommonService commonService = new CommonService();
     private TransactionService transactionService = new TransactionService();
 
     @Override

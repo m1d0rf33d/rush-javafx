@@ -203,7 +203,7 @@ public class PinController implements Initializable {
             alert.setTitle(AppConfigConstants.APP_TITLE);
             alert.initStyle(StageStyle.UTILITY);
             alert.initOwner((Stage) onlineVBox.getScene().getWindow());
-            alert.setHeaderText("REGISTER MEMBER");
+            alert.setHeaderText("LOGIN EMPLOYEE");
             alert.getDialogPane().setPadding(new Insets(10,10,10,10));
             alert.getDialogPane().setContent(text);
             alert.getDialogPane().setPrefWidth(400);

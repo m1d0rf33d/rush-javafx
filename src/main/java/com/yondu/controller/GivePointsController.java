@@ -59,7 +59,7 @@ public class GivePointsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        App.appContextHolder.getRootVBox().setMinHeight(800);
         currentStage = (Stage) homeBtn.getScene().getWindow();
 
         if (App.appContextHolder.getWithVk() != null && !App.appContextHolder.getWithVk()) {

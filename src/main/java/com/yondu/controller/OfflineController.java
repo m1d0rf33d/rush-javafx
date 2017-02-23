@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -20,6 +21,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -94,17 +98,29 @@ public class OfflineController implements Initializable {
             pause.setOnFinished(event -> {
                 offlineService.givePoints();
                 loadOfflineTransactions();
+                PAGE_COUNT = masterData.size() / MAX_ENTRIES_COUNT;
+                if (PAGE_COUNT == 0) {
+                    PAGE_COUNT = 1;
+                }
+                transactionsPagination.setPageFactory((Integer pageIndex) -> createPage(pageIndex));
+                transactionsPagination.setPageCount(PAGE_COUNT);
+                App.appContextHolder.getRootVBox().setOpacity(1);
+                for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                    n.setDisable(false);
+                }
+                Text text = new Text("Send offline transactions complete.");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
+                alert.initOwner((Stage) App.appContextHolder.getRootVBox().getScene().getWindow());
+                alert.setHeaderText("OFFLINE TRANSACTION");
+                alert.getDialogPane().setPadding(new Insets(10,10,10,10));
+                alert.getDialogPane().setContent(text);
+                alert.getDialogPane().setPrefWidth(400);
+                alert.show();
             });
             pause.play();
 
-
-
-            transactionsPagination.setPageFactory((Integer pageIndex) -> createPage(pageIndex));
-            transactionsPagination.setPageCount(PAGE_COUNT);
-            App.appContextHolder.getRootVBox().setOpacity(1);
-            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
-                n.setDisable(false);
-            }
         });
 
     }

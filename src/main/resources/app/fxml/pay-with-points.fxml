@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
@@ -29,6 +30,9 @@
                      <font>
                         <Font name="System Bold" size="17.0" />
                      </font>
+                     <cursor>
+                        <Cursor fx:constant="OPEN_HAND" />
+                     </cursor>
                   </Button>
                </children>
                <HBox.margin>
@@ -37,10 +41,13 @@
             </VBox>
             <VBox alignment="TOP_RIGHT" maxWidth="170.0" prefHeight="200.0" prefWidth="170.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #D61707;" text="EXIT MEMBER" textFill="#f2eded">
+                  <Button fx:id="exitButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #D61707;" text="EXIT MEMBER" textFill="#f2eded">
                      <font>
                         <Font name="System Bold" size="15.0" />
-                     </font></Button>
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="OPEN_HAND" />
+                     </cursor></Button>
                </children>
                <HBox.margin>
                   <Insets />
@@ -332,7 +339,10 @@
             <Button fx:id="submitButton" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="SUBMIT" textFill="#fffbfb" HBox.hgrow="ALWAYS">
                <font>
                   <Font name="System Bold" size="17.0" />
-               </font></Button>
+               </font>
+               <cursor>
+                  <Cursor fx:constant="OPEN_HAND" />
+               </cursor></Button>
             <Button fx:id="clearButton" maxHeight="50.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #CDD2D6;" text="CLEAR" textFill="#fffbfb" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets left="10.0" />
@@ -340,6 +350,9 @@
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
+               <cursor>
+                  <Cursor fx:constant="OPEN_HAND" />
+               </cursor>
             </Button>
          </children>
       </HBox>

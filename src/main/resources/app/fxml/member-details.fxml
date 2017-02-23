@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
@@ -25,10 +26,13 @@
             </VBox>
             <VBox alignment="TOP_RIGHT" maxWidth="500.0" prefHeight="200.0" prefWidth="350.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #D61707;" text="EXIT MEMBER" textFill="#f2eded">
+                  <Button fx:id="exitButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #D61707;" text="EXIT MEMBER" textFill="#fffbfb">
                      <font>
                         <Font name="System Bold" size="15.0" />
-                     </font></Button>
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="OPEN_HAND" />
+                     </cursor></Button>
                </children>
             </VBox>
          </children>
@@ -209,7 +213,10 @@
          <children>
             <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label fx:id="emailLabel" />
+                  <Label fx:id="emailLabel">
+                     <font>
+                        <Font size="15.0" />
+                     </font></Label>
                </children>
                <HBox.margin>
                   <Insets left="50.0" />
@@ -217,7 +224,10 @@
             </VBox>
             <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label fx:id="pointsLabel" />
+                  <Label fx:id="pointsLabel">
+                     <font>
+                        <Font size="15.0" />
+                     </font></Label>
                </children>
                <HBox.margin>
                   <Insets />
@@ -230,31 +240,56 @@
             </VBox>
          </children>
       </HBox>
-      <HBox>
+      <HBox maxHeight="50.0" maxWidth="900.0" minWidth="600.0" prefHeight="50.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
          <children>
-            <Label text="ACTIVE VOUCHERS">
-               <font>
-                  <Font size="15.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="10.0" left="50.0" top="50.0" />
-               </VBox.margin>
+            <HBox alignment="BOTTOM_LEFT" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label prefWidth="200.0" text="ACTIVE VOUCHERS">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="50.0" top="50.0" />
+                     </VBox.margin>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox alignment="BOTTOM_RIGHT" maxHeight="50.0" maxWidth="800.0" minWidth="400.0" prefHeight="50.0" prefWidth="400.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label prefHeight="20.0" prefWidth="80.0" text="Search :">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="searchTextField" prefHeight="20.0" style="-fx-background-radius: 0;">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </TextField>
+               </children>
                <HBox.margin>
-                  <Insets left="50.0" />
+                  <Insets />
                </HBox.margin>
-            </Label>
-            <TextField fx:id="searchTextField">
-               <HBox.margin>
-                  <Insets left="50.0" />
-               </HBox.margin></TextField>
+            </HBox>
          </children>
          <VBox.margin>
-            <Insets top="20.0" />
+            <Insets left="50.0" right="50.0" top="20.0" />
          </VBox.margin>
       </HBox>
-      <Pagination fx:id="pagination" maxHeight="300.0" minHeight="300.0" minWidth="200.0" prefHeight="300.0" prefWidth="200.0">
+      <VBox maxWidth="900.0" minWidth="600.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+         <children>
+            <Pagination fx:id="pagination" maxHeight="300.0" maxWidth="900.0" minHeight="300.0" minWidth="600.0" prefHeight="300.0" prefWidth="600.0">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Pagination>
+         </children>
          <VBox.margin>
-            <Insets left="50.0" right="50.0" top="20.0" />
-         </VBox.margin></Pagination>
+            <Insets left="50.0" right="50.0" top="10.0" />
+         </VBox.margin>
+      </VBox>
    </children>
 </VBox>

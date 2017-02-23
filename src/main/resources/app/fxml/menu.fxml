@@ -8,9 +8,9 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fx:id="rootScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="+Infinity" minHeight="900.0" minWidth="1000.0" prefHeight="900.0" prefWidth="700.0" style="-fx-border-color: black;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.MenuController">
+<ScrollPane fx:id="rootScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="+Infinity" minHeight="1100.0" minWidth="1000.0" prefHeight="1100.0" prefWidth="700.0" style="-fx-border-color: black;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.MenuController">
    <content>
-      <VBox fx:id="rootVBox" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="900.0" VBox.vgrow="ALWAYS">
+      <VBox fx:id="rootVBox" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="1000.0" VBox.vgrow="ALWAYS">
          <children>
             <HBox minHeight="100.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #e7e7e7;">
                <children>
@@ -28,10 +28,13 @@
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>
+                           <VBox.margin>
+                              <Insets left="20.0" />
+                           </VBox.margin>
                         </Label>
                      </children>
                   </VBox>
-                  <HBox alignment="CENTER_RIGHT" maxWidth="800.0" prefHeight="100.0" prefWidth="400.0" HBox.hgrow="ALWAYS">
+                  <HBox alignment="CENTER_RIGHT" maxWidth="1000.0" prefHeight="100.0" prefWidth="400.0" HBox.hgrow="ALWAYS">
                      <children>
                         <MenuButton fx:id="employeeMenuButton" mnemonicParsing="false" style="-fx-background-color: transparent;" text="MenuButton">
                           <items>

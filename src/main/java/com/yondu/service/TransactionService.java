@@ -38,8 +38,8 @@ public class TransactionService {
                     transaction.setReceiptNumber((String) json.get("receipt_no"));
                     transaction.setTransactionType((String) json.get("transaction_type"));
                     transaction.setPointsEarned((String) json.get("points_earned"));
-                    transaction.setCashPaid(String.valueOf((Long) json.get("amount_paid_with_cash")));
-                    transaction.setPointsPaid(String.valueOf((Long) json.get("amount_paid_with_points")));
+                    transaction.setCashPaid(String.valueOf(json.get("amount_paid_with_cash")));
+                    transaction.setPointsPaid(String.valueOf(json.get("amount_paid_with_points")));
                     transaction.setDate((String) json.get("date"));
                     transactions.add(transaction);
                 }

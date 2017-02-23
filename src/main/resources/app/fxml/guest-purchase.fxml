@@ -24,24 +24,12 @@
                   <Insets left="50.0" />
                </HBox.margin>
             </VBox>
-            <VBox prefHeight="50.0" prefWidth="180.0">
+            <VBox alignment="TOP_RIGHT" maxWidth="170.0" prefHeight="200.0" prefWidth="170.0" HBox.hgrow="ALWAYS">
                <children>
                   <Button fx:id="ocrButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #333;" text="OCR" textFill="#fffbfb">
                      <VBox.margin>
                         <Insets right="10.0" />
                      </VBox.margin>
-                     <font>
-                        <Font name="System Bold" size="15.0" />
-                     </font>
-                     <cursor>
-                        <Cursor fx:constant="OPEN_HAND" />
-                     </cursor>
-                  </Button>
-               </children>
-            </VBox>
-            <VBox alignment="TOP_RIGHT" maxWidth="170.0" prefHeight="200.0" prefWidth="170.0" HBox.hgrow="ALWAYS">
-               <children>
-                  <Button fx:id="exitButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #D61707;" text="EXIT MEMBER" textFill="#f2eded">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>

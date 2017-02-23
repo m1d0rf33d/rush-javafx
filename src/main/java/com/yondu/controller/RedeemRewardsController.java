@@ -4,6 +4,10 @@ import com.yondu.App;
 import com.yondu.model.Customer;
 import com.yondu.model.Reward;
 import com.yondu.model.constants.AppState;
+import com.yondu.service.CommonService;
+import com.yondu.service.RouteService;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,6 +16,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
@@ -53,12 +58,29 @@ public class RedeemRewardsController implements Initializable {
     public Label pointsLabel;
     @FXML
     public FlowPane rewardsFlowPane;
+    @FXML
+    public javafx.scene.control.Button exitButton;
 
     private Customer customer;
+    private CommonService commonService = new CommonService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        exitButton.setOnMouseClicked((MouseEvent e) -> {
+           commonService.exitMember();
+        });
+
+
+
         App.appContextHolder.setAppState(AppState.REDEEM_REWARDS);
+
+        rewardsFlowPane.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                App.appContextHolder.getRootVBox().setMinHeight(600 + newValue.doubleValue());
+            }
+        });
     }
 
     public void setCustomer(Customer customer) {

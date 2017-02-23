@@ -32,7 +32,10 @@
                         <TextField fx:id="mobileTextField" maxWidth="500.0" prefHeight="50.0" prefWidth="400.0" style="-fx-background-radius: 30;">
                            <VBox.margin>
                               <Insets top="10.0" />
-                           </VBox.margin></TextField>
+                           </VBox.margin>
+                           <font>
+                              <Font size="17.0" />
+                           </font></TextField>
                         <Label text="OR NUMBER">
                            <font>
                               <Font size="20.0" />
@@ -44,7 +47,10 @@
                         <TextField fx:id="orTextField" maxWidth="500.0" prefHeight="50.0" prefWidth="400.0" style="-fx-background-radius: 30;">
                            <VBox.margin>
                               <Insets top="10.0" />
-                           </VBox.margin></TextField>
+                           </VBox.margin>
+                           <font>
+                              <Font size="17.0" />
+                           </font></TextField>
                         <Label text="AMOUNT">
                            <font>
                               <Font size="20.0" />
@@ -57,6 +63,9 @@
                            <VBox.margin>
                               <Insets top="10.0" />
                            </VBox.margin>
+                           <font>
+                              <Font size="17.0" />
+                           </font>
                         </TextField>
                         <Button fx:id="givePointsButton" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="GIVE POINTS" textFill="#f5f2f2">
                            <cursor>
@@ -96,6 +105,9 @@
                            <VBox.margin>
                               <Insets top="15.0" />
                            </VBox.margin>
+                           <font>
+                              <Font size="17.0" />
+                           </font>
                         </TextField>
                         <ComboBox fx:id="branchComboBox" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: f4f4f4;" VBox.vgrow="ALWAYS">
                            <VBox.margin>

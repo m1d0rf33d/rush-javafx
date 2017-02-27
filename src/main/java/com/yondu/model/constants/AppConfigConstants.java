@@ -30,6 +30,8 @@ public class AppConfigConstants {
     public static final String ACTIVATION_FXML = "/app/fxml/activation.fxml";
 
     //FXML
+    public static final String LOGIN_ONLINE_FXML = "/app/fxml/login-online.fxml";
+    public static final String LOGIN_OFFLINE_FXML = "/app/fxml/login-offline.fxml";
     public static final String REGISTER_SCREEN        = "/app/fxml/register.fxml";
     public static final String MEMBER_INQUIRY_SCREEN  = "/app/fxml/member-inquiry.fxml";
     public static final String MEMBER_DETAILS_SCREEN  = "/app/fxml/member-details.fxml";

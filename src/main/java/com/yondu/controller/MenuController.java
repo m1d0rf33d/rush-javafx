@@ -1,37 +1,48 @@
 package com.yondu.controller;
 
+import com.sun.javafx.scene.control.skin.ContextMenuContent;
 import com.yondu.App;
 import com.yondu.model.constants.ApiFieldContants;
+import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.model.constants.AppState;
 import com.yondu.service.ApiService;
 import com.yondu.service.CommonService;
 import com.yondu.service.RouteService;
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import org.apache.http.NameValuePair;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLRecoverableException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static com.yondu.AppContextHolder.BASE_URL;
-import static com.yondu.AppContextHolder.GET_BRANCHES_ENDPOINT;
+import static com.yondu.AppContextHolder.*;
+import static com.yondu.AppContextHolder.ACCESS_ENDPOINT;
 import static com.yondu.model.constants.AppConfigConstants.*;
 
 /**
@@ -78,14 +89,34 @@ public class MenuController implements Initializable {
     private RouteService routeService = new RouteService();
     private ApiService apiService = new ApiService();
     private CommonService commonService = new CommonService();
+    private ContextMenu contextMenu = new ContextMenu();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         rootScrollPane.setFitToHeight(true);
         rootScrollPane.setFitToWidth(true);
-        loadMerchantDetails();
 
+        sideBarVBox.getChildren().clear();
+
+        rootVBox.setOpacity(.50);
+
+        loadPage();
+
+        MenuItem menuItem = new MenuItem("Reload");
+        menuItem.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+                loadPage();
+            }
+        });
+        contextMenu.getItems().add(menuItem);
+        rootVBox.setOnMouseClicked((MouseEvent e) -> {
+            if (e.getButton() == MouseButton.SECONDARY) {
+                contextMenu.show(rootVBox, e.getScreenX(), e.getScreenY());
+            } else {
+                contextMenu.hide();
+            }
+        });
 
         employeeMenuButton.setText("Hi! " + App.appContextHolder.getEmployeeName());
         MenuItem logoutMenuItem = new MenuItem();
@@ -109,19 +140,23 @@ public class MenuController implements Initializable {
 
 
         registerButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
+            App.appContextHolder.setPrevState(App.appContextHolder.getAppState());
             App.appContextHolder.setAppState(AppState.REGISTRATION);
-            commonService.highlight(registerButton);
+            commonService.updateButtonState();
             routeService.loadContentPage(bodyStackPane, REGISTER_SCREEN);
         });
 
         guestPurchaseButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            commonService.highlight(guestPurchaseButton);
+            App.appContextHolder.setPrevState(App.appContextHolder.getAppState());
+            App.appContextHolder.setAppState(AppState.GUEST_PURCHASE);
+            commonService.updateButtonState();
             routeService.loadGuestPurchase();
         });
 
         memberInquiryButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
+            App.appContextHolder.setPrevState(App.appContextHolder.getAppState());
             App.appContextHolder.setAppState(AppState.MEMBER_INQUIRY);
-            commonService.highlight(memberInquiryButton);
+            commonService.updateButtonState();
             if (App.appContextHolder.getCustomerMobile() == null) {
                 routeService.loadContentPage(bodyStackPane, MEMBER_INQUIRY_SCREEN);
             } else {
@@ -131,8 +166,9 @@ public class MenuController implements Initializable {
         });
 
         transactionsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
+            App.appContextHolder.setPrevState(App.appContextHolder.getAppState());
             App.appContextHolder.setAppState(AppState.TRANSACTIONS);
-            commonService.highlight(transactionsButton);
+            commonService.updateButtonState();
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(TRANSACTIONS_SCREEN);
             } else {
@@ -142,8 +178,9 @@ public class MenuController implements Initializable {
         });
         givePointsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             disableMenu();
-            commonService.highlight(givePointsButton);
+            App.appContextHolder.setPrevState(App.appContextHolder.getAppState());
             App.appContextHolder.setAppState(AppState.EARN_POINTS);
+            commonService.updateButtonState();
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(EARN_POINTS_SCREEN);
             } else {
@@ -152,9 +189,10 @@ public class MenuController implements Initializable {
         });
 
         redeemRewardsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            commonService.highlight(redeemRewardsButton);
-            disableMenu();
+            App.appContextHolder.setPrevState(App.appContextHolder.getAppState());
             App.appContextHolder.setAppState(AppState.REDEEM_REWARDS);
+            commonService.updateButtonState();
+            disableMenu();
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(REDEEM_REWARDS_SCREEN);
             } else {
@@ -164,9 +202,12 @@ public class MenuController implements Initializable {
         });
 
         payWithPointsButton.setOnMouseClicked((MouseEvent e) -> {
-            commonService.highlight(payWithPointsButton);
-            disableMenu();
+            App.appContextHolder.setPrevState(App.appContextHolder.getAppState());
             App.appContextHolder.setAppState(AppState.PAY_WITH_POINTS);
+
+            commonService.updateButtonState();
+            disableMenu();
+
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(PAY_WITH_POINTS);
             } else {
@@ -175,9 +216,11 @@ public class MenuController implements Initializable {
         });
 
         issueRewardsButton.setOnMouseClicked((MouseEvent e) -> {
-            commonService.highlight(issueRewardsButton);
-            disableMenu();
+            App.appContextHolder.setPrevState(App.appContextHolder.getAppState());
             App.appContextHolder.setAppState(AppState.ISSUE_REWARDS);
+            commonService.updateButtonState();
+            disableMenu();
+
             if (App.appContextHolder.getCustomerMobile() == null) {
                 loadMobileLoginDialog(ISSUE_REWARDS_SCREEN);
             } else {
@@ -186,29 +229,106 @@ public class MenuController implements Initializable {
         });
 
         offlineButton.setOnMouseClicked((MouseEvent e) -> {
-            commonService.highlight(offlineButton);
+            App.appContextHolder.setPrevState(App.appContextHolder.getAppState());
+            App.appContextHolder.setAppState(AppState.OFFLINE);
+            commonService.updateButtonState();
             routeService.loadOfflineTransactionScreen();
         });
 
         ocrButton.setOnMouseClicked((MouseEvent e) -> {
-            commonService.highlight(ocrButton);
+            App.appContextHolder.setPrevState(App.appContextHolder.getAppState());
+            App.appContextHolder.setAppState(AppState.OCR);
+            commonService.updateButtonState();
             routeService.loadOCRScreen();
         });
     }
+
+    private void loadPage() {
+        disableMenu();
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            loadMerchantDetails();
+            enableMenu();
+        });
+        pause.play();
+    }
     private void loadMerchantDetails() {
-        String url = BASE_URL + GET_BRANCHES_ENDPOINT;
-        List<NameValuePair> params = new ArrayList<>();
-        JSONObject jsonObj = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-        if (jsonObj != null) {
-            List<JSONObject> data = (ArrayList) jsonObj.get("data");
-            for (JSONObject branch : data) {
-                if (branch.get("id").equals(App.appContextHolder.getBranchId())) {
-                    branchNameLabel.setText((String) branch.get("name"));
-                    merchantLogoImageView.setImage(new Image((String) branch.get("logo_url")));
-                    break;
+
+        if (loadScreenRestrictions()) {
+            String url = BASE_URL + GET_BRANCHES_ENDPOINT;
+            List<NameValuePair> params = new ArrayList<>();
+            JSONObject jsonObj = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+            if (jsonObj != null) {
+                List<JSONObject> data = (ArrayList) jsonObj.get("data");
+                for (JSONObject branch : data) {
+                    if (branch.get("id").equals(App.appContextHolder.getBranchId())) {
+                        branchNameLabel.setText((String) branch.get("name"));
+                        merchantLogoImageView.setImage(new Image((String) branch.get("logo_url")));
+                        break;
+                    }
                 }
+            } else {
+                showOfflinePrompt();
             }
         }
+
+    }
+
+    private boolean loadScreenRestrictions() {
+        sideBarVBox.getChildren().clear();
+        //Get employee screen access
+        String url = CMS_URL + TOMCAT_PORT + ACCESS_ENDPOINT;
+        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+        JSONObject jsonObj = apiService.callWidgetAPI(url, new JSONObject(), "get");
+        if (jsonObj != null) {
+            JSONObject dataJson = (JSONObject) jsonObj.get("data");
+            List<String> screens = (ArrayList) dataJson.get("access");
+            List<Button> buttons = new ArrayList<>();
+            for (String screen : screens) {
+                if (screen.equalsIgnoreCase("REGISTER")) {
+                    buttons.add(registerButton);
+                }
+                if (screen.equalsIgnoreCase("MEMBER_PROFILE")) {
+                    buttons.add(memberInquiryButton);
+                }
+                if (screen.equalsIgnoreCase("GIVE_POINTS")) {
+                    buttons.add(givePointsButton);
+                }
+                if (screen.equalsIgnoreCase("GUEST_PURCHASE")) {
+                    buttons.add(guestPurchaseButton);
+                }
+                if (screen.equalsIgnoreCase("OFFLINE_TRANSACTIONS")) {
+                    buttons.add(offlineButton);
+                }
+                if (screen.equalsIgnoreCase("PAY_WITH_POINTS")) {
+                    buttons.add(payWithPointsButton);
+                }
+                if (screen.equalsIgnoreCase("REDEEM_REWARDS")) {
+                    buttons.add(redeemRewardsButton);
+                }
+                if (screen.equalsIgnoreCase("ISSUE_REWARDS")) {
+                    buttons.add(issueRewardsButton);
+                }
+
+                if (screen.equalsIgnoreCase("TRANSACTIONS_VIEW")) {
+                    buttons.add(transactionsButton);
+                }
+
+                if (screen.equalsIgnoreCase("OCR_SETTINGS")) {
+                    buttons.add(ocrButton);
+                }
+            }
+            sideBarVBox.getChildren().addAll(buttons);
+            //WithVk means with virtual keyboard yeah that's configurable too..
+            Boolean withVk = (Boolean) dataJson.get("withVk");
+            App.appContextHolder.setWithVk(withVk);
+        } else {
+            showOfflinePrompt();
+            return false;
+        }
+        return true;
     }
 
 
@@ -234,6 +354,7 @@ public class MenuController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
     public void disableMenu() {
         rootVBox.setOpacity(.50);
@@ -247,6 +368,17 @@ public class MenuController implements Initializable {
             n.setDisable(false);
         }
     }
-
+    private void showOfflinePrompt() {
+        Text text = new Text("Network connection error.");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+        alert.setTitle(AppConfigConstants.APP_TITLE);
+        alert.initStyle(StageStyle.UTILITY);
+        alert.initOwner(rootVBox.getScene().getWindow());
+        alert.setHeaderText("MENU");
+        alert.getDialogPane().setPadding(new Insets(10,10,10,10));
+        alert.getDialogPane().setContent(text);
+        alert.getDialogPane().setPrefWidth(400);
+        alert.show();
+    }
 
 }

@@ -166,11 +166,11 @@ public class PointsDetailsController implements Initializable{
         this.cancelButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if (App.appContextHolder.getPreviousStage().equals("GIVE_POINTS_OCR")) {
+               /* if (App.appContextHolder.getPreviousStage().equals("GIVE_POINTS_OCR")) {
                     routeService.goToGivePointsScreen(currentStage);
                 } else {
                     routeService.goToGivePointsManualScreen(currentStage);
-                }
+                }*/
             }
         });
     }

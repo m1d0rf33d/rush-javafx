@@ -17,6 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -51,8 +52,6 @@ public class PinController implements Initializable {
     private Label pointsLabel;
     private Label pesoValueLabel;
 
-    private VBox onlineVBox;
-    private VBox offlineVBox;
     private HBox rootHBox;
     private String login;
     private String branchId;
@@ -181,38 +180,46 @@ public class PinController implements Initializable {
     }
 
     private void login() {
+        HBox loginHBox = App.appContextHolder.getLoginHBox();
+        loginHBox.setOpacity(.50);
+        for (Node n : loginHBox.getChildren()) {
+            n.setDisable(true);
+        }
+        PauseTransition pause = new PauseTransition(
+            Duration.seconds(.5)
+         );
+        pause.setOnFinished(event -> {
+            ApiResponse apiResponse = memberDetailsService.loginEmployee(login, branchId, pinTextField.getText());
+            if (apiResponse.isSuccess()) {
+                Employee employee = (Employee) apiResponse.getPayload().get("employee");
+                App.appContextHolder.setEmployeeId(employee.getEmployeeId());
+                App.appContextHolder.setEmployeeName(employee.getEmployeeName());
+                App.appContextHolder.setBranchId(employee.getBranchId());
 
-        ApiResponse apiResponse = memberDetailsService.loginEmployee(login, branchId, pinTextField.getText());
-        if (apiResponse.isSuccess()) {
-            Employee employee = (Employee) apiResponse.getPayload().get("employee");
-            App.appContextHolder.setEmployeeId(employee.getEmployeeId());
-            App.appContextHolder.setEmployeeName(employee.getEmployeeName());
-            App.appContextHolder.setBranchId(employee.getBranchId());
 
-            routeService.goToMenuScreen((Stage) onlineVBox.getScene().getWindow());
-            ((Stage) cancelButton.getScene().getWindow()).close();
+                routeService.goToMenuScreen((Stage) loginHBox.getScene().getWindow());
+                ((Stage) cancelButton.getScene().getWindow()).close();
 
-        } else {
-            if (apiResponse.getMessage().contains("Network")) {
-                offlineVBox.setVisible(true);
-                onlineVBox.setVisible(false);
+            } else {
+
+                Text text = new Text(apiResponse.getMessage());
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
+                alert.initOwner(loginHBox.getScene().getWindow());
+                alert.setHeaderText("LOGIN EMPLOYEE");
+                alert.getDialogPane().setPadding(new Insets(10,10,10,10));
+                alert.getDialogPane().setContent(text);
+                alert.getDialogPane().setPrefWidth(400);
+                alert.show();
             }
+            loginHBox.setOpacity(1);
+            for (Node n : loginHBox.getChildren()) {
+                n.setDisable(false);
+            }
+        });
+        pause.play();
 
-            Text text = new Text(apiResponse.getMessage());
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-            alert.setTitle(AppConfigConstants.APP_TITLE);
-            alert.initStyle(StageStyle.UTILITY);
-            alert.initOwner((Stage) onlineVBox.getScene().getWindow());
-            alert.setHeaderText("LOGIN EMPLOYEE");
-            alert.getDialogPane().setPadding(new Insets(10,10,10,10));
-            alert.getDialogPane().setContent(text);
-            alert.getDialogPane().setPrefWidth(400);
-            alert.show();
-        }
-        rootHBox.setOpacity(1);
-        for (Node n : rootHBox.getChildren()) {
-            n.setDisable(false);
-        }
 
     }
 
@@ -240,30 +247,6 @@ public class PinController implements Initializable {
 
     public void setRootHBox(HBox rootHBox) {
         this.rootHBox = rootHBox;
-    }
-
-    public VBox getOfflineVBox() {
-        return offlineVBox;
-    }
-
-    public void setOfflineVBox(VBox offlineVBox) {
-        this.offlineVBox = offlineVBox;
-    }
-
-    public Button getSubmitButton() {
-        return submitButton;
-    }
-
-    public void setSubmitButton(Button submitButton) {
-        this.submitButton = submitButton;
-    }
-
-    public VBox getOnlineVBox() {
-        return onlineVBox;
-    }
-
-    public void setOnlineVBox(VBox onlineVBox) {
-        this.onlineVBox = onlineVBox;
     }
 
     public TextField getReceiptTextField() {

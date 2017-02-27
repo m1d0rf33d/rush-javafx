@@ -41,7 +41,7 @@ public class ApiService {
 
             HttpResponse response = null;
             DefaultHttpClient client = new DefaultHttpClient();
-            DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(20, true);
+            DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(5, true);
             client.setHttpRequestRetryHandler(retryHandler);
 
             //POST request
@@ -87,7 +87,7 @@ public class ApiService {
 
     public String getToken(String resourceOwner) throws IOException {
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(20, true);
+        DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(5, true);
         httpClient.setHttpRequestRetryHandler(retryHandler);
         String appKey, appSecret;
         if (resourceOwner.equals(ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER)) {
@@ -114,6 +114,7 @@ public class ApiService {
             result.append(line);
         }
         httpClient.close();
+
         ObjectMapper mapper = new ObjectMapper();
         Token token = mapper.readValue(result.toString(), Token.class);
         return token.getToken();
@@ -122,7 +123,7 @@ public class ApiService {
     public JSONObject getOauth2Token() {
         try {
             DefaultHttpClient client = new DefaultHttpClient();
-            DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(20, true);
+            DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(5, true);
             client.setHttpRequestRetryHandler(retryHandler);
 
             String url = CMS_URL + TOMCAT_PORT + OAUTH_ENDPOINT;
@@ -163,7 +164,7 @@ public class ApiService {
             StringEntity stringEntity = new StringEntity(jsonObject.toJSONString());
             String token = (String) tokenJSON.get("access_token");
             DefaultHttpClient client = new DefaultHttpClient();
-            DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(20, true);
+            DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(5, true);
             client.setHttpRequestRetryHandler(retryHandler);
 
             HttpResponse response;

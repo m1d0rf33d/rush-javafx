@@ -40,6 +40,7 @@ import java.util.ResourceBundle;
 import static com.yondu.AppContextHolder.*;
 import static com.yondu.model.constants.AppConfigConstants.DIVIDER;
 import static com.yondu.model.constants.AppConfigConstants.OFFLINE_TRANSACTION_FILE;
+import static com.yondu.model.constants.AppConfigConstants.RUSH_HOME;
 
 /**
  * Created by lynx on 2/10/17.
@@ -190,7 +191,7 @@ public class OfflineController implements Initializable {
 
     public void loadOfflineTransactions() {
         masterData = FXCollections.observableArrayList();
-        File file = new File(System.getenv("RUSH_HOME") + DIVIDER + OFFLINE_TRANSACTION_FILE);
+        File file = new File(RUSH_HOME + DIVIDER + OFFLINE_TRANSACTION_FILE);
         if (file.exists()) {
             try (BufferedReader br = new BufferedReader(new FileReader(file))) {
                 String line;
@@ -302,7 +303,7 @@ public class OfflineController implements Initializable {
                 new PropertyValueFactory<>("status"));
 
         TableColumn messageCol = new TableColumn("Message");
-        messageCol.setPrefWidth(250);
+        messageCol.setPrefWidth(300);
         messageCol.setCellValueFactory(
                 new PropertyValueFactory<>("message"));
 

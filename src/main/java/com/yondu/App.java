@@ -1,5 +1,6 @@
 package com.yondu;
 
+import com.yondu.model.ApiResponse;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.service.RouteService;
 import javafx.application.Application;
@@ -25,60 +26,31 @@ public class App extends Application{
     public static void main(String[] args) {
 
         if (System.getProperty("os.name").contains("Windows")) {
-            DIVIDER = "\\";
-
-            File file = new File(System.getenv("RUSH_HOME") + DIVIDER + LOCK_FILE);
-            if (file.exists()) {
-                try {
-                    Runtime.getRuntime().exec("cmd /c start  " + System.getenv("RUSH_HOME") + DIVIDER + VBS_FILE);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                System.exit(0);
+            if (System.getenv("ProgramFiles(x86)") != null) {
+                appContextHolder.TESSERACT_HOME = "c:\\Program Files (x86)\\" + RUSH_FOLDER + "\\" + TESSERACT_FOLDER;
             } else {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Runtime.getRuntime().addShutdownHook(new Thread() {
-                    @Override
-                    public void run() {
-                        File file = new File(System.getenv("RUSH_HOME") + DIVIDER + LOCK_FILE);
-                        if (file.exists()) {
-                            file.delete();
-                        }
-                    }
-                });
-                launch(args);
+                appContextHolder.TESSERACT_HOME = "c:\\Program Files\\" + RUSH_FOLDER + "\\" + TESSERACT_FOLDER;
             }
-        } else {
-            // Either MAC or Linux operating system. MAC will crash this is only for linux
-            AppConfigConstants.DIVIDER = "//";
-            launch(args);
         }
-
+        RUSH_HOME = System.getenv("RUSH_HOME").replace(";", "");
+        launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        //Let's get the party started
-        Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.SPLASH_FXML));
-        primaryStage.setScene(new Scene(root, 500,300));
-        primaryStage.resizableProperty().setValue(false);
-        primaryStage.initStyle(StageStyle.UNDECORATED);
-        primaryStage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-        primaryStage.show();
+         appContextHolder.getRouteService().goToLoginScreen(null);
     }
+
 
     @Override
     public void stop() throws Exception {
         super.stop();
-        File file = new File(System.getenv("RUSH_HOME") + DIVIDER + LOCK_FILE);
+        File file = new File(RUSH_HOME + DIVIDER + LOCK_FILE);
         if (file.exists()) {
             file.delete();
         }
     }
+
 }
 
 

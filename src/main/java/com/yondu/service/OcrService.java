@@ -26,9 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import static com.yondu.model.constants.AppConfigConstants.DIVIDER;
-import static com.yondu.model.constants.AppConfigConstants.OCR_PROPERTIES;
-import static com.yondu.model.constants.AppConfigConstants.TESSERACT_FOLDER;
+import static com.yondu.model.constants.AppConfigConstants.*;
 
 /**
  * Created by lynx on 2/22/17.
@@ -42,7 +40,7 @@ public class OcrService {
 
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(System.getenv("RUSH_HOME") + DIVIDER + OCR_PROPERTIES);
+            InputStream inputStream = new FileInputStream(RUSH_HOME+ DIVIDER + OCR_PROPERTIES);
             prop.load(inputStream);
 
             Double savedAmountPosX = prop.getProperty("sales_pos_x").isEmpty() ? null : Double.parseDouble(prop.getProperty("sales_pos_x"));
@@ -84,7 +82,7 @@ public class OcrService {
             javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
 
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(System.getenv("RUSH_HOME") + DIVIDER + TESSERACT_FOLDER);
+            tesseract.setDatapath(RUSH_HOME + DIVIDER + TESSERACT_FOLDER);
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = null;
@@ -111,7 +109,8 @@ public class OcrService {
                 imageView.setImage(image);
 
                 ITesseract tesseract = new Tesseract();
-                tesseract.setDatapath(System.getenv("RUSH_HOME") + DIVIDER + TESSERACT_FOLDER);
+               // tesseract.setDatapath(RUSH_HOME + DIVIDER +
+                tesseract.setDatapath(App.appContextHolder.TESSERACT_HOME);
                 tesseract.setLanguage("eng");
                 // Get OCR result
                 String outText = null;

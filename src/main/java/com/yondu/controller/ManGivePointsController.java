@@ -166,7 +166,7 @@ public class ManGivePointsController implements Initializable{
                 stage.setScene(new Scene(loader.load(), 600,500));
                 stage.resizableProperty().setValue(Boolean.FALSE);
                 stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-                App.appContextHolder.setPreviousStage("GIVE_POINTS_MANUAL");
+              //  App.appContextHolder.setPreviousStage("GIVE_POINTS_MANUAL");
                 stage.show();
 
                 ((Stage)ocrBtn.getScene().getWindow()).close();

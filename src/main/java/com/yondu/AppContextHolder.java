@@ -1,8 +1,11 @@
 package com.yondu;
 
 import com.yondu.model.constants.AppState;
+import com.yondu.service.ApiService;
+import com.yondu.service.RouteService;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -42,13 +45,14 @@ public class AppContextHolder {
     private Stage salesCaptureStage;
     private Stage loadingStage;
     private boolean isActivated;
-    private String previousStage;
     private Boolean withVk;
     private Boolean isFirstDisconnect;
 
     private VBox rootVBox;
     private VBox rootStackPane;
     private AppState appState;
+    private AppState prevState;
+    private HBox loginHBox;
 
     //Read endpoints from config file
     public static String BASE_URL;
@@ -83,6 +87,34 @@ public class AppContextHolder {
     public static String MERCHANT_APP_SECRET;
     public static String CUSTOMER_APP_KEY;
     public static String CUSTOMER_APP_SECRET;
+    public static String TESSERACT_HOME;
+
+    private ApiService apiService = new ApiService();
+    private RouteService routeService = new RouteService();
+
+    public HBox getLoginHBox() {
+        return loginHBox;
+    }
+
+    public void setLoginHBox(HBox loginHBox) {
+        this.loginHBox = loginHBox;
+    }
+
+    public ApiService getApiService() {
+        return apiService;
+    }
+
+    public void setApiService(ApiService apiService) {
+        this.apiService = apiService;
+    }
+
+    public RouteService getRouteService() {
+        return routeService;
+    }
+
+    public void setRouteService(RouteService routeService) {
+        this.routeService = routeService;
+    }
 
     public AppState getAppState() {
         return appState;
@@ -260,13 +292,6 @@ public class AppContextHolder {
         isActivated = activated;
     }
 
-    public String getPreviousStage() {
-        return previousStage;
-    }
-
-    public void setPreviousStage(String previousStage) {
-        this.previousStage = previousStage;
-    }
 
     public Boolean getWithVk() {
         return withVk;
@@ -292,11 +317,11 @@ public class AppContextHolder {
         this.branchName = branchName;
     }
 
-    /*public String getEmployeeId() {
-        if (this.employeeId == null) {
-            return "OFFLINE_EMPLOYEE";
-        }
-        return employeeId;
-    }*/
+    public AppState getPrevState() {
+        return prevState;
+    }
 
+    public void setPrevState(AppState prevState) {
+        this.prevState = prevState;
+    }
 }

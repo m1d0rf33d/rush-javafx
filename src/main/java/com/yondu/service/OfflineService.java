@@ -18,6 +18,7 @@ import static com.yondu.AppContextHolder.BASE_URL;
 import static com.yondu.AppContextHolder.GIVE_POINTS_ENDPOINT;
 import static com.yondu.AppContextHolder.MEMBER_LOGIN_ENDPOINT;
 import static com.yondu.model.constants.AppConfigConstants.DIVIDER;
+import static com.yondu.model.constants.AppConfigConstants.RUSH_HOME;
 
 /**
  * Created by lynx on 2/22/17.
@@ -27,7 +28,7 @@ public class OfflineService {
     private ApiService apiService = new ApiService();
 
     public void givePoints() {
-        File file = new File(System.getenv("RUSH_HOME") + DIVIDER + AppConfigConstants.OFFLINE_TRANSACTION_FILE);
+        File file = new File(RUSH_HOME + DIVIDER + AppConfigConstants.OFFLINE_TRANSACTION_FILE);
 
         if (file.exists()) {
             //Read file

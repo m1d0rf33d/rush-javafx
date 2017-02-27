@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox fx:controller="com.yondu.controller.LoginOfflineController" fx:id="offlineVBox" alignment="TOP_CENTER" prefHeight="600.0" prefWidth="100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label fx:id="mobileNumberLabel" text="MOBILE NUMBER">
+         <font>
+            <Font size="20.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </Label>
+      <TextField fx:id="mobileTextField" maxWidth="500.0" prefHeight="50.0" prefWidth="400.0" style="-fx-background-radius: 30;">
+         <font>
+            <Font size="17.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </TextField>
+      <Label text="OR NUMBER">
+         <font>
+            <Font size="20.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </Label>
+      <TextField fx:id="orTextField" maxWidth="500.0" prefHeight="50.0" prefWidth="400.0" style="-fx-background-radius: 30;">
+         <font>
+            <Font size="17.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </TextField>
+      <Label text="AMOUNT">
+         <font>
+            <Font size="20.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </Label>
+      <TextField fx:id="amountTextField" maxWidth="500.0" prefHeight="50.0" prefWidth="400.0" style="-fx-background-radius: 30;">
+         <font>
+            <Font size="17.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </TextField>
+      <Button fx:id="givePointsButton" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="GIVE POINTS" textFill="#f5f2f2">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <font>
+            <Font name="System Bold" size="23.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+      </Button>
+      <Button fx:id="reconnectButton" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: #CDD2D6; -fx-background-radius: 30;" text="RECONNECT" textFill="#f5f2f2">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <font>
+            <Font name="System Bold" size="23.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+      </Button>
+   </children>
+</VBox>

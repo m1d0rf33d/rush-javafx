@@ -1,19 +1,23 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import com.yondu.model.Branch;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.model.constants.AppState;
 import com.yondu.service.ApiService;
+import com.yondu.service.CommonService;
 import com.yondu.service.NotificationService;
 import com.yondu.service.RouteService;
 import com.yondu.utils.PropertyBinder;
+import javafx.animation.PauseTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.*;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -26,11 +30,13 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONArray;
@@ -39,10 +45,7 @@ import org.json.simple.JSONObject;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.beans.EventHandler;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -50,9 +53,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
-import static com.yondu.AppContextHolder.BASE_URL;
-import static com.yondu.AppContextHolder.GET_BRANCHES_ENDPOINT;
-import static com.yondu.AppContextHolder.LOGIN_ENDPOINT;
+import static com.yondu.AppContextHolder.*;
 import static com.yondu.model.constants.AppConfigConstants.*;
 
 /**
@@ -63,179 +64,144 @@ public class LoginControllerv2 implements Initializable {
     @FXML
     public ImageView rushLogoImageView;
     @FXML
-    public ComboBox branchComboBox;
-    @FXML
-    public Button loginButton;
-    @FXML
-    public ImageView loadingImageView;
-    @FXML
-    public TextField loginTextField;
-    @FXML
-    public VBox onlineVBox;
-    @FXML
-    public VBox offlineVBox;
-    @FXML
-    public Button reconnectButton;
-    @FXML
-    public Button givePointsButton;
-    @FXML
-    public TextField mobileTextField;
-    @FXML
-    public TextField orTextField;
-    @FXML
-    public TextField amountTextField;
-    @FXML
     public HBox rootHBox;
     @FXML
     public ImageView removeImageView;
+    @FXML
+    public StackPane bodyStackPane;
+    @FXML
+    public Button oneButton;
+    @FXML
+    public Button twoButton;
+    @FXML
+    public Button threeButton;
+    @FXML
+    public Button fourButton;
+    @FXML
+    public Button fiveButton;
+    @FXML
+    public Button sixButton;
+    @FXML
+    public Button sevenButton;
+    @FXML
+    public Button eightButton;
+    @FXML
+    public Button nineButton;
+    @FXML
+    public Button zeroButton;
+    @FXML
+    public Button dotButton;
+    @FXML
+    public Button removeButton;
+    @FXML
+    public VBox numbersVBox;
 
     private ApiService apiService = new ApiService();
-    private RouteService routeService = new RouteService();
-    private NotificationService notificationService = new NotificationService();
-    private List<JSONObject> branches;
+    private List<Branch> branches;
+    private CommonService commonService = new CommonService();
 
-
+    public LoginControllerv2() {
+        if (System.getProperty("os.name").contains("Windows")) {
+            DIVIDER = "\\";
+        } else {
+            DIVIDER = "//";
+        }
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        PropertyBinder.bindNumberOnly(loginTextField);
-
         App.appContextHolder.setAppState(AppState.LOGIN);
+        App.appContextHolder.setLoginHBox(rootHBox);
 
-        onlineVBox.setVisible(false);
-        offlineVBox.setVisible(false);
-        loadingImageView.setVisible(true);
         removeImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/remove.png").toExternalForm()));
-
         rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
-        loadingImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/loading.gif").toExternalForm()));
+        ImageView img = new ImageView();
+        img.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/loading.gif").toExternalForm()));
+        img.setFitWidth(150);
+        img.setFitHeight(150);
+        img.getStyleClass().add("loading-img");
+        bodyStackPane.getChildren().clear();
+        bodyStackPane.getChildren().addAll(img);
+        bodyStackPane.setPadding(new Insets(30,0,0,0));
 
-        loadMerchantBranches();
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(1)
+        );
+        pause.setOnFinished(event -> {
+            loadEndpointsFromConfig();
 
-        loginButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            loginEmployee();
+            if (commonService.fetchApiKeys()) {
+
+                loadMerchantBranches();
+                loadOnline();
+            } else {
+                loadOffline();
+            }
         });
-        reconnectButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            routeService.goToSplashScreen((Stage) offlineVBox.getScene().getWindow());
-        });
-        givePointsButton.setOnMouseClicked((MouseEvent e) -> {
-            saveOfflineTransaction();
-        });
+        pause.play();
 
-        PropertyBinder.bindAmountOnly(amountTextField);
-        PropertyBinder.addComma(amountTextField);
+        PropertyBinder.setNumberButtonClick(oneButton, "1");
+        PropertyBinder.setNumberButtonClick(twoButton, "2");
+        PropertyBinder.setNumberButtonClick(threeButton, "3");
+        PropertyBinder.setNumberButtonClick(fourButton, "4");
+        PropertyBinder.setNumberButtonClick(fiveButton, "5");
+        PropertyBinder.setNumberButtonClick(sixButton, "6");
+        PropertyBinder.setNumberButtonClick(sevenButton, "7");
+        PropertyBinder.setNumberButtonClick(eightButton, "8");
+        PropertyBinder.setNumberButtonClick(nineButton, "9");
+        PropertyBinder.setNumberButtonClick(zeroButton, "0");
+        PropertyBinder.setNumberButtonClick(dotButton, ".");
 
+        removeButton.setOnMouseClicked((MouseEvent e) -> {
+            TextField loginTextField = (TextField) App.appContextHolder.getLoginHBox().getScene().lookup("#loginTextField");
+            if (loginTextField.getText() != null) {
+                String subStr = loginTextField.getText().substring(0, loginTextField.getText().length() -1);
+                loginTextField.setText(subStr);
+            }
+        });
 
     }
 
-    private void saveOfflineTransaction() {
+    private void loadEndpointsFromConfig() {
         try {
-
-            String valid = validateFields();
-            if (valid.isEmpty()) {
-                File file = new File(System.getenv("RUSH_HOME") + DIVIDER + OFFLINE_TRANSACTION_FILE);
-                if (!file.exists()) {
-                    file.createNewFile();
-                }
-                SimpleDateFormat df  = new SimpleDateFormat("MM/dd/YYYY");
-                String date = df.format(new Date());
-
-                PrintWriter fstream = new PrintWriter(new FileWriter(file,true));
-                String line = "mobileNumber=" + mobileTextField.getText().replace(":", "")+
-                        ":totalAmount=" + amountTextField.getText().replace(":", "") +
-                        ":orNumber=" + orTextField.getText().replace(":", "") +
-                        ":date=" + date +
-                        ":status=Pending:message= ";
-                byte[] encodedBytes = org.apache.commons.codec.binary.Base64.encodeBase64(line.getBytes());
-                fstream.println(new String(encodedBytes));
-                fstream.flush();
-                fstream.close();
-
-                mobileTextField.setText(null);
-                amountTextField.setText(null);
-                orTextField.setText(null);
-                showOfflinePersistResult();
+            Properties prop = new Properties();
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(API_PROPERTIES);
+            if (inputStream != null) {
+                prop.load(inputStream);
+                inputStream.close();
             } else {
-                disableMenu();
-                Text text = new Text(valid);
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-                alert.setTitle(AppConfigConstants.APP_TITLE);
-                alert.initStyle(StageStyle.UTILITY);
-                alert.initOwner(reconnectButton.getScene().getWindow());
-                alert.getDialogPane().setPadding(new javafx.geometry.Insets(10,10,10,10));
-                alert.getDialogPane().setContent(text);
-                alert.getDialogPane().setPrefWidth(400);
-                alert.setOnCloseRequest((DialogEvent e) -> {
-                    enableMenu();
-                });
-                alert.show();
-
-                if (alert.getResult() == ButtonType.OK) {
-                    alert.close();
-                    enableMenu();
-                }
+                throw new FileNotFoundException("property file api.properties not found in the classpath");
             }
-        } catch (IOException e) {
+            BASE_URL = prop.getProperty("base_url");
+            REGISTER_ENDPOINT = prop.getProperty("register_endpoint");
+            MEMBER_LOGIN_ENDPOINT = prop.getProperty("member_login_endpoint");
+            POINTS_CONVERSION_ENDPOINT = prop.getProperty("points_conversion_endpoint");
+            GIVE_POINTS_ENDPOINT = prop.getProperty("give_points_endpoint");
+            GET_POINTS_ENDPOINT = prop.getProperty("get_points_endpoint");
+            PAY_WITH_POINTS_ENDPOINT = prop.getProperty("pay_points_endpoint");
+            GET_REWARDS_ENDPOINT = prop.getProperty("get_rewards_endpoint");
+            REDEEM_REWARDS_ENDPOINT = prop.getProperty("redeem_rewards_endpoint");
+            UNCLAIMED_REWARDS_ENDPOINT = prop.getProperty("unclaimed_rewards_endpoint");
+            CLAIM_REWARDS_ENDPOINT = prop.getProperty("claim_rewards_endpoint");
+            GET_REWARDS_MERCHANT_ENDPOINT = prop.getProperty("get_rewards_merchant_endpoint");
+            CUSTOMER_REWARDS_ENDPOINT = prop.getProperty("customer_rewards_endpoint");
+            CUSTOMER_TRANSACTION_ENDPOINT = prop.getProperty("customer_transactions_endpoint");
+            GET_BRANCHES_ENDPOINT = prop.getProperty("get_branches_endpoint");
+            LOGIN_ENDPOINT = prop.getProperty("login_endpoint");
+            AUTHORIZATION_ENDPOINT = prop.getProperty("authorization_endpoint");
+            MERCHANT_DESIGNS_ENDPOINT = prop.getProperty("merchant_designs_endpoint");
+            MERCHANT_SETTINGS_ENDPOINT = prop.getProperty("merchant_settings_endpoint");
+            EARN_GUEST_ENDPOINT = prop.getProperty("earn_guest_endpoint");
+
+            CMS_URL = prop.getProperty("cms_url");
+            TOMCAT_PORT = prop.getProperty("tomcat_port");
+            OAUTH_SECRET = prop.getProperty("oauth_secret");
+            OAUTH_ENDPOINT = prop.getProperty("oauth_endpoint");
+            VALIDATE_MERCHANT_ENDPOINT = prop.getProperty("validate_merchant_endpoint");
+            ACCESS_ENDPOINT = prop.getProperty("access_endpoint");
+        } catch(IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void showOfflinePersistResult() {
-        Text text = new Text("Offline transaction saved.");
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-        alert.setTitle(AppConfigConstants.APP_TITLE);
-        alert.initStyle(StageStyle.UTILITY);
-        alert.initOwner(reconnectButton.getScene().getWindow());
-        alert.getDialogPane().setPadding(new javafx.geometry.Insets(10,10,10,10));
-        alert.getDialogPane().setContent(text);
-        alert.getDialogPane().setPrefWidth(400);
-        alert.show();
-
-        if (alert.getResult() == ButtonType.OK) {
-            alert.close();
-        }
-    }
-
-
-    private void loginEmployee() {
-
-        String username = this.loginTextField.getText();
-        String branchName = (String) branchComboBox.getSelectionModel().getSelectedItem();
-        String branchId = "";
-        for (JSONObject branch : branches) {
-            if (branch.get("name").equals(branchName)) {
-                branchId = (String) branch.get("id");
-                break;
-            }
-        }
-
-        //Build request body
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("employee_id", username));
-        params.add(new BasicNameValuePair("branch_id", branchId));
-        String url = BASE_URL + LOGIN_ENDPOINT;
-        JSONObject jsonObject = apiService.call((url), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-        if (jsonObject != null) {
-            if (jsonObject.get("error_code").equals("0x0")) {
-                JSONObject data = (JSONObject) jsonObject.get("data");
-                App.appContextHolder.setEmployeeName(((String) data.get("name")));
-                App.appContextHolder.setEmployeeId((String) data.get("id"));
-                App.appContextHolder.setBranchId(branchId);
-                App.appContextHolder.setBranchName(branchName);
-                routeService.goToMenuScreen((Stage) branchComboBox.getScene().getWindow());
-            } else if (jsonObject.get("error_code").equals("0x2")) {
-                showPinDialog();
-            } else {
-                String message = (String) jsonObject.get("message");
-                notificationService.showMessagePrompt("\n" + message,
-                        Alert.AlertType.INFORMATION,
-                        null, null,
-                        ButtonType.OK);
-            }
-        }
-        //this.overlayPane.setVisible(false);
     }
 
     private void loadMerchantBranches() {
@@ -246,97 +212,53 @@ public class LoginControllerv2 implements Initializable {
         JSONObject jsonObject = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
         if (jsonObject != null) {
             List<JSONObject> data = (ArrayList) jsonObject.get("data");
-            for (JSONObject branch : data) {
+            for (JSONObject json : data) {
+                Branch branch = new Branch();
+                branch.setId((String) json.get("id"));
+                branch.setName((String) json.get("name"));
                 branches.add(branch);
-                branchComboBox.getItems().add(branch.get("name"));
             }
-            branchComboBox.getSelectionModel().selectFirst();
-            this.onlineVBox.setVisible(true);
         } else {
-            showOfflinePrompt();
-           this.offlineVBox.setVisible(true);
+            loadOffline();
         }
-
-        this.loadingImageView.setVisible(false);
     }
 
-    private void showOfflinePrompt() {
-        notificationService.showMessagePrompt("\n  No network connection. You are currently in offline mode.  ",
-                                            Alert.AlertType.INFORMATION,
-                                            null, null,
-                                            ButtonType.OK);
-    }
-
-    private void showPinDialog() {
+    private  void loadOnline() {
         try {
-            disableMenu();
-
-            String username = this.loginTextField.getText();
-            String branchName = (String) branchComboBox.getSelectionModel().getSelectedItem();
-            String branchId = "";
-            for (JSONObject branch : branches) {
-                if (branch.get("name").equals(branchName)) {
-                    branchId = (String) branch.get("id");
-                    break;
-                }
-            }
-
-
-            Stage stage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(PIN_SCREEN));
+            numbersVBox.setVisible(true);
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(LOGIN_ONLINE_FXML));
             Parent root = fxmlLoader.load();
-            PinController controller = fxmlLoader.getController();
-            controller.setRootHBox(rootHBox);
-            controller.setLogin(username);
-            controller.setOfflineVBox(offlineVBox);
-            controller.setOnlineVBox(onlineVBox);
-            controller.setBranchId(branchId);
-            Scene scene = new Scene(root, 500,300);
-            stage.setScene(scene);
-            stage.setTitle(APP_TITLE);
-            stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-            stage.initOwner(rootHBox.getScene().getWindow());
-            stage.setOnCloseRequest(new javafx.event.EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent event) {
-                    enableMenu();
-                }
-            });
-            stage.show();
+            LoginOnlineController controller = fxmlLoader.getController();
+            controller.setBranches(branches);
+            bodyStackPane.getChildren().clear();
+            bodyStackPane.getChildren().add(root);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void disableMenu() {
-        rootHBox.setOpacity(.50);
-        for (Node n : rootHBox.getChildren()) {
-            n.setDisable(true);
-        }
-    }
-    public void enableMenu() {
-        rootHBox.setOpacity(1);
-        for (Node n : rootHBox.getChildren()) {
-            n.setDisable(false);
+    private void loadOffline() {
+        try {
+            Text text = new Text("Network connection error.");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+            alert.setTitle(AppConfigConstants.APP_TITLE);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.initOwner(oneButton.getScene().getWindow());
+            alert.setHeaderText("LOGIN");
+            alert.getDialogPane().setPadding(new javafx.geometry.Insets(10,10,10,10));
+            alert.getDialogPane().setContent(text);
+            alert.getDialogPane().setPrefWidth(400);
+            alert.show();
+
+            numbersVBox.setVisible(false);
+
+            bodyStackPane.getChildren().clear();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(AppConfigConstants.LOGIN_OFFLINE_FXML));
+            Parent root = fxmlLoader.load();
+            bodyStackPane.getChildren().add(root);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private String validateFields() {
-        String mobileNumber = mobileTextField.getText();
-        String orNumber = orTextField.getText();
-        String amount = amountTextField.getText();
-
-        String errorMessage = "";
-        if (mobileNumber == null || (mobileNumber != null && mobileNumber.isEmpty())) {
-            errorMessage = "Mobile number is required.";
-        }
-
-        if (orNumber == null || (orNumber != null && orNumber.isEmpty())) {
-            errorMessage = "Receipt number is required.";
-        }
-        if (amount == null || (amount != null && amount.isEmpty())) {
-            errorMessage = "Amount is required";
-        }
-        return errorMessage;
-    }
 }

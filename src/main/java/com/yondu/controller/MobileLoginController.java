@@ -4,10 +4,7 @@ import com.yondu.App;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.model.constants.AppState;
-import com.yondu.service.MemberDetailsService;
-import com.yondu.service.MenuService;
-import com.yondu.service.NotificationService;
-import com.yondu.service.RouteService;
+import com.yondu.service.*;
 import com.yondu.utils.PropertyBinder;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
@@ -42,6 +39,7 @@ public class MobileLoginController implements Initializable {
 
     private MemberDetailsService memberDetailsService = new MemberDetailsService();
     private RouteService routeService = new RouteService();
+    private CommonService commonService = new CommonService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -54,6 +52,8 @@ public class MobileLoginController implements Initializable {
                 n.setDisable(false);
             }
             ((Stage) cancelButton.getScene().getWindow()).close();
+            App.appContextHolder.setAppState(App.appContextHolder.getPrevState());
+            commonService.updateButtonState();
         });
 
         submitButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {

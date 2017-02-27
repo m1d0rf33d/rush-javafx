@@ -240,7 +240,7 @@ public class OCRController implements Initializable {
 
         if (orX != null && amountX != null) {
             try {
-                File file = new File(System.getenv("RUSH_HOME") + DIVIDER + OCR_PROPERTIES);
+                File file = new File(RUSH_HOME + DIVIDER + OCR_PROPERTIES);
 
                 if (!file.exists()) {
                     file.createNewFile();
@@ -284,7 +284,7 @@ public class OCRController implements Initializable {
     private void loadSavedConfig() {
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(System.getenv("RUSH_HOME") + DIVIDER + OCR_PROPERTIES);
+            InputStream inputStream = new FileInputStream(RUSH_HOME + DIVIDER + OCR_PROPERTIES);
             prop.load(inputStream);
 
             savedAmountPosX = prop.getProperty("sales_pos_x").isEmpty() ? null : Double.parseDouble(prop.getProperty("sales_pos_x"));

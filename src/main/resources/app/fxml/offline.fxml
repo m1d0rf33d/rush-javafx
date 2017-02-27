@@ -7,21 +7,25 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="700.0" minHeight="-Infinity" minWidth="500.0" prefHeight="900.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.OfflineController">
+<VBox maxHeight="-Infinity" maxWidth="1000" minHeight="-Infinity" minWidth="500.0" prefHeight="900.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.OfflineController">
    <children>
-      <Label text="OFFLINE TRANSACTIONS">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <HBox prefHeight="50.0" prefWidth="200.0">
+      <HBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="900.0" minWidth="600.0" prefHeight="50.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+         <children>
+            <Label text="OFFLINE TRANSACTIONS">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <HBox maxHeight="50.0" maxWidth="900.0" minWidth="600.0" prefHeight="50.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
          <children>
             <Label prefHeight="50.0" prefWidth="50.0" text="Filter:">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <MenuButton fx:id="statusMenuButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0">
+            <MenuButton fx:id="statusMenuButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0" style="-fx-background-radius: 0;">
               <items>
                 <MenuItem mnemonicParsing="false" text="Action 1" />
                 <MenuItem mnemonicParsing="false" text="Action 2" />
@@ -30,7 +34,7 @@
                   <Insets top="5.0" />
                </HBox.margin>
             </MenuButton>
-            <TextField fx:id="searchTextField" prefHeight="30.0" prefWidth="200.0">
+            <TextField fx:id="searchTextField" prefHeight="30.0" prefWidth="200.0" style="-fx-background-radius: 0;">
                <HBox.margin>
                   <Insets left="20.0" top="5.0" />
                </HBox.margin>
@@ -40,8 +44,15 @@
             <Insets top="10.0" />
          </VBox.margin>
       </HBox>
-      <Pagination fx:id="transactionsPagination" maxHeight="400.0" prefHeight="400.0" prefWidth="200.0" />
-      <VBox alignment="TOP_CENTER">
+      <HBox maxHeight="400.0" maxWidth="900.0" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+         <children>
+            <Pagination fx:id="transactionsPagination" maxHeight="400.0" maxWidth="900.0" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" HBox.hgrow="ALWAYS" />
+         </children>
+         <padding>
+            <Insets left="50.0" right="50.0" />
+         </padding>
+      </HBox>
+      <VBox alignment="TOP_CENTER" maxWidth="900.0" minWidth="600.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
          <children>
             <Button fx:id="givePointsButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="GIVE POINTS" textFill="#fffefe">
                <VBox.margin>

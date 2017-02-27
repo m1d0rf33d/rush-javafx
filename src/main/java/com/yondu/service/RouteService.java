@@ -57,9 +57,13 @@ public class RouteService {
             stage.setScene(new Scene(root, 1000,700));
             stage.setTitle(APP_TITLE);
             stage.getIcons().add(new Image(App.class.getResource(AppConfigConstants.R_LOGO).toExternalForm()));
+
             stage.show();
             stage.setMaximized(true);
-            currentStage.close();
+
+            if (currentStage != null) {
+                currentStage.close();
+            }
             App.appContextHolder.setHomeStage(stage);
         } catch (IOException e) {
             e.printStackTrace();

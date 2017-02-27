@@ -39,3 +39,11 @@
     -fx-background-color: derive(#434343,20%);
     -fx-pref-width: 25px;
 }
+
+.table-view .table-cell{
+    -fx-font-size:17px;           //the font size you asked in the comments below
+    /* -fx-text-fill:orange; */
+
+}.table-view .column-header {
+     -fx-font-size:17px;
+ }

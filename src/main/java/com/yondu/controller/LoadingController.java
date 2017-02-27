@@ -88,7 +88,7 @@ public class LoadingController implements Initializable{
                                 stage.resizableProperty().setValue(Boolean.FALSE);
                                 stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
                                 stage.show();
-                                App.appContextHolder.setPreviousStage("GIVE_POINTS_OCR");
+                             //   App.appContextHolder.setPreviousStage("GIVE_POINTS_OCR");
                                 ((Stage)rushLogoImage.getScene().getWindow()).close();
                             }catch (Exception err){
                                 err.printStackTrace();

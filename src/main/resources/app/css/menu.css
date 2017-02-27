@@ -47,3 +47,8 @@
 }.table-view .column-header {
      -fx-font-size:17px;
  }
+
+ .lbl-med {
+     -fx-font-size: 17px;
+     -fx-font-weight: bold;
+ }

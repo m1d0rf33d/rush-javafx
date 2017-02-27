@@ -16,7 +16,7 @@
                <children>
                   <Label prefHeight="50.0" prefWidth="350.0" text="PAY WITH POINTS">
                      <font>
-                        <Font name="System Bold" size="15.0" />
+                        <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
                </children>
@@ -26,7 +26,7 @@
             </VBox>
             <VBox prefHeight="50.0" prefWidth="170.0">
                <children>
-                  <Button fx:id="ocrButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #333;" text="OCR" textFill="#f5efef">
+                  <Button fx:id="ocrButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #53585b;" text="OCR" textFill="#f5efef">
                      <font>
                         <Font name="System Bold" size="17.0" />
                      </font>
@@ -64,7 +64,7 @@
             </Line>
             <Label text="BASIC INFORMATION" textFill="#a19797">
                <font>
-                  <Font size="15.0" />
+                  <Font size="17.0" />
                </font>
                <VBox.margin>
                   <Insets left="50.0" top="20.0" />
@@ -78,7 +78,7 @@
                <children>
                   <Label text="Member ID">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -90,7 +90,7 @@
                <children>
                   <Label text="Name">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -99,7 +99,7 @@
                <children>
                   <Label text="Mobiler Number">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -112,7 +112,7 @@
                <children>
                   <Label fx:id="memberIdLabel">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -124,7 +124,7 @@
                <children>
                   <Label fx:id="nameLabel">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -133,7 +133,7 @@
                <children>
                   <Label fx:id="mobileNumberLabel">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -146,7 +146,7 @@
                <children>
                   <Label text="Date of Birth">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -158,7 +158,7 @@
                <children>
                   <Label text="Gender">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -167,7 +167,7 @@
                <children>
                   <Label text="Member Since">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -180,7 +180,7 @@
                <children>
                   <Label fx:id="birthdateLabel">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -192,7 +192,7 @@
                <children>
                   <Label fx:id="genderLabel">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -201,7 +201,7 @@
                <children>
                   <Label fx:id="membershipDateLabel">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -214,7 +214,7 @@
                <children>
                   <Label text="Email">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -226,7 +226,7 @@
                <children>
                   <Label text="Available Points">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -241,7 +241,7 @@
                <children>
                   <Label text="Points in Peso value">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -252,7 +252,10 @@
          <children>
             <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label fx:id="emailLabel" />
+                  <Label fx:id="emailLabel">
+                     <font>
+                        <Font size="17.0" />
+                     </font></Label>
                </children>
                <HBox.margin>
                   <Insets left="50.0" />
@@ -260,7 +263,10 @@
             </VBox>
             <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label fx:id="pointsLabel" />
+                  <Label fx:id="pointsLabel">
+                     <font>
+                        <Font size="17.0" />
+                     </font></Label>
                </children>
                <HBox.margin>
                   <Insets />
@@ -271,7 +277,10 @@
                   <Insets />
                </HBox.margin>
                <children>
-                  <Label fx:id="pesoValueLabel" />
+                  <Label fx:id="pesoValueLabel">
+                     <font>
+                        <Font size="17.0" />
+                     </font></Label>
                </children>
             </VBox>
          </children>
@@ -285,24 +294,30 @@
                <children>
                   <Label maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" text="Receipt No" VBox.vgrow="ALWAYS">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                      <VBox.margin>
                         <Insets left="5.0" />
                      </VBox.margin></Label>
-                  <TextField fx:id="receiptTextField" maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS" />
+                  <TextField fx:id="receiptTextField" maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
+                     <font>
+                        <Font size="17.0" />
+                     </font></TextField>
                </children>
             </VBox>
             <VBox maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
                   <Label maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" text="Purchase Amount" VBox.vgrow="ALWAYS">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                      <VBox.margin>
                         <Insets left="5.0" />
                      </VBox.margin></Label>
-                  <TextField fx:id="amountTextField" maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS" />
+                  <TextField fx:id="amountTextField" maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
+                     <font>
+                        <Font size="17.0" />
+                     </font></TextField>
                </children>
                <opaqueInsets>
                   <Insets />
@@ -315,12 +330,15 @@
                <children>
                   <Label maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" text="Total Points to Pay" VBox.vgrow="ALWAYS">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                      <VBox.margin>
                         <Insets left="5.0" />
                      </VBox.margin></Label>
-                  <TextField fx:id="pointsTextField" maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS" />
+                  <TextField fx:id="pointsTextField" maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
+                     <font>
+                        <Font size="17.0" />
+                     </font></TextField>
                </children>
                <opaqueInsets>
                   <Insets />

@@ -291,7 +291,7 @@ public class OfflineController implements Initializable {
         mobileCol.setCellValueFactory(
                 new PropertyValueFactory<>("mobileNumber"));
 
-        TableColumn orCol = new TableColumn("OR NUMBER");
+        TableColumn orCol = new TableColumn("OR Number");
         orCol.setPrefWidth(150);
         orCol.setCellValueFactory(
                 new PropertyValueFactory<>("orNumber"));

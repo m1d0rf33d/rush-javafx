@@ -16,7 +16,7 @@
                <children>
                   <Label prefHeight="50.0" prefWidth="350.0" text="TRANSACTIONS">
                      <font>
-                        <Font name="System Bold" size="15.0" />
+                        <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
                </children>
@@ -46,7 +46,7 @@
             </Line>
             <Label text="BASIC INFORMATION" textFill="#a19797">
                <font>
-                  <Font size="15.0" />
+                  <Font size="17.0" />
                </font>
                <VBox.margin>
                   <Insets left="50.0" top="20.0" />
@@ -60,7 +60,7 @@
                <children>
                   <Label text="Member ID">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -72,7 +72,7 @@
                <children>
                   <Label text="Name">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -81,7 +81,7 @@
                <children>
                   <Label text="Mobiler Number">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -94,7 +94,7 @@
                <children>
                   <Label fx:id="memberIdLabel">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -106,7 +106,7 @@
                <children>
                   <Label fx:id="nameLabel">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -115,7 +115,7 @@
                <children>
                   <Label fx:id="mobileNumberLabel">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -128,7 +128,7 @@
                <children>
                   <Label text="Date of Birth">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -140,7 +140,7 @@
                <children>
                   <Label text="Gender">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -149,7 +149,7 @@
                <children>
                   <Label text="Member Since">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -162,7 +162,7 @@
                <children>
                   <Label fx:id="birthdateLabel">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -174,7 +174,7 @@
                <children>
                   <Label fx:id="genderLabel">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -183,7 +183,7 @@
                <children>
                   <Label fx:id="membershipDateLabel">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -196,7 +196,7 @@
                <children>
                   <Label text="Email">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -208,7 +208,7 @@
                <children>
                   <Label text="Available Points">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -220,7 +220,7 @@
                <children>
                   <Label>
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -234,7 +234,10 @@
          <children>
             <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label fx:id="emailLabel" />
+                  <Label fx:id="emailLabel">
+                     <font>
+                        <Font size="17.0" />
+                     </font></Label>
                </children>
                <HBox.margin>
                   <Insets left="50.0" />
@@ -242,7 +245,10 @@
             </VBox>
             <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label fx:id="pointsLabel" />
+                  <Label fx:id="pointsLabel">
+                     <font>
+                        <Font size="17.0" />
+                     </font></Label>
                </children>
                <HBox.margin>
                   <Insets />
@@ -250,7 +256,10 @@
             </VBox>
             <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label fx:id="pesoValueLabel" />
+                  <Label fx:id="pesoValueLabel">
+                     <font>
+                        <Font size="17.0" />
+                     </font></Label>
                </children>
                <HBox.margin>
                   <Insets />
@@ -262,16 +271,19 @@
          <children>
             <Label prefWidth="50.0" text="Filter: ">
                <font>
-                  <Font size="15.0" />
+                  <Font size="17.0" />
                </font>
                <HBox.margin>
                   <Insets bottom="5.0" left="50.0" />
                </HBox.margin>
             </Label>
-            <TextField fx:id="searchTextField" prefWidth="200.0" style="-fx-background-radius: 0;" />
+            <TextField fx:id="searchTextField" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-radius: 0;">
+               <font>
+                  <Font size="17.0" />
+               </font></TextField>
          </children>
       </HBox>
-      <Pagination fx:id="pagination" maxHeight="400.0" minHeight="400.0" prefHeight="400.0" prefWidth="200.0">
+      <Pagination fx:id="pagination" maxHeight="500.0" minHeight="500.0" prefHeight="500.0" prefWidth="200.0">
          <VBox.margin>
             <Insets left="50.0" right="50.0" top="20.0" />
          </VBox.margin>

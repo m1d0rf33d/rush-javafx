@@ -129,6 +129,7 @@ public class RewardDialogController implements Initializable {
                         vBox.getChildren().add(imageView);
                         Label label = new Label();
                         label.setText(reward.getName());
+                        label.getStyleClass().add("lbl-med");
                         vBox.getChildren().addAll(label);
                         vBox.setPrefWidth(200);
                         vBox.setMargin(imageView, new Insets(10,10,10,10));
@@ -163,6 +164,7 @@ public class RewardDialogController implements Initializable {
 
         try {
             Stage stage = new Stage();
+            stage.resizableProperty().setValue(Boolean.FALSE);
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REWARDS_DIALOG_SCREEN));
             Parent root = fxmlLoader.load();
             RewardDialogController controller = fxmlLoader.getController();

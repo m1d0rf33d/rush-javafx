@@ -193,7 +193,7 @@ public class LoginOnlineController implements Initializable{
             alert.getDialogPane().setPrefWidth(400);
             alert.show();
 
-            StackPane bodyStackPane = (StackPane) App.appContextHolder.getRootVBox().getScene().lookup("#bodyStackPane");
+            StackPane bodyStackPane = (StackPane) App.appContextHolder.getLoginHBox().getScene().lookup("#bodyStackPane");
             bodyStackPane.getChildren().clear();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(AppConfigConstants.LOGIN_OFFLINE_FXML));
             Parent root = fxmlLoader.load();

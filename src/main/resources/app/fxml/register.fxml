@@ -15,7 +15,7 @@
          <children>
             <Label prefHeight="21.0" prefWidth="256.0" text="REGISTER NEW MEMBER">
                <font>
-                  <Font size="18.0" />
+                  <Font name="System Bold" size="18.0" />
                </font>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -35,7 +35,7 @@
             </Line>
             <Label text="General Information" textFill="#a19797">
                <font>
-                  <Font size="15.0" />
+                  <Font size="17.0" />
                </font>
                <VBox.margin>
                   <Insets top="20.0" />
@@ -50,11 +50,17 @@
          <children>
             <VBox maxWidth="500.0" minWidth="300.0" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <children>
-                  <Label prefHeight="50.0" text="MEMBER NAME" />
+                  <Label prefHeight="50.0" text="MEMBER NAME">
+                     <font>
+                        <Font size="17.0" />
+                     </font></Label>
                   <TextField fx:id="nameTextField" maxWidth="450.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
+                     <font>
+                        <Font size="15.0" />
+                     </font>
                   </TextField>
                </children>
                <HBox.margin>
@@ -63,11 +69,17 @@
             </VBox>
             <VBox maxWidth="500.0" minWidth="300" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <children>
-                  <Label prefHeight="50.0" text="MOBILE NUMBER" />
+                  <Label prefHeight="50.0" text="MOBILE NUMBER">
+                     <font>
+                        <Font size="17.0" />
+                     </font></Label>
                   <TextField fx:id="mobileTextField" maxWidth="450.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
+                     <font>
+                        <Font size="15.0" />
+                     </font>
                   </TextField>
                </children>
                <HBox.margin>
@@ -83,11 +95,17 @@
          <children>
             <VBox maxWidth="500.0" minWidth="300.0" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <children>
-                  <Label prefHeight="50.0" text="EMAIL" />
+                  <Label prefHeight="50.0" text="EMAIL">
+                     <font>
+                        <Font size="17.0" />
+                     </font></Label>
                   <TextField fx:id="emailTextField" maxWidth="450.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
+                     <font>
+                        <Font size="15.0" />
+                     </font>
                   </TextField>
                </children>
                <HBox.margin>
@@ -96,7 +114,10 @@
             </VBox>
             <VBox maxWidth="500.0" minWidth="300" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <children>
-                  <Label prefHeight="50.0" text="BIRTHDATE" />
+                  <Label prefHeight="50.0" text="BIRTHDATE">
+                     <font>
+                        <Font size="17.0" />
+                     </font></Label>
                   <DatePicker fx:id="birthdatePicker" maxWidth="450.0" minHeight="40.0" minWidth="300.0" prefHeight="40.0" prefWidth="300.0" style="-fx-background-radius: 0;" VBox.vgrow="ALWAYS" />
                </children>
                <HBox.margin>
@@ -112,18 +133,27 @@
          <children>
             <VBox maxWidth="500.0" minWidth="300.0" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <children>
-                  <Label prefHeight="50.0" text="GENDER" />
+                  <Label prefHeight="50.0" text="GENDER">
+                     <font>
+                        <Font size="17.0" />
+                     </font></Label>
                   <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                      <children>
                         <RadioButton fx:id="maleRadioButton" mnemonicParsing="false" text="Male">
                            <HBox.margin>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </HBox.margin>
+                           <font>
+                              <Font size="17.0" />
+                           </font>
                         </RadioButton>
                         <RadioButton fx:id="femaleRadioButton" mnemonicParsing="false" text="Female">
                            <HBox.margin>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </HBox.margin>
+                           <font>
+                              <Font size="17.0" />
+                           </font>
                         </RadioButton>
                      </children>
                      <padding>
@@ -140,11 +170,17 @@
             </VBox>
             <VBox maxWidth="500.0" minWidth="300" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                <children>
-                  <Label prefHeight="50.0" text="4 Digit M-PIN" />
+                  <Label prefHeight="50.0" text="4 Digit M-PIN">
+                     <font>
+                        <Font size="17.0" />
+                     </font></Label>
                   <TextField fx:id="mpinTextField" maxWidth="450.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
+                     <font>
+                        <Font size="15.0" />
+                     </font>
                   </TextField>
                </children>
                <HBox.margin>

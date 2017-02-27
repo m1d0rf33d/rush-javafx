@@ -15,7 +15,7 @@
          <children>
             <Label text="SETUP OCR">
                <font>
-                  <Font size="17.0" />
+                  <Font name="System Bold" size="18.0" />
                </font>
                <HBox.margin>
                   <Insets left="50.0" top="10.0" />
@@ -32,7 +32,7 @@
             </Line>
             <Label text="Locate the screen position where the amount and receipt number will be captured." textFill="#a19797">
                <font>
-                  <Font size="15.0" />
+                  <Font size="17.0" />
                </font>
                <VBox.margin>
                   <Insets left="50.0" top="20.0" />
@@ -51,13 +51,16 @@
                               <Insets left="10.0" />
                            </HBox.margin>
                            <font>
-                              <Font size="15.0" />
+                              <Font size="17.0" />
                            </font>
                         </Label>
                         <TextField fx:id="amountPosTextField" prefHeight="30.0" prefWidth="200.0" style="-fx-background-radius: 0;">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>
+                           <font>
+                              <Font size="17.0" />
+                           </font>
                         </TextField>
                         <ImageView fx:id="amountPosImageView" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <HBox.margin>
@@ -83,13 +86,16 @@
                               <Insets left="10.0" />
                            </HBox.margin>
                            <font>
-                              <Font size="15.0" />
+                              <Font size="17.0" />
                            </font>
                         </Label>
                         <TextField fx:id="orPosTextField" prefHeight="30.0" prefWidth="200.0" style="-fx-background-radius: 0;">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>
+                           <font>
+                              <Font size="17.0" />
+                           </font>
                         </TextField>
                         <ImageView fx:id="orPosImageView" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <HBox.margin>
@@ -129,7 +135,7 @@
             <Insets bottom="20.0" left="150.0" top="10.0" />
          </VBox.margin>
          <font>
-            <Font size="15.0" />
+            <Font size="17.0" />
          </font>
       </Label>
       <HBox prefHeight="100.0" prefWidth="200.0">

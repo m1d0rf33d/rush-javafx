@@ -22,6 +22,8 @@ import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -107,8 +109,9 @@ public class RedeemRewardsController implements Initializable {
             });
             vBox.getChildren().add(imageView);
             Label label = new Label();
-            label.setText(reward.getName());/*
-            vBox.getChildren().addAll(label);*/
+            label.setText(reward.getName());
+            label.getStyleClass().add("lbl-med");
+            vBox.getChildren().addAll(label);
             vBox.setPrefWidth(200);
             vBox.setMargin(imageView, new Insets(10,10,10,10));
             vBox.setMargin(label, new Insets(10,10,10,10));
@@ -134,7 +137,7 @@ public class RedeemRewardsController implements Initializable {
             controller.setCustomer(customer);
             controller.setReward(reward);
             controller.setPointsLabel(pointsLabel);
-            Scene scene = new Scene(root, 600,400);
+            Scene scene = new Scene(root, 500,300);
             stage.setScene(scene);
             stage.setTitle(APP_TITLE);
             stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));

@@ -81,7 +81,7 @@ public class MobileLoginController implements Initializable {
                     for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
                         n.setDisable(false);
                     }
-
+                    commonService.updateButtonState();
                     Text text = new Text(apiResponse.getMessage());
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
                     alert.setTitle(AppConfigConstants.APP_TITLE);

@@ -24,6 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.apache.http.NameValuePair;
@@ -137,6 +138,7 @@ public class IssueRewardsController implements Initializable{
             vBox.getChildren().add(imageView);
             Label label = new Label();
             label.setText(reward.getName());
+            label.getStyleClass().add("lbl-med");
             vBox.getChildren().addAll(label);
             vBox.setPrefWidth(200);
             vBox.setMargin(imageView, new Insets(10,10,10,10));
@@ -156,6 +158,7 @@ public class IssueRewardsController implements Initializable{
 
         try {
             Stage stage = new Stage();
+            stage.resizableProperty().setValue(Boolean.FALSE);
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REWARDS_DIALOG_SCREEN));
             Parent root = fxmlLoader.load();
             RewardDialogController controller = fxmlLoader.getController();

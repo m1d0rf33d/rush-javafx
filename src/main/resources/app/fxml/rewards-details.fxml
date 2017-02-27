@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
@@ -16,27 +17,30 @@
       </VBox>
       <VBox maxHeight="400.0" prefHeight="400.0" prefWidth="370.0">
          <children>
-            <Label fx:id="nameLabel" prefHeight="50.0" prefWidth="300.0" text="Name">
+            <Label fx:id="nameLabel" prefHeight="50.0" prefWidth="300.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font></Label>
+            <Label fx:id="requiredPointsLabel" textFill="#cd0b0b">
                <font>
                   <Font size="17.0" />
                </font></Label>
-            <Label fx:id="requiredPointsLabel" text="Points" textFill="#cd0b0b">
-               <font>
-                  <Font size="15.0" />
-               </font></Label>
             <Label fx:id="detailsLabel" ellipsisString="" maxHeight="500.0" maxWidth="300.0" prefHeight="200.0" prefWidth="200.0" text="Details" textFill="#514646" textOverrun="CLIP" wrapText="true">
                <font>
-                  <Font size="15.0" />
+                  <Font size="17.0" />
                </font></Label>
             <StackPane prefHeight="50.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="redeemButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="REDEEM" textFill="#fffbfb">
+                  <Button fx:id="redeemButton" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="REDEEM" textFill="#fffbfb">
                      <font>
                         <Font name="System Bold" size="17.0" />
-                     </font></Button>
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="OPEN_HAND" />
+                     </cursor></Button>
                   <Label fx:id="lockLabel" text="You have insufficient points for this reward.">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="17.0" />
                      </font></Label>
                </children>
             </StackPane>

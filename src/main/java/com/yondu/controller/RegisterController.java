@@ -5,14 +5,18 @@ import com.yondu.model.ApiResponse;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.service.RegisterService;
 import com.yondu.utils.PropertyBinder;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -59,23 +63,34 @@ public class RegisterController implements Initializable {
         });
 
         registerButton.setOnMouseClicked((MouseEvent e) -> {
-            String name = nameTextField.getText();
-            String email = emailTextField.getText();
-            String mobile = mobileTextField.getText();
-            String mpin = mpinTextField.getText();
-            LocalDate birthDate = birthdatePicker.getValue();
-            String gender = null;
 
-            Toggle selectedToggle = toggleGroup.getSelectedToggle();
-            if (selectedToggle != null) {
-                gender = selectedToggle.getUserData().toString();
-            }
-            ApiResponse apiResponse = registerService.register(name, email, mobile, mpin, birthDate, gender);
+            disableMenu();
+            PauseTransition pause = new PauseTransition(
+                    Duration.seconds(.5)
+            );
+            pause.setOnFinished(event -> {
+                String name = nameTextField.getText();
+                String email = emailTextField.getText();
+                String mobile = mobileTextField.getText();
+                String mpin = mpinTextField.getText();
+                LocalDate birthDate = birthdatePicker.getValue();
+                String gender = null;
 
-            if (apiResponse.isSuccess()) {
-                clearFields();
-            }
-            notifyRegistrationResult(apiResponse.getMessage(), nameTextField.getScene().getWindow());
+                Toggle selectedToggle = toggleGroup.getSelectedToggle();
+                if (selectedToggle != null) {
+                    gender = selectedToggle.getUserData().toString();
+                }
+
+                ApiResponse apiResponse = registerService.register(name, email, mobile, mpin, birthDate, gender);
+
+                if (apiResponse.isSuccess()) {
+                    clearFields();
+                }
+                notifyRegistrationResult(apiResponse.getMessage(), nameTextField.getScene().getWindow());
+                enableMenu();
+            });
+            pause.play();
+
         });
 
         clearButton.setOnMouseClicked((MouseEvent e) -> {
@@ -108,5 +123,18 @@ public class RegisterController implements Initializable {
         alert.getDialogPane().setContent(text);
         alert.getDialogPane().setPrefWidth(400);
         alert.show();
+    }
+
+    public void disableMenu() {
+        App.appContextHolder.getRootVBox().setOpacity(.50);
+        for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+            n.setDisable(true);
+        }
+    }
+    public void enableMenu() {
+        App.appContextHolder.getRootVBox().setOpacity(1);
+        for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+            n.setDisable(false);
+        }
     }
 }

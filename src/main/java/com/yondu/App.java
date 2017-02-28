@@ -38,6 +38,10 @@ public class App extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        File file = new File(RUSH_HOME + DIVIDER + LOCK_FILE);
+        if (file.exists()) {
+            file.createNewFile();
+        }
          appContextHolder.getRouteService().goToLoginScreen(null);
     }
 

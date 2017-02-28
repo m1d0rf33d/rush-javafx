@@ -1,5 +1,6 @@
 package com.yondu.controller;
 
+import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
 import com.yondu.model.Branch;
 import com.yondu.model.constants.ApiFieldContants;
@@ -8,6 +9,8 @@ import com.yondu.service.ApiService;
 import com.yondu.service.CommonService;
 import com.yondu.utils.PropertyBinder;
 import javafx.animation.PauseTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -59,6 +62,34 @@ public class LoginOfflineController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        //Event handlers for clickable nodes
+        mobileTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+            {
+                if (newPropertyValue)
+                    FXVK.detach();
+            }
+
+        });
+        //Event handlers for clickable nodes
+        orTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+            {
+                if (newPropertyValue)
+                    FXVK.detach();
+            }
+
+        });
+        //Event handlers for clickable nodes
+        amountTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+            {
+                if (newPropertyValue)
+                    FXVK.detach();
+            }
+
+        });
 
         PropertyBinder.bindAmountOnly(amountTextField);
         PropertyBinder.addComma(amountTextField);

@@ -1,5 +1,6 @@
 package com.yondu.controller;
 
+import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
 import com.yondu.AppContextHolder;
 import com.yondu.model.Branch;
@@ -7,6 +8,8 @@ import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.utils.PropertyBinder;
 import javafx.animation.PauseTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,6 +20,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -50,7 +54,15 @@ public class LoginOnlineController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //Event handlers for clickable nodes
+        loginTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+            {
+                if (newPropertyValue)
+                    FXVK.detach();
+            }
 
+        });
         PropertyBinder.bindNumberWitDot(loginTextField);
 
         loginButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
@@ -193,6 +205,8 @@ public class LoginOnlineController implements Initializable{
             alert.getDialogPane().setPrefWidth(400);
             alert.show();
 
+            VBox numbersVBox = (VBox) App.appContextHolder.getLoginHBox().getScene().lookup("#numbersVBox");
+            numbersVBox.setVisible(false);
             StackPane bodyStackPane = (StackPane) App.appContextHolder.getLoginHBox().getScene().lookup("#bodyStackPane");
             bodyStackPane.getChildren().clear();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(AppConfigConstants.LOGIN_OFFLINE_FXML));

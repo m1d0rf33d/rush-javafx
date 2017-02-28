@@ -7,14 +7,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox fx:controller="com.yondu.controller.LoginOnlineController" fx:id="onlineVBox" alignment="TOP_CENTER" maxWidth="+Infinity" prefHeight="200.0" prefWidth="100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="onlineVBox" alignment="TOP_CENTER" maxWidth="+Infinity" prefHeight="200.0" prefWidth="100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.LoginOnlineController">
    <children>
       <Label text="EMPLOYEE LOGIN">
          <font>
             <Font size="25.0" />
          </font>
       </Label>
-      <TextField fx:id="loginTextField" alignment="CENTER" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="400.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
+      <TextField fx:id="loginTextField" alignment="CENTER" maxWidth="300.0" minHeight="-Infinity" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
          <font>
             <Font size="17.0" />
          </font>
@@ -22,12 +22,12 @@
             <Insets top="15.0" />
          </VBox.margin>
       </TextField>
-      <ComboBox fx:id="branchComboBox" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: f4f4f4;" VBox.vgrow="ALWAYS">
+      <ComboBox fx:id="branchComboBox" maxWidth="300.0" minHeight="-Infinity" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: f4f4f4;" VBox.vgrow="ALWAYS">
          <VBox.margin>
             <Insets top="15.0" />
          </VBox.margin>
       </ComboBox>
-      <Button fx:id="loginButton" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="LOGIN" textFill="#f5f2f2" VBox.vgrow="ALWAYS">
+      <Button fx:id="loginButton" maxWidth="300.0" minHeight="-Infinity" minWidth="300.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="LOGIN" textFill="#f5f2f2" VBox.vgrow="ALWAYS">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>

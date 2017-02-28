@@ -24,6 +24,7 @@ import javafx.util.Duration;
 import org.json.simple.JSONObject;
 
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 import static com.yondu.model.constants.AppConfigConstants.MEMBER_INQUIRY_SCREEN;
@@ -64,6 +65,7 @@ public class EarnPointsController implements Initializable {
     public Button exitButton;
 
     private Customer customer;
+    private DecimalFormat df2 = new DecimalFormat(".##");
     private PointsRule pointsRule;
 
     private EarnPointsService earnPointsService = new EarnPointsService();
@@ -96,10 +98,11 @@ public class EarnPointsController implements Initializable {
         });
 
         amountTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!amountTextField.getText().isEmpty()) {
-                Double amount = Double.parseDouble(amountTextField.getText().replaceAll("[.,]", ""));
+            if (amountTextField != null && !amountTextField.getText().isEmpty()) {
+                Double amount = Double.parseDouble(amountTextField.getText().replaceAll("[,]", ""));
                 if (pointsRule != null) {
-                    pointsTextField.setText(String.valueOf(amount / pointsRule.getEarningPeso()));
+
+                    pointsTextField.setText(df2.format(amount / pointsRule.getEarningPeso()));
                 }
             } else {
                 pointsTextField.setText(null);

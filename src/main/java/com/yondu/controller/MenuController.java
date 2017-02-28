@@ -280,7 +280,7 @@ public class MenuController implements Initializable {
         sideBarVBox.getChildren().clear();
         //Get employee screen access
         String url = CMS_URL + TOMCAT_PORT + ACCESS_ENDPOINT;
-        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
+        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":branch_id", App.appContextHolder.getBranchId());
         JSONObject jsonObj = apiService.callWidgetAPI(url, new JSONObject(), "get");
         if (jsonObj != null) {
             JSONObject dataJson = (JSONObject) jsonObj.get("data");

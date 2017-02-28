@@ -82,7 +82,7 @@ public class OcrService {
             javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
 
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(RUSH_HOME + DIVIDER + TESSERACT_FOLDER);
+            tesseract.setDatapath(App.appContextHolder.TESSERACT_HOME);
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = null;

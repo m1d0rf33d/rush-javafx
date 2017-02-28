@@ -7,6 +7,7 @@ import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.service.ApiService;
 import com.yondu.service.OfflineService;
 import javafx.animation.PauseTransition;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -307,8 +308,11 @@ public class OfflineController implements Initializable {
         messageCol.setCellValueFactory(
                 new PropertyValueFactory<>("message"));
 
-
+        TableColumn amountCol = new TableColumn("Amount");
+        amountCol.setPrefWidth(100);
+        amountCol.setCellValueFactory(
+                new PropertyValueFactory<>("amount"));
         tableView.getColumns().clear();
-        tableView.getColumns().addAll(dateCol, mobileCol, orCol, statusCol, messageCol);
+        tableView.getColumns().addAll(dateCol, mobileCol,amountCol, orCol, statusCol, messageCol);
     }
 }

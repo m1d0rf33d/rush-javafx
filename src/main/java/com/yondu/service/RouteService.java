@@ -460,7 +460,7 @@ public class RouteService {
                 controller.setAmountTextField(amount);
                 controller.setPointsLabel(pointsLabel);
                 controller.setPesoValueLabel(pesoValueLabel);
-                Scene scene = new Scene(root, 600,400);
+                Scene scene = new Scene(root, 500,300);
                 stage.setScene(scene);
                 stage.setTitle(APP_TITLE);
                 stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));

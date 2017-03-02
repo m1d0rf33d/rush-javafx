@@ -1,10 +1,7 @@
 package com.yondu.service;
 
 import com.yondu.App;
-import com.yondu.model.ApiResponse;
-import com.yondu.model.Customer;
-import com.yondu.model.Employee;
-import com.yondu.model.Reward;
+import com.yondu.model.*;
 import com.yondu.model.constants.ApiFieldContants;
 import javafx.stage.Stage;
 import org.apache.http.NameValuePair;
@@ -56,23 +53,7 @@ public class MemberDetailsService {
                 String points = (String) jsonObject.get("data");
                 customer.setAvailablePoints(points);
 
-                url = BASE_URL + CUSTOMER_REWARDS_ENDPOINT;
-                url = url.replace(":id",App.appContextHolder.getCustomerUUID());
-                jsonObject = apiService.call(url, params, "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
-                List<JSONObject> dataJSON = (ArrayList) jsonObject.get("data");
-                List<Reward> rewards = new ArrayList<>();
-                for (JSONObject rewardJSON : dataJSON) {
-                    Reward reward = new Reward();
-                    reward.setDetails((String) rewardJSON.get("details"));
-                    reward.setName((String) rewardJSON.get("name"));
-                    reward.setQuantity((rewardJSON.get("quantity")).toString());
-                    reward.setId(String.valueOf((Long) rewardJSON.get("id")));
-                    reward.setImageUrl((String) rewardJSON.get("image_url"));
-                    reward.setDate((String) rewardJSON.get("date"));
-                    reward.setPointsRequired(String.valueOf((Long) rewardJSON.get("points")));
-                    rewards.add(reward);
-                }
-                customer.setActiveVouchers(rewards);
+                App.appContextHolder.setCustomer(customer);
                 apiResponse.setSuccess(true);
                 apiResponse.setMessage("Redeem reward successful.");
             } else {
@@ -85,6 +66,40 @@ public class MemberDetailsService {
 
         apiResponse.setPayload(payload);
         return apiResponse;
+    }
+
+    public CustomerCard getCustomerCard() {
+
+        List<NameValuePair> params = new ArrayList<>();
+        String url = BASE_URL + CUSTOMER_CARD_ENDPOINT;
+        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
+        JSONObject jsonObject = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        if (jsonObject != null) {
+            CustomerCard card = new CustomerCard();
+
+            JSONObject data = (JSONObject) jsonObject.get("data");
+            JSONObject promoJSON = (JSONObject) data.get("promo");
+
+            Promo promo = new Promo();
+            List<Reward> rewards = new ArrayList<>();
+            List<JSONObject> rewardsJSON = (ArrayList) promoJSON.get("rewards");
+            for (JSONObject rewardJSON : rewardsJSON) {
+                Reward reward = new Reward();
+                reward.setId((String) rewardJSON.get("id"));
+                reward.setImageUrl((String) rewardJSON.get("image_url"));
+                reward.setDetails((String) rewardJSON.get("details"));
+                reward.setName((String) rewardJSON.get("name"));
+                reward.setStamps(((Long) rewardJSON.get("stamps")).intValue());
+                rewards.add(reward);
+            }
+            if (data.get("stamps") != null) {
+                promo.setStamps(((Long) data.get("stamps")).intValue());
+            }
+            promo.setRewards(rewards);
+            card.setPromo(promo);
+            return card;
+        }
+        return null;
     }
 
     public ApiResponse getCurrentPoints() {

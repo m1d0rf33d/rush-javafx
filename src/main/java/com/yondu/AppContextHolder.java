@@ -1,14 +1,18 @@
 package com.yondu;
 
+import com.yondu.model.*;
 import com.yondu.model.constants.AppState;
 import com.yondu.service.ApiService;
 import com.yondu.service.RouteService;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 /** This will serve as a single instance application context holder that
  *  contains shared data within the application. I don't want to fckng pass shared variables on every
@@ -17,247 +21,35 @@ import javafx.stage.Stage;
  */
 public class AppContextHolder {
 
-    //Reference for logged in employee
-    private String employeeId;
-    private String employeeName;
-    private String branchId;
-    private String branchName;
+    private AppState currentState;
+    private AppState prevState;
+    private Merchant merchant;
+    private Reward reward;
+    private Customer customer;
+    private Branch branch;
+    private Employee employee;
+    private VBox rootContainer;
+    private PointsRule pointsRule;
 
-    //Reference for logged in customer
-    private String customerMobile;
-    private String customerUUID;
-
-    //Temporary OCR configuration
-    private Integer salesPosX;
-    private Integer salesPosY;
-    private Integer salesWidth;
-    private Integer salesHeight;
-
-    private Integer orNumberPosX;
-    private Integer orNumberPosY;
-    private Integer orNumberWidth;
-    private Integer orNumberHeight;
-
-    //Stage references
-    private Stage homeStage;
-    private boolean onlineMode;
+    private List<Branch> branches;
     private Stage orCaptureStage;
     private Stage salesCaptureStage;
-    private Stage loadingStage;
-    private boolean isActivated;
-    private Boolean withVk;
-    private Boolean isFirstDisconnect;
+    private OcrConfig ocrConfig;
 
-    private VBox rootVBox;
-    private VBox rootStackPane;
-    private AppState appState;
-    private AppState prevState;
-    private HBox loginHBox;
-
-    //Read endpoints from config file
-    public static String BASE_URL;
-    public static String CMS_URL;
-    public static String TOMCAT_PORT;
-
-    public static String LOGIN_ENDPOINT;
-    public static String AUTHORIZATION_ENDPOINT;
-    public static String REGISTER_ENDPOINT;
-    public static String MEMBER_LOGIN_ENDPOINT;
-    public static String POINTS_CONVERSION_ENDPOINT;
-    public static String GIVE_POINTS_ENDPOINT;
-    public static String GET_POINTS_ENDPOINT;
-    public static String PAY_WITH_POINTS_ENDPOINT;
-    public static String GET_REWARDS_ENDPOINT;
-    public static String GET_REWARDS_MERCHANT_ENDPOINT;
-    public static String REDEEM_REWARDS_ENDPOINT;
-    public static String UNCLAIMED_REWARDS_ENDPOINT;
-    public static String CLAIM_REWARDS_ENDPOINT;
-    public static String GET_BRANCHES_ENDPOINT;
-    public static String CUSTOMER_REWARDS_ENDPOINT;
-    public static String CUSTOMER_TRANSACTION_ENDPOINT;
-    public static String MERCHANT_DESIGNS_ENDPOINT;
-    public static String MERCHANT_SETTINGS_ENDPOINT;
-    public static String EARN_GUEST_ENDPOINT;
-    public static String OAUTH_ENDPOINT;
-    public static String OAUTH_SECRET;
-    public static String VALIDATE_MERCHANT_ENDPOINT;
-    public static String ACCESS_ENDPOINT;
-
-    public static String MERCHANT_APP_KEY;
-    public static String MERCHANT_APP_SECRET;
-    public static String CUSTOMER_APP_KEY;
-    public static String CUSTOMER_APP_SECRET;
-    public static String TESSERACT_HOME;
-
-    private ApiService apiService = new ApiService();
-    private RouteService routeService = new RouteService();
-
-    public HBox getLoginHBox() {
-        return loginHBox;
+    public OcrConfig getOcrConfig() {
+        return ocrConfig;
     }
 
-    public void setLoginHBox(HBox loginHBox) {
-        this.loginHBox = loginHBox;
+    public void setOcrConfig(OcrConfig ocrConfig) {
+        this.ocrConfig = ocrConfig;
     }
 
-    public ApiService getApiService() {
-        return apiService;
+    public PointsRule getPointsRule() {
+        return pointsRule;
     }
 
-    public void setApiService(ApiService apiService) {
-        this.apiService = apiService;
-    }
-
-    public RouteService getRouteService() {
-        return routeService;
-    }
-
-    public void setRouteService(RouteService routeService) {
-        this.routeService = routeService;
-    }
-
-    public AppState getAppState() {
-        return appState;
-    }
-
-    public void setAppState(AppState appState) {
-        this.appState = appState;
-    }
-
-    public VBox getRootStackPane() {
-        return rootStackPane;
-    }
-
-    public void setRootStackPane(VBox rootStackPane) {
-        this.rootStackPane = rootStackPane;
-    }
-
-    public String getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public String getEmployeeName() {
-        return employeeName;
-    }
-
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
-    }
-
-    public String getBranchId() {
-        return branchId;
-    }
-
-    public void setBranchId(String branchId) {
-        this.branchId = branchId;
-    }
-
-    public VBox getRootVBox() {
-        return rootVBox;
-    }
-
-    public void setRootVBox(VBox rootVBox) {
-        this.rootVBox = rootVBox;
-    }
-
-    public String getCustomerMobile() {
-        return customerMobile;
-    }
-
-    public void setCustomerMobile(String customerMobile) {
-        this.customerMobile = customerMobile;
-    }
-
-    public String getCustomerUUID() {
-        return customerUUID;
-    }
-
-    public void setCustomerUUID(String customerUUID) {
-        this.customerUUID = customerUUID;
-    }
-
-    public Integer getSalesPosX() {
-        return salesPosX;
-    }
-
-    public void setSalesPosX(Integer salesPosX) {
-        this.salesPosX = salesPosX;
-    }
-
-    public Integer getSalesPosY() {
-        return salesPosY;
-    }
-
-    public void setSalesPosY(Integer salesPosY) {
-        this.salesPosY = salesPosY;
-    }
-
-    public Integer getSalesWidth() {
-        return salesWidth;
-    }
-
-    public void setSalesWidth(Integer salesWidth) {
-        this.salesWidth = salesWidth;
-    }
-
-    public Integer getSalesHeight() {
-        return salesHeight;
-    }
-
-    public void setSalesHeight(Integer salesHeight) {
-        this.salesHeight = salesHeight;
-    }
-
-    public Integer getOrNumberPosX() {
-        return orNumberPosX;
-    }
-
-    public void setOrNumberPosX(Integer orNumberPosX) {
-        this.orNumberPosX = orNumberPosX;
-    }
-
-    public Integer getOrNumberPosY() {
-        return orNumberPosY;
-    }
-
-    public void setOrNumberPosY(Integer orNumberPosY) {
-        this.orNumberPosY = orNumberPosY;
-    }
-
-    public Integer getOrNumberWidth() {
-        return orNumberWidth;
-    }
-
-    public void setOrNumberWidth(Integer orNumberWidth) {
-        this.orNumberWidth = orNumberWidth;
-    }
-
-    public Integer getOrNumberHeight() {
-        return orNumberHeight;
-    }
-
-    public void setOrNumberHeight(Integer orNumberHeight) {
-        this.orNumberHeight = orNumberHeight;
-    }
-
-    public Stage getHomeStage() {
-        return homeStage;
-    }
-
-    public void setHomeStage(Stage homeStage) {
-        this.homeStage = homeStage;
-    }
-
-    public boolean isOnlineMode() {
-        return onlineMode;
-    }
-
-    public void setOnlineMode(boolean onlineMode) {
-        this.onlineMode = onlineMode;
+    public void setPointsRule(PointsRule pointsRule) {
+        this.pointsRule = pointsRule;
     }
 
     public Stage getOrCaptureStage() {
@@ -276,45 +68,28 @@ public class AppContextHolder {
         this.salesCaptureStage = salesCaptureStage;
     }
 
-    public Stage getLoadingStage() {
-        return loadingStage;
+    public List<Branch> getBranches() {
+        return branches;
     }
 
-    public void setLoadingStage(Stage loadingStage) {
-        this.loadingStage = loadingStage;
+    public void setBranches(List<Branch> branches) {
+        this.branches = branches;
     }
 
-    public boolean isActivated() {
-        return isActivated;
+    public VBox getRootContainer() {
+        return rootContainer;
     }
 
-    public void setActivated(boolean activated) {
-        isActivated = activated;
+    public void setRootContainer(VBox rootContainer) {
+        this.rootContainer = rootContainer;
     }
 
-
-    public Boolean getWithVk() {
-        return withVk;
+    public AppState getCurrentState() {
+        return currentState;
     }
 
-    public void setWithVk(Boolean withVk) {
-        this.withVk = withVk;
-    }
-
-    public Boolean getFirstDisconnect() {
-        return isFirstDisconnect;
-    }
-
-    public void setFirstDisconnect(Boolean firstDisconnect) {
-        isFirstDisconnect = firstDisconnect;
-    }
-
-    public String getBranchName() {
-        return branchName;
-    }
-
-    public void setBranchName(String branchName) {
-        this.branchName = branchName;
+    public void setCurrentState(AppState currentState) {
+        this.currentState = currentState;
     }
 
     public AppState getPrevState() {
@@ -323,5 +98,45 @@ public class AppContextHolder {
 
     public void setPrevState(AppState prevState) {
         this.prevState = prevState;
+    }
+
+    public Merchant getMerchant() {
+        return merchant;
+    }
+
+    public void setMerchant(Merchant merchant) {
+        this.merchant = merchant;
+    }
+
+    public Reward getReward() {
+        return reward;
+    }
+
+    public void setReward(Reward reward) {
+        this.reward = reward;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 }

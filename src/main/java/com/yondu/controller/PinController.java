@@ -60,6 +60,7 @@ public class PinController implements Initializable {
     private NotificationService notificationService = new NotificationService();
     private RedeemRewardsService redeemRewardsService = new RedeemRewardsService();
     private MemberDetailsService memberDetailsService = new MemberDetailsService();
+    private StampsService stampsService = new StampsService();
 
     private Reward reward;
 
@@ -67,43 +68,26 @@ public class PinController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         submitButton.setOnMouseClicked((MouseEvent e) -> {
             ((Stage) pinTextField.getScene().getWindow()).close();
-            AppState state = App.appContextHolder.getAppState();
-            if (App.appContextHolder.getAppState().equals(AppState.LOGIN)) {
-                login();
-            } else if (App.appContextHolder.getAppState().equals(AppState.PAY_WITH_POINTS)) {
-                payWithPoints();
-            } else if (state.equals(AppState.REDEEM_REWARDS)) {
-                PauseTransition pause = new PauseTransition(
-                        Duration.seconds(.5)
-                );
-                pause.setOnFinished(event -> {
-                    App.appContextHolder.getRootVBox().setOpacity(1);
-                    for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
-                        n.setDisable(false);
-                    }
 
-                    ApiResponse apiResponse = redeemRewardsService.redeemRewards(pinTextField.getText(), reward.getId());
-                    if (apiResponse.isSuccess()) {
-                        Label pointsLabel = (Label) App.appContextHolder.getRootVBox().getScene().lookup("#pointsLabel");
-                        ApiResponse apiResp = memberDetailsService.getCurrentPoints();
-                        if (apiResp.isSuccess()) {
-                            pointsLabel.setText((String) apiResp.getPayload().get("points"));
-                        }
+            disableMenu();
+            PauseTransition pause = new PauseTransition(
+                    Duration.seconds(.5)
+            );
+            pause.setOnFinished(event -> {
+                AppState state = App.appContextHolder.getAppState();
+                if (App.appContextHolder.getAppState().equals(AppState.LOGIN)) {
+                    login();
+                } else if (App.appContextHolder.getAppState().equals(AppState.PAY_WITH_POINTS)) {
+                    payWithPoints();
+                } else if (state.equals(AppState.REDEEM_REWARDS)) {
+                    redeemRewards();
+                } else if (state.equals(AppState.GIVE_STAMPS)) {
+                    redeemStamps();
+                }
+                enableMenu();
+            });
+            pause.play();
 
-                    }
-                    Text text = new Text(apiResponse.getMessage());
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-                    alert.setTitle(AppConfigConstants.APP_TITLE);
-                    alert.initStyle(StageStyle.UTILITY);
-                    alert.initOwner(App.appContextHolder.getRootVBox().getScene().getWindow());
-                    alert.setHeaderText("REDEEM REWARDS");
-                    alert.getDialogPane().setPadding(new Insets(10,10,10,10));
-                    alert.getDialogPane().setContent(text);
-                    alert.getDialogPane().setPrefWidth(400);
-                    alert.show();
-                });
-                pause.play();
-            }
         });
 
         cancelButton.setOnMouseClicked((MouseEvent e) -> {
@@ -123,7 +107,61 @@ public class PinController implements Initializable {
             ((Stage) pinTextField.getScene().getWindow()).close();
         });
     }
+    private void disableMenu() {
+        App.appContextHolder.getRootVBox().setOpacity(.50);
+        for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
+            n.setDisable(true);
+        }
+    }
+    private void enableMenu() {
+        App.appContextHolder.getRootVBox().setOpacity(1);
+        for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
+            n.setDisable(false);
+        }
+    }
 
+    private  void redeemStamps() {
+        Reward reward = App.appContextHolder.getReward();
+        String pin = pinTextField.getText();
+        ApiResponse apiResponse = stampsService.redeemStamps(reward.getId(), pin);
+        if (apiResponse.isSuccess()) {
+
+        }
+
+    }
+
+    private void redeemRewards() {
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            App.appContextHolder.getRootVBox().setOpacity(1);
+            for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
+                n.setDisable(false);
+            }
+
+            ApiResponse apiResponse = redeemRewardsService.redeemRewards(pinTextField.getText(), reward.getId());
+            if (apiResponse.isSuccess()) {
+                Label pointsLabel = (Label) App.appContextHolder.getRootVBox().getScene().lookup("#pointsLabel");
+                ApiResponse apiResp = memberDetailsService.getCurrentPoints();
+                if (apiResp.isSuccess()) {
+                    pointsLabel.setText((String) apiResp.getPayload().get("points"));
+                }
+
+            }
+            Text text = new Text(apiResponse.getMessage());
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+            alert.setTitle(AppConfigConstants.APP_TITLE);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.initOwner(App.appContextHolder.getRootVBox().getScene().getWindow());
+            alert.setHeaderText("REDEEM REWARDS");
+            alert.getDialogPane().setPadding(new Insets(10,10,10,10));
+            alert.getDialogPane().setContent(text);
+            alert.getDialogPane().setPrefWidth(400);
+            alert.show();
+        });
+        pause.play();
+    }
 
     private void payWithPoints() {
 

@@ -10,6 +10,15 @@ public class ApiResponse {
     private boolean success;
     private String message;
     private JSONObject payload;
+    private String errorCode;
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
 
     public JSONObject getPayload() {
         return payload;

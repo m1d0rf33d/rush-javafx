@@ -12,6 +12,15 @@ public class Reward {
     private String pointsRequired;
     private String quantity;
     private String date;
+    private Integer stamps;
+
+    public Integer getStamps() {
+        return stamps;
+    }
+
+    public void setStamps(Integer stamps) {
+        this.stamps = stamps;
+    }
 
     public String getDate() {
         return date;

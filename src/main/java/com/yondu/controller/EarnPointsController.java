@@ -64,27 +64,21 @@ public class EarnPointsController implements Initializable {
     @FXML
     public Button exitButton;
 
-    private Customer customer;
     private DecimalFormat df2 = new DecimalFormat(".##");
-    private PointsRule pointsRule;
 
     private EarnPointsService earnPointsService = new EarnPointsService();
-    private MemberDetailsService memberDetailsService = new MemberDetailsService();
     private OcrService ocrService = new OcrService();
     private CommonService commonService = new CommonService();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        earnPointsService.initialize();
+        pointsTextField.setDisable(true);
 
         exitButton.setOnMouseClicked((MouseEvent e) -> {
             commonService.exitMember();
         });
-
-
-        pointsTextField.setDisable(true);
-        ApiResponse apiResponse = earnPointsService.getPointsRule();
-        if (apiResponse.isSuccess()) {
-            pointsRule = (PointsRule) apiResponse.getPayload().get("pointsRule");
-        }
 
 
         submitButton.setOnMouseClicked((MouseEvent e) -> {
@@ -100,123 +94,26 @@ public class EarnPointsController implements Initializable {
         amountTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (amountTextField != null && !amountTextField.getText().isEmpty()) {
                 Double amount = Double.parseDouble(amountTextField.getText().replaceAll("[,]", ""));
+                PointsRule pointsRule = App.appContextHolder.getPointsRule();
                 if (pointsRule != null) {
-
                     pointsTextField.setText(df2.format(amount / pointsRule.getEarningPeso()));
                 }
             } else {
                 pointsTextField.setText(null);
             }
         });
-
-
         ocrButton.setOnMouseClicked((MouseEvent e) -> {
-            App.appContextHolder.getRootVBox().setOpacity(.50);
-            for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
-                n.setDisable(true);
-            }
-
-            PauseTransition pause = new PauseTransition(
-                    Duration.seconds(.5)
-            );
-            pause.setOnFinished(event -> {
-
-                ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(true);
-                PauseTransition p = new PauseTransition(
-                        Duration.seconds(.50)
-                );
-                p.setOnFinished(ev -> {
-                    ApiResponse apiResp = ocrService.triggerOCR();
-                    if (apiResp.isSuccess()) {
-                        String receiptNo = (String) apiResp.getPayload().get("orNumber");
-                        String amount = (String) apiResp.getPayload().get("amount");
-                        receiptTextField.setText(receiptNo);
-                        amountTextField.setText(amount);
-                    } else {
-                        ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(false);
-                        Text text = new Text(apiResp.getMessage());
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-                        alert.setTitle(AppConfigConstants.APP_TITLE);
-                        alert.initStyle(StageStyle.UTILITY);
-                        alert.initOwner(receiptTextField.getScene().getWindow());
-                        alert.setHeaderText("OCR CAPTURE");
-                        alert.getDialogPane().setPadding(new Insets(10,10,10,10));
-                        alert.getDialogPane().setContent(text);
-                        alert.getDialogPane().setPrefWidth(400);
-                        alert.show();
-                    }
-                    ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(false);
-                    App.appContextHolder.getRootVBox().setOpacity(1);
-                    for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
-                        n.setDisable(false);
-                    }
-
-                }); p.play();
-
-            });
-            pause.play();
+            ocrService.triggerOCR();
         });
-        ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(false);
+
         PropertyBinder.bindAmountOnly(amountTextField);
         PropertyBinder.addComma(amountTextField);
     }
     private void earnPoints() {
-        App.appContextHolder.getRootVBox().setOpacity(.50);
-        for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
-            n.setDisable(true);
-        }
-
-        PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
-        );
-        pause.setOnFinished(event -> {
-            String orNumber = receiptTextField.getText();
-            String amount = amountTextField.getText();
-            ApiResponse apiResponse = earnPointsService.earnPoints(orNumber, amount);
-            if (apiResponse.isSuccess()) {
-                pointsTextField.setText(null);
-                amountTextField.setText(null);
-                receiptTextField.setText(null);
-                ApiResponse apiResp = memberDetailsService.getCurrentPoints();
-                if (apiResp.isSuccess()) {
-                    pointsLabel.setText((String) apiResp.getPayload().get("points"));
-                }
-
-            }
-
-            Text text = new Text(apiResponse.getMessage());
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-            alert.setTitle(AppConfigConstants.APP_TITLE);
-            alert.initStyle(StageStyle.UTILITY);
-            alert.initOwner(receiptTextField.getScene().getWindow());
-            alert.setHeaderText("EARN POINTS");
-            alert.getDialogPane().setPadding(new Insets(10,10,10,10));
-            alert.getDialogPane().setContent(text);
-            alert.getDialogPane().setPrefWidth(400);
-            alert.show();
-
-            App.appContextHolder.getRootVBox().setOpacity(1);
-            for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
-                n.setDisable(false);
-            }
-        });
-        pause.play();
-    }
-
-    public Customer getCustomer() {
-        return customer;
+        String orNumber = receiptTextField.getText();
+        String amount = amountTextField.getText().replace(",", "");
+        earnPointsService.earnPoints(orNumber, amount);
     }
 
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-        nameLabel.setText(customer.getName());
-        memberIdLabel.setText(customer.getMemberId());
-        mobileNumberLabel.setText(customer.getMobileNumber());
-        membershipDateLabel.setText(customer.getMemberSince());
-        genderLabel.setText(customer.getGender());
-        birthdateLabel.setText(customer.getDateOfBirth());
-        emailLabel.setText(customer.getEmail());
-        pointsLabel.setText(customer.getAvailablePoints());
-    }
 }

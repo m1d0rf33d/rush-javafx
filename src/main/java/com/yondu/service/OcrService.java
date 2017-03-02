@@ -3,16 +3,22 @@ package com.yondu.service;
 import com.yondu.App;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.constants.AppConfigConstants;
+import javafx.animation.PauseTransition;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.geometry.*;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -31,46 +37,82 @@ import static com.yondu.model.constants.AppConfigConstants.*;
 /**
  * Created by lynx on 2/22/17.
  */
-public class OcrService {
+public class OcrService extends BaseService{
 
-    public ApiResponse triggerOCR() {
+    private VBox rootVBox = App.appContextHolder.getRootContainer();
 
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setSuccess(false);
+    public void triggerOCR() {
+        disableMenu();
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            Task task = triggerOCRTask();
+            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent event) {
+                    ApiResponse apiResponse = (ApiResponse) task.getValue();
+                    if (apiResponse.isSuccess()) {
+                        TextField receiptTextField = (TextField) App.appContextHolder.getRootContainer().getScene().lookup("#receiptTextField");
+                        TextField amountTextField = (TextField) App.appContextHolder.getRootContainer().getScene().lookup("#amountTextField");
+                        JSONObject payload =  apiResponse.getPayload();
+                        receiptTextField.setText((String) payload.get("orNumber"));
+                        amountTextField.setText((String) payload.get("amount"));
+                    } else {
+                        showPrompt(apiResponse.getMessage(), "EARN POINTS");
+                    }
+                    enableMenu();
+                    ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).setIconified(false);
+                }
+            });
+            new Thread(task).start();
+        });
+        pause.play();
 
-        try {
-            Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(RUSH_HOME+ DIVIDER + OCR_PROPERTIES);
-            prop.load(inputStream);
+    }
 
-            Double savedAmountPosX = prop.getProperty("sales_pos_x").isEmpty() ? null : Double.parseDouble(prop.getProperty("sales_pos_x"));
-            Double savedAmountPosY = prop.getProperty("sales_pos_y").isEmpty() ? null : Double.parseDouble(prop.getProperty("sales_pos_y"));
-            Double savedAmountWidth = prop.getProperty("sales_width").isEmpty() ? null : Double.parseDouble(prop.getProperty("sales_width"));
-            Double savedAmountHeight = prop.getProperty("sales_height").isEmpty() ? null : Double.parseDouble(prop.getProperty("sales_height"));
+    public Task triggerOCRTask() {
+        return new Task() {
+            @Override
+            protected ApiResponse call() throws Exception {
+                ApiResponse apiResponse = new ApiResponse();
+                apiResponse.setSuccess(false);
 
-            Double savedOrPosX = prop.getProperty("or_pos_x").isEmpty() ? null : Double.parseDouble(prop.getProperty("or_pos_x"));
-            Double savedOrPosY = prop.getProperty("or_pos_y").isEmpty() ? null : Double.parseDouble(prop.getProperty("or_pos_y"));
-            Double savedOrWidth = prop.getProperty("or_width").isEmpty() ? null : Double.parseDouble(prop.getProperty("or_width"));
-            Double savedOrHeight = prop.getProperty("or_height").isEmpty() ? null : Double.parseDouble(prop.getProperty("or_height"));
+                try {
+                    Properties prop = new Properties();
+                    InputStream inputStream = new FileInputStream(RUSH_HOME+ DIVIDER + OCR_PROPERTIES);
+                    prop.load(inputStream);
+
+                    Double savedAmountPosX = prop.getProperty("sales_pos_x").isEmpty() ? null : Double.parseDouble(prop.getProperty("sales_pos_x"));
+                    Double savedAmountPosY = prop.getProperty("sales_pos_y").isEmpty() ? null : Double.parseDouble(prop.getProperty("sales_pos_y"));
+                    Double savedAmountWidth = prop.getProperty("sales_width").isEmpty() ? null : Double.parseDouble(prop.getProperty("sales_width"));
+                    Double savedAmountHeight = prop.getProperty("sales_height").isEmpty() ? null : Double.parseDouble(prop.getProperty("sales_height"));
+
+                    Double savedOrPosX = prop.getProperty("or_pos_x").isEmpty() ? null : Double.parseDouble(prop.getProperty("or_pos_x"));
+                    Double savedOrPosY = prop.getProperty("or_pos_y").isEmpty() ? null : Double.parseDouble(prop.getProperty("or_pos_y"));
+                    Double savedOrWidth = prop.getProperty("or_width").isEmpty() ? null : Double.parseDouble(prop.getProperty("or_width"));
+                    Double savedOrHeight = prop.getProperty("or_height").isEmpty() ? null : Double.parseDouble(prop.getProperty("or_height"));
 
 
-            if (savedAmountPosX != null && savedOrPosX != null) {
+                    if (savedAmountPosX != null && savedOrPosX != null) {
 
-                JSONObject payload = new JSONObject();
-                payload.put("orNumber", getText(savedOrPosX, savedOrPosY, savedOrWidth, savedOrHeight).replaceAll("[^a-zA-Z0-9,.]*", ""));
-                payload.put("amount", getText(savedAmountPosX, savedAmountPosY, savedAmountWidth, savedAmountHeight).replaceAll("[^,.\\d]*", ""));
-                apiResponse.setPayload(payload);
-                apiResponse.setSuccess(true);
-            } else {
-                apiResponse.setMessage("No OCR configuration found. You may fix this by going to OCR settings.");
+                        JSONObject payload = new JSONObject();
+                        payload.put("orNumber", getText(savedOrPosX, savedOrPosY, savedOrWidth, savedOrHeight).replaceAll("[^a-zA-Z0-9,.]*", ""));
+                        payload.put("amount", getText(savedAmountPosX, savedAmountPosY, savedAmountWidth, savedAmountHeight).replaceAll("[^,.\\d]*", ""));
+                        apiResponse.setPayload(payload);
+                        apiResponse.setSuccess(true);
+                    } else {
+                        apiResponse.setMessage("No OCR configuration found. You may fix this by going to OCR settings.");
+                    }
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return apiResponse;
             }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return apiResponse;
+        };
     }
 
     public String getText(Double x, Double y, Double width, Double height) {
@@ -82,7 +124,7 @@ public class OcrService {
             javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
 
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(App.appContextHolder.TESSERACT_HOME);
+            tesseract.setDatapath(System.getenv("TESSERACT_HOME"));
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = null;
@@ -109,8 +151,7 @@ public class OcrService {
                 imageView.setImage(image);
 
                 ITesseract tesseract = new Tesseract();
-               // tesseract.setDatapath(RUSH_HOME + DIVIDER +
-                tesseract.setDatapath(App.appContextHolder.TESSERACT_HOME);
+                tesseract.setDatapath(System.getenv("TESSERACT_HOME"));
                 tesseract.setLanguage("eng");
                 // Get OCR result
                 String outText = null;
@@ -125,21 +166,21 @@ public class OcrService {
                 ex.printStackTrace();
             }
         } else {
-            ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(false);
+            ((Stage) rootVBox.getScene().getWindow()).setIconified(false);
             Text text = new Text("No position set.");
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
             alert.setTitle(AppConfigConstants.APP_TITLE);
             alert.initStyle(StageStyle.UTILITY);
-            alert.initOwner(App.appContextHolder.getRootVBox().getScene().getWindow());
+            alert.initOwner(rootVBox.getScene().getWindow());
             alert.setHeaderText("OCR PREVIEW");
             alert.getDialogPane().setPadding(new javafx.geometry.Insets(10,10,10,10));
             alert.getDialogPane().setContent(text);
             alert.getDialogPane().setPrefWidth(400);
             alert.show();
         }
-        ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(false);
-        App.appContextHolder.getRootVBox().setOpacity(1);
-        for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+        ((Stage) rootVBox.getScene().getWindow()).setIconified(false);
+        rootVBox.setOpacity(1);
+        for (Node n : rootVBox.getChildren()) {
             n.setDisable(false);
         }
     }

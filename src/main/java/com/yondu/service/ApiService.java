@@ -30,9 +30,7 @@ import static com.yondu.AppContextHolder.*;
  *
  *  @author m1d0rf33d
  */
-public class ApiService {
-
-
+public class ApiService  {
 
     public JSONObject call(String url, List<NameValuePair> params, String method, String resourceOwner) {
 

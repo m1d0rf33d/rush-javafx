@@ -2,6 +2,7 @@ package com.yondu.controller;
 
 import com.sun.javafx.scene.control.skin.ContextMenuContent;
 import com.yondu.App;
+import com.yondu.model.Merchant;
 import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.model.constants.AppState;
@@ -85,6 +86,8 @@ public class MenuController implements Initializable {
     public Label branchNameLabel;
     @FXML
     public ImageView merchantLogoImageView;
+    @FXML
+    public Button giveStampsButton;
 
     private RouteService routeService = new RouteService();
     private ApiService apiService = new ApiService();
@@ -228,6 +231,19 @@ public class MenuController implements Initializable {
             }
         });
 
+        giveStampsButton.setOnMouseClicked((MouseEvent e) -> {
+            App.appContextHolder.setPrevState(App.appContextHolder.getAppState());
+            App.appContextHolder.setAppState(AppState.GIVE_STAMPS);
+            commonService.updateButtonState();
+            disableMenu();
+
+            if (App.appContextHolder.getCustomerMobile() == null) {
+                loadMobileLoginDialog(GIVE_STAMPS_SCREEN);
+            } else {
+                routeService.loadGiveStampsScreen();
+            }
+        });
+
         offlineButton.setOnMouseClicked((MouseEvent e) -> {
             App.appContextHolder.setPrevState(App.appContextHolder.getAppState());
             App.appContextHolder.setAppState(AppState.OFFLINE);
@@ -268,6 +284,18 @@ public class MenuController implements Initializable {
                         merchantLogoImageView.setImage(new Image((String) branch.get("logo_url")));
                         break;
                     }
+                }
+
+                url = BASE_URL + MERCHANT_DESIGNS_ENDPOINT;
+                jsonObj = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                if (jsonObj != null) {
+                    JSONObject dataJSON = (JSONObject) jsonObj.get("data");
+                    JSONObject merchantJSON = (JSONObject) dataJSON.get("merchant");
+                    Merchant merchant = new Merchant();
+                    merchant.setBackgroundUrl((String) merchantJSON.get("backgroundUrl"));
+                    merchant.setStampsUrl((String) merchantJSON.get("stamp_url"));
+                    merchant.setGrayStampsUrl((String) merchantJSON.get("stamp_gray_url"));
+                    App.appContextHolder.setMerchant(merchant);
                 }
             } else {
                 showOfflinePrompt();
@@ -318,6 +346,9 @@ public class MenuController implements Initializable {
 
                 if (screen.equalsIgnoreCase("OCR_SETTINGS")) {
                     buttons.add(ocrButton);
+                }
+                if (screen.equalsIgnoreCase("GIVE_STAMPS")) {
+                    buttons.add(giveStampsButton);
                 }
             }
             sideBarVBox.getChildren().addAll(buttons);

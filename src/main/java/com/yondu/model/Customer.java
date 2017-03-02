@@ -16,6 +16,24 @@ public class Customer {
     private String memberSince;
     private String availablePoints;
     private List<Reward> activeVouchers;
+    private CustomerCard card;
+    private String uuid;
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public CustomerCard getCard() {
+        return card;
+    }
+
+    public void setCard(CustomerCard card) {
+        this.card = card;
+    }
 
     public List<Reward> getActiveVouchers() {
         return activeVouchers;

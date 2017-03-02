@@ -1,406 +1,134 @@
 package com.yondu.controller;
 
-import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
-import com.yondu.Browser;
-import com.yondu.model.constants.ApiFieldContants;
+import com.yondu.model.Branch;
+import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.model.constants.AppState;
 import com.yondu.service.ApiService;
-import com.yondu.service.RouteService;
-import com.yondu.utils.ButtonEventHandler;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
+import com.yondu.service.CommonService;
+import com.yondu.service.LoginService;
+import com.yondu.utils.PropertyBinder;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.InputEvent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.scene.text.Text;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.awt.*;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
-import static com.yondu.AppContextHolder.*;
+import static com.yondu.model.constants.AppConfigConstants.*;
+import static com.yondu.model.constants.ApiConstants.*;
+
 
 /**
- * Created by lynx on 10/10/2016.
+ * Created by lynx on 2/6/17.
  */
 public class LoginController implements Initializable {
 
     @FXML
-    public ImageView rushLogo;
+    public ImageView rushLogoImageView;
     @FXML
-    public ComboBox branchBox;
+    public ImageView removeImageView;
     @FXML
-    public Pane mainPane;
+    public StackPane bodyStackPane;
     @FXML
-    public Pane rightPane;
+    public Button oneButton;
     @FXML
-    public Button loginBtn;
+    public Button twoButton;
     @FXML
-    public TextField loginTextField;
+    public Button threeButton;
     @FXML
-    public Pane overlayPane;
+    public Button fourButton;
     @FXML
-    public ImageView removeImage;
+    public Button fiveButton;
     @FXML
-    public Label offlineLbl;
+    public Button sixButton;
     @FXML
-    public Button givePointsBtn;
+    public Button sevenButton;
     @FXML
-    public Button reconnectBtn;
+    public Button eightButton;
     @FXML
-    public Label employeeLbl;
+    public Button nineButton;
     @FXML
-    public Button oneBtn;
+    public Button zeroButton;
     @FXML
-    public Button twoBtn;
+    public Button dotButton;
     @FXML
-    public Button threeBtn;
+    public Button removeButton;
     @FXML
-    public Button fourBtn;
-    @FXML
-    public Button fiveBtn;
-    @FXML
-    public Button sixBtn;
-    @FXML
-    public Button sevenBtn;
-    @FXML
-    public Button eightBtn;
-    @FXML
-    public Button nineBtn;
-    @FXML
-    public Button delBtn;
-    @FXML
-    public Button zeroBtn;
-    @FXML
-    public Button dotBtn;
+    public VBox rootVBox;
 
-    private List<JSONObject> branches;
-
-    private RouteService routeService = new RouteService();
-    private ApiService apiService = new ApiService();
-    private Double width;
-    private Double height;
+    private LoginService loginService = new LoginService();
 
     public LoginController() {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        width = screenSize.getWidth();
-        height = screenSize.getHeight();
+        if (System.getProperty("os.name").contains("Windows")) {
+            DIVIDER = "\\";
+        } else {
+            DIVIDER = "//";
+        }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        App.appContextHolder.setCurrentState(AppState.LOGIN);
+        App.appContextHolder.setRootContainer(rootVBox);
 
-        //Just some extra bullshit
-        overlayPane.setVisible(false);
-        rushLogo.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
-        removeImage.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/remove.png").toExternalForm()));
+        removeImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/remove.png").toExternalForm()));
+        rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));
 
-        loadBranches();
+        ImageView img = new ImageView();
+        img.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/loading.gif").toExternalForm()));
+        img.setFitWidth(150);
+        img.setFitHeight(150);
+        img.getStyleClass().add("loading-img");
+        bodyStackPane.getChildren().clear();
+        bodyStackPane.getChildren().addAll(img);
+        bodyStackPane.setPadding(new Insets(30,0,0,0));
 
-        //Event handlers for clickable nodes
-        loginTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-            {
-                if (newPropertyValue)
-                    FXVK.detach();
-            }
+        PropertyBinder.setNumberButtonClick(oneButton, "1");
+        PropertyBinder.setNumberButtonClick(twoButton, "2");
+        PropertyBinder.setNumberButtonClick(threeButton, "3");
+        PropertyBinder.setNumberButtonClick(fourButton, "4");
+        PropertyBinder.setNumberButtonClick(fiveButton, "5");
+        PropertyBinder.setNumberButtonClick(sixButton, "6");
+        PropertyBinder.setNumberButtonClick(sevenButton, "7");
+        PropertyBinder.setNumberButtonClick(eightButton, "8");
+        PropertyBinder.setNumberButtonClick(nineButton, "9");
+        PropertyBinder.setNumberButtonClick(zeroButton, "0");
+        PropertyBinder.setNumberButtonClick(dotButton, ".");
 
-        });
-
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                loginTextField.requestFocus();
-            }
-        });
-
-        loginTextField.setOnKeyPressed(new EventHandler<KeyEvent>()
-        {
-            @Override
-            public void handle(KeyEvent ke) {
-                if (ke.getCode().equals(KeyCode.ENTER)) {
-                    loginEmployee(ke);
-                }
-                if (ke.getCode().equals(KeyCode.TAB)) {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            branchBox.requestFocus();
-                        }
-                    });
-                }
+        removeButton.setOnMouseClicked((MouseEvent e) -> {
+            TextField loginTextField = (TextField) rootVBox.getScene().lookup("#loginTextField");
+            if (loginTextField.getText() != null) {
+                String subStr = loginTextField.getText().substring(0, loginTextField.getText().length() -1);
+                loginTextField.setText(subStr);
             }
         });
 
-        branchBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent ke) {
-                if (ke.getCode().equals(KeyCode.ENTER)) {
-                    loginEmployee(ke);
-                }
-            }
-        });
-        removeImage.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
-            this.loginTextField.setText("");
-        });
+        loginService.initialize();
 
-        givePointsBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
-            routeService.goToGivePointsScreen((Stage) branchBox.getScene().getWindow());
-
-        });
-
-        List<Node> buttons = rightPane.getChildren();
-        for (Node button : buttons) {
-            try {
-                Button b = (Button) button;
-                b.setOnAction(new ButtonEventHandler(loginTextField));
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-            }
-        }
-
-        reconnectBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
-            branchBox.getItems().clear();
-            if (checkNetwork()) {
-                goOnline();
-            } else {
-                goOffline(event);
-            }
-        });
-
-        loginBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
-            loginEmployee(event);
-        });
     }
-
-    private boolean checkNetwork() {
-        String url = BASE_URL + GET_BRANCHES_ENDPOINT;
-        java.util.List<NameValuePair> params = new ArrayList<>();
-        JSONObject jsonObject = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-
-        if (jsonObject != null) {
-            List<JSONObject> data = (ArrayList) jsonObject.get("data");
-            branches = data;
-            for (JSONObject branch : data) {
-                branchBox.getItems().add(branch.get("name"));
-            }
-            return true;
-        }
-        return false;
-    }
-
-
-    private void loadBranches() {
-        String url = BASE_URL + GET_BRANCHES_ENDPOINT;
-        java.util.List<NameValuePair> params = new ArrayList<>();
-        JSONObject jsonObject = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-        if (jsonObject != null) {
-            List<JSONObject> data = (ArrayList) jsonObject.get("data");
-            branches = data;
-            for (JSONObject branch : data) {
-                branchBox.getItems().add(branch.get("name"));
-            }
-            branchBox.getSelectionModel().selectFirst();
-        }
-    }
-
-    private void loginEmployee(InputEvent event) {
-        overlayPane.setVisible(true);
-        if (branches != null && branches.size() > 0) {
-            String branchId = "";
-            for (JSONObject branch : branches) {
-                if (branchBox.getSelectionModel().getSelectedItem().equals(branch.get("name"))) {
-                    branchId = (String) branch.get("id");
-                }
-            }
-
-            //Build request body
-            List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, loginTextField.getText()));
-            params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, branchId));
-            String url = BASE_URL + LOGIN_ENDPOINT;
-            JSONObject jsonObject = apiService.call((url), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-            if (jsonObject != null) {
-                if (jsonObject.get("error_code").equals("0x0")) {
-                    JSONObject data = (JSONObject) jsonObject.get("data");
-                    App.appContextHolder.setEmployeeName(((String) data.get("name")));
-                    App.appContextHolder.setEmployeeId((String) data.get("id"));
-                    App.appContextHolder.setBranchId(branchId);
-
-                    routeService.goToHomeScreen((Stage) branchBox.getScene().getWindow());
-                    ((Stage) branchBox.getScene().getWindow()).close();
-                } else if (jsonObject.get("error_code").equals("0x2")) {
-                    showRequirePinModal(event);
-                } else {
-                    prompt((String) jsonObject.get("message"), event);
-                }
-            } else {
-                goOffline(event);
-            }
-
-        } else {
-            goOffline(event);
-        }
-    }
-
-    private void showRequirePinModal(InputEvent event) {
-        try {
-
-            String branchId = "";
-            for (JSONObject branch : branches) {
-                if (branchBox.getSelectionModel().getSelectedItem().equals(branch.get("name"))) {
-                    branchId = (String) branch.get("id");
-                }
-            }
-
-
-            Stage stage = new Stage();
-            FXMLLoader  loader  = new FXMLLoader(App.class.getResource("/app/fxml/require-pin.fxml"));
-            RequirePinController controller = new RequirePinController(overlayPane, loginTextField.getText(), branchId );
-            loader.setController(controller);
-            stage.setScene(new Scene(loader.load(), 900,600));
-            stage.setTitle("Rush POS Sync");
-            stage.initStyle(StageStyle.UNDECORATED);
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(
-                    ((Node)event.getSource()).getScene().getWindow() );
-            stage.resizableProperty().setValue(Boolean.FALSE);
-            stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void prompt(String message, InputEvent event) {
-        overlayPane.setVisible(true);
-        Alert alert = new Alert(Alert.AlertType.ERROR, message);
-        alert.setTitle("Rush POS Sync");
-        alert.initStyle(StageStyle.UTILITY);
-        alert.initOwner(
-                ((Node)event.getSource()).getScene().getWindow() );
-
-        alert.setOnCloseRequest((DialogEvent e) -> {
-            overlayPane.setVisible(false);
-        });
-        alert.setHeaderText("LOGIN FAILED");
-
-        alert.showAndWait();
-        if (alert.getResult() == ButtonType.OK) {
-            overlayPane.setVisible(false);
-        }
-    }
-
-    private void setLayout() {
-
-        mainPane.setPrefWidth(width);
-        mainPane.setPrefHeight(height);
-        rightPane.setPrefHeight(height);
-        rightPane.setPrefWidth(width / 2);
-        rightPane.setLayoutX(width / 2);
-        overlayPane.setPrefHeight(height);
-        overlayPane.setPrefWidth(width);
-
-        branchBox.setLayoutX((width / 2) / 5);
-        branchBox.setPrefWidth(branchBox.getLayoutX() * 3);
-        loginBtn.setLayoutX((width / 2) / 5);
-        loginBtn.setPrefWidth(loginBtn.getLayoutX() * 3);
-        loginTextField.setLayoutX((width / 2) / 5);
-        loginTextField.setPrefWidth(loginBtn.getLayoutX() * 3);
-        givePointsBtn.setLayoutX((width / 2) / 5);
-        givePointsBtn.setPrefWidth(givePointsBtn.getLayoutX() * 3);
-        reconnectBtn.setLayoutX((width / 2) / 5);
-        reconnectBtn.setPrefWidth(reconnectBtn.getLayoutX() * 3);
-        offlineLbl.setLayoutX(loginBtn.getLayoutX() + loginBtn.getPrefWidth() / 3);
-        offlineLbl.setPrefWidth(loginBtn.getLayoutX() * 4);
-        rushLogo.setLayoutX(((width / 2) / 5) * 1.5);
-        rushLogo.setFitWidth(((width / 2) / 5) * 2);
-        employeeLbl.setLayoutX(loginBtn.getLayoutX() + loginBtn.getPrefWidth() / 5);
-
-        double numberBtnWidth = rightPane.getPrefWidth() / 5;
-        oneBtn.setPrefWidth(numberBtnWidth);
-        oneBtn.setPrefHeight(numberBtnWidth);
-        oneBtn.setLayoutX(numberBtnWidth / 4);
-        twoBtn.setPrefWidth(numberBtnWidth);
-        twoBtn.setPrefHeight(numberBtnWidth);
-        twoBtn.setLayoutX(oneBtn.getLayoutX() + oneBtn.getPrefWidth() + numberBtnWidth / 4);
-        threeBtn.setPrefWidth(numberBtnWidth);
-        threeBtn.setPrefHeight(numberBtnWidth);
-        threeBtn.setLayoutX(twoBtn.getLayoutX() + twoBtn.getPrefWidth() + numberBtnWidth / 4);
-        fourBtn.setPrefWidth(numberBtnWidth);
-        fourBtn.setPrefHeight(numberBtnWidth);
-        fourBtn.setLayoutX(numberBtnWidth / 4);
-        fiveBtn.setPrefWidth(numberBtnWidth);
-        fiveBtn.setPrefHeight(numberBtnWidth);
-        fiveBtn.setLayoutX(oneBtn.getLayoutX() + oneBtn.getPrefWidth() + numberBtnWidth / 4);
-        sixBtn.setPrefWidth(numberBtnWidth);
-        sixBtn.setPrefHeight(numberBtnWidth);
-        sixBtn.setLayoutX(twoBtn.getLayoutX() + twoBtn.getPrefWidth() + numberBtnWidth / 4);
-        sevenBtn.setPrefWidth(numberBtnWidth);
-        sevenBtn.setPrefHeight(numberBtnWidth);
-        sevenBtn.setLayoutX(numberBtnWidth / 4);
-        eightBtn.setPrefWidth(numberBtnWidth);
-        eightBtn.setPrefHeight(numberBtnWidth);
-        eightBtn.setLayoutX(oneBtn.getLayoutX() + oneBtn.getPrefWidth() + numberBtnWidth / 4);
-        nineBtn.setPrefWidth(numberBtnWidth);
-        nineBtn.setPrefHeight(numberBtnWidth);
-        nineBtn.setLayoutX(twoBtn.getLayoutX() + twoBtn.getPrefWidth() + numberBtnWidth / 4);
-        delBtn.setPrefWidth(numberBtnWidth);
-        delBtn.setPrefHeight(numberBtnWidth);
-        delBtn.setLayoutX(numberBtnWidth / 4);
-        zeroBtn.setPrefWidth(numberBtnWidth);
-        zeroBtn.setPrefHeight(numberBtnWidth);
-        zeroBtn.setLayoutX(oneBtn.getLayoutX() + oneBtn.getPrefWidth() + numberBtnWidth / 4);
-        dotBtn.setPrefWidth(numberBtnWidth);
-        dotBtn.setPrefHeight(numberBtnWidth);
-        dotBtn.setLayoutX(twoBtn.getLayoutX() + twoBtn.getPrefWidth() + numberBtnWidth / 4);
-        removeImage.setLayoutX(numberBtnWidth / 5 + (numberBtnWidth/2.5));
-        removeImage.setLayoutY(delBtn.getLayoutY() + (numberBtnWidth/ 2.5));
-    }
-
-    public void goOnline() {
-        branchBox.getSelectionModel().selectFirst();
-        offlineLbl.setVisible(false);
-        givePointsBtn.setVisible(false);
-        reconnectBtn.setVisible(false);
-        loginTextField.setVisible(true);
-        loginBtn.setVisible(true);
-        branchBox.setVisible(true);
-    }
-
-
-    public void goOffline(InputEvent event) {
-        prompt("Unable to connect to Rush Server due to network connection problem. Please check your internet connection and try again.", event);
-        offlineLbl.setVisible(true);
-        givePointsBtn.setVisible(true);
-        reconnectBtn.setVisible(true);
-        loginTextField.setVisible(false);
-        loginBtn.setVisible(false);
-        branchBox.setVisible(false);
-    }
-
 }

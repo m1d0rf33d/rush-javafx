@@ -60,7 +60,6 @@ public class MemberDetailsController implements Initializable {
     private ObservableList<Reward> masterData =
             FXCollections.observableArrayList();
 
-    private RouteService routeService = new RouteService();
     private CommonService commonService = new CommonService();
 
     @Override

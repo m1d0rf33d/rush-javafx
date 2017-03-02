@@ -91,9 +91,11 @@ public class RewardDialogController implements Initializable {
                 n.setDisable(true);
             }
             if (state.equals(AppState.REDEEM_REWARDS)) {
-                redeem();
+                showPinDialog();
             } else if (state.equals(AppState.ISSUE_REWARDS)) {
                 issueReward();
+            } else if (state.equals(AppState.GIVE_STAMPS)) {
+                showPinDialog();
             }
         });
     }
@@ -191,7 +193,7 @@ public class RewardDialogController implements Initializable {
     }
 
 
-    public void redeem() {
+    public void showPinDialog() {
         try {
             ((Stage) redeemButton.getScene().getWindow()).close();
             Stage stage = new Stage();

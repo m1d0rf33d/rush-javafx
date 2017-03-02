@@ -9,224 +9,230 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox fx:id="rootHBox" maxHeight="-Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.LoginControllerv2">
+
+<VBox fx:id="rootVBox" maxWidth="Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.LoginControllerv2">
    <children>
-      <VBox alignment="TOP_CENTER" maxWidth="+Infinity" prefHeight="700.0" prefWidth="511.0" HBox.hgrow="ALWAYS">
+      <HBox fx:id="rootHBox" maxHeight="-Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" VBox.vgrow="ALWAYS">
          <children>
-            <ImageView fx:id="rushLogoImageView" fitHeight="79.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
-               <VBox.margin>
-                  <Insets top="80.0" />
-               </VBox.margin></ImageView>
-            <StackPane fx:id="bodyStackPane" alignment="TOP_CENTER" maxHeight="600.0" prefHeight="600.0" prefWidth="420.0" VBox.vgrow="ALWAYS" />
-         </children>
-         <HBox.margin>
-            <Insets left="50.0" right="50.0" />
-         </HBox.margin>
-      </VBox>
-      <VBox  alignment="TOP_CENTER" maxWidth="+Infinity" prefHeight="700.0" prefWidth="494.0" style="-fx-background-color: white;" HBox.hgrow="ALWAYS">
-         <children>
-            <VBox fx:id="numbersVBox">
+            <VBox alignment="TOP_CENTER" maxWidth="+Infinity" prefHeight="700.0" prefWidth="511.0" HBox.hgrow="ALWAYS">
                <children>
-                  <HBox alignment="CENTER" maxHeight="150.0" maxWidth="+Infinity" prefHeight="150.0" prefWidth="492.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-                     <children>
-                        <Button fx:id="oneButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="1" textFill="#71747a">
-                           <cursor>
-                              <Cursor fx:constant="CLOSED_HAND" />
-                           </cursor>
-                           <effect>
-                              <DropShadow blurType="TWO_PASS_BOX" />
-                           </effect>
-                           <font>
-                              <Font size="51.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </HBox.margin>
-                        </Button>
-                        <Button fx:id="twoButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="2" textFill="#71747a">
-                           <cursor>
-                              <Cursor fx:constant="CLOSED_HAND" />
-                           </cursor>
-                           <effect>
-                              <DropShadow blurType="TWO_PASS_BOX" />
-                           </effect>
-                           <font>
-                              <Font size="51.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </HBox.margin>
-                        </Button>
-                        <Button fx:id="threeButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="3" textFill="#71747a">
-                           <cursor>
-                              <Cursor fx:constant="CLOSED_HAND" />
-                           </cursor>
-                           <effect>
-                              <DropShadow blurType="TWO_PASS_BOX" />
-                           </effect>
-                           <font>
-                              <Font size="51.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
+                  <ImageView fx:id="rushLogoImageView" fitHeight="79.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
                      <VBox.margin>
-                        <Insets top="50.0" />
+                        <Insets top="80.0" />
                      </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER" maxHeight="150.0" maxWidth="+Infinity" prefHeight="150.0" prefWidth="492.0" VBox.vgrow="ALWAYS">
+                  </ImageView>
+                  <StackPane fx:id="bodyStackPane" alignment="TOP_CENTER" maxHeight="600.0" prefHeight="600.0" prefWidth="420.0" VBox.vgrow="ALWAYS" />
+               </children>
+               <HBox.margin>
+                  <Insets left="50.0" right="50.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox alignment="TOP_CENTER" maxWidth="+Infinity" prefHeight="700.0" prefWidth="494.0" style="-fx-background-color: white;" HBox.hgrow="ALWAYS">
+               <children>
+                  <VBox fx:id="numbersVBox">
                      <children>
-                        <Button fx:id="fourButton" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="4" textFill="#71747a">
-                           <cursor>
-                              <Cursor fx:constant="CLOSED_HAND" />
-                           </cursor>
-                           <effect>
-                              <DropShadow blurType="TWO_PASS_BOX" />
-                           </effect>
-                           <font>
-                              <Font size="51.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </HBox.margin>
-                        </Button>
-                        <Button fx:id="fiveButton" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="5" textFill="#71747a">
-                           <cursor>
-                              <Cursor fx:constant="CLOSED_HAND" />
-                           </cursor>
-                           <effect>
-                              <DropShadow blurType="TWO_PASS_BOX" />
-                           </effect>
-                           <font>
-                              <Font size="51.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </HBox.margin>
-                        </Button>
-                        <Button fx:id="sixButton" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="6" textFill="#71747a">
-                           <cursor>
-                              <Cursor fx:constant="CLOSED_HAND" />
-                           </cursor>
-                           <effect>
-                              <DropShadow blurType="TWO_PASS_BOX" />
-                           </effect>
-                           <font>
-                              <Font size="51.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </HBox.margin>
-                        </Button>
+                        <HBox alignment="CENTER" maxHeight="150.0" maxWidth="+Infinity" prefHeight="150.0" prefWidth="492.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Button fx:id="oneButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="1" textFill="#71747a">
+                                 <cursor>
+                                    <Cursor fx:constant="CLOSED_HAND" />
+                                 </cursor>
+                                 <effect>
+                                    <DropShadow blurType="TWO_PASS_BOX" />
+                                 </effect>
+                                 <font>
+                                    <Font size="51.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="twoButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="2" textFill="#71747a">
+                                 <cursor>
+                                    <Cursor fx:constant="CLOSED_HAND" />
+                                 </cursor>
+                                 <effect>
+                                    <DropShadow blurType="TWO_PASS_BOX" />
+                                 </effect>
+                                 <font>
+                                    <Font size="51.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="threeButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="3" textFill="#71747a">
+                                 <cursor>
+                                    <Cursor fx:constant="CLOSED_HAND" />
+                                 </cursor>
+                                 <effect>
+                                    <DropShadow blurType="TWO_PASS_BOX" />
+                                 </effect>
+                                 <font>
+                                    <Font size="51.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                           <VBox.margin>
+                              <Insets top="50.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER" maxHeight="150.0" maxWidth="+Infinity" prefHeight="150.0" prefWidth="492.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Button fx:id="fourButton" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="4" textFill="#71747a">
+                                 <cursor>
+                                    <Cursor fx:constant="CLOSED_HAND" />
+                                 </cursor>
+                                 <effect>
+                                    <DropShadow blurType="TWO_PASS_BOX" />
+                                 </effect>
+                                 <font>
+                                    <Font size="51.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="fiveButton" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="5" textFill="#71747a">
+                                 <cursor>
+                                    <Cursor fx:constant="CLOSED_HAND" />
+                                 </cursor>
+                                 <effect>
+                                    <DropShadow blurType="TWO_PASS_BOX" />
+                                 </effect>
+                                 <font>
+                                    <Font size="51.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="sixButton" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="6" textFill="#71747a">
+                                 <cursor>
+                                    <Cursor fx:constant="CLOSED_HAND" />
+                                 </cursor>
+                                 <effect>
+                                    <DropShadow blurType="TWO_PASS_BOX" />
+                                 </effect>
+                                 <font>
+                                    <Font size="51.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER" maxHeight="150.0" maxWidth="+Infinity" prefHeight="150.0" prefWidth="492.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Button fx:id="sevenButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="7" textFill="#71747a" HBox.hgrow="ALWAYS">
+                                 <cursor>
+                                    <Cursor fx:constant="CLOSED_HAND" />
+                                 </cursor>
+                                 <effect>
+                                    <DropShadow blurType="TWO_PASS_BOX" />
+                                 </effect>
+                                 <font>
+                                    <Font size="51.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="eightButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="8" textFill="#71747a">
+                                 <cursor>
+                                    <Cursor fx:constant="CLOSED_HAND" />
+                                 </cursor>
+                                 <effect>
+                                    <DropShadow blurType="TWO_PASS_BOX" />
+                                 </effect>
+                                 <font>
+                                    <Font size="51.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="nineButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="9" textFill="#71747a">
+                                 <cursor>
+                                    <Cursor fx:constant="CLOSED_HAND" />
+                                 </cursor>
+                                 <effect>
+                                    <DropShadow blurType="TWO_PASS_BOX" />
+                                 </effect>
+                                 <font>
+                                    <Font size="51.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER" maxHeight="150.0" maxWidth="+Infinity" prefHeight="150.0" prefWidth="492.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Button fx:id="removeButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" textFill="#71747a">
+                                 <cursor>
+                                    <Cursor fx:constant="CLOSED_HAND" />
+                                 </cursor>
+                                 <effect>
+                                    <DropShadow blurType="TWO_PASS_BOX" />
+                                 </effect>
+                                 <font>
+                                    <Font size="51.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </HBox.margin>
+                                 <graphic>
+                                    <ImageView fx:id="removeImageView" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
+                                 </graphic>
+                              </Button>
+                              <Button fx:id="zeroButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="0" textFill="#71747a">
+                                 <cursor>
+                                    <Cursor fx:constant="CLOSED_HAND" />
+                                 </cursor>
+                                 <effect>
+                                    <DropShadow blurType="TWO_PASS_BOX" />
+                                 </effect>
+                                 <font>
+                                    <Font size="51.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="dotButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="." textFill="#71747a">
+                                 <cursor>
+                                    <Cursor fx:constant="CLOSED_HAND" />
+                                 </cursor>
+                                 <effect>
+                                    <DropShadow blurType="TWO_PASS_BOX" />
+                                 </effect>
+                                 <font>
+                                    <Font size="51.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
                      </children>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER" maxHeight="150.0" maxWidth="+Infinity" prefHeight="150.0" prefWidth="492.0" VBox.vgrow="ALWAYS">
-                     <children>
-                        <Button fx:id="sevenButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="7" textFill="#71747a" HBox.hgrow="ALWAYS">
-                           <cursor>
-                              <Cursor fx:constant="CLOSED_HAND" />
-                           </cursor>
-                           <effect>
-                              <DropShadow blurType="TWO_PASS_BOX" />
-                           </effect>
-                           <font>
-                              <Font size="51.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </HBox.margin>
-                        </Button>
-                        <Button fx:id="eightButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="8" textFill="#71747a">
-                           <cursor>
-                              <Cursor fx:constant="CLOSED_HAND" />
-                           </cursor>
-                           <effect>
-                              <DropShadow blurType="TWO_PASS_BOX" />
-                           </effect>
-                           <font>
-                              <Font size="51.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </HBox.margin>
-                        </Button>
-                        <Button fx:id="nineButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="9" textFill="#71747a">
-                           <cursor>
-                              <Cursor fx:constant="CLOSED_HAND" />
-                           </cursor>
-                           <effect>
-                              <DropShadow blurType="TWO_PASS_BOX" />
-                           </effect>
-                           <font>
-                              <Font size="51.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER" maxHeight="150.0" maxWidth="+Infinity" prefHeight="150.0" prefWidth="492.0" VBox.vgrow="ALWAYS">
-                     <children>
-                        <Button fx:id="removeButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" textFill="#71747a">
-                           <cursor>
-                              <Cursor fx:constant="CLOSED_HAND" />
-                           </cursor>
-                           <effect>
-                              <DropShadow blurType="TWO_PASS_BOX" />
-                           </effect>
-                           <font>
-                              <Font size="51.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </HBox.margin>
-                           <graphic>
-                              <ImageView fx:id="removeImageView" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
-                           </graphic>
-                        </Button>
-                        <Button fx:id="zeroButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="0" textFill="#71747a">
-                           <cursor>
-                              <Cursor fx:constant="CLOSED_HAND" />
-                           </cursor>
-                           <effect>
-                              <DropShadow blurType="TWO_PASS_BOX" />
-                           </effect>
-                           <font>
-                              <Font size="51.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </HBox.margin>
-                        </Button>
-                        <Button fx:id="dotButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="." textFill="#71747a">
-                           <cursor>
-                              <Cursor fx:constant="CLOSED_HAND" />
-                           </cursor>
-                           <effect>
-                              <DropShadow blurType="TWO_PASS_BOX" />
-                           </effect>
-                           <font>
-                              <Font size="51.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
-                  </HBox>
+                  </VBox>
                </children>
             </VBox>
+      
          </children>
-      </VBox>
-
+      </HBox>
    </children>
-</HBox>
+</VBox>

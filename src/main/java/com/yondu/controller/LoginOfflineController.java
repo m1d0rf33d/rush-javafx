@@ -1,45 +1,30 @@
 package com.yondu.controller;
 
 import com.sun.javafx.scene.control.skin.FXVK;
-import com.yondu.App;
-import com.yondu.model.Branch;
-import com.yondu.model.constants.ApiFieldContants;
 import com.yondu.model.constants.AppConfigConstants;
-import com.yondu.service.ApiService;
-import com.yondu.service.CommonService;
+import com.yondu.service.LoginService;
 import com.yondu.utils.PropertyBinder;
-import javafx.animation.PauseTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
-import org.apache.http.NameValuePair;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.ResourceBundle;
 
-import static com.yondu.AppContextHolder.*;
-import static com.yondu.AppContextHolder.CUSTOMER_APP_KEY;
-import static com.yondu.AppContextHolder.CUSTOMER_APP_SECRET;
 import static com.yondu.model.constants.AppConfigConstants.*;
 
 /**
@@ -57,8 +42,7 @@ public class LoginOfflineController implements Initializable {
     @FXML
     public TextField amountTextField;
 
-    private ApiService apiService = new ApiService();
-    private CommonService commonService = new CommonService();
+    private LoginService loginService = new LoginService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -95,85 +79,14 @@ public class LoginOfflineController implements Initializable {
         PropertyBinder.addComma(amountTextField);
 
         reconnectButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            ImageView img = new ImageView(new Image(App.class.getResource("/app/images/loading.gif").toExternalForm()));
-            img.setFitHeight(150);
-            img.setFitWidth(150);
-            StackPane bodyStackPane = (StackPane) App.appContextHolder.getLoginHBox().getScene().lookup("#bodyStackPane");
-            bodyStackPane.getChildren().clear();
-            bodyStackPane.getChildren().add(img);
-
-            PauseTransition pause = new PauseTransition(
-                    Duration.seconds(1)
-            );
-            pause.setOnFinished(event -> {
-                reconnect();
-            });
-            pause.play();
+            loginService.reconnect();
         });
+
         givePointsButton.setOnMouseClicked((MouseEvent e) -> {
             saveOfflineTransaction();
         });
     }
 
-    private void reconnect() {
-        StackPane bodyStackPane = (StackPane) App.appContextHolder.getLoginHBox().getScene().lookup("#bodyStackPane");
-        if (commonService.fetchApiKeys()) {
-            JSONArray branches = new JSONArray();
-            String url = BASE_URL + GET_BRANCHES_ENDPOINT;
-            java.util.List<NameValuePair> params = new ArrayList<>();
-            JSONObject jsonObject = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
-            if (jsonObject != null) {
-                List<JSONObject> data = (ArrayList) jsonObject.get("data");
-                for (JSONObject json : data) {
-                    Branch branch = new Branch();
-                    branch.setId((String) json.get("id"));
-                    branch.setName((String) json.get("name"));
-                    branches.add(branch);
-                }
-                try {
-                    VBox numbersVBox = (VBox) App.appContextHolder.getLoginHBox().getScene().lookup("#numbersVBox");
-                    numbersVBox.setVisible(true);
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(LOGIN_ONLINE_FXML));
-                    Parent root = fxmlLoader.load();
-                    LoginOnlineController controller = fxmlLoader.getController();
-                    controller.setBranches(branches);
-                    bodyStackPane.getChildren().clear();
-                    bodyStackPane.getChildren().add(root);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                promptOffline();
-            }
-        } else {
-            promptOffline();
-        }
-
-    }
-
-    private void promptOffline() {
-        Text text = new Text("Network connection error.");
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-        alert.setTitle(AppConfigConstants.APP_TITLE);
-        alert.initStyle(StageStyle.UTILITY);
-        alert.initOwner(App.appContextHolder.getLoginHBox().getScene().getWindow());
-        alert.setHeaderText("LOGIN");
-        alert.getDialogPane().setPadding(new javafx.geometry.Insets(10,10,10,10));
-        alert.getDialogPane().setContent(text);
-        alert.getDialogPane().setPrefWidth(400);
-        alert.show();
-
-        try {
-
-            StackPane bodyStackPane = (StackPane) App.appContextHolder.getLoginHBox().getScene().lookup("#bodyStackPane");
-            bodyStackPane.getChildren().clear();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(AppConfigConstants.LOGIN_OFFLINE_FXML));
-            Parent root = fxmlLoader.load();
-            bodyStackPane.getChildren().add(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void saveOfflineTransaction() {
         try {

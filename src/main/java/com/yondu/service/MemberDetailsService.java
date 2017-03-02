@@ -3,7 +3,14 @@ package com.yondu.service;
 import com.yondu.App;
 import com.yondu.model.*;
 import com.yondu.model.constants.ApiFieldContants;
+import javafx.animation.PauseTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
@@ -16,9 +23,53 @@ import static com.yondu.AppContextHolder.*;
 /**
  * Created by lynx on 2/21/17.
  */
-public class MemberDetailsService {
+public class MemberDetailsService extends BaseService{
+    private Integer MAX_ENTRIES_COUNT = 10;
+    private Integer PAGE_COUNT = 0;
 
+    private ObservableList<Reward> masterData =
+            FXCollections.observableArrayList();
     private ApiService apiService = new ApiService();
+
+    public void initialize() {
+
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(1)
+        );
+        pause.setOnFinished(event -> {
+            Task task = initializeWorker();
+            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent event) {
+                    ApiResponse apiResponse = (ApiResponse) task.getValue();
+                    if (apiResponse.isSuccess()) {
+                        loadOnline();
+                    } else {
+                        commonService.showPrompt("Network connection error.", "LOGIN");
+                        loadOffline();
+                    }
+                    enableMenu();
+                }
+            });
+            disableMenu();
+            new Thread().start();
+        });
+        pause.play();
+    }
+
+    public Task initializeWorker() {
+        return new Task() {
+            @Override
+            protected ApiResponse call() throws Exception {
+                ApiResponse apiResponse = new ApiResponse();
+                apiResponse.setSuccess(false);
+
+
+
+                return apiResponse;
+            }
+        };
+    }
 
     public ApiResponse loginCustomer(String mobileNumber) {
 

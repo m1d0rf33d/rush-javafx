@@ -53,14 +53,7 @@ public class MemberDetailsController implements Initializable {
     @FXML
     public Button exitButton;
 
-    private Customer customer;
-    private Integer MAX_ENTRIES_COUNT = 10;
-    private Integer PAGE_COUNT = 0;
 
-    private ObservableList<Reward> masterData =
-            FXCollections.observableArrayList();
-
-    private CommonService commonService = new CommonService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

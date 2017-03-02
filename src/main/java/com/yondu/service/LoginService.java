@@ -66,8 +66,10 @@ public class LoginService extends BaseService{
                         commonService.showPrompt("Network connection error.", "LOGIN");
                         loadOffline();
                     }
+                    enableMenu();
                 }
             });
+            disableMenu();
             new Thread().start();
         });
         pause.play();

@@ -2,14 +2,19 @@ package com.yondu.service;
 
 import com.yondu.App;
 import com.yondu.model.*;
-import com.yondu.model.constants.ApiFieldContants;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
-import javafx.stage.Stage;
+import javafx.scene.Node;
+import javafx.scene.control.Pagination;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -18,18 +23,14 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.yondu.AppContextHolder.*;
-
+import static com.yondu.model.constants.ApiConstants.*;
 /**
  * Created by lynx on 2/21/17.
  */
 public class MemberDetailsService extends BaseService{
-    private Integer MAX_ENTRIES_COUNT = 10;
-    private Integer PAGE_COUNT = 0;
 
-    private ObservableList<Reward> masterData =
-            FXCollections.observableArrayList();
     private ApiService apiService = new ApiService();
+    private RouteService routeService = new RouteService();
 
     public void initialize() {
 
@@ -43,10 +44,10 @@ public class MemberDetailsService extends BaseService{
                 public void handle(WorkerStateEvent event) {
                     ApiResponse apiResponse = (ApiResponse) task.getValue();
                     if (apiResponse.isSuccess()) {
-                        loadOnline();
+                        loadCustomerDetails();
+                        loadActiveVouchers();
                     } else {
-                        commonService.showPrompt("Network connection error.", "LOGIN");
-                        loadOffline();
+                        showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
                     }
                     enableMenu();
                 }
@@ -57,6 +58,43 @@ public class MemberDetailsService extends BaseService{
         pause.play();
     }
 
+    public void viewMember(String mobileNumber) {
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setSuccess(false);
+
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(1)
+        );
+        pause.setOnFinished(event -> {
+            Task task = viewMemberWorker(mobileNumber);
+            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent event) {
+                    ApiResponse apiResponse = (ApiResponse) task.getValue();
+                    if (apiResponse.isSuccess()) {
+                        routeService.loadMemberDetailsScreen();
+                    } else {
+                        showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY");
+                    }
+                    enableMenu();
+                }
+            });
+            disableMenu();
+            new Thread().start();
+        });
+        pause.play();
+    }
+
+    public Task viewMemberWorker(String mobileNumber) {
+        return new Task() {
+            @Override
+            protected ApiResponse call() throws Exception {
+
+                return loginCustomer(mobileNumber);
+            }
+        };
+    }
+
     public Task initializeWorker() {
         return new Task() {
             @Override
@@ -64,7 +102,14 @@ public class MemberDetailsService extends BaseService{
                 ApiResponse apiResponse = new ApiResponse();
                 apiResponse.setSuccess(false);
 
-
+                Customer customer = App.appContextHolder.getCustomer();
+                ApiResponse loginResponse = loginCustomer(customer.getMobileNumber());
+                if (loginResponse.isSuccess()) {
+                    getActiveVouchers();
+                    apiResponse.setSuccess(true);
+                } else {
+                    showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
+                }
 
                 return apiResponse;
             }
@@ -78,10 +123,12 @@ public class MemberDetailsService extends BaseService{
         JSONObject payload = new JSONObject();
 
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.MEMBER_MOBILE, mobileNumber));
+        params.add(new BasicNameValuePair("mobile_no", mobileNumber));
         String url = BASE_URL + MEMBER_LOGIN_ENDPOINT;
-        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-        JSONObject jsonObject = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+
+        Employee employee = App.appContextHolder.getEmployee();
+        url = url.replace(":employee_id", employee.getEmployeeId());
+        JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
         if (jsonObject != null) {
             if (jsonObject.get("error_code").equals("0x0")) {
                 JSONObject data = (JSONObject) jsonObject.get("data");
@@ -93,14 +140,13 @@ public class MemberDetailsService extends BaseService{
                 customer.setDateOfBirth((String) data.get("birthdate"));
                 customer.setEmail((String) data.get("email"));
                 customer.setMemberSince((String) data.get("registration_date"));
-                payload.put("customer", customer);
 
-                App.appContextHolder.setCustomerMobile((String) data.get("mobile_no"));
-                App.appContextHolder.setCustomerUUID((String) data.get("id"));
+                customer.setUuid((String) data.get("id"));
+                customer.setMobileNumber((String) data.get("mobile_no"));
 
                 url = BASE_URL + GET_POINTS_ENDPOINT;
-                url = url.replace(":customer_uuid",App.appContextHolder.getCustomerUUID());
-                jsonObject = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                url = url.replace(":customer_uuid", customer.getUuid());
+                jsonObject = apiService.call(url, params, "get", MERCHANT_APP_RESOURCE_OWNER);
                 String points = (String) jsonObject.get("data");
                 customer.setAvailablePoints(points);
 
@@ -121,10 +167,13 @@ public class MemberDetailsService extends BaseService{
 
     public CustomerCard getCustomerCard() {
 
+        Employee employee = App.appContextHolder.getEmployee();
+        Customer customer = App.appContextHolder.getCustomer();
+
         List<NameValuePair> params = new ArrayList<>();
         String url = BASE_URL + CUSTOMER_CARD_ENDPOINT;
-        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
-        JSONObject jsonObject = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        url = url.replace(":employee_id", employee.getEmployeeId()).replace(":customer_id", customer.getUuid());
+        JSONObject jsonObject = apiService.call(url, params, "get", MERCHANT_APP_RESOURCE_OWNER);
         if (jsonObject != null) {
             CustomerCard card = new CustomerCard();
 
@@ -158,10 +207,12 @@ public class MemberDetailsService extends BaseService{
         apiResponse.setSuccess(false);
         JSONObject payload = new JSONObject();
 
+        Customer customer = App.appContextHolder.getCustomer();
+
         List<NameValuePair> params = new ArrayList<>();
         String url = BASE_URL + GET_POINTS_ENDPOINT;
-        url = url.replace(":customer_uuid", App.appContextHolder.getCustomerUUID());
-        JSONObject jsonObject = apiService.call(url, params, "get", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        url = url.replace(":customer_uuid", customer.getUuid());
+        JSONObject jsonObject = apiService.call(url, params, "get", MERCHANT_APP_RESOURCE_OWNER);
         if (jsonObject != null) {
             payload.put("points", jsonObject.get("data"));
             apiResponse.setSuccess(true);
@@ -176,9 +227,11 @@ public class MemberDetailsService extends BaseService{
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setSuccess(false);
 
+        Customer customer = App.appContextHolder.getCustomer();
+
         String url = BASE_URL + CUSTOMER_REWARDS_ENDPOINT;
-        url = url.replace(":id",App.appContextHolder.getCustomerUUID());
-        JSONObject jsonObject = apiService.call(url, new ArrayList<>(), "get", ApiFieldContants.CUSTOMER_APP_RESOUCE_OWNER);
+        url = url.replace(":id", customer.getUuid());
+        JSONObject jsonObject = apiService.call(url, new ArrayList<>(), "get", CUSTOMER_APP_RESOUCE_OWNER);
         if (jsonObject != null) {
             if (jsonObject.get("error_code").equals("0x0")) {
                 List<JSONObject> dataJSON = (ArrayList) jsonObject.get("data");
@@ -188,13 +241,11 @@ public class MemberDetailsService extends BaseService{
                     reward.setDetails((String) rewardJSON.get("details"));
                     reward.setName((String) rewardJSON.get("name"));
                     reward.setQuantity((rewardJSON.get("quantity")).toString());
-                    reward.setId(String.valueOf((Long) rewardJSON.get("id")));
+                    reward.setId(String.valueOf(rewardJSON.get("id")));
                     reward.setImageUrl((String) rewardJSON.get("image_url"));
                     rewards.add(reward);
                 }
-                JSONObject payload = new JSONObject();
-                payload.put("rewards", rewards);
-                apiResponse.setPayload(payload);
+                customer.setActiveVouchers(rewards);
                 apiResponse.setSuccess(true);
             }
         }
@@ -206,23 +257,22 @@ public class MemberDetailsService extends BaseService{
         apiResponse.setSuccess(false);
 
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_ID, employeeId));
-        params.add(new BasicNameValuePair(ApiFieldContants.BRANCH_ID, branchId));
-        params.add(new BasicNameValuePair(ApiFieldContants.PIN, pin));
+        params.add(new BasicNameValuePair("employee_id", employeeId));
+        params.add(new BasicNameValuePair("branch_id", branchId));
+        params.add(new BasicNameValuePair("pin", pin));
         String url = BASE_URL + LOGIN_ENDPOINT;
-        JSONObject jsonObject = apiService.call((url), params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        JSONObject jsonObject = apiService.call((url), params, "post", MERCHANT_APP_RESOURCE_OWNER);
         if (jsonObject != null) {
             if (jsonObject.get("error_code").equals("0x0")) {
                 JSONObject data = (JSONObject) jsonObject.get("data");
 
-                JSONObject payload = new JSONObject();
                 Employee employee = new Employee();
                 employee.setBranchId(branchId);
                 employee.setEmployeeId((String) data.get("id"));
                 employee.setEmployeeName((String) data.get("name"));
-                payload.put("employee", employee);
                 apiResponse.setSuccess(true);
-                apiResponse.setPayload(payload);
+
+                App.appContextHolder.setEmployee(employee);
             } else {
                 apiResponse.setMessage((String) jsonObject.get("message"));
             }
@@ -230,6 +280,110 @@ public class MemberDetailsService extends BaseService{
             apiResponse.setMessage("Network error");
         }
         return apiResponse;
+    }
+
+    private void loadActiveVouchers() {
+
+
+        VBox rootVBox = App.appContextHolder.getRootContainer();
+        Pagination activeVouchersPagination = (Pagination) rootVBox.getScene().lookup("#activeVouchersPagination");
+
+        activeVouchersPagination.setPageCount(0);
+        activeVouchersPagination.setPageFactory((Integer pageIndex) -> createActivateVoucherPage(pageIndex));
+    }
+
+    public Node createActivateVoucherPage(int pageIndex) {
+        int pageCount = 0;
+        int maxEntries = 10;
+
+        Customer customer = App.appContextHolder.getCustomer();
+        pageCount = customer.getActiveVouchers().size() / maxEntries;
+        if (pageCount == 0) {
+            pageCount = 1;
+        }
+
+        VBox box = new VBox();
+        box.getChildren().addAll(buildTableView());
+
+        VBox rootVBox = App.appContextHolder.getRootContainer();
+        Pagination activeVouchersPagination = (Pagination) rootVBox.getScene().lookup("#activeVouchersPagination");
+        activeVouchersPagination.setPageCount(pageCount);
+        return box;
+    }
+
+    private TableView<Reward> buildTableView() {
+
+
+        TableView<Reward> transactionsTableView = new TableView();
+        transactionsTableView.setFixedCellSize(Region.USE_COMPUTED_SIZE);
+
+        ObservableList<Reward> textFilteredData = FXCollections.observableArrayList();
+/*
+
+        if (searchTextField.getText() != null && !searchTextField.getText().isEmpty()) {
+            String searchTxt = searchTextField.getText().toLowerCase();
+            for (Reward reward : masterData) {
+                if (reward.getDetails().toLowerCase().contains(searchTxt)
+                        || reward.getName().toLowerCase().contains(searchTxt)
+                        || reward.getQuantity().toLowerCase().contains(searchTxt)) {
+                    textFilteredData.addAll(reward);
+                }
+            }
+        } else {
+            textFilteredData = masterData;
+        }
+
+        PAGE_COUNT = textFilteredData.size() / MAX_ENTRIES_COUNT;
+        if (PAGE_COUNT == 0) {
+            PAGE_COUNT = 1;
+        }
+
+        int pageIndex = pagination.getCurrentPageIndex();
+        ObservableList<Reward> indexFilteredData = FXCollections.observableArrayList();
+        for (Reward reward : textFilteredData) {
+            int objIndex = textFilteredData.indexOf(reward);
+            if (objIndex >= (pageIndex * MAX_ENTRIES_COUNT)  && objIndex < ((pageIndex + 1) * MAX_ENTRIES_COUNT)) {
+                indexFilteredData.add(reward);
+            }
+            if (objIndex > ((pageIndex + 1) * MAX_ENTRIES_COUNT -1)) {
+                break;
+            }
+        }
+*/
+        Customer customer = App.appContextHolder.getCustomer();
+
+        buildActiveVouchersColumns(transactionsTableView);
+        transactionsTableView.setItems(FXCollections.observableArrayList(customer.getActiveVouchers()));
+        return transactionsTableView;
+    }
+
+    private void buildActiveVouchersColumns(TableView tableView) {
+
+
+        TableColumn dateCol = new TableColumn("Redemption Date");
+        dateCol.setPrefWidth(200);
+        dateCol.setCellValueFactory(
+                new PropertyValueFactory<>("date"));
+
+
+        TableColumn rewardCol = new TableColumn("Reward");
+        rewardCol.setPrefWidth(200);
+        rewardCol.setCellValueFactory(
+                new PropertyValueFactory<>("name"));
+
+        TableColumn mobileCol = new TableColumn("Details");
+        mobileCol.setPrefWidth(400);
+        mobileCol.setCellValueFactory(
+                new PropertyValueFactory<>("details"));
+
+        TableColumn orCol = new TableColumn("Quantity");
+        orCol.setPrefWidth(100);
+        orCol.setCellValueFactory(
+                new PropertyValueFactory<>("quantity"));
+
+
+        tableView.getColumns().clear();
+        tableView.getColumns().addAll(dateCol,orCol, rewardCol, mobileCol);
     }
 
 }

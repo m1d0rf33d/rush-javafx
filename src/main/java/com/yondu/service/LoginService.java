@@ -75,8 +75,8 @@ public class LoginService extends BaseService{
         pause.play();
     }
 
-    public ApiResponse loginEmployee(String username, String branchId) {
-        Task task = loginEmployeeWorker(username, branchId);
+    public ApiResponse loginEmployee(String username, Branch branch) {
+        Task task = loginEmployeeWorker(username, branch);
         task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
@@ -123,7 +123,7 @@ public class LoginService extends BaseService{
         }
     }
 
-    public Task loginEmployeeWorker(String username, String branchId) {
+    public Task loginEmployeeWorker(String username, Branch branch) {
         return new Task() {
             @Override
             protected ApiResponse call() throws Exception {
@@ -132,7 +132,7 @@ public class LoginService extends BaseService{
 
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("employee_id", username));
-                params.add(new BasicNameValuePair("branch_id", branchId));
+                params.add(new BasicNameValuePair("branch_id", branch.getId()));
                 String url = BASE_URL + LOGIN_ENDPOINT;
                 JSONObject jsonObject = apiService.call((url), params, "post", MERCHANT_APP_RESOURCE_OWNER);
                 if (jsonObject != null) {
@@ -142,8 +142,7 @@ public class LoginService extends BaseService{
                         Employee employee = new Employee();
                         employee.setEmployeeId((String) data.get("id"));
                         employee.setEmployeeName((String) data.get("name"));
-                        Branch branch = new Branch();
-                        branch.setId(branchId);
+
                         App.appContextHolder.setBranch(branch);
                         App.appContextHolder.setEmployee(employee);
                         apiResponse.setSuccess(true);
@@ -185,6 +184,7 @@ public class LoginService extends BaseService{
                 Branch branch = new Branch();
                 branch.setId((String) json.get("id"));
                 branch.setName((String) json.get("name"));
+                branch.setLogoUrl((String) json.get("logo_url"));
                 branches.add(branch);
             }
         } else {

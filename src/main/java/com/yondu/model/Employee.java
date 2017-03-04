@@ -1,5 +1,7 @@
 package com.yondu.model;
 
+import java.util.List;
+
 /**
  * Created by lynx on 2/21/17.
  */
@@ -8,6 +10,15 @@ public class Employee {
     private String employeeId;
     private String employeeName;
     private String branchId;
+    private List<String> screenAccess;
+
+    public List<String> getScreenAccess() {
+        return screenAccess;
+    }
+
+    public void setScreenAccess(List<String> screenAccess) {
+        this.screenAccess = screenAccess;
+    }
 
     public String getEmployeeId() {
         return employeeId;

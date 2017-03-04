@@ -150,8 +150,8 @@ public class OCRController implements Initializable {
         });
 
         saveButton.setOnMouseClicked((MouseEvent e) -> {
-            App.appContextHolder.getRootVBox().setOpacity(.50);
-            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+            App.appContextHolder.getRootContainer().setOpacity(.50);
+            for (Node n : App.appContextHolder.getRootContainer().getChildren()) {
                 n.setDisable(true);
             }
             PauseTransition pause = new PauseTransition(
@@ -161,8 +161,8 @@ public class OCRController implements Initializable {
                 saveDimensions();
             });
             pause.play();
-            App.appContextHolder.getRootVBox().setOpacity(1);
-            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+            App.appContextHolder.getRootContainer().setOpacity(1);
+            for (Node n : App.appContextHolder.getRootContainer().getChildren()) {
                 n.setDisable(false);
             }
 
@@ -174,8 +174,8 @@ public class OCRController implements Initializable {
             Double y = orPosY != null ? orPosY : savedOrPosY;
             Double width = orWidth != null ? orWidth : savedOrWidth;
             Double height = orHeight != null ? orHeight : savedOrHeight;
-            App.appContextHolder.getRootVBox().setOpacity(.50);
-            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+            App.appContextHolder.getRootContainer().setOpacity(.50);
+            for (Node n : App.appContextHolder.getRootContainer().getChildren()) {
                 n.setDisable(true);
             }
 
@@ -183,7 +183,7 @@ public class OCRController implements Initializable {
                     Duration.seconds(.5)
             );
             pause.setOnFinished(event -> {
-                ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(true);
+                ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).setIconified(true);
                 PauseTransition p = new PauseTransition(
                         Duration.seconds(.50)
                 );
@@ -203,15 +203,15 @@ public class OCRController implements Initializable {
             Double y = amountPosY != null ? amountPosY : savedAmountPosY;
             Double width = amountWidth != null ? amountWidth : savedAmountWidth;
             Double height = amountHeight != null ? amountHeight : savedAmountHeight;
-            App.appContextHolder.getRootVBox().setOpacity(.50);
-            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+            App.appContextHolder.getRootContainer().setOpacity(.50);
+            for (Node n : App.appContextHolder.getRootContainer().getChildren()) {
                 n.setDisable(true);
             }
             PauseTransition pause = new PauseTransition(
                     Duration.seconds(.5)
             );
             pause.setOnFinished(event -> {
-                ((Stage) App.appContextHolder.getRootVBox().getScene().getWindow()).setIconified(true);
+                ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).setIconified(true);
                 PauseTransition p = new PauseTransition(
                         Duration.seconds(.50)
                 );
@@ -263,7 +263,7 @@ public class OCRController implements Initializable {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
                     alert.setTitle(AppConfigConstants.APP_TITLE);
                     alert.initStyle(StageStyle.UTILITY);
-                    alert.initOwner(App.appContextHolder.getRootVBox().getScene().getWindow());
+                    alert.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());
                     alert.setHeaderText("OCR SETUP");
                     alert.getDialogPane().setPadding(new javafx.geometry.Insets(10,10,10,10));
                     alert.getDialogPane().setContent(text);

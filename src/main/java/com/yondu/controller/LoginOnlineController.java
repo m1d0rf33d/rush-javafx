@@ -75,13 +75,15 @@ public class LoginOnlineController implements Initializable{
             String username = this.loginTextField.getText();
             String branchName = (String) branchComboBox.getSelectionModel().getSelectedItem();
             String branchId = "";
+
+            Branch selectedBranch = null;
             for (Branch branch : App.appContextHolder.getBranches()) {
                 if (branch.getName().equals(branchName)) {
-                    branchId = branch.getId();
+                    selectedBranch = branch;
                     break;
                 }
             }
-            loginService.loginEmployee(username, branchId);
+            loginService.loginEmployee(username, selectedBranch);
 
         });
     }

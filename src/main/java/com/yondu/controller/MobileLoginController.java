@@ -47,12 +47,12 @@ public class MobileLoginController implements Initializable {
         PropertyBinder.bindMaxLength(11, mobileTextField);
 
         cancelButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            App.appContextHolder.getRootVBox().setOpacity(1);
-            for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+            App.appContextHolder.getRootContainer().setOpacity(1);
+            for (Node n : App.appContextHolder.getRootContainer().getChildren()) {
                 n.setDisable(false);
             }
             ((Stage) cancelButton.getScene().getWindow()).close();
-            App.appContextHolder.setAppState(App.appContextHolder.getPrevState());
+            App.appContextHolder.setCurrentState(App.appContextHolder.getPrevState());
             commonService.updateButtonState();
         });
 
@@ -64,7 +64,7 @@ public class MobileLoginController implements Initializable {
             pause.setOnFinished(event -> {
                 ApiResponse apiResponse = memberDetailsService.loginCustomer(mobileTextField.getText());
                 if (apiResponse.isSuccess()) {
-                    AppState state = App.appContextHolder.getAppState();
+                    AppState state = App.appContextHolder.getCurrentState();
                     if (state.equals(AppState.EARN_POINTS)) {
                         routeService.loadEarnPointsScreen();
                     } else if (state.equals(AppState.REDEEM_REWARDS)) {
@@ -79,8 +79,8 @@ public class MobileLoginController implements Initializable {
                         routeService.loadGiveStampsScreen();
                     }
                 } else {
-                    App.appContextHolder.getRootVBox().setOpacity(1);
-                    for (Node n :  App.appContextHolder.getRootVBox().getChildren()) {
+                    App.appContextHolder.getRootContainer().setOpacity(1);
+                    for (Node n :  App.appContextHolder.getRootContainer().getChildren()) {
                         n.setDisable(false);
                     }
                     commonService.updateButtonState();
@@ -88,7 +88,7 @@ public class MobileLoginController implements Initializable {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
                     alert.setTitle(AppConfigConstants.APP_TITLE);
                     alert.initStyle(StageStyle.UTILITY);
-                    alert.initOwner(App.appContextHolder.getRootVBox().getScene().getWindow());
+                    alert.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());
                     alert.setHeaderText("LOGIN MEMBER");
                     alert.getDialogPane().setPadding(new Insets(10,10,10,10));
                     alert.getDialogPane().setContent(text);

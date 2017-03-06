@@ -200,26 +200,6 @@ public class MemberDetailsService extends BaseService{
         return null;
     }
 
-    public ApiResponse getCurrentPoints() {
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setSuccess(false);
-        JSONObject payload = new JSONObject();
-
-        Customer customer = App.appContextHolder.getCustomer();
-
-        List<NameValuePair> params = new ArrayList<>();
-        String url = BASE_URL + GET_POINTS_ENDPOINT;
-        url = url.replace(":customer_uuid", customer.getUuid());
-        JSONObject jsonObject = apiService.call(url, params, "get", MERCHANT_APP_RESOURCE_OWNER);
-        if (jsonObject != null) {
-            payload.put("points", jsonObject.get("data"));
-            apiResponse.setSuccess(true);
-            apiResponse.setPayload(payload);
-        } else {
-            apiResponse.setMessage("Network error.");
-        }
-        return apiResponse;
-    }
 
     public ApiResponse getActiveVouchers() {
         ApiResponse apiResponse = new ApiResponse();
@@ -241,6 +221,7 @@ public class MemberDetailsService extends BaseService{
                     reward.setQuantity((rewardJSON.get("quantity")).toString());
                     reward.setId(String.valueOf(rewardJSON.get("id")));
                     reward.setImageUrl((String) rewardJSON.get("image_url"));
+                    reward.setPointsRequired((String) rewardJSON.get("points"));
                     rewards.add(reward);
                 }
                 customer.setActiveVouchers(rewards);

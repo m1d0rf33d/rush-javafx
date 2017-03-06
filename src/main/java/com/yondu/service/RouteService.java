@@ -102,8 +102,9 @@ public class RouteService extends BaseService{
             ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber());
             if (!apiResponse.isSuccess()) {
                 notifyError(apiResponse.getMessage());
+                enableMenu();
             }
-            enableMenu();
+
         });
         pause.play();
     }
@@ -150,11 +151,11 @@ public class RouteService extends BaseService{
             VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, ISSUE_REWARDS_SCREEN);
 
-            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getUuid());
+            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber());
             if (!apiResponse.isSuccess()) {
                 notifyError(apiResponse.getMessage());
+                enableMenu();
             }
-            enableMenu();
         });
         pause.play();
     }
@@ -208,14 +209,13 @@ public class RouteService extends BaseService{
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
-            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
-            this.loadContentPage(bodyStackPane, TRANSACTIONS_SCREEN);
-
-            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getUuid());
+            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber());
             if (!apiResponse.isSuccess()) {
                 notifyError(apiResponse.getMessage());
+            } else {
+                VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
+                this.loadContentPage(bodyStackPane, TRANSACTIONS_SCREEN);
             }
-            enableMenu();
         });
         pause.play();
     }

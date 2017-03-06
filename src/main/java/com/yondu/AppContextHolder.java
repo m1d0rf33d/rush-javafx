@@ -11,6 +11,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /** This will serve as a single instance application context holder that
@@ -34,6 +35,7 @@ public class AppContextHolder {
     private Stage orCaptureStage;
     private Stage salesCaptureStage;
     private OcrConfig ocrConfig;
+    private List<Reward> unclaimedRewards = new ArrayList<>();
 
     public static ApiService apiService = new ApiService();
     public static CommonService commonService = new CommonService();
@@ -52,6 +54,13 @@ public class AppContextHolder {
     public static StampsService stampsService = new StampsService();
     public static TransactionService transactionService = new TransactionService();
 
+    public List<Reward> getUnclaimedRewards() {
+        return unclaimedRewards;
+    }
+
+    public void setUnclaimedRewards(List<Reward> unclaimedRewards) {
+        this.unclaimedRewards = unclaimedRewards;
+    }
 
     public OcrConfig getOcrConfig() {
         return ocrConfig;

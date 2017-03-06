@@ -1,6 +1,7 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import com.yondu.model.Customer;
 import com.yondu.model.Reward;
 import com.yondu.model.constants.AppState;
 import com.yondu.service.IssueRewardsService;
@@ -13,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -48,7 +50,7 @@ public class RewardDialogController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        
+        renderReward();
 
         AppState state = App.appContextHolder.getCurrentState();
         if (state.equals(AppState.ISSUE_REWARDS)) {
@@ -70,6 +72,7 @@ public class RewardDialogController implements Initializable {
 
     private void issueReward() {
         Reward reward = App.appContextHolder.getReward();
+        ((Stage) rewardImageView.getScene().getWindow()).close();
         issueRewardsService.issueReward(reward.getId());
     }
 
@@ -97,6 +100,32 @@ public class RewardDialogController implements Initializable {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void renderReward() {
+        Reward reward = App.appContextHolder.getReward();
+
+        this.rewardImageView.setImage(new Image(reward.getImageUrl()));
+        this.rewardImageView.setFitWidth(350);
+        this.rewardImageView.setPreserveRatio(false);
+        this.rewardImageView.setFitHeight(200);
+        this.nameLabel.setText(reward.getName());
+        this.detailsLabel.setText(reward.getDetails());
+        this.requiredPointsLabel.setText(reward.getPointsRequired() + " points");
+
+        if (App.appContextHolder.getCurrentState().equals(AppState.REDEEM_REWARDS)) {
+            Customer customer = App.appContextHolder.getCustomer();
+
+            Long pointsRequired = Long.parseLong(reward.getPointsRequired());
+            Double customerPoints = Double.parseDouble(customer.getAvailablePoints());
+            if (pointsRequired > customerPoints) {
+                lockLabel.setVisible(true);
+                redeemButton.setVisible(false);
+            } else {
+                lockLabel.setVisible(false);
+                redeemButton.setVisible(true);
+            }
         }
     }
 }

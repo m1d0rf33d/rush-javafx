@@ -32,6 +32,7 @@ import java.util.List;
 
 import static com.yondu.model.constants.ApiConstants.*;
 import static com.yondu.model.constants.AppConfigConstants.APP_TITLE;
+import static com.yondu.model.constants.AppConfigConstants.ISSUE_REWARDS_SCREEN;
 import static com.yondu.model.constants.AppConfigConstants.REWARDS_DIALOG_SCREEN;
 
 /**
@@ -58,8 +59,11 @@ public class IssueRewardsService extends BaseService {
                     ApiResponse apiResponse = (ApiResponse) task.getValue();
                     if (!apiResponse.isSuccess()) {
                         showPrompt(apiResponse.getMessage(), "ISSUE REWARDS");
+                        enableMenu();
                     } else {
                         loadCustomerDetails();
+                        renderRewards();
+                        enableMenu();
                     }
                 }
             });
@@ -81,12 +85,12 @@ public class IssueRewardsService extends BaseService {
                 if (apiResp.isSuccess()) {
                     apiResp = memberDetailsService.getActiveVouchers();
                     if (apiResp.isSuccess()) {
-                        JSONObject payload = apiResp.getPayload();
-                        List<Reward> rewards = (ArrayList) payload.get("rewards");
-                        customer.setActiveVouchers(rewards);
 
+                        List<Reward> rewards = App.appContextHolder.getCustomer().getActiveVouchers();
+                        customer.setActiveVouchers(rewards);
+                        apiResponse.setSuccess(true);
                         loadUnclaimedRewards();
-                        renderRewards();
+                        return apiResponse;
                     }
                 } else {
                     return apiResponse;
@@ -104,14 +108,14 @@ public class IssueRewardsService extends BaseService {
         Customer customer = App.appContextHolder.getCustomer();
         List<VBox> vBoxes = new ArrayList<>();
         for (Reward reward : customer.getActiveVouchers()) {
-            for (Reward rew : unclaimedRewards) {
+            for (Reward rew : App.appContextHolder.getUnclaimedRewards()) {
                 if (rew.getName().equals(reward.getName())) {
                     reward.setId(rew.getId());
                 }
             }
             VBox vBox = new VBox();
             ImageView imageView = new ImageView(reward.getImageUrl());
-            imageView.setFitWidth(200);
+            imageView.setFitWidth(350);
             imageView.setFitHeight(200);
             imageView.setOnMouseClicked((MouseEvent e) -> {
                 showRewardsDialog(reward);
@@ -132,30 +136,42 @@ public class IssueRewardsService extends BaseService {
     }
 
     private void showRewardsDialog(Reward reward) {
-        VBox rootVBox =  App.appContextHolder.getRootContainer();
-        try {
-            Stage stage = new Stage();
-            stage.resizableProperty().setValue(Boolean.FALSE);
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REWARDS_DIALOG_SCREEN));
-            Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 600,400);
-            stage.setScene(scene);
-            stage.setTitle(APP_TITLE);
-            stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-            stage.initOwner(rootVBox.getScene().getWindow());
-            stage.setOnCloseRequest(new javafx.event.EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent event) {
-                  enableMenu();
-                }
-            });
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        App.appContextHolder.setReward(reward);
+
+        disableMenu();
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            VBox rootVBox =  App.appContextHolder.getRootContainer();
+            try {
+                Stage stage = new Stage();
+                stage.resizableProperty().setValue(Boolean.FALSE);
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REWARDS_DIALOG_SCREEN));
+                Parent root = fxmlLoader.load();
+                Scene scene = new Scene(root, 350,520);
+                stage.setScene(scene);
+                stage.setTitle(APP_TITLE);
+                stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+                stage.initOwner(rootVBox.getScene().getWindow());
+                stage.setOnCloseRequest(new javafx.event.EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent event) {
+                        enableMenu();
+                    }
+                });
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        pause.play();
+
     }
 
     public void loadUnclaimedRewards() {
+
         Employee employee = App.appContextHolder.getEmployee();
         Customer customer = App.appContextHolder.getCustomer();
         String url = BASE_URL + UNCLAIMED_REWARDS_ENDPOINT;
@@ -164,20 +180,20 @@ public class IssueRewardsService extends BaseService {
         JSONObject jsonObject = apiService.call(url, new ArrayList<>(), "get", MERCHANT_APP_RESOURCE_OWNER);
         if (jsonObject != null) {
             if (jsonObject.get("error_code").equals("0x0")) {
+                App.appContextHolder.getUnclaimedRewards().clear();
                 List<JSONObject> dataJSON = (ArrayList) jsonObject.get("data");
                 for (JSONObject data : dataJSON) {
                     Reward reward = new Reward();
                     reward.setId((String) data.get("id"));
                     JSONObject innerJSON = (JSONObject) data.get("reward");
                     reward.setName((String) innerJSON.get("name"));
-                    unclaimedRewards.add(reward);
+                    App.appContextHolder.getUnclaimedRewards().add(reward);
                 }
             }
         }
     }
 
     public void issueReward(String redeemId) {
-        disableMenu();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.5)
         );
@@ -187,9 +203,8 @@ public class IssueRewardsService extends BaseService {
                 ApiResponse apiResponse = new ApiResponse();
                 if (apiResponse.isSuccess()) {
                     renderRewards();
-                } else {
-                    showPrompt(apiResponse.getMessage(), "ISSUE REWARD");
                 }
+                showPrompt(apiResponse.getMessage(), "ISSUE REWARD");
                 enableMenu();
             });
             new Thread(task).start();
@@ -213,8 +228,13 @@ public class IssueRewardsService extends BaseService {
                 url = url.replace(":employee_id", employee.getEmployeeId());
                 JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
                 if (jsonObject != null) {
-                    apiResponse.setMessage("Issue reward successful.");
-                    apiResponse.setSuccess(true);
+                    if (jsonObject.get("error_code").equals("0x0")) {
+                        apiResponse.setMessage("Issue reward successful.");
+                        apiResponse.setSuccess(true);
+                    } else {
+                        apiResponse.setMessage((String) jsonObject.get("message"));
+                    }
+
                 } else {
                     apiResponse.setMessage("Network error.");
                 }

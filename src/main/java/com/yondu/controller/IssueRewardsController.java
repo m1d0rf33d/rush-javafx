@@ -3,6 +3,7 @@ package com.yondu.controller;
 import com.yondu.App;
 import com.yondu.model.constants.AppState;
 import com.yondu.service.CommonService;
+import com.yondu.service.IssueRewardsService;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -45,9 +46,12 @@ public class IssueRewardsController implements Initializable{
     public Button exitButton;
 
     private CommonService commonService = App.appContextHolder.commonService;
+    private IssueRewardsService issueRewardsService = new IssueRewardsService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        issueRewardsService.initialize();
 
         exitButton.setOnMouseClicked((MouseEvent e) -> {
             commonService.exitMember();
@@ -60,6 +64,8 @@ public class IssueRewardsController implements Initializable{
                 App.appContextHolder.getRootContainer().setMinHeight(600 + newValue.doubleValue());
             }
         });
+
+
 
         App.appContextHolder.setCurrentState(AppState.ISSUE_REWARDS);
     }

@@ -6,6 +6,7 @@ import com.yondu.model.*;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -55,6 +56,7 @@ public class RedeemRewardsService extends BaseService {
                     if (apiResponse.isSuccess()) {
                         loadCustomerDetails();
                         renderRewards();
+                        enableMenu();
                     } else {
                         showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
                         enableMenu();
@@ -92,36 +94,72 @@ public class RedeemRewardsService extends BaseService {
         };
     }
 
-    public ApiResponse redeemRewards(String pin) {
+    public void redeemRewards(String pin) {
 
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setSuccess(false);
-
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("pin", pin));
-        String url = BASE_URL + REDEEM_REWARDS_ENDPOINT;
-
-        Reward reward = App.appContextHolder.getReward();
-
-        Customer customer = App.appContextHolder.getCustomer();
-        Employee employee = App.appContextHolder.getEmployee();
-        url = url.replace(":customer_id", customer.getUuid());
-        url = url.replace(":employee_id", employee.getEmployeeId());
-        url = url.replace(":reward_id", reward.getId());
-        JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
-        if (jsonObject != null) {
-            if (jsonObject.get("error_code").equals("0x0")) {
-                apiResponse.setSuccess(true);
-                apiResponse.setMessage("Redeem reward successful.");
-            } else {
-                apiResponse.setMessage((String) jsonObject.get("message"));
+        Task task = redeemRewardWorker(pin);
+        task.setOnSucceeded((Event event) -> {
+            ApiResponse apiResponse = (ApiResponse) task.getValue();
+            if (apiResponse.isSuccess()) {
+                VBox rootVBox = App.appContextHolder.getRootContainer();
+                Label pointsLabel = (Label) rootVBox.getScene().lookup("#pointsLabel");
+                JSONObject payload = apiResponse.getPayload();
+                pointsLabel.setText((String) payload.get("points"));
             }
-        } else {
-            apiResponse.setMessage("Network error.");
-        }
-        return apiResponse;
+            showPrompt(apiResponse.getMessage(), "REDEEM REWARDS");
+            enableMenu();
+        });
+        new Thread(task).start();
+
     }
 
+    public Task redeemRewardWorker(String pin) {
+        return new Task() {
+            @Override
+            protected ApiResponse call() throws Exception {
+                ApiResponse apiResponse = new ApiResponse();
+                apiResponse.setSuccess(false);
+
+                List<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair("pin", pin));
+                String url = BASE_URL + REDEEM_REWARDS_ENDPOINT;
+
+                Reward reward = App.appContextHolder.getReward();
+
+                Customer customer = App.appContextHolder.getCustomer();
+                Employee employee = App.appContextHolder.getEmployee();
+                url = url.replace(":customer_id", customer.getUuid());
+                url = url.replace(":employee_id", employee.getEmployeeId());
+                url = url.replace(":reward_id", reward.getId());
+                JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
+                if (jsonObject != null) {
+                    if (jsonObject.get("error_code").equals("0x0")) {
+                        apiResponse.setSuccess(true);
+                        apiResponse.setMessage("Redeem reward successful.");
+
+                        params = new ArrayList<>();
+                        url = BASE_URL + GET_POINTS_ENDPOINT;
+                        url = url.replace(":customer_uuid", customer.getUuid());
+                        jsonObject = apiService.call(url, params, "get", MERCHANT_APP_RESOURCE_OWNER);
+                        if (jsonObject != null) {
+                            JSONObject payload = new JSONObject();
+                            payload.put("points", jsonObject.get("data"));
+                            apiResponse.setSuccess(true);
+                            apiResponse.setPayload(payload);
+                        } else {
+                            apiResponse.setMessage("Network error.");
+                        }
+
+                    } else {
+                        apiResponse.setMessage((String) jsonObject.get("message"));
+                    }
+                } else {
+                    apiResponse.setMessage("Network error.");
+                }
+
+                return apiResponse;
+            }
+        };
+    }
 
     public ApiResponse getRewards() {
 
@@ -161,7 +199,7 @@ public class RedeemRewardsService extends BaseService {
         for (Reward reward : merchant.getRewards()) {
             VBox vBox = new VBox();
             ImageView imageView = new ImageView(reward.getImageUrl());
-            imageView.setFitWidth(200);
+            imageView.setFitWidth(350);
             imageView.setFitHeight(200);
             imageView.setOnMouseClicked((MouseEvent e) -> {
                 showRewardsDialog(reward);
@@ -192,7 +230,7 @@ public class RedeemRewardsService extends BaseService {
                 Stage stage = new Stage();
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REWARDS_DIALOG_SCREEN));
                 Parent root = fxmlLoader.load();
-                Scene scene = new Scene(root, 600,400);
+                Scene scene = new Scene(root, 350,520);
                 stage.setScene(scene);
                 stage.setTitle(APP_TITLE);
                 stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
@@ -207,6 +245,7 @@ public class RedeemRewardsService extends BaseService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         });
         pause.play();
 

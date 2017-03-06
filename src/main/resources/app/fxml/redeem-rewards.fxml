@@ -11,7 +11,7 @@
 
 <VBox maxHeight="-Infinity" maxWidth="1000.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.RedeemRewardsController">
    <children>
-      <HBox maxHeight="50.0" maxWidth="+Infinity" prefHeight="50.0" prefWidth="200.0">
+      <HBox maxHeight="50.0" maxWidth="+Infinity" minHeight="50.0" prefHeight="50.0" prefWidth="200.0">
          <children>
             <VBox maxWidth="500.0" prefHeight="200.0" prefWidth="350.0" HBox.hgrow="ALWAYS">
                <children>
@@ -38,7 +38,7 @@
             </VBox>
          </children>
       </HBox>
-      <VBox maxHeight="50.0" prefHeight="100.0" prefWidth="100.0">
+      <VBox maxHeight="50.0" minHeight="50.0" prefHeight="100.0" prefWidth="100.0">
          <children>
             <Line endX="800.0" startX="-100.0" stroke="#e1dcdc">
                <VBox.margin>
@@ -55,7 +55,7 @@
             </Label>
          </children>
       </VBox>
-      <HBox maxHeight="50.0" maxWidth="+Infinity" prefHeight="50.0" prefWidth="200.0">
+      <HBox maxHeight="50.0" maxWidth="+Infinity" minHeight="50.0" prefHeight="50.0" prefWidth="200.0">
          <children>
             <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
@@ -89,7 +89,7 @@
             </VBox>
          </children>
       </HBox>
-      <HBox maxHeight="50.0" maxWidth="+Infinity" prefHeight="50.0" prefWidth="200.0">
+      <HBox maxHeight="50.0" maxWidth="+Infinity" minHeight="50.0" prefHeight="50.0" prefWidth="200.0">
          <children>
             <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
@@ -123,7 +123,7 @@
             </VBox>
          </children>
       </HBox>
-      <HBox maxHeight="50.0" maxWidth="+Infinity" prefHeight="50.0" prefWidth="200.0">
+      <HBox maxHeight="50.0" maxWidth="+Infinity" minHeight="50.0" prefHeight="50.0" prefWidth="200.0">
          <children>
             <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
@@ -157,7 +157,7 @@
             </VBox>
          </children>
       </HBox>
-      <HBox maxHeight="50.0" maxWidth="+Infinity" prefHeight="50.0" prefWidth="200.0">
+      <HBox maxHeight="50.0" maxWidth="+Infinity" minHeight="50.0" prefHeight="50.0" prefWidth="200.0">
          <children>
             <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
@@ -191,7 +191,7 @@
             </VBox>
          </children>
       </HBox>
-      <HBox maxHeight="50.0" maxWidth="+Infinity" prefHeight="50.0" prefWidth="200.0">
+      <HBox maxHeight="50.0" maxWidth="+Infinity" minHeight="50.0" prefHeight="50.0" prefWidth="200.0">
          <children>
             <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
@@ -231,7 +231,7 @@
             </VBox>
          </children>
       </HBox>
-      <HBox maxHeight="50.0" maxWidth="+Infinity" prefHeight="50.0" prefWidth="200.0">
+      <HBox maxHeight="50.0" maxWidth="+Infinity" minHeight="50.0" prefHeight="50.0" prefWidth="200.0">
          <children>
             <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>

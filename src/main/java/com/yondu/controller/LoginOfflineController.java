@@ -1,6 +1,7 @@
 package com.yondu.controller;
 
 import com.sun.javafx.scene.control.skin.FXVK;
+import com.yondu.App;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.service.LoginService;
 import com.yondu.utils.PropertyBinder;
@@ -42,7 +43,7 @@ public class LoginOfflineController implements Initializable {
     @FXML
     public TextField amountTextField;
 
-    private LoginService loginService = new LoginService();
+    private LoginService loginService = App.appContextHolder.loginService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

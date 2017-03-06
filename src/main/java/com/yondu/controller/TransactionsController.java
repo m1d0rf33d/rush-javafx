@@ -1,33 +1,18 @@
 package com.yondu.controller;
 
 import com.yondu.App;
-import com.yondu.model.ApiResponse;
-import com.yondu.model.Customer;
-import com.yondu.model.Reward;
-import com.yondu.model.Transaction;
-import com.yondu.service.ApiService;
-import com.yondu.service.CommonService;
 import com.yondu.service.TransactionService;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
-import org.json.simple.JSONObject;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
-
-import static com.yondu.AppContextHolder.*;
-import static com.yondu.model.constants.ApiFieldContants.*;
 
 /**
  * Created by lynx on 2/7/17.
@@ -57,37 +42,22 @@ public class TransactionsController implements Initializable {
     @FXML
     public Button exitButton;
 
-    private Customer customer;
-
-    private Integer MAX_ENTRIES_COUNT = 10;
-    private Integer PAGE_COUNT = 0;
-
-    private ObservableList<Transaction> masterData =
-            FXCollections.observableArrayList();
-    private CommonService commonService = new CommonService();
-    private TransactionService transactionService = new TransactionService();
+    private TransactionService transactionService = App.appContextHolder.transactionService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        getTransactions();
+        transactionService.initialize();
 
-        PAGE_COUNT = masterData.size() / MAX_ENTRIES_COUNT;
-        if (PAGE_COUNT == 0) {
-            PAGE_COUNT = 1;
-        }
-        pagination.setPageCount(PAGE_COUNT);
-        pagination.setPageFactory((Integer pageIndex) -> createPage(pageIndex));
         searchTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                pagination.setPageFactory((Integer pageIndex) -> createPage(pageIndex));
-                pagination.setPageCount(PAGE_COUNT);
+               // pagination.setPageFactory((Integer pageIndex) -> createPage(pageIndex));
             }
         });
     }
 
-    private Node createPage(int pageIndex) {
+ /*   private Node createPage(int pageIndex) {
         VBox box = new VBox();
         box.getChildren().addAll(buildTableView());
         pagination.setPageCount(PAGE_COUNT);
@@ -174,33 +144,7 @@ public class TransactionsController implements Initializable {
 
         tableView.getColumns().clear();
         tableView.getColumns().addAll(dateCol, typeCol, receiptCol, pointsEarnedCol, pointsPaidCol, cashPaidCol);
-    }
+    }*/
 
 
-    public void getTransactions() {
-
-        ApiResponse apiResponse = transactionService.getTransactions();
-        if (apiResponse.isSuccess()) {
-            masterData.addAll((List<Transaction>) apiResponse.getPayload().get("transactions"));
-        } else {
-
-        }
-
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-        nameLabel.setText(customer.getName());
-        memberIdLabel.setText(customer.getMemberId());
-        mobileNumberLabel.setText(customer.getMobileNumber());
-        membershipDateLabel.setText(customer.getMemberSince());
-        genderLabel.setText(customer.getGender());
-        birthdateLabel.setText(customer.getDateOfBirth());
-        emailLabel.setText(customer.getEmail());
-        pointsLabel.setText(customer.getAvailablePoints());
-    }
 }

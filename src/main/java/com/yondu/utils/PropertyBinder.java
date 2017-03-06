@@ -69,7 +69,7 @@ public class PropertyBinder {
         textField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (textField.getText().length() > length) {
+                if (textField.getText()!= null && textField.getText().length() > length) {
                     textField.setText(textField.getText().substring(0,length));
                 }
             }
@@ -79,7 +79,7 @@ public class PropertyBinder {
     public static void setNumberButtonClick(Button button, String number) {
         button.setOnMouseClicked((MouseEvent e) ->  {
 
-            TextField loginTextField = (TextField) App.appContextHolder.getLoginHBox().getScene().lookup("#loginTextField");
+            TextField loginTextField = (TextField) App.appContextHolder.getRootContainer().getScene().lookup("#loginTextField");
             String loginText = loginTextField.getText();
             if (loginText != null) {
                 loginTextField.setText(loginText + number);

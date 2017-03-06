@@ -2,11 +2,9 @@ package com.yondu.service;
 
 import com.yondu.App;
 import com.yondu.controller.LoginOnlineController;
-import com.yondu.controller.PinController;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.Branch;
 import com.yondu.model.Employee;
-import com.yondu.model.constants.ApiConstants;
 import com.yondu.model.constants.AppConfigConstants;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
@@ -17,7 +15,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -38,7 +35,6 @@ import java.util.List;
 import java.util.Properties;
 
 import static com.yondu.model.constants.ApiConstants.*;
-import static com.yondu.model.constants.ApiConstants.ACCESS_ENDPOINT;
 import static com.yondu.model.constants.AppConfigConstants.*;
 
 /**
@@ -46,8 +42,9 @@ import static com.yondu.model.constants.AppConfigConstants.*;
  */
 public class LoginService extends BaseService{
 
-    private CommonService commonService = new CommonService();
-    private ApiService apiService       = new ApiService();
+    private CommonService commonService = App.appContextHolder.commonService;
+    private ApiService apiService       = App.appContextHolder.apiService;
+    private RouteService routeService = App.appContextHolder.routeService;
 
     public void initialize() {
 
@@ -70,19 +67,27 @@ public class LoginService extends BaseService{
                 }
             });
             disableMenu();
-            new Thread().start();
+            new Thread(task).start();
         });
         pause.play();
     }
 
-    public ApiResponse loginEmployee(String username, Branch branch) {
-        Task task = loginEmployeeWorker(username, branch);
+    public void loginEmployee(String username, Branch branch, String pin) {
+        Task task = loginEmployeeWorker(username, branch, pin);
         task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
                     ApiResponse apiResponse = (ApiResponse) task.getValue();
                     if (apiResponse.isSuccess()) {
+                        Stage currentStage = ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow());
 
+                        App.appContextHolder.routeService.goToMenuScreen(currentStage);
+                    } else {
+                        if (apiResponse.getErrorCode().equals("0x2")) {
+                            showPinDialog();
+                        } else {
+                            showPrompt(apiResponse.getMessage(), "LOGIN");
+                        }
                     }
                     enableMenu();
             }
@@ -97,7 +102,6 @@ public class LoginService extends BaseService{
         });
         pause.play();
 
-        return null;
     }
 
     private void showPinDialog() {
@@ -123,7 +127,7 @@ public class LoginService extends BaseService{
         }
     }
 
-    public Task loginEmployeeWorker(String username, Branch branch) {
+    public Task loginEmployeeWorker(String username, Branch branch, String pin) {
         return new Task() {
             @Override
             protected ApiResponse call() throws Exception {
@@ -133,6 +137,10 @@ public class LoginService extends BaseService{
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("employee_id", username));
                 params.add(new BasicNameValuePair("branch_id", branch.getId()));
+                if (pin != null) {
+                    params.add(new BasicNameValuePair("pin", pin));
+                }
+
                 String url = BASE_URL + LOGIN_ENDPOINT;
                 JSONObject jsonObject = apiService.call((url), params, "post", MERCHANT_APP_RESOURCE_OWNER);
                 if (jsonObject != null) {
@@ -146,7 +154,11 @@ public class LoginService extends BaseService{
                         App.appContextHolder.setBranch(branch);
                         App.appContextHolder.setEmployee(employee);
                         apiResponse.setSuccess(true);
+                    } else {
+                        apiResponse.setMessage((String) jsonObject.get("message"));
                     }
+                } else {
+                    apiResponse.setMessage("Network connection error.");
                 }
                 return apiResponse;
             }
@@ -187,6 +199,7 @@ public class LoginService extends BaseService{
                 branch.setLogoUrl((String) json.get("logo_url"));
                 branches.add(branch);
             }
+            App.appContextHolder.setBranches(branches);
         } else {
             loadOffline();
         }
@@ -351,5 +364,4 @@ public class LoginService extends BaseService{
             }
         };
     }
-
 }

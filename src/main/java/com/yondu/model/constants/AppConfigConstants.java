@@ -52,4 +52,5 @@ public class AppConfigConstants {
     public static String DIVIDER = "";
     public static String RUSH_HOME = "";
     public static final String RUSH_FOLDER = "Rush-POS-Sync";
+    public static String TESSERACT_HOME;
 }

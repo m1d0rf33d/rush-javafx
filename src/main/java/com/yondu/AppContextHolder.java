@@ -2,8 +2,7 @@ package com.yondu;
 
 import com.yondu.model.*;
 import com.yondu.model.constants.AppState;
-import com.yondu.service.ApiService;
-import com.yondu.service.RouteService;
+import com.yondu.service.*;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -35,6 +34,24 @@ public class AppContextHolder {
     private Stage orCaptureStage;
     private Stage salesCaptureStage;
     private OcrConfig ocrConfig;
+
+    public static ApiService apiService = new ApiService();
+    public static CommonService commonService = new CommonService();
+    public static EarnPointsService earnPointsService = new EarnPointsService();
+    public static GuestPurchaseService guestPurchaseService = new GuestPurchaseService();
+    public static IssueRewardsService issueRewardsService = new IssueRewardsService();
+    public static LoginService loginService = new LoginService();
+    public static MemberDetailsService memberDetailsService = new MemberDetailsService();
+    public static MenuService menuService = new MenuService();
+    public static OcrService ocrService = new OcrService();
+    public static OfflineService offlineService = new OfflineService();
+    public static PayWithPointsService payWithPointsService = new PayWithPointsService();
+    public static RedeemRewardsService redeemRewardsService = new RedeemRewardsService();
+    public static RegisterService registerService = new RegisterService();
+    public static RouteService routeService = new RouteService();
+    public static StampsService stampsService = new StampsService();
+    public static TransactionService transactionService = new TransactionService();
+
 
     public OcrConfig getOcrConfig() {
         return ocrConfig;

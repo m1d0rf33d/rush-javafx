@@ -1,7 +1,6 @@
 package com.yondu.service;
 
 import com.yondu.App;
-import com.yondu.controller.RewardDialogController;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.Customer;
 import com.yondu.model.Employee;
@@ -9,10 +8,10 @@ import com.yondu.model.Reward;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -31,18 +30,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.yondu.model.constants.AppConfigConstants.*;
 import static com.yondu.model.constants.ApiConstants.*;
+import static com.yondu.model.constants.AppConfigConstants.APP_TITLE;
+import static com.yondu.model.constants.AppConfigConstants.REWARDS_DIALOG_SCREEN;
 
 /**
  * Created by lynx on 2/21/17.
  */
 public class IssueRewardsService extends BaseService {
 
-    private VBox rootVBox = App.appContextHolder.getRootContainer();
 
-    private ApiService apiService = new ApiService();
-    private MemberDetailsService memberDetailsService = new MemberDetailsService();
+    private ApiService apiService = App.appContextHolder.apiService;
+    private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
 
     private List<Reward> unclaimedRewards;
 
@@ -133,14 +132,12 @@ public class IssueRewardsService extends BaseService {
     }
 
     private void showRewardsDialog(Reward reward) {
-
+        VBox rootVBox =  App.appContextHolder.getRootContainer();
         try {
             Stage stage = new Stage();
             stage.resizableProperty().setValue(Boolean.FALSE);
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REWARDS_DIALOG_SCREEN));
             Parent root = fxmlLoader.load();
-            RewardDialogController controller = fxmlLoader.getController();
-            controller.setReward(reward);
             Scene scene = new Scene(root, 600,400);
             stage.setScene(scene);
             stage.setTitle(APP_TITLE);
@@ -179,25 +176,51 @@ public class IssueRewardsService extends BaseService {
         }
     }
 
-    public ApiResponse issueReward(String redeemId) {
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setSuccess(false);
+    public void issueReward(String redeemId) {
+        disableMenu();
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            Task task = issueRewardWorker(redeemId);
+            task.setOnSucceeded((Event e) -> {
+                ApiResponse apiResponse = new ApiResponse();
+                if (apiResponse.isSuccess()) {
+                    renderRewards();
+                } else {
+                    showPrompt(apiResponse.getMessage(), "ISSUE REWARD");
+                }
+                enableMenu();
+            });
+            new Thread(task).start();
+        });
+        pause.play();
+    }
 
-        Customer customer = App.appContextHolder.getCustomer();
-        Employee employee = App.appContextHolder.getEmployee();
+    public Task issueRewardWorker(String redeemId) {
+        return new Task() {
+            @Override
+            protected ApiResponse call() throws Exception {
+                ApiResponse apiResponse = new ApiResponse();
 
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("redeem_id", redeemId));
-        String url = BASE_URL + CLAIM_REWARDS_ENDPOINT;
-        url = url.replace(":customer_id", customer.getUuid());
-        url = url.replace(":employee_id", employee.getEmployeeId());
-        JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
-        if (jsonObject != null) {
-            apiResponse.setMessage("Issue reward successful.");
-            apiResponse.setSuccess(true);
-        } else {
-            apiResponse.setMessage("Network error.");
-        }
-        return apiResponse;
+                Customer customer = App.appContextHolder.getCustomer();
+                Employee employee = App.appContextHolder.getEmployee();
+
+                List<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair("redeem_id", redeemId));
+                String url = BASE_URL + CLAIM_REWARDS_ENDPOINT;
+                url = url.replace(":customer_id", customer.getUuid());
+                url = url.replace(":employee_id", employee.getEmployeeId());
+                JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
+                if (jsonObject != null) {
+                    apiResponse.setMessage("Issue reward successful.");
+                    apiResponse.setSuccess(true);
+                } else {
+                    apiResponse.setMessage("Network error.");
+                }
+
+                return apiResponse;
+            }
+        };
     }
 }

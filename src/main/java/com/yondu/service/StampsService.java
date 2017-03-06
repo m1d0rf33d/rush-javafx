@@ -27,12 +27,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.yondu.AppContextHolder.BASE_URL;
-import static com.yondu.AppContextHolder.EARN_STAMPS_ENDPOINT;
-import static com.yondu.AppContextHolder.REDEEM_REWARDS_ENDPOINT;
-import static com.yondu.model.constants.ApiFieldContants.*;
-import static com.yondu.model.constants.AppConfigConstants.APP_TITLE;
-import static com.yondu.model.constants.AppConfigConstants.REWARDS_DIALOG_SCREEN;
+
+import static com.yondu.model.constants.ApiConstants.*;
 
 /**
  * Created by erwin on 3/1/2017.
@@ -40,8 +36,8 @@ import static com.yondu.model.constants.AppConfigConstants.REWARDS_DIALOG_SCREEN
 
 public class StampsService extends BaseService  {
 
-    private ApiService apiService = new ApiService();
-    private MemberDetailsService memberDetailsService = new MemberDetailsService();
+    private ApiService apiService = App.appContextHolder.apiService;
+    private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
 
     public ApiResponse earnStamps(String amount) {
 
@@ -51,7 +47,10 @@ public class StampsService extends BaseService  {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("amount", amount));
         String url = BASE_URL + EARN_STAMPS_ENDPOINT;
-        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
+
+        Employee employee = App.appContextHolder.getEmployee();
+        Customer customer = App.appContextHolder.getCustomer();
+        url = url.replace(":employee_id", employee.getEmployeeId()).replace(":customer_id", customer.getUuid());
         JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
         if (jsonObject != null) {
             if (jsonObject.get("error_code").equals("0x0")) {
@@ -74,8 +73,11 @@ public class StampsService extends BaseService  {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("pin", pin));
 
+        Employee employee = App.appContextHolder.getEmployee();
+        Customer customer = App.appContextHolder.getCustomer();
+
         String url = BASE_URL + REDEEM_REWARDS_ENDPOINT;
-        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId()).replace(":customer_id", App.appContextHolder.getCustomerUUID());
+        url = url.replace(":employee_id", employee.getEmployeeId()).replace(":customer_id", customer.getUuid());
         url = url.replace(":reward_id", rewardId);
 
         JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
@@ -95,7 +97,7 @@ public class StampsService extends BaseService  {
         task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
-                VBox rootVBox = App.appContextHolder.getRootVBox();
+                VBox rootVBox = App.appContextHolder.getRootContainer();
                 FlowPane rewardsFlowPane = (FlowPane) rootVBox.getScene().lookup("#rewardsFlowPane");
                 rewardsFlowPane.getChildren().clear();
                 Customer customer = App.appContextHolder.getCustomer();

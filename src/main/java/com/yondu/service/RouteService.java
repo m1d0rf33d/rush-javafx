@@ -1,31 +1,24 @@
 package com.yondu.service;
 
 import com.yondu.App;
-import com.yondu.Browser;
-import com.yondu.controller.*;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.Customer;
-import com.yondu.model.Reward;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.utils.ResizeHelper;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.*;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.*;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
-import org.json.simple.JSONObject;
 
-import java.awt.*;
 import java.io.IOException;
 
 import static com.yondu.model.constants.AppConfigConstants.*;
@@ -37,8 +30,8 @@ import static com.yondu.model.constants.AppConfigConstants.*;
  */
 public class RouteService extends BaseService{
 
-    private VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
-    private MemberDetailsService memberDetailsService = new MemberDetailsService();
+
+    private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
 
     public void goToLoginScreen(Stage currentStage) {
         try {
@@ -103,10 +96,10 @@ public class RouteService extends BaseService{
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
+             VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, REDEEM_REWARDS_SCREEN);
 
-            String customerUUID = App.appContextHolder.getCustomer().getUuid();
-            ApiResponse apiResponse = memberDetailsService.loginCustomer(customerUUID);
+            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber());
             if (!apiResponse.isSuccess()) {
                 notifyError(apiResponse.getMessage());
             }
@@ -115,6 +108,7 @@ public class RouteService extends BaseService{
         pause.play();
     }
     public void loadEarnPointsScreen() {
+         VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
         this.loadContentPage(bodyStackPane, EARN_POINTS_SCREEN);
     }
     public void loadPayWithPoints() {
@@ -123,7 +117,7 @@ public class RouteService extends BaseService{
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
-
+             VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, PAY_WITH_POINTS);
             Customer customer = App.appContextHolder.getCustomer();
             ApiResponse apiResponse  = memberDetailsService.loginCustomer(customer.getUuid());
@@ -140,6 +134,7 @@ public class RouteService extends BaseService{
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
+            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, GUEST_PURCHASE_SCREEN);
             enableMenu();
         });
@@ -152,6 +147,7 @@ public class RouteService extends BaseService{
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
+            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, ISSUE_REWARDS_SCREEN);
 
             ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getUuid());
@@ -168,6 +164,7 @@ public class RouteService extends BaseService{
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
+            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, GIVE_STAMPS_SCREEN);
 
             ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getUuid());
@@ -178,14 +175,25 @@ public class RouteService extends BaseService{
         pause.play();
     }
     public void loadMemberDetailsScreen() {
+        ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber());
+
+        if (!apiResponse.isSuccess()) {
+            showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY");
+        } else {
+            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
+            this.loadContentPage(bodyStackPane, MEMBER_DETAILS_SCREEN);
+        }
+    }
+    public void loadMemberDetailsScreen(String mobileNumber) {
         disableMenu();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
+            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, MEMBER_DETAILS_SCREEN);
 
-            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getUuid());
+            ApiResponse apiResponse = memberDetailsService.loginCustomer(mobileNumber);
             if (!apiResponse.isSuccess()) {
                 notifyError(apiResponse.getMessage());
             }
@@ -200,6 +208,7 @@ public class RouteService extends BaseService{
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
+            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, TRANSACTIONS_SCREEN);
 
             ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getUuid());
@@ -217,6 +226,7 @@ public class RouteService extends BaseService{
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
+            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, OFFLINE_SCREEN);
             enableMenu();
         });
@@ -228,6 +238,7 @@ public class RouteService extends BaseService{
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
+            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, OCR_SCREEN);
             enableMenu();
         });

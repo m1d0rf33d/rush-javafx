@@ -66,9 +66,9 @@ public class EarnPointsController implements Initializable {
 
     private DecimalFormat df2 = new DecimalFormat(".##");
 
-    private EarnPointsService earnPointsService = new EarnPointsService();
-    private OcrService ocrService = new OcrService();
-    private CommonService commonService = new CommonService();
+    private EarnPointsService earnPointsService = App.appContextHolder.earnPointsService;
+    private OcrService ocrService = App.appContextHolder.ocrService;
+    private CommonService commonService = App.appContextHolder.commonService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

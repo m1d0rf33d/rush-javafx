@@ -1,6 +1,7 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import com.yondu.model.OcrConfig;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.service.OcrService;
 import com.yondu.service.RouteService;
@@ -79,8 +80,8 @@ public class OCRController implements Initializable {
     private Double savedAmountWidth;
     private Double savedAmountHeight;
 
-    private RouteService routeService = new RouteService();
-    private OcrService ocrService = new OcrService();
+    private RouteService routeService = App.appContextHolder.routeService;
+    private OcrService ocrService = App.appContextHolder.ocrService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -106,7 +107,6 @@ public class OCRController implements Initializable {
             amountHeight = null;
 
             loadSavedConfig();
-
         });
 
         orPosImageView.setOnMouseClicked((MouseEvent e) -> {
@@ -175,26 +175,13 @@ public class OCRController implements Initializable {
             Double width = orWidth != null ? orWidth : savedOrWidth;
             Double height = orHeight != null ? orHeight : savedOrHeight;
             App.appContextHolder.getRootContainer().setOpacity(.50);
-            for (Node n : App.appContextHolder.getRootContainer().getChildren()) {
-                n.setDisable(true);
-            }
 
-            PauseTransition pause = new PauseTransition(
-                    Duration.seconds(.5)
-            );
-            pause.setOnFinished(event -> {
-                ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).setIconified(true);
-                PauseTransition p = new PauseTransition(
-                        Duration.seconds(.50)
-                );
-                p.setOnFinished(ev -> {
-                    ocrService.preview(x, y, width, height, previewImageView, previewLabel);
-
-                });
-                p.play();
-
-            });
-            pause.play();
+            OcrConfig config = new OcrConfig();
+            config.setOrNumberHeight(height.intValue());
+            config.setOrNumberPosX(x.intValue());
+            config.setOrNumberPosY(y.intValue());
+            config.setOrNumberWidth(width.intValue());
+            ocrService.preview(config, "or");
 
         });
 
@@ -203,25 +190,13 @@ public class OCRController implements Initializable {
             Double y = amountPosY != null ? amountPosY : savedAmountPosY;
             Double width = amountWidth != null ? amountWidth : savedAmountWidth;
             Double height = amountHeight != null ? amountHeight : savedAmountHeight;
-            App.appContextHolder.getRootContainer().setOpacity(.50);
-            for (Node n : App.appContextHolder.getRootContainer().getChildren()) {
-                n.setDisable(true);
-            }
-            PauseTransition pause = new PauseTransition(
-                    Duration.seconds(.5)
-            );
-            pause.setOnFinished(event -> {
-                ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).setIconified(true);
-                PauseTransition p = new PauseTransition(
-                        Duration.seconds(.50)
-                );
-                p.setOnFinished(ev -> {
-                    ocrService.preview(x, y, width, height, previewImageView, previewLabel);
-                });
-                p.play();
 
-            });
-            pause.play();
+            OcrConfig config = new OcrConfig();
+            config.setOrNumberHeight(height.intValue());
+            config.setOrNumberPosX(x.intValue());
+            config.setOrNumberPosY(y.intValue());
+            config.setOrNumberWidth(width.intValue());
+            ocrService.preview(config, "sales");
 
         });
     }
@@ -277,8 +252,6 @@ public class OCRController implements Initializable {
         } else {
             errorLabel.setVisible(true);
         }
-
-
     }
 
     private void loadSavedConfig() {

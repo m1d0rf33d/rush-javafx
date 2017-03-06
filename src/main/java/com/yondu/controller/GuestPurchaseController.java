@@ -1,5 +1,6 @@
 package com.yondu.controller;
 
+import com.yondu.App;
 import com.yondu.service.GuestPurchaseService;
 import com.yondu.service.OcrService;
 import com.yondu.utils.PropertyBinder;
@@ -32,8 +33,8 @@ public class GuestPurchaseController implements Initializable {
     @FXML
     public Button clearButton;
 
-    private GuestPurchaseService guestPurchaseService = new GuestPurchaseService();
-    private OcrService ocrService = new OcrService();
+    private GuestPurchaseService guestPurchaseService = App.appContextHolder.guestPurchaseService;
+    private OcrService ocrService = App.appContextHolder.ocrService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

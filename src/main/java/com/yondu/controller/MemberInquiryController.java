@@ -46,7 +46,7 @@ public class MemberInquiryController implements Initializable {
     @FXML
     public Button viewMemberButton;
 
-    private MemberDetailsService memberDetailsService = new MemberDetailsService();
+    private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

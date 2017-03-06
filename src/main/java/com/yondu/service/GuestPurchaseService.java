@@ -24,7 +24,7 @@ import static com.yondu.model.constants.ApiConstants.*;
  */
 public class GuestPurchaseService extends BaseService {
 
-    private ApiService apiService = new ApiService();
+    private ApiService apiService = App.appContextHolder.apiService;
 
     public void givePoints(String mobileNo, String orNumber, String amount) {
 
@@ -48,6 +48,7 @@ public class GuestPurchaseService extends BaseService {
                         amountTextField.setText(null);
                     }
                     showPrompt(apiResponse.getMessage(), "GUEST EARN POINTS");
+                    enableMenu();
                 }
             });
             new Thread(task).start();

@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.*?>
 
 
-<VBox fx:id="rootVBox" maxWidth="Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.LoginControllerv2">
+<VBox fx:id="rootVBox" maxWidth="Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.LoginController">
    <children>
       <HBox fx:id="rootHBox" maxHeight="-Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" VBox.vgrow="ALWAYS">
          <children>

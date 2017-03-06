@@ -9,6 +9,7 @@ import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
@@ -27,7 +28,7 @@ import static com.yondu.model.constants.ApiConstants.*;
  */
 public class MenuService extends BaseService{
 
-    private ApiService apiService = new ApiService();
+    private ApiService apiService = App.appContextHolder.apiService;
 
     public void initialize() {
 
@@ -63,14 +64,13 @@ public class MenuService extends BaseService{
                 }
             });
             disableMenu();
-            new Thread().start();
+            new Thread(task).start();
         });
         pause.play();
     }
 
     private void loadSideBar() {
         VBox rootVBox = App.appContextHolder.getRootContainer();
-        VBox sideBarVBox = (VBox) rootVBox.getScene().lookup("#sideBarVBox");
 
         List<Button> buttons = new ArrayList<>();
         for (String screen : App.appContextHolder.getEmployee().getScreenAccess()) {
@@ -121,8 +121,9 @@ public class MenuService extends BaseService{
                 buttons.add(giveStampsButton);
             }
         }
-        sideBarVBox.getChildren().clear();
-        sideBarVBox.getChildren().addAll(buttons);
+        for (Button b : buttons) {
+            b.setVisible(true);
+        }
     }
 
     public Task initializeWorker() {

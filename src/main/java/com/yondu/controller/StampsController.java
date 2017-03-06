@@ -62,9 +62,9 @@ public class StampsController implements Initializable {
     @FXML
     public TextField amountTextField;
 
-    private StampsService stampsService = new StampsService();
-    private CommonService commonService = new CommonService();
-    private MemberDetailsService memberDetailsService = new MemberDetailsService();
+    private StampsService stampsService = App.appContextHolder.stampsService;
+    private CommonService commonService = App.appContextHolder.commonService;
+    private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -72,7 +72,7 @@ public class StampsController implements Initializable {
         rewardsFlowPane.heightProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                App.appContextHolder.getRootVBox().setMinHeight(700 + newValue.doubleValue());
+                App.appContextHolder.getRootContainer().setMinHeight(700 + newValue.doubleValue());
             }
         });
 
@@ -149,8 +149,8 @@ public class StampsController implements Initializable {
     }
 
     private void showRewardsDialog(Reward reward) {
-        App.appContextHolder.getRootVBox().setOpacity(.50);
-        for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+        App.appContextHolder.getRootContainer().setOpacity(.50);
+        for (Node n : App.appContextHolder.getRootContainer().getChildren()) {
             n.setDisable(true);
         }
 
@@ -164,12 +164,12 @@ public class StampsController implements Initializable {
             stage.setScene(scene);
             stage.setTitle(APP_TITLE);
             stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-            stage.initOwner(App.appContextHolder.getRootVBox().getScene().getWindow());
+            stage.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());
             stage.setOnCloseRequest(new javafx.event.EventHandler<WindowEvent>() {
                 @Override
                 public void handle(WindowEvent event) {
-                    App.appContextHolder.getRootVBox().setOpacity(1);
-                    for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
+                    App.appContextHolder.getRootContainer().setOpacity(1);
+                    for (Node n : App.appContextHolder.getRootContainer().getChildren()) {
                         n.setDisable(false);
                     }
                 }

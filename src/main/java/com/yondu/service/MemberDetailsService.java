@@ -29,11 +29,10 @@ import static com.yondu.model.constants.ApiConstants.*;
  */
 public class MemberDetailsService extends BaseService{
 
-    private ApiService apiService = new ApiService();
-    private RouteService routeService = new RouteService();
+    private ApiService apiService = App.appContextHolder.apiService;
 
     public void initialize() {
-
+        disableMenu();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(1)
         );
@@ -52,16 +51,14 @@ public class MemberDetailsService extends BaseService{
                     enableMenu();
                 }
             });
-            disableMenu();
-            new Thread().start();
+
+            new Thread(task).start();
         });
         pause.play();
     }
 
     public void viewMember(String mobileNumber) {
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setSuccess(false);
-
+        disableMenu();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(1)
         );
@@ -72,15 +69,16 @@ public class MemberDetailsService extends BaseService{
                 public void handle(WorkerStateEvent event) {
                     ApiResponse apiResponse = (ApiResponse) task.getValue();
                     if (apiResponse.isSuccess()) {
-                        routeService.loadMemberDetailsScreen();
+                        App.appContextHolder.routeService.loadMemberDetailsScreen();
                     } else {
                         showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY");
+                        enableMenu();
                     }
-                    enableMenu();
+
                 }
             });
-            disableMenu();
-            new Thread().start();
+
+            new Thread(task).start();
         });
         pause.play();
     }
@@ -252,35 +250,7 @@ public class MemberDetailsService extends BaseService{
         return apiResponse;
     }
 
-    public ApiResponse loginEmployee(String employeeId, String branchId, String pin) {
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setSuccess(false);
 
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("employee_id", employeeId));
-        params.add(new BasicNameValuePair("branch_id", branchId));
-        params.add(new BasicNameValuePair("pin", pin));
-        String url = BASE_URL + LOGIN_ENDPOINT;
-        JSONObject jsonObject = apiService.call((url), params, "post", MERCHANT_APP_RESOURCE_OWNER);
-        if (jsonObject != null) {
-            if (jsonObject.get("error_code").equals("0x0")) {
-                JSONObject data = (JSONObject) jsonObject.get("data");
-
-                Employee employee = new Employee();
-                employee.setBranchId(branchId);
-                employee.setEmployeeId((String) data.get("id"));
-                employee.setEmployeeName((String) data.get("name"));
-                apiResponse.setSuccess(true);
-
-                App.appContextHolder.setEmployee(employee);
-            } else {
-                apiResponse.setMessage((String) jsonObject.get("message"));
-            }
-        } else {
-            apiResponse.setMessage("Network error");
-        }
-        return apiResponse;
-    }
 
     private void loadActiveVouchers() {
 

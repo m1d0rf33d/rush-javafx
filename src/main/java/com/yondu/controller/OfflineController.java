@@ -1,5 +1,6 @@
 package com.yondu.controller;
 
+import com.yondu.App;
 import com.yondu.service.OfflineService;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -26,7 +27,7 @@ public class OfflineController implements Initializable {
     @FXML
     public Button givePointsButton;
 
-    private OfflineService offlineService = new OfflineService();
+    private OfflineService offlineService = App.appContextHolder.offlineService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

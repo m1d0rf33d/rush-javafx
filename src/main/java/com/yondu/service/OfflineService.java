@@ -1,11 +1,7 @@
 package com.yondu.service;
 
 import com.yondu.App;
-import com.yondu.model.ApiResponse;
-import com.yondu.model.Customer;
-import com.yondu.model.OfflineTransaction;
-import com.yondu.model.Reward;
-import com.yondu.model.constants.ApiFieldContants;
+import com.yondu.model.*;
 import com.yondu.model.constants.AppConfigConstants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,19 +23,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.yondu.AppContextHolder.BASE_URL;
-import static com.yondu.AppContextHolder.GIVE_POINTS_ENDPOINT;
-import static com.yondu.AppContextHolder.MEMBER_LOGIN_ENDPOINT;
-import static com.yondu.model.constants.AppConfigConstants.DIVIDER;
-import static com.yondu.model.constants.AppConfigConstants.OFFLINE_TRANSACTION_FILE;
-import static com.yondu.model.constants.AppConfigConstants.RUSH_HOME;
+import static com.yondu.model.constants.ApiConstants.*;
+import static com.yondu.model.constants.AppConfigConstants.*;
 
 /**
  * Created by lynx on 2/22/17.
  */
 public class OfflineService {
 
-    private ApiService apiService = new ApiService();
+    private ApiService apiService = App.appContextHolder.apiService;
     private ObservableList<OfflineTransaction> masterData = FXCollections.observableArrayList();
 
     public void initialize() {
@@ -286,20 +278,22 @@ public class OfflineService {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("offline", offlineTransaction.getMobileNumber()));
 
+        Employee employee = App.appContextHolder.getEmployee();
+
         String url = BASE_URL + MEMBER_LOGIN_ENDPOINT;
-        url = url.replace(":employee_id", App.appContextHolder.getEmployeeId());
-        JSONObject jsonObject = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+        url = url.replace(":employee_id", employee.getEmployeeId());
+        JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
         if (jsonObject != null) {
             if (jsonObject.get("error_code").equals("0x0")) {
                 JSONObject data = (JSONObject) jsonObject.get("data");
                 params = new ArrayList<>();
-                params.add(new BasicNameValuePair(ApiFieldContants.EMPLOYEE_UUID, App.appContextHolder.getEmployeeId()));
-                params.add(new BasicNameValuePair(ApiFieldContants.OR_NUMBER, offlineTransaction.getOrNumber()));
-                params.add(new BasicNameValuePair(ApiFieldContants.AMOUNT, offlineTransaction.getAmount().replace(",", "")));
+                params.add(new BasicNameValuePair("employee_id", employee.getEmployeeId()));
+                params.add(new BasicNameValuePair("or_no", offlineTransaction.getOrNumber()));
+                params.add(new BasicNameValuePair("amount", offlineTransaction.getAmount().replace(",", "")));
                 url = BASE_URL + GIVE_POINTS_ENDPOINT;
                 url = url.replace(":customer_uuid", (String) data.get("id"));
-                url = url.replace(":employee_id",  App.appContextHolder.getEmployeeId());
-                JSONObject json = apiService.call(url, params, "post", ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER);
+                url = url.replace(":employee_id",  employee.getEmployeeId());
+                JSONObject json = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
 
                 if (json != null) {
                     if (!json.get("error_code").equals("0x0")) {

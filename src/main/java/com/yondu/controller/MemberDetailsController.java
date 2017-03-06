@@ -48,28 +48,28 @@ public class MemberDetailsController implements Initializable {
     @FXML
     public Label pointsLabel;
     @FXML
-    public Pagination pagination;
+    public Pagination activeVouchersPagination;
     @FXML
     public TextField searchTextField;
     @FXML
     public Button exitButton;
 
-    private CommonService commonService = new CommonService();
-    private MemberDetailsService memberDetailsService = new MemberDetailsService();
+    private CommonService commonService = App.appContextHolder.commonService;
+    private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        memberDetailsService.initialize();
 
         exitButton.setOnMouseClicked((MouseEvent e) -> {
             commonService.exitMember();
         });
 
-
-
         searchTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                pagination.setPageFactory((Integer pageIndex) -> memberDetailsService.createActivateVoucherPage(pageIndex));
+                activeVouchersPagination.setPageFactory((Integer pageIndex) -> memberDetailsService.createActivateVoucherPage(pageIndex));
             }
         });
     }

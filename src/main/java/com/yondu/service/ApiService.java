@@ -2,7 +2,6 @@ package com.yondu.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yondu.model.Token;
-import com.yondu.model.constants.ApiFieldContants;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -23,8 +22,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.yondu.AppContextHolder.*;
+import static com.yondu.model.constants.ApiConstants.*;
 
 /** All API calls that will be made going to Rush API should be here / API Module
  *
@@ -88,7 +86,7 @@ public class ApiService  {
         DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(5, true);
         httpClient.setHttpRequestRetryHandler(retryHandler);
         String appKey, appSecret;
-        if (resourceOwner.equals(ApiFieldContants.MERCHANT_APP_RESOURCE_OWNER)) {
+        if (resourceOwner.equals(MERCHANT_APP_RESOURCE_OWNER)) {
             appKey = MERCHANT_APP_KEY;
             appSecret = MERCHANT_APP_SECRET;
         } else {

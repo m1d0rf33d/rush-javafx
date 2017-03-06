@@ -81,7 +81,7 @@ public class LoginController implements Initializable {
     @FXML
     public VBox rootVBox;
 
-    private LoginService loginService = new LoginService();
+    private LoginService loginService = App.appContextHolder.loginService;
 
     public LoginController() {
         if (System.getProperty("os.name").contains("Windows")) {

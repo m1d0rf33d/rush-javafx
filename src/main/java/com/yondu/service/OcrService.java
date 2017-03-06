@@ -2,6 +2,7 @@ package com.yondu.service;
 
 import com.yondu.App;
 import com.yondu.model.ApiResponse;
+import com.yondu.model.OcrConfig;
 import com.yondu.model.constants.AppConfigConstants;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
@@ -13,7 +14,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -39,7 +41,6 @@ import static com.yondu.model.constants.AppConfigConstants.*;
  */
 public class OcrService extends BaseService{
 
-    private VBox rootVBox = App.appContextHolder.getRootContainer();
 
     public void triggerOCR() {
         disableMenu();
@@ -140,48 +141,112 @@ public class OcrService extends BaseService{
         return null;
     }
 
-    public void preview(Double x, Double y, Double width, Double height, ImageView imageView, Label label) {
-        if (x != null) {
-            try {
-                Robot robot = new Robot();
-                Rectangle screen = new Rectangle(x.intValue(), y.intValue(), width.intValue(), height.intValue());
+    public void preview(OcrConfig config, String type) {
+        disableMenu();
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).setIconified(true);
+            PauseTransition p = new PauseTransition(
+                    Duration.seconds(.50)
+            );
+            p.setOnFinished(ev -> {
+                Task task = previewWorker(config, type);
+                task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                    @Override
+                    public void handle(WorkerStateEvent event) {
+                        ApiResponse apiResponse = (ApiResponse) task.getValue();
+                        if (apiResponse.isSuccess()) {
 
-                BufferedImage screenFullImage = robot.createScreenCapture(screen);
-                javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
-                imageView.setImage(image);
+                            VBox rootVBox = App.appContextHolder.getRootContainer();
+                            ImageView previewImageView = (ImageView) rootVBox.getScene().lookup("#previewImageView");
+                            Label previewLabel = (Label) rootVBox.getScene().lookup("#previewLabel");
 
-                ITesseract tesseract = new Tesseract();
-                tesseract.setDatapath(System.getenv("TESSERACT_HOME"));
-                tesseract.setLanguage("eng");
-                // Get OCR result
-                String outText = null;
-                try {
-                    outText = tesseract.doOCR(screenFullImage);
-                } catch (TesseractException e) {
-                    e.printStackTrace();
+                            JSONObject payload = apiResponse.getPayload();
+                            javafx.scene.image.Image image = (Image) payload.get("image");
+                            previewLabel.setText((String) payload.get("text"));
+                            previewImageView.setImage(image);
+                        } else {
+                            showPrompt(apiResponse.getMessage(), "OCR");
+                        }
+                        enableMenu();
+                    }
+                });
+                new Thread(task).start();
+
+            });
+            p.play();
+
+        });
+        pause.play();
+
+
+    }
+
+    public Task previewWorker(OcrConfig config, String type) {
+        return new Task() {
+            @Override
+            protected ApiResponse call() throws Exception {
+                ApiResponse apiResponse = new ApiResponse();
+                apiResponse.setSuccess(false);
+
+                int x = 0, y = 0, width = 0, height = 0;
+                if (type.equals("sales")) {
+                    if (config.getSalesPosX() == null) {
+                        apiResponse.setMessage("No OCR configuration found.");
+                        return apiResponse;
+                    } else {
+                        x = config.getSalesPosX();
+                        y = config.getSalesPosY();
+                        width = config.getSalesWidth();
+                        height = config.getSalesHeight();
+                    }
                 }
-                label.setText(outText);
 
-            } catch (AWTException ex) {
-                ex.printStackTrace();
+                if (type.equals("or")) {
+                    if (config.getOrNumberPosX() == null) {
+                        apiResponse.setMessage("No OCR configuration found.");
+                        return apiResponse;
+                    } else {
+                        x = config.getOrNumberPosX();
+                        y = config.getOrNumberPosY();
+                        width = config.getOrNumberWidth();
+                        height = config.getOrNumberHeight();
+                    }
+                }
+
+                try {
+                    Robot robot = new Robot();
+                    Rectangle screen = new Rectangle(x, y, width, height);
+
+                    BufferedImage screenFullImage = robot.createScreenCapture(screen);
+                    javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
+
+                    ITesseract tesseract = new Tesseract();
+                    tesseract.setDatapath(System.getenv("TESSERACT_HOME"));
+                    tesseract.setLanguage("eng");
+                    // Get OCR result
+                    String outText = null;
+                    try {
+                        outText = tesseract.doOCR(screenFullImage);
+
+                        JSONObject payload = new JSONObject();
+                        payload.put("image", image);
+                        payload.put("text", outText);
+
+                        apiResponse.setSuccess(true);
+                        apiResponse.setPayload(payload);
+                    } catch (TesseractException e) {
+                        e.printStackTrace();
+                    }
+
+                } catch (AWTException ex) {
+                    ex.printStackTrace();
+                }
+                return apiResponse;
             }
-        } else {
-            ((Stage) rootVBox.getScene().getWindow()).setIconified(false);
-            Text text = new Text("No position set.");
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-            alert.setTitle(AppConfigConstants.APP_TITLE);
-            alert.initStyle(StageStyle.UTILITY);
-            alert.initOwner(rootVBox.getScene().getWindow());
-            alert.setHeaderText("OCR PREVIEW");
-            alert.getDialogPane().setPadding(new javafx.geometry.Insets(10,10,10,10));
-            alert.getDialogPane().setContent(text);
-            alert.getDialogPane().setPrefWidth(400);
-            alert.show();
-        }
-        ((Stage) rootVBox.getScene().getWindow()).setIconified(false);
-        rootVBox.setOpacity(1);
-        for (Node n : rootVBox.getChildren()) {
-            n.setDisable(false);
-        }
+
+        };
     }
 }

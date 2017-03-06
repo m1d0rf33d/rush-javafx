@@ -24,8 +24,8 @@ import static com.yondu.model.constants.ApiConstants.*;
  */
 public class EarnPointsService extends BaseService {
 
-    private ApiService apiService = new ApiService();
-    private MemberDetailsService memberDetailsService = new MemberDetailsService();
+    private ApiService apiService = App.appContextHolder.apiService;
+    private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
 
     public void initialize() {
         disableMenu();

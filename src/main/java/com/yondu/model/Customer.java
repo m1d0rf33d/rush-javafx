@@ -1,5 +1,6 @@
 package com.yondu.model;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -18,6 +19,34 @@ public class Customer {
     private List<Reward> activeVouchers;
     private CustomerCard card;
     private String uuid;
+    private String mpin;
+
+    private LocalDate birthdate;
+    private List<Transaction> transactions;
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    public LocalDate getBirthdate() {
+        return birthdate;
+    }
+
+    public void setBirthdate(LocalDate birthdate) {
+        this.birthdate = birthdate;
+    }
+
+    public String getMpin() {
+        return mpin;
+    }
+
+    public void setMpin(String mpin) {
+        this.mpin = mpin;
+    }
 
     public String getUuid() {
         return uuid;

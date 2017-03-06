@@ -43,7 +43,7 @@ public class ApiConstants {
     public static String CUSTOMER_APP_KEY;
     public static String CUSTOMER_APP_SECRET;
     public static String MERCHANT_TYPE;
-    public static String TESSERACT_HOME;
+
     public static Boolean WITH_VK;
 
 }

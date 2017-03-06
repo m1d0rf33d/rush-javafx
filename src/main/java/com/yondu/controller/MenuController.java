@@ -55,7 +55,6 @@ public class MenuController implements Initializable {
     public Button offlineButton;
     @FXML
     public Button ocrButton;
-
     @FXML
     public ScrollPane rootScrollPane;
     @FXML
@@ -71,15 +70,20 @@ public class MenuController implements Initializable {
     @FXML
     public Button giveStampsButton;
 
-    private RouteService routeService = new RouteService();
-    private CommonService commonService = new CommonService();
+    private RouteService routeService = App.appContextHolder.routeService;
+    private CommonService commonService = App.appContextHolder.commonService;
     private ContextMenu contextMenu = new ContextMenu();
 
-    private MenuService menuService = new MenuService();
+    private MenuService menuService = App.appContextHolder.menuService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        App.appContextHolder.setRootContainer(rootVBox);
 
+        for (Node node : sideBarVBox.getChildren()) {
+            Button b = (Button) node;
+            b.setVisible(false);
+        }
         rootScrollPane.setFitToHeight(true);
         rootScrollPane.setFitToWidth(true);
 
@@ -97,7 +101,7 @@ public class MenuController implements Initializable {
         });
 
 
-        App.appContextHolder.setRootContainer(rootVBox);
+
 
         registerButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             App.appContextHolder.setPrevState(App.appContextHolder.getCurrentState());

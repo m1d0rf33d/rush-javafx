@@ -37,9 +37,9 @@ public class MobileLoginController implements Initializable {
     @FXML
     public TextField mobileTextField;
 
-    private MemberDetailsService memberDetailsService = new MemberDetailsService();
-    private RouteService routeService = new RouteService();
-    private CommonService commonService = new CommonService();
+    private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
+    private RouteService routeService = App.appContextHolder.routeService;
+    private CommonService commonService = App.appContextHolder.commonService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

@@ -25,8 +25,8 @@ import static com.yondu.model.constants.ApiConstants.*;
  */
 public class CommonService {
 
-    private RouteService routeService = new RouteService();
-    private ApiService apiService = new ApiService();
+    private RouteService routeService  = App.appContextHolder.routeService;
+    private ApiService apiService = App.appContextHolder.apiService;
 
     public void exitMember() {
         App.appContextHolder.setCustomer(null);

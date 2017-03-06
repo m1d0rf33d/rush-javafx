@@ -1,30 +1,15 @@
 package com.yondu.controller;
 
-import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
-import com.yondu.model.ApiResponse;
-import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.model.Customer;
 import com.yondu.service.RegisterService;
 import com.yondu.utils.PropertyBinder;
-import javafx.animation.PauseTransition;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.Window;
-import javafx.util.Duration;
 
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 /**
@@ -51,7 +36,7 @@ public class RegisterController implements Initializable {
     public Button clearButton;
 
     private ToggleGroup toggleGroup = new ToggleGroup();
-    private RegisterService registerService = new RegisterService();
+    private RegisterService registerService = App.appContextHolder.registerService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -68,79 +53,29 @@ public class RegisterController implements Initializable {
         });
 
         registerButton.setOnMouseClicked((MouseEvent e) -> {
+            Customer customer = new Customer();
+            customer.setName(nameTextField.getText());
+            customer.setEmail(emailTextField.getText());
+            customer.setMobileNumber(mobileTextField.getText());
+            customer.setMpin(mpinTextField.getText());
+            customer.setBirthdate(birthdatePicker.getValue());
+            String gender = null;
 
-            disableMenu();
-            PauseTransition pause = new PauseTransition(
-                    Duration.seconds(.5)
-            );
-            pause.setOnFinished(event -> {
-                String name = nameTextField.getText();
-                String email = emailTextField.getText();
-                String mobile = mobileTextField.getText();
-                String mpin = mpinTextField.getText();
-                LocalDate birthDate = birthdatePicker.getValue();
-                String gender = null;
-
-                Toggle selectedToggle = toggleGroup.getSelectedToggle();
-                if (selectedToggle != null) {
-                    gender = selectedToggle.getUserData().toString();
-                }
-
-                ApiResponse apiResponse = registerService.register(name, email, mobile, mpin, birthDate, gender);
-
-                if (apiResponse.isSuccess()) {
-                    clearFields();
-                }
-                notifyRegistrationResult(apiResponse.getMessage(), nameTextField.getScene().getWindow());
-                enableMenu();
-            });
-            pause.play();
-
+            Toggle selectedToggle = toggleGroup.getSelectedToggle();
+            if (selectedToggle != null) {
+                gender = selectedToggle.getUserData().toString();
+                customer.setGender(gender);
+            }
+            registerService.register(customer, toggleGroup);
         });
 
         clearButton.setOnMouseClicked((MouseEvent e) -> {
-            clearFields();
+            registerService.clearFields(toggleGroup);
         });
         PropertyBinder.bindNumberOnly(mobileTextField);
         PropertyBinder.bindMaxLength(11, mobileTextField);
         PropertyBinder.bindNumberOnly(mpinTextField);
         PropertyBinder.bindMaxLength(4, mpinTextField);
-    }
-
-
-    private void clearFields() {
-        nameTextField.setText(null);
-        emailTextField.setText(null);
-        mobileTextField.setText(null);
-        mpinTextField.setText(null);
-        birthdatePicker.setValue(null);
-        toggleGroup.selectToggle(null);
-    }
-
-    private void notifyRegistrationResult(String message, Window window) {
-        Text text = new Text(message);
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-        alert.setTitle(AppConfigConstants.APP_TITLE);
-        alert.initStyle(StageStyle.UTILITY);
-        alert.initOwner(window);
-        alert.setHeaderText("REGISTER MEMBER");
-        alert.getDialogPane().setPadding(new Insets(10,10,10,10));
-        alert.getDialogPane().setContent(text);
-        alert.getDialogPane().setPrefWidth(400);
-        alert.show();
-    }
-
-    public void disableMenu() {
-        App.appContextHolder.getRootVBox().setOpacity(.50);
-        for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
-            n.setDisable(true);
-        }
-    }
-    public void enableMenu() {
-        App.appContextHolder.getRootVBox().setOpacity(1);
-        for (Node n : App.appContextHolder.getRootVBox().getChildren()) {
-            n.setDisable(false);
-        }
     }
 
 }

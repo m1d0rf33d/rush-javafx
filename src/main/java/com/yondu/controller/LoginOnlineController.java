@@ -50,7 +50,7 @@ public class LoginOnlineController implements Initializable{
     @FXML
     public TextField loginTextField;
 
-    private LoginService loginService = new LoginService();
+    private LoginService loginService = App.appContextHolder.loginService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -74,7 +74,6 @@ public class LoginOnlineController implements Initializable{
         loginButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             String username = this.loginTextField.getText();
             String branchName = (String) branchComboBox.getSelectionModel().getSelectedItem();
-            String branchId = "";
 
             Branch selectedBranch = null;
             for (Branch branch : App.appContextHolder.getBranches()) {
@@ -83,7 +82,7 @@ public class LoginOnlineController implements Initializable{
                     break;
                 }
             }
-            loginService.loginEmployee(username, selectedBranch);
+            loginService.loginEmployee(username, selectedBranch, null);
 
         });
     }

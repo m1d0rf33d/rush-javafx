@@ -284,7 +284,7 @@
       </HBox>
       <VBox maxWidth="900.0" minWidth="600.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
          <children>
-            <Pagination fx:id="pagination" maxHeight="500.0" maxWidth="900.0" minHeight="500.0" minWidth="600.0" prefHeight="500.0" prefWidth="600.0">
+            <Pagination fx:id="activeVouchersPagination" maxHeight="500.0" maxWidth="900.0" minHeight="500.0" minWidth="600.0" prefHeight="500.0" prefWidth="600.0">
                <VBox.margin>
                   <Insets />
                </VBox.margin>

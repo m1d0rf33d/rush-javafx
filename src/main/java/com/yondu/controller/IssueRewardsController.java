@@ -44,7 +44,7 @@ public class IssueRewardsController implements Initializable{
     @FXML
     public Button exitButton;
 
-    private CommonService commonService = new CommonService();
+    private CommonService commonService = App.appContextHolder.commonService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

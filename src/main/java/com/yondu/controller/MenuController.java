@@ -229,7 +229,6 @@ public class MenuController implements Initializable {
 
         Label label = new Label("LOGOUT");
         label.setId("logoutLabel");
-        label.setPrefWidth(employeeMenuButton.getWidth());
         MenuItem logoutMenuItem = new MenuItem();
         logoutMenuItem.setGraphic(label);
         logoutMenuItem.getStyleClass().add("menuitem");

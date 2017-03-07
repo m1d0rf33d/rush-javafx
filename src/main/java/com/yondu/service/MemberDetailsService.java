@@ -216,9 +216,9 @@ public class MemberDetailsService extends BaseService{
                     Reward reward = new Reward();
                     reward.setDetails((String) rewardJSON.get("details"));
                     reward.setDate((String) rewardJSON.get("date"));
-                    reward.setName((String) rewardJSON.get("name"));
-                    reward.setQuantity((rewardJSON.get("quantity")).toString());
-                    reward.setId(String.valueOf(rewardJSON.get("id")));
+                    reward.setName((String) rewardJSON.get("name"));/*
+                    reward.setQuantity((rewardJSON.get("quantity")).toString());*/
+                    reward.setId(((Long)rewardJSON.get("id")).toString());
                     reward.setImageUrl((String) rewardJSON.get("image_url"));
                     reward.setPointsRequired(String.valueOf(rewardJSON.get("points")));
                     rewards.add(reward);

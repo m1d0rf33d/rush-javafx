@@ -58,6 +58,10 @@ public class PayWithPointsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        PropertyBinder.bindVirtualKeyboard(pointsTextField);
+        PropertyBinder.bindVirtualKeyboard(receiptTextField);
+        PropertyBinder.bindVirtualKeyboard(amountTextField);
+
         payWithPointsService.initialize();
 
         exitButton.setOnMouseClicked((MouseEvent e) -> {

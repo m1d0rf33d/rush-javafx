@@ -44,6 +44,11 @@ public class RegisterController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        PropertyBinder.bindVirtualKeyboard(nameTextField);
+        PropertyBinder.bindVirtualKeyboard(emailTextField);
+        PropertyBinder.bindVirtualKeyboard(mobileTextField);
+        PropertyBinder.bindVirtualKeyboard(mpinTextField);
+
         birthdatePicker.setEditable(true);
         maleRadioButton.setUserData("Male");
         femaleRadioButton.setUserData("Female");

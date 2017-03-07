@@ -12,7 +12,7 @@
    <children>
       <VBox>
          <children>
-            <Label text="OFFLINE TRANSACTIONS">
+            <Label text="OFFLINE TRANSACTION">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>

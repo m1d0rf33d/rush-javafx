@@ -1,33 +1,21 @@
 package com.yondu.controller;
 
 import com.yondu.App;
-import com.yondu.model.ApiResponse;
-import com.yondu.model.Customer;
 import com.yondu.model.PointsRule;
-import com.yondu.model.constants.AppConfigConstants;
-import com.yondu.service.*;
+import com.yondu.service.CommonService;
+import com.yondu.service.EarnPointsService;
+import com.yondu.service.OcrService;
 import com.yondu.utils.PropertyBinder;
-import javafx.animation.PauseTransition;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.input.InputMethodEvent;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.Duration;
-import org.json.simple.JSONObject;
 
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
-
-import static com.yondu.model.constants.AppConfigConstants.MEMBER_INQUIRY_SCREEN;
 
 /**
  * Created by lynx on 2/9/17.
@@ -72,6 +60,9 @@ public class EarnPointsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        PropertyBinder.bindVirtualKeyboard(amountTextField);
+        PropertyBinder.bindVirtualKeyboard(receiptTextField);
 
         earnPointsService.initialize();
         pointsTextField.setDisable(true);

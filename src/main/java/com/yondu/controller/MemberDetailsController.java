@@ -7,6 +7,7 @@ import com.yondu.model.Reward;
 import com.yondu.service.CommonService;
 import com.yondu.service.MemberDetailsService;
 import com.yondu.service.RouteService;
+import com.yondu.utils.PropertyBinder;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -59,7 +60,7 @@ public class MemberDetailsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        PropertyBinder.bindVirtualKeyboard(searchTextField);
         memberDetailsService.initialize();
 
         exitButton.setOnMouseClicked((MouseEvent e) -> {

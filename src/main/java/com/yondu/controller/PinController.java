@@ -6,6 +6,7 @@ import com.yondu.model.Branch;
 import com.yondu.model.Reward;
 import com.yondu.model.constants.AppState;
 import com.yondu.service.*;
+import com.yondu.utils.PropertyBinder;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -38,6 +39,9 @@ public class PinController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        PropertyBinder.bindVirtualKeyboard(pinTextField);
+
         submitButton.setOnMouseClicked((MouseEvent e) -> {
             ((Stage) pinTextField.getScene().getWindow()).close();
 

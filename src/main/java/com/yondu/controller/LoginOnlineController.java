@@ -55,6 +55,9 @@ public class LoginOnlineController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        PropertyBinder.bindVirtualKeyboard(loginTextField);
+
+
         PropertyBinder.bindNumberWitDot(loginTextField);
 
         for (Branch branch : App.appContextHolder.getBranches()) {

@@ -8,6 +8,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -103,6 +104,4 @@ public class PropertyBinder {
             });
         }
     }
-
-
 }

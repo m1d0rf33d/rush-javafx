@@ -38,7 +38,9 @@ public class GuestPurchaseController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        PropertyBinder.bindVirtualKeyboard(amountTextField);
+        PropertyBinder.bindVirtualKeyboard(receiptTextField);
+        PropertyBinder.bindVirtualKeyboard(mobileTextField);
 
         PropertyBinder.bindMaxLength(11, mobileTextField);
         PropertyBinder.bindNumberOnly(mobileTextField);

@@ -2,6 +2,7 @@ package com.yondu.controller;
 
 import com.yondu.App;
 import com.yondu.service.OfflineService;
+import com.yondu.utils.PropertyBinder;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -31,7 +32,7 @@ public class OfflineController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        PropertyBinder.bindVirtualKeyboard(searchTextField);
         offlineService.initialize();
         buildStatusFilters();
 

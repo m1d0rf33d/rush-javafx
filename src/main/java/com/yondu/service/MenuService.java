@@ -131,8 +131,13 @@ public class MenuService extends BaseService{
                 buttons.add(giveStampsButton);
             }
         }
-        for (Button b : buttons) {
-            b.setVisible(true);
+
+        VBox sideBarVBox = (VBox) rootVBox.getScene().lookup("#sideBarVBox");
+        sideBarVBox.getChildren().clear();
+        for (Button button : buttons) {
+            if (button != null) {
+                sideBarVBox.getChildren().add(button);
+            }
         }
     }
 

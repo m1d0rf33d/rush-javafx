@@ -18,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -80,10 +81,6 @@ public class MenuController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         App.appContextHolder.setRootContainer(rootVBox);
 
-        for (Node node : sideBarVBox.getChildren()) {
-            Button b = (Button) node;
-            b.setVisible(false);
-        }
         rootScrollPane.setFitToHeight(true);
         rootScrollPane.setFitToWidth(true);
 
@@ -91,6 +88,7 @@ public class MenuController implements Initializable {
         bindRightClick();
         bindLogout();
 
+        rootScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         rootVBox.setOnMouseClicked((MouseEvent e) -> {
             if (e.getButton() == MouseButton.SECONDARY) {

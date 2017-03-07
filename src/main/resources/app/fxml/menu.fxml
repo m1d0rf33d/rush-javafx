@@ -10,9 +10,9 @@
 
 <ScrollPane fx:id="rootScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="+Infinity" minHeight="1100.0" minWidth="1000.0" prefHeight="1100.0" prefWidth="700.0" style="-fx-border-color: black;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.MenuController">
    <content>
-      <VBox fx:id="rootVBox" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="1000.0" VBox.vgrow="ALWAYS">
+      <VBox fx:id="rootVBox" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="1000.0" minWidth="1000.0" VBox.vgrow="ALWAYS">
          <children>
-            <HBox minHeight="100.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #e7e7e7;">
+            <HBox minHeight="100.0" minWidth="1000.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #e7e7e7;">
                <children>
                   <ImageView fx:id="merchantLogoImageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>

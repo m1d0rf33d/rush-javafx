@@ -1,9 +1,12 @@
 package com.yondu.controller;
 
+import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
 import com.yondu.model.Customer;
 import com.yondu.service.RegisterService;
 import com.yondu.utils.PropertyBinder;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -50,6 +53,17 @@ public class RegisterController implements Initializable {
 
         birthdatePicker.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             birthdatePicker.show();
+
+        });
+
+        //Event handlers for clickable nodes
+        birthdatePicker.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+            {
+                FXVK.detach();
+
+            }
+
         });
 
         registerButton.setOnMouseClicked((MouseEvent e) -> {

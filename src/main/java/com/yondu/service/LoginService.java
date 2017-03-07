@@ -82,12 +82,16 @@ public class LoginService extends BaseService{
                         if (apiResponse.getErrorCode().equals("0x0")) {
                             Stage currentStage = ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow());
                             App.appContextHolder.routeService.goToMenuScreen(currentStage);
-                        } else {
+                        } else if (apiResponse.getErrorCode().equals("0x2")){
                             showPinDialog();
+                        } else {
+                            showPrompt(apiResponse.getMessage(), "LOGIN");
                         }
 
                     } else {
-                        loadOffline();
+                       if (apiResponse.getMessage().contains("Network"))  {
+                           loadOffline();
+                       }
                         showPrompt(apiResponse.getMessage(), "LOGIN");
                     }
                     enableMenu();
@@ -156,6 +160,7 @@ public class LoginService extends BaseService{
                         App.appContextHolder.setEmployee(employee);
                         apiResponse.setSuccess(true);
                     } else {
+                        apiResponse.setSuccess(true);
                         apiResponse.setMessage((String) jsonObject.get("message"));
                     }
                 } else {

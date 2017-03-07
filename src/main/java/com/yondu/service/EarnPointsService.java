@@ -9,6 +9,9 @@ import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -124,15 +127,29 @@ public class EarnPointsService extends BaseService {
                 @Override
                 public void handle(WorkerStateEvent event) {
                     ApiResponse apiResponse = (ApiResponse) task.getValue();
-                    if (!apiResponse.isSuccess()) {
-                        showPrompt(apiResponse.getMessage(), "EARN POINTS");
+                    if (apiResponse.isSuccess()) {
+                        clearFields();
                     }
+                    showPrompt(apiResponse.getMessage(), "EARN POINTS");
+                    enableMenu();
                 }
             });
             new Thread(task).start();
 
         });
         pause.play();
+    }
+
+    private void clearFields() {
+
+        VBox rootVBox = App.appContextHolder.getRootContainer();
+        TextField receiptTextField = (TextField) rootVBox.getScene().lookup("#receiptTextField");
+        TextField amountTextField = (TextField) rootVBox.getScene().lookup("#amountTextField");
+        TextField pointsTextField = (TextField) rootVBox.getScene().lookup("#pointsTextField");
+        receiptTextField.setText(null);
+        amountTextField.setText(null);
+        pointsTextField.setText(null);
+
     }
 
     public ApiResponse getPointsRule() {

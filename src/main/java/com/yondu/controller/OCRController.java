@@ -192,10 +192,10 @@ public class OCRController implements Initializable {
             Double height = amountHeight != null ? amountHeight : savedAmountHeight;
 
             OcrConfig config = new OcrConfig();
-            config.setOrNumberHeight(height.intValue());
-            config.setOrNumberPosX(x.intValue());
-            config.setOrNumberPosY(y.intValue());
-            config.setOrNumberWidth(width.intValue());
+            config.setSalesHeight(height.intValue());
+            config.setSalesPosX(x.intValue());
+            config.setSalesPosY(y.intValue());
+            config.setSalesWidth(width.intValue());
             ocrService.preview(config, "sales");
 
         });

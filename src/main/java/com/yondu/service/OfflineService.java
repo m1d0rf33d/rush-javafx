@@ -74,7 +74,7 @@ public class OfflineService extends BaseService {
         pause.setOnFinished(event -> {
             Task task = givePointsWorker();
             task.setOnSucceeded((Event e) -> {
-               showPrompt("Submit offline transactions complete.", "OFFLINE TRANSACTION");
+                showPrompt("Submit offline transactions complete.", "OFFLINE TRANSACTION");
                 initialize();
             });
             new Thread(task).start();
@@ -304,12 +304,13 @@ public class OfflineService extends BaseService {
 
         offlineTransaction.setMessage("");
 
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("offline", offlineTransaction.getMobileNumber()));
 
         Employee employee = App.appContextHolder.getEmployee();
 
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("mobile_no", offlineTransaction.getMobileNumber()));
         String url = BASE_URL + MEMBER_LOGIN_ENDPOINT;
+
         url = url.replace(":employee_id", employee.getEmployeeId());
         JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
         if (jsonObject != null) {
@@ -321,7 +322,7 @@ public class OfflineService extends BaseService {
                 params.add(new BasicNameValuePair("amount", offlineTransaction.getAmount().replace(",", "")));
                 url = BASE_URL + GIVE_POINTS_ENDPOINT;
                 url = url.replace(":customer_uuid", (String) data.get("id"));
-                url = url.replace(":employee_id",  employee.getEmployeeId());
+                url = url.replace(":employee_id", employee.getEmployeeId());
                 JSONObject json = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
 
                 if (json != null) {
@@ -355,6 +356,9 @@ public class OfflineService extends BaseService {
                 offlineTransaction.setMessage((String) jsonObject.get("message"));
                 offlineTransaction.setStatus("Failed");
             }
+        } else {
+            offlineTransaction.setMessage((String) jsonObject.get("Network error"));
+            offlineTransaction.setStatus("Pending");
         }
         return offlineTransaction;
     }

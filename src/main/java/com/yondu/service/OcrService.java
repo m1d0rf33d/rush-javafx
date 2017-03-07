@@ -172,6 +172,7 @@ public class OcrService extends BaseService{
                         } else {
                             showPrompt(apiResponse.getMessage(), "OCR");
                         }
+                        ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).setIconified(false);
                         enableMenu();
                     }
                 });

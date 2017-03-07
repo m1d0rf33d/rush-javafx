@@ -54,6 +54,10 @@ public class MenuService extends BaseService{
                         branchNameLabel.setText(branch.getName());
                         merchantLogoImageView.setImage(new Image(branch.getLogoUrl()));
 
+                        ImageView imageView = new ImageView(new Image(App.appContextHolder.getMerchant().getBackgroundUrl()));
+                        VBox bodyStackPane = (VBox) rootVBox.getScene().lookup("#bodyStackPane");
+                        bodyStackPane.getChildren().clear();
+                        bodyStackPane.getChildren().add(imageView);
 
                         loadSideBar();
 
@@ -152,7 +156,7 @@ public class MenuService extends BaseService{
             JSONObject dataJSON = (JSONObject) jsonObject.get("data");
             JSONObject merchantJSON = (JSONObject) dataJSON.get("merchant");
             Merchant merchant = new Merchant();
-            merchant.setBackgroundUrl((String) merchantJSON.get("backgroundUrl"));
+            merchant.setBackgroundUrl((String) merchantJSON.get("background_url"));
             merchant.setStampsUrl((String) merchantJSON.get("stamp_url"));
             merchant.setGrayStampsUrl((String) merchantJSON.get("stamp_gray_url"));
             App.appContextHolder.setMerchant(merchant);

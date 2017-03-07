@@ -47,7 +47,7 @@ public class LoginService extends BaseService{
     private RouteService routeService = App.appContextHolder.routeService;
 
     public void initialize() {
-
+        disableMenu();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(1)
         );
@@ -62,6 +62,7 @@ public class LoginService extends BaseService{
                     } else {
                         commonService.showPrompt("Network connection error.", "LOGIN");
                         loadOffline();
+
                     }
                     enableMenu();
                 }
@@ -86,6 +87,7 @@ public class LoginService extends BaseService{
                             showPinDialog();
                         } else {
                             showPrompt(apiResponse.getMessage(), "LOGIN");
+                            enableMenu();
                         }
 
                     } else {
@@ -93,8 +95,9 @@ public class LoginService extends BaseService{
                            loadOffline();
                        }
                         showPrompt(apiResponse.getMessage(), "LOGIN");
+                        enableMenu();
                     }
-                    enableMenu();
+
             }
         });
 

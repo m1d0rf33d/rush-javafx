@@ -90,6 +90,7 @@ public class CommonService {
             CUSTOMER_APP_KEY =(String) data.get("customerApiKey");
             CUSTOMER_APP_SECRET = (String) data.get("customerApiSecret");
             MERCHANT_TYPE = (String) data.get("merchantType");
+            WITH_VK = Boolean.valueOf((String) data.get("withVk"));
             return true;
         }
         return false;

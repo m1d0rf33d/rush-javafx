@@ -9,9 +9,7 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -256,56 +254,61 @@ public class MemberDetailsService extends BaseService{
 
         VBox box = new VBox();
         box.getChildren().addAll(buildTableView());
-
-        VBox rootVBox = App.appContextHolder.getRootContainer();
-        Pagination activeVouchersPagination = (Pagination) rootVBox.getScene().lookup("#activeVouchersPagination");
-        activeVouchersPagination.setPageCount(pageCount);
         return box;
     }
 
     private TableView<Reward> buildTableView() {
-
+        VBox rootVBox = App.appContextHolder.getRootContainer();
+        TextField searchTextField = (TextField) rootVBox.getScene().lookup("#searchTextField");
+        Pagination activeVouchersPagination = (Pagination) rootVBox.getScene().lookup("#activeVouchersPagination");
 
         TableView<Reward> transactionsTableView = new TableView();
         transactionsTableView.setFixedCellSize(Region.USE_COMPUTED_SIZE);
 
+        ObservableList<Reward> finalData = FXCollections.observableArrayList();
         ObservableList<Reward> textFilteredData = FXCollections.observableArrayList();
-/*
-
-        if (searchTextField.getText() != null && !searchTextField.getText().isEmpty()) {
-            String searchTxt = searchTextField.getText().toLowerCase();
-            for (Reward reward : masterData) {
-                if (reward.getDetails().toLowerCase().contains(searchTxt)
-                        || reward.getName().toLowerCase().contains(searchTxt)
-                        || reward.getQuantity().toLowerCase().contains(searchTxt)) {
-                    textFilteredData.addAll(reward);
+        Customer customer = App.appContextHolder.getCustomer();
+        List<Reward> rewards = customer.getActiveVouchers();
+        if (rewards != null) {
+            if (searchTextField.getText() != null && !searchTextField.getText().isEmpty()) {
+                String searchTxt = searchTextField.getText().toLowerCase();
+                for (Reward reward : rewards) {
+                    if (reward.getDetails().toLowerCase().contains(searchTxt)
+                            || reward.getName().toLowerCase().contains(searchTxt)
+                            || reward.getQuantity().toLowerCase().contains(searchTxt)) {
+                        textFilteredData.add(reward);
+                    }
+                }
+            } else {
+                textFilteredData.addAll(rewards);
+            }
+            int maxEntries = 10;
+            int pageCount = textFilteredData.size() / maxEntries;
+            if (pageCount == 0) {
+                pageCount = 1;
+            } else {
+                if (textFilteredData.size() % maxEntries > 0) {
+                    pageCount++;
                 }
             }
-        } else {
-            textFilteredData = masterData;
-        }
 
-        PAGE_COUNT = textFilteredData.size() / MAX_ENTRIES_COUNT;
-        if (PAGE_COUNT == 0) {
-            PAGE_COUNT = 1;
-        }
-
-        int pageIndex = pagination.getCurrentPageIndex();
-        ObservableList<Reward> indexFilteredData = FXCollections.observableArrayList();
-        for (Reward reward : textFilteredData) {
-            int objIndex = textFilteredData.indexOf(reward);
-            if (objIndex >= (pageIndex * MAX_ENTRIES_COUNT)  && objIndex < ((pageIndex + 1) * MAX_ENTRIES_COUNT)) {
-                indexFilteredData.add(reward);
+            activeVouchersPagination.setPageCount(pageCount);
+            int pageIndex = activeVouchersPagination.getCurrentPageIndex();
+            ObservableList<Reward> indexFilteredData = FXCollections.observableArrayList();
+            for (Reward reward : textFilteredData) {
+                int objIndex = textFilteredData.indexOf(reward);
+                if (objIndex >= (pageIndex * maxEntries)  && objIndex < ((pageIndex + 1) * maxEntries)) {
+                    indexFilteredData.add(reward);
+                }
+                if (objIndex > ((pageIndex + 1) * maxEntries -1)) {
+                    break;
+                }
             }
-            if (objIndex > ((pageIndex + 1) * MAX_ENTRIES_COUNT -1)) {
-                break;
-            }
+            finalData = indexFilteredData;
         }
-*/
-        Customer customer = App.appContextHolder.getCustomer();
 
         buildActiveVouchersColumns(transactionsTableView);
-        transactionsTableView.setItems(FXCollections.observableArrayList(customer.getActiveVouchers()));
+        transactionsTableView.setItems(finalData);
         return transactionsTableView;
     }
 

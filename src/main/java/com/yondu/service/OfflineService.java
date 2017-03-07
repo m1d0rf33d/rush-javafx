@@ -9,9 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.Event;
 import javafx.scene.Node;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -167,67 +165,84 @@ public class OfflineService extends BaseService {
     }
 
     public Node createOfflinePage(int pageIndex) {
-        int pageCount = 0;
-        int maxEntries = 10;
-
-        Customer customer = App.appContextHolder.getCustomer();
-        pageCount = masterData.size() / maxEntries;
-        if (pageCount == 0) {
-            pageCount = 1;
-        }
 
         VBox box = new VBox();
         box.getChildren().addAll(buildTableView());
-
-        VBox rootVBox = App.appContextHolder.getRootContainer();
-        Pagination offlinePagination = (Pagination) rootVBox.getScene().lookup("#offlinePagination");
-        offlinePagination.setPageCount(pageCount);
         return box;
     }
 
     private TableView<OfflineTransaction> buildTableView() {
 
 
+        VBox rootVBox = App.appContextHolder.getRootContainer();
+        TextField searchTextField = (TextField) rootVBox.getScene().lookup("#searchTextField");
+        Pagination offlinePagination = (Pagination) rootVBox.getScene().lookup("#offlinePagination");
+        MenuButton statusMenuButton = (MenuButton) rootVBox.getScene().lookup("#statusMenuButton");
+
         TableView<OfflineTransaction> transactionsTableView = new TableView();
         transactionsTableView.setFixedCellSize(Region.USE_COMPUTED_SIZE);
 
+        ObservableList<OfflineTransaction> finalData = FXCollections.observableArrayList();
         ObservableList<OfflineTransaction> textFilteredData = FXCollections.observableArrayList();
-/*
 
-        if (searchTextField.getText() != null && !searchTextField.getText().isEmpty()) {
-            String searchTxt = searchTextField.getText().toLowerCase();
-            for (Reward reward : masterData) {
-                if (reward.getDetails().toLowerCase().contains(searchTxt)
-                        || reward.getName().toLowerCase().contains(searchTxt)
-                        || reward.getQuantity().toLowerCase().contains(searchTxt)) {
-                    textFilteredData.addAll(reward);
+        if (masterData != null) {
+            if (searchTextField.getText() != null && !searchTextField.getText().isEmpty()) {
+                String searchTxt = searchTextField.getText().toLowerCase();
+                for (OfflineTransaction ot : masterData) {
+                    String temp = "";
+                    temp = temp + (ot.getMobileNumber() != null ? ot.getMobileNumber() : "");
+                    temp = temp +(ot.getStatus() != null ? ot.getStatus() : "");
+                    temp = temp + (ot.getAmount() != null ? ot.getAmount() : "");
+                    temp = temp + (ot.getDate() != null ? ot.getDate() : "");
+                    temp = temp + (ot.getMessage() != null ? ot.getMessage() : "");
+                    temp =  temp  + (ot.getOrNumber() != null ? ot.getOrNumber() : "");
+                    if (temp.toLowerCase().contains(searchTxt)) {
+                        textFilteredData.add(ot);
+                    }
+                }
+            } else {
+                textFilteredData.addAll(masterData);
+            }
+
+
+            ObservableList<OfflineTransaction> statusFilter = FXCollections.observableArrayList();
+            if (!statusMenuButton.getText().equalsIgnoreCase("All")) {
+                String status = statusMenuButton.getText().toLowerCase();
+                for (OfflineTransaction ot : textFilteredData) {
+                    if (ot.getStatus().equalsIgnoreCase(status)) {
+                        statusFilter.addAll(ot);
+                    }
+                }
+            } else {
+                statusFilter = textFilteredData;
+            }
+
+            int maxEntries = 10;
+            int pageCount = statusFilter.size() / maxEntries;
+            if (pageCount == 0) {
+                pageCount = 1;
+            } else {
+                if (statusFilter.size() % maxEntries > 0) {
+                    pageCount++;
                 }
             }
-        } else {
-            textFilteredData = masterData;
-        }
 
-        PAGE_COUNT = textFilteredData.size() / MAX_ENTRIES_COUNT;
-        if (PAGE_COUNT == 0) {
-            PAGE_COUNT = 1;
-        }
-
-        int pageIndex = pagination.getCurrentPageIndex();
-        ObservableList<Reward> indexFilteredData = FXCollections.observableArrayList();
-        for (Reward reward : textFilteredData) {
-            int objIndex = textFilteredData.indexOf(reward);
-            if (objIndex >= (pageIndex * MAX_ENTRIES_COUNT)  && objIndex < ((pageIndex + 1) * MAX_ENTRIES_COUNT)) {
-                indexFilteredData.add(reward);
+            offlinePagination.setPageCount(pageCount);
+            int pageIndex = offlinePagination.getCurrentPageIndex();
+            ObservableList<OfflineTransaction> indexFilteredData = FXCollections.observableArrayList();
+            for (OfflineTransaction transaction : statusFilter) {
+                int objIndex = textFilteredData.indexOf(transaction);
+                if (objIndex >= (pageIndex * maxEntries)  && objIndex < ((pageIndex + 1) * maxEntries)) {
+                    indexFilteredData.add(transaction);
+                }
+                if (objIndex > ((pageIndex + 1) * maxEntries -1)) {
+                    break;
+                }
             }
-            if (objIndex > ((pageIndex + 1) * MAX_ENTRIES_COUNT -1)) {
-                break;
-            }
+            finalData = indexFilteredData;
         }
-*/
-        Customer customer = App.appContextHolder.getCustomer();
-
         buildOfflineColumns(transactionsTableView);
-        transactionsTableView.setItems(FXCollections.observableArrayList(masterData));
+        transactionsTableView.setItems(finalData);
         return transactionsTableView;
     }
 

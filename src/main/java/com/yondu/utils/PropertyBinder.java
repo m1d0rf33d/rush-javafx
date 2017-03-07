@@ -1,5 +1,6 @@
 package com.yondu.utils;
 
+import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -13,7 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
 import java.text.DecimalFormat;
-
+import static com.yondu.model.constants.ApiConstants.*;
 /**
  * Created by lynx on 2/21/17.
  */
@@ -88,6 +89,19 @@ public class PropertyBinder {
             }
 
         });
+    }
+
+    public static void bindVirtualKeyboard(TextField textField) {
+        if (!WITH_VK) {
+            textField.focusedProperty().addListener(new ChangeListener<Boolean>()
+            {
+                public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+                {
+                    if (newPropertyValue)
+                        FXVK.detach();
+                }
+            });
+        }
     }
 
 

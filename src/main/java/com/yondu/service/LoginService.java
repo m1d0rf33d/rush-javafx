@@ -11,6 +11,7 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -48,10 +49,12 @@ public class LoginService extends BaseService{
 
     public void initialize() {
         disableMenu();
+
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(1)
         );
         pause.setOnFinished(event -> {
+            App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
             Task task = loginInitWorker();
             task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
@@ -64,6 +67,7 @@ public class LoginService extends BaseService{
                         loadOffline();
 
                     }
+                    App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                     enableMenu();
                 }
             });
@@ -74,6 +78,7 @@ public class LoginService extends BaseService{
     }
 
     public void loginEmployee(String username, Branch branch, String pin) {
+
         Task task = loginEmployeeWorker(username, branch, pin);
         task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
@@ -97,7 +102,7 @@ public class LoginService extends BaseService{
                         showPrompt(apiResponse.getMessage(), "LOGIN");
                         enableMenu();
                     }
-
+                App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
             }
         });
 
@@ -106,6 +111,7 @@ public class LoginService extends BaseService{
                 Duration.seconds(1)
         );
         pause.setOnFinished(event -> {
+            App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
             new Thread(task).start();
         });
         pause.play();
@@ -118,9 +124,10 @@ public class LoginService extends BaseService{
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(PIN_SCREEN));
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 500,300);
+            Scene scene = new Scene(root, 420,220);
             stage.setScene(scene);
             stage.setTitle(APP_TITLE);
+            stage.resizableProperty().setValue(Boolean.FALSE);
             stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             stage.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());
             stage.setOnCloseRequest(new javafx.event.EventHandler<WindowEvent>() {
@@ -362,6 +369,7 @@ public class LoginService extends BaseService{
                             Branch branch = new Branch();
                             branch.setId((String) json.get("id"));
                             branch.setName((String) json.get("name"));
+                            branch.setLogoUrl((String) json.get("logo_url"));
                             branches.add(branch);
                         }
                         App.appContextHolder.setBranches(branches);

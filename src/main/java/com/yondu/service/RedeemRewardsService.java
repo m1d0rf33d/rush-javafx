@@ -10,6 +10,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,7 +18,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
@@ -43,11 +46,14 @@ public class RedeemRewardsService extends BaseService {
     private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
 
     public void initialize() {
+
+        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
         disableMenu();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(1)
         );
         pause.setOnFinished(event -> {
+
             Task task = initializeWorker();
             task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
@@ -57,10 +63,13 @@ public class RedeemRewardsService extends BaseService {
                         loadCustomerDetails();
                         renderRewards();
                         enableMenu();
+                        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                     } else {
                         showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
                         enableMenu();
+                        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                     }
+
 
                 }
             });
@@ -208,7 +217,17 @@ public class RedeemRewardsService extends BaseService {
             Label label = new Label();
             label.setText(reward.getName());
             label.getStyleClass().add("lbl-med");
-            vBox.getChildren().addAll(label);
+            Label pointsLabel = new Label();
+            pointsLabel.setText(reward.getPointsRequired() + " points");
+            pointsLabel.getStyleClass().add("lbl-med");
+            pointsLabel.setTextFill(Color.web("red"));
+
+            HBox hBox = new HBox();
+            hBox.getChildren().add(label);
+            hBox.getChildren().addAll(pointsLabel);
+            hBox.setMargin(label, new Insets(0, 0, 0, 20));
+            hBox.setMargin(pointsLabel, new Insets(0, 0, 0, 20));
+            vBox.getChildren().addAll(hBox);
             vBox.setPrefWidth(200);
             vBox.setMargin(imageView, new Insets(10,10,10,10));
             vBox.setMargin(label, new Insets(10,10,10,10));

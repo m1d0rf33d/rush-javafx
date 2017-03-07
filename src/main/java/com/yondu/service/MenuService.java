@@ -9,10 +9,12 @@ import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -31,11 +33,13 @@ public class MenuService extends BaseService{
     private ApiService apiService = App.appContextHolder.apiService;
 
     public void initialize() {
+        disableMenu();
 
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(1)
         );
         pause.setOnFinished(event -> {
+            App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
             Task task = initializeWorker();
             task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
@@ -53,7 +57,8 @@ public class MenuService extends BaseService{
                         ImageView merchantLogoImageView = (ImageView) rootVBox.getScene().lookup("#merchantLogoImageView");
                         branchNameLabel.setText(branch.getName());
 
-                        if (branch.getLogoUrl() != null) {
+                        if (App.appContextHolder.getMerchant() != null &&
+                                App.appContextHolder.getMerchant().getBackgroundUrl() != null) {
                             ImageView imageView = new ImageView(new Image(App.appContextHolder.getMerchant().getBackgroundUrl()));
                             VBox bodyStackPane = (VBox) rootVBox.getScene().lookup("#bodyStackPane");
                             bodyStackPane.getChildren().clear();
@@ -63,17 +68,17 @@ public class MenuService extends BaseService{
                             merchantLogoImageView.setImage(new Image(branch.getLogoUrl()));
                         }
 
-
-
                         loadSideBar();
 
                     } else {
                         showPrompt(apiResponse.getMessage(), "MENU");
                     }
                     enableMenu();
+                    App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                 }
+
             });
-            disableMenu();
+
             new Thread(task).start();
         });
         pause.play();
@@ -136,6 +141,7 @@ public class MenuService extends BaseService{
         sideBarVBox.getChildren().clear();
         for (Button button : buttons) {
             if (button != null) {
+                button.setVisible(true);
                 sideBarVBox.getChildren().add(button);
             }
         }

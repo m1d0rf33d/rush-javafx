@@ -74,10 +74,11 @@ public class PayWithPointsService extends BaseService {
                 ApiResponse apiResponse = new ApiResponse();
                 apiResponse.setSuccess(false);
 
+
                 ApiResponse pointRuleResp = earnPointsService.getPointsRule();
                 if (pointRuleResp.isSuccess()) {
                     apiResponse.setSuccess(true);
-
+                    App.appContextHolder.memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber());
                 } else {
                     apiResponse.setMessage("Network connection error.");
                     return apiResponse;
@@ -97,6 +98,7 @@ public class PayWithPointsService extends BaseService {
             task.setOnSucceeded((Event e) -> {
                 ApiResponse apiResponse = (ApiResponse) task.getValue();
                 if (apiResponse.isSuccess()) {
+                    initialize();
                     clearFields();
                 } else {
                     App.appContextHolder.commonService.updateButtonState();

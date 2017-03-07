@@ -82,7 +82,7 @@ public class RewardDialogController implements Initializable {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(PIN_SCREEN));
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 500,300);
+            Scene scene = new Scene(root, 420,220);
             stage.setScene(scene);
             stage.setTitle(APP_TITLE);
             stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));

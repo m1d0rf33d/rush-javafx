@@ -128,6 +128,7 @@ public class EarnPointsService extends BaseService {
                 public void handle(WorkerStateEvent event) {
                     ApiResponse apiResponse = (ApiResponse) task.getValue();
                     if (apiResponse.isSuccess()) {
+                        initialize();
                         clearFields();
                     }
                     showPrompt(apiResponse.getMessage(), "EARN POINTS");

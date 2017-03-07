@@ -5,6 +5,8 @@ import com.yondu.model.constants.AppState;
 import com.yondu.service.CommonService;
 import com.yondu.service.MenuService;
 import com.yondu.service.RouteService;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -84,9 +86,14 @@ public class MenuController implements Initializable {
         rootScrollPane.setFitToHeight(true);
         rootScrollPane.setFitToWidth(true);
 
+        bindLogout();
         menuService.initialize();
         bindRightClick();
-        bindLogout();
+
+
+        for (Node node : sideBarVBox.getChildren()) {
+            node.setVisible(false);
+        }
 
         rootScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
@@ -220,10 +227,13 @@ public class MenuController implements Initializable {
     private void bindLogout() {
         employeeMenuButton.getItems().clear();
 
-
+        Label label = new Label("LOGOUT");
+        label.setId("logoutLabel");
+        label.setPrefWidth(employeeMenuButton.getWidth());
         MenuItem logoutMenuItem = new MenuItem();
-        logoutMenuItem.setGraphic(new Label("LOGOUT"));
+        logoutMenuItem.setGraphic(label);
         logoutMenuItem.getStyleClass().add("menuitem");
+        logoutMenuItem.setId("logoutButton");
         logoutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -252,9 +262,10 @@ public class MenuController implements Initializable {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(MOBILE_LOGIN_SCREEN));
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 500,300);
+            Scene scene = new Scene(root, 450,200);
             stage.setScene(scene);
             stage.setTitle(APP_TITLE);
+            stage.resizableProperty().setValue(Boolean.FALSE);
             stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             stage.initOwner(rootVBox.getScene().getWindow());
             stage.setOnCloseRequest(new javafx.event.EventHandler<WindowEvent>() {

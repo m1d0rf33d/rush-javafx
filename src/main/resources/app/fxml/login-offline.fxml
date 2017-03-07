@@ -14,7 +14,7 @@
             <Font size="20.0" />
          </font>
          <VBox.margin>
-            <Insets top="10.0" />
+            <Insets />
          </VBox.margin>
       </Label>
       <TextField fx:id="mobileTextField" maxWidth="300.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;">
@@ -65,7 +65,7 @@
             <Font name="System Bold" size="23.0" />
          </font>
          <VBox.margin>
-            <Insets top="20.0" />
+            <Insets top="30.0" />
          </VBox.margin>
       </Button>
       <Button fx:id="ocrButton" maxWidth="300.0" minHeight="-Infinity" minWidth="300.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: #53585b; -fx-background-radius: 30;" text="OCR" textFill="#f5f2f2">

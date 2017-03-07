@@ -41,7 +41,8 @@ public class RouteService extends BaseService{
             stage.setScene(new Scene(root, 1000,700));
             stage.setTitle(APP_TITLE);
             stage.getIcons().add(new Image(App.class.getResource(AppConfigConstants.R_LOGO).toExternalForm()));
-
+            Scene scene  = stage.getScene();
+            scene.getStylesheets().add(App.class.getResource("/app/css/menu.css").toExternalForm());
             stage.show();
             stage.setMaximized(true);
 

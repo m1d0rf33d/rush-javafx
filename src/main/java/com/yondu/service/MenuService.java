@@ -52,12 +52,18 @@ public class MenuService extends BaseService{
                         Label branchNameLabel = (Label) rootVBox.getScene().lookup("#branchNameLabel");
                         ImageView merchantLogoImageView = (ImageView) rootVBox.getScene().lookup("#merchantLogoImageView");
                         branchNameLabel.setText(branch.getName());
-                        merchantLogoImageView.setImage(new Image(branch.getLogoUrl()));
 
-                        ImageView imageView = new ImageView(new Image(App.appContextHolder.getMerchant().getBackgroundUrl()));
-                        VBox bodyStackPane = (VBox) rootVBox.getScene().lookup("#bodyStackPane");
-                        bodyStackPane.getChildren().clear();
-                        bodyStackPane.getChildren().add(imageView);
+                        if (branch.getLogoUrl() != null) {
+                            ImageView imageView = new ImageView(new Image(App.appContextHolder.getMerchant().getBackgroundUrl()));
+                            VBox bodyStackPane = (VBox) rootVBox.getScene().lookup("#bodyStackPane");
+                            bodyStackPane.getChildren().clear();
+                            bodyStackPane.getChildren().add(imageView);
+                        }
+                        if (branch.getLogoUrl() != null) {
+                            merchantLogoImageView.setImage(new Image(branch.getLogoUrl()));
+                        }
+
+
 
                         loadSideBar();
 

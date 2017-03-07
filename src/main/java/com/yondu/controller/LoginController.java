@@ -14,10 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -80,6 +77,8 @@ public class LoginController implements Initializable {
     public Button removeButton;
     @FXML
     public VBox rootVBox;
+    @FXML
+    public ScrollPane rootScrollPane;
 
     private LoginService loginService = App.appContextHolder.loginService;
 
@@ -95,6 +94,8 @@ public class LoginController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         App.appContextHolder.setCurrentState(AppState.LOGIN);
         App.appContextHolder.setRootContainer(rootVBox);
+        rootScrollPane.setFitToHeight(true);
+        rootScrollPane.setFitToWidth(true);
 
         removeImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/remove.png").toExternalForm()));
         rushLogoImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/rush_logo.png").toExternalForm()));

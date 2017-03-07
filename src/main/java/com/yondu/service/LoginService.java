@@ -79,15 +79,16 @@ public class LoginService extends BaseService{
             public void handle(WorkerStateEvent event) {
                     ApiResponse apiResponse = (ApiResponse) task.getValue();
                     if (apiResponse.isSuccess()) {
-                        Stage currentStage = ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow());
-
-                        App.appContextHolder.routeService.goToMenuScreen(currentStage);
-                    } else {
-                        if (apiResponse.getErrorCode().equals("0x2")) {
-                            showPinDialog();
+                        if (apiResponse.getErrorCode().equals("0x0")) {
+                            Stage currentStage = ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow());
+                            App.appContextHolder.routeService.goToMenuScreen(currentStage);
                         } else {
-                            showPrompt(apiResponse.getMessage(), "LOGIN");
+                            showPinDialog();
                         }
+
+                    } else {
+                        loadOffline();
+                        showPrompt(apiResponse.getMessage(), "LOGIN");
                     }
                     enableMenu();
             }
@@ -172,6 +173,7 @@ public class LoginService extends BaseService{
                 ApiResponse apiResponse = new ApiResponse();
 
                 loadWidgetEndpoints();
+
                 if (commonService.fetchApiKeys()) {
                     loadRushEndpoints();
                     loadMerchantBranches();
@@ -313,10 +315,12 @@ public class LoginService extends BaseService{
                 ApiResponse apiResponse = (ApiResponse) task.getValue();
                 if (apiResponse.isSuccess()) {
                     loadOnline();
+                    enableMenu();
                 } else {
                     showPrompt(apiResponse.getMessage(), "LOGIN");
+                    enableMenu();
                 }
-                enableMenu();
+
             }
         });
 
@@ -337,11 +341,13 @@ public class LoginService extends BaseService{
                 ApiResponse apiResponse = new ApiResponse();
                 apiResponse.setSuccess(false);
 
-                if (commonService.fetchApiKeys()) {
+                if (App.appContextHolder.commonService.fetchApiKeys()) {
+                    loadRushEndpoints();
+
                     JSONArray branches = new JSONArray();
                     String url = BASE_URL + GET_BRANCHES_ENDPOINT;
                     java.util.List<NameValuePair> params = new ArrayList<>();
-                    JSONObject jsonObject = apiService.call(url, params, "get", MERCHANT_APP_RESOURCE_OWNER);
+                    JSONObject jsonObject = App.appContextHolder.apiService.call(url, params, "get", MERCHANT_APP_RESOURCE_OWNER);
                     if (jsonObject != null) {
                         List<JSONObject> data = (ArrayList) jsonObject.get("data");
                         for (JSONObject json : data) {
@@ -350,6 +356,7 @@ public class LoginService extends BaseService{
                             branch.setName((String) json.get("name"));
                             branches.add(branch);
                         }
+                        App.appContextHolder.setBranches(branches);
                         apiResponse.setSuccess(true);
                     } else {
                         apiResponse.setMessage("Network connection error.");

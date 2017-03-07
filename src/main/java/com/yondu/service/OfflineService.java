@@ -3,9 +3,11 @@ package com.yondu.service;
 import com.yondu.App;
 import com.yondu.model.*;
 import com.yondu.model.constants.AppConfigConstants;
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
@@ -13,6 +15,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
@@ -29,26 +32,54 @@ import static com.yondu.model.constants.AppConfigConstants.*;
 /**
  * Created by lynx on 2/22/17.
  */
-public class OfflineService {
+public class OfflineService extends BaseService {
 
     private ApiService apiService = App.appContextHolder.apiService;
     private ObservableList<OfflineTransaction> masterData = FXCollections.observableArrayList();
 
     public void initialize() {
+        disableMenu();
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            Task task = initializeWorker();
+            task.setOnSucceeded((Event e) -> {
 
+                renderOfflineTable();
+                enableMenu();
+            });
+            new Thread(task).start();
+        });
+        pause.play();
     }
 
     public Task initializeWorker() {
         return new Task() {
             @Override
-            protected ApiResponse call() throws Exception {
-                ApiResponse apiResponse = new ApiResponse();
+            protected Object call() throws Exception {
 
                 loadOfflineTransactions();
-
-                return apiResponse;
+                return null;
             }
         };
+    }
+
+    public void givePoints() {
+
+        disableMenu();
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            Task task = givePointsWorker();
+            task.setOnSucceeded((Event e) -> {
+               showPrompt("Submit offline transactions complete.", "OFFLINE TRANSACTION");
+                initialize();
+            });
+            new Thread(task).start();
+        });
+        pause.play();
     }
 
     public Task givePointsWorker() {
@@ -125,7 +156,7 @@ public class OfflineService {
     }
 
 
-    private void loadActiveVouchers() {
+    private void renderOfflineTable() {
 
 
         VBox rootVBox = App.appContextHolder.getRootContainer();
@@ -140,7 +171,7 @@ public class OfflineService {
         int maxEntries = 10;
 
         Customer customer = App.appContextHolder.getCustomer();
-        pageCount = customer.getActiveVouchers().size() / maxEntries;
+        pageCount = masterData.size() / maxEntries;
         if (pageCount == 0) {
             pageCount = 1;
         }
@@ -149,18 +180,18 @@ public class OfflineService {
         box.getChildren().addAll(buildTableView());
 
         VBox rootVBox = App.appContextHolder.getRootContainer();
-        Pagination activeVouchersPagination = (Pagination) rootVBox.getScene().lookup("#activeVouchersPagination");
-        activeVouchersPagination.setPageCount(pageCount);
+        Pagination offlinePagination = (Pagination) rootVBox.getScene().lookup("#offlinePagination");
+        offlinePagination.setPageCount(pageCount);
         return box;
     }
 
-    private TableView<Reward> buildTableView() {
+    private TableView<OfflineTransaction> buildTableView() {
 
 
-        TableView<Reward> transactionsTableView = new TableView();
+        TableView<OfflineTransaction> transactionsTableView = new TableView();
         transactionsTableView.setFixedCellSize(Region.USE_COMPUTED_SIZE);
 
-        ObservableList<Reward> textFilteredData = FXCollections.observableArrayList();
+        ObservableList<OfflineTransaction> textFilteredData = FXCollections.observableArrayList();
 /*
 
         if (searchTextField.getText() != null && !searchTextField.getText().isEmpty()) {
@@ -196,7 +227,7 @@ public class OfflineService {
         Customer customer = App.appContextHolder.getCustomer();
 
         buildOfflineColumns(transactionsTableView);
-        transactionsTableView.setItems(FXCollections.observableArrayList(customer.getActiveVouchers()));
+        transactionsTableView.setItems(FXCollections.observableArrayList(masterData));
         return transactionsTableView;
     }
 
@@ -263,9 +294,7 @@ public class OfflineService {
         }
     }
 
-    public void givePoints() {
 
-    }
 
     public OfflineTransaction sendPoints(OfflineTransaction offlineTransaction) {
 

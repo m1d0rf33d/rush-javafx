@@ -39,9 +39,11 @@ public class LoginOfflineController implements Initializable {
     @FXML
     public TextField mobileTextField;
     @FXML
-    public TextField orTextField;
+    public TextField receiptTextField;
     @FXML
     public TextField amountTextField;
+    @FXML
+    public Button ocrButton;
 
     private LoginService loginService = App.appContextHolder.loginService;
 
@@ -58,7 +60,7 @@ public class LoginOfflineController implements Initializable {
 
         });
         //Event handlers for clickable nodes
-        orTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+        receiptTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
             {
                 if (newPropertyValue)
@@ -86,6 +88,10 @@ public class LoginOfflineController implements Initializable {
         givePointsButton.setOnMouseClicked((MouseEvent e) -> {
             saveOfflineTransaction();
         });
+
+        ocrButton.setOnMouseClicked((MouseEvent e) -> {
+            App.appContextHolder.ocrService.triggerOCR();
+        });
     }
 
 
@@ -104,7 +110,7 @@ public class LoginOfflineController implements Initializable {
                 PrintWriter fstream = new PrintWriter(new FileWriter(file,true));
                 String line = "mobileNumber=" + mobileTextField.getText().replace(":", "")+
                         ":totalAmount=" + amountTextField.getText().replace(":", "") +
-                        ":orNumber=" + orTextField.getText().replace(":", "") +
+                        ":orNumber=" + receiptTextField.getText().replace(":", "") +
                         ":date=" + date +
                         ":status=Pending:message= ";
                 byte[] encodedBytes = org.apache.commons.codec.binary.Base64.encodeBase64(line.getBytes());
@@ -114,7 +120,7 @@ public class LoginOfflineController implements Initializable {
 
                 mobileTextField.setText(null);
                 amountTextField.setText(null);
-                orTextField.setText(null);
+                receiptTextField.setText(null);
                 valid = "Offline transaction saved.";
             }
             Text text = new Text(valid);
@@ -133,7 +139,7 @@ public class LoginOfflineController implements Initializable {
 
     private String validateFields() {
         String mobileNumber = mobileTextField.getText();
-        String orNumber = orTextField.getText();
+        String orNumber = receiptTextField.getText();
         String amount = amountTextField.getText();
 
         String errorMessage = "";

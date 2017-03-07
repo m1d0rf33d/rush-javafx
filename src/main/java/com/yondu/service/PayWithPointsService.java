@@ -50,6 +50,7 @@ public class PayWithPointsService extends BaseService {
                     if (apiResponse.isSuccess()) {
                         PointsRule pointsRule = App.appContextHolder.getPointsRule();
                         Customer customer = App.appContextHolder.getCustomer();
+                        loadCustomerDetails();
 
                         VBox rootVBox = App.appContextHolder.getRootContainer();
                         Label pesoValueLabel = (Label) rootVBox.getScene().lookup("#pesoValueLabel");

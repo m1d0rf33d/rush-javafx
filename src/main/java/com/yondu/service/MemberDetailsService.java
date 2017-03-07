@@ -217,11 +217,12 @@ public class MemberDetailsService extends BaseService{
                 for (JSONObject rewardJSON : dataJSON) {
                     Reward reward = new Reward();
                     reward.setDetails((String) rewardJSON.get("details"));
+                    reward.setDate((String) rewardJSON.get("date"));
                     reward.setName((String) rewardJSON.get("name"));
                     reward.setQuantity((rewardJSON.get("quantity")).toString());
                     reward.setId(String.valueOf(rewardJSON.get("id")));
                     reward.setImageUrl((String) rewardJSON.get("image_url"));
-                    reward.setPointsRequired((String) rewardJSON.get("points"));
+                    reward.setPointsRequired(String.valueOf(rewardJSON.get("points")));
                     rewards.add(reward);
                 }
                 customer.setActiveVouchers(rewards);

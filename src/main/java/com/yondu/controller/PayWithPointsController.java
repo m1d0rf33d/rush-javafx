@@ -1,10 +1,7 @@
 package com.yondu.controller;
 
 import com.yondu.App;
-import com.yondu.service.CommonService;
-import com.yondu.service.EarnPointsService;
-import com.yondu.service.OcrService;
-import com.yondu.service.RouteService;
+import com.yondu.service.*;
 import com.yondu.utils.PropertyBinder;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -56,8 +53,12 @@ public class PayWithPointsController implements Initializable {
     private RouteService routeService = App.appContextHolder.routeService;
     private OcrService ocrService = App.appContextHolder.ocrService;
     private CommonService commonService = App.appContextHolder.commonService;
+    public PayWithPointsService payWithPointsService = App.appContextHolder.payWithPointsService;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        payWithPointsService.initialize();
 
         exitButton.setOnMouseClicked((MouseEvent e) -> {
             commonService.exitMember();

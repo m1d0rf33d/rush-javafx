@@ -40,8 +40,10 @@ public class EarnPointsService extends BaseService {
                     ApiResponse apiResponse = (ApiResponse) task.getValue();
                     if (!apiResponse.isSuccess()) {
                         showPrompt(apiResponse.getMessage(), "EARN POINTS");
+                        enableMenu();
                     } else {
                         loadCustomerDetails();
+                        enableMenu();
                     }
                 }
             });
@@ -56,12 +58,21 @@ public class EarnPointsService extends BaseService {
         return new Task() {
             @Override
             protected ApiResponse call() throws Exception {
-                ApiResponse apiResponse = getPointsRule();
-                if (apiResponse.isSuccess()) {
-                    return memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber());
+                ApiResponse apiResponse = new ApiResponse();
+                apiResponse.setSuccess(false);
+
+                ApiResponse tempResp = getPointsRule();
+                if (tempResp.isSuccess()) {
+                    tempResp = App.appContextHolder.memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber());
+                    if (tempResp.isSuccess()) {
+                        apiResponse.setSuccess(true);
+                    } else {
+                        apiResponse.setMessage("Network connection error");
+                    }
                 } else {
-                    return apiResponse;
+                    apiResponse.setMessage("Network connection error");
                 }
+                return apiResponse;
             }
         };
     }

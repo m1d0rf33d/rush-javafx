@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -36,7 +37,7 @@ public class TransactionsController implements Initializable {
     @FXML
     public Label pointsLabel;
     @FXML
-    public Pagination pagination;
+    public Pagination transactionPagination;
     @FXML
     public TextField searchTextField;
     @FXML
@@ -54,6 +55,10 @@ public class TransactionsController implements Initializable {
             public void handle(KeyEvent event) {
                // pagination.setPageFactory((Integer pageIndex) -> createPage(pageIndex));
             }
+        });
+
+        exitButton.setOnMouseClicked((MouseEvent e) -> {
+            App.appContextHolder.commonService.exitMember();
         });
     }
 

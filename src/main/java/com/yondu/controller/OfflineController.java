@@ -21,7 +21,7 @@ public class OfflineController implements Initializable {
     @FXML
     public MenuButton statusMenuButton;
     @FXML
-    public Pagination transactionsPagination;
+    public Pagination offlinePagination;
     @FXML
     public TextField searchTextField;
     @FXML
@@ -40,7 +40,7 @@ public class OfflineController implements Initializable {
         searchTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                transactionsPagination.setPageFactory((Integer pageIndex) -> offlineService.createOfflinePage(pageIndex));
+                offlinePagination.setPageFactory((Integer pageIndex) -> offlineService.createOfflinePage(pageIndex));
             }
         });
 
@@ -120,7 +120,7 @@ public class OfflineController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 statusMenuButton.setText("ALL");
-                transactionsPagination.setPageFactory((Integer pageIndex) -> offlineService.createOfflinePage(pageIndex));
+                offlinePagination.setPageFactory((Integer pageIndex) -> offlineService.createOfflinePage(pageIndex));
             }
         });
 
@@ -134,7 +134,7 @@ public class OfflineController implements Initializable {
             public void handle(ActionEvent event) {
 
                 statusMenuButton.setText("PENDING");
-                transactionsPagination.setPageFactory((Integer pageIndex) -> offlineService.createOfflinePage(pageIndex));
+                offlinePagination.setPageFactory((Integer pageIndex) -> offlineService.createOfflinePage(pageIndex));
             }
         });
 
@@ -149,7 +149,7 @@ public class OfflineController implements Initializable {
             public void handle(ActionEvent event) {
 
                 statusMenuButton.setText("SUBMITTED");
-                transactionsPagination.setPageFactory((Integer pageIndex) -> offlineService.createOfflinePage(pageIndex));
+                offlinePagination.setPageFactory((Integer pageIndex) -> offlineService.createOfflinePage(pageIndex));
             }
         });
 
@@ -163,7 +163,7 @@ public class OfflineController implements Initializable {
             public void handle(ActionEvent event) {
 
                 statusMenuButton.setText("FAILED");
-                transactionsPagination.setPageFactory((Integer pageIndex) -> offlineService.createOfflinePage(pageIndex));
+                offlinePagination.setPageFactory((Integer pageIndex) -> offlineService.createOfflinePage(pageIndex));
             }
         });
 

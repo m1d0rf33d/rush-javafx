@@ -54,7 +54,7 @@
       </HBox>
       <HBox maxHeight="400.0" maxWidth="900.0" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
          <children>
-            <Pagination fx:id="transactionsPagination" maxHeight="400.0" maxWidth="900.0" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" HBox.hgrow="ALWAYS" />
+            <Pagination fx:id="offlinePagination" maxHeight="400.0" maxWidth="900.0" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" HBox.hgrow="ALWAYS" />
          </children>
          <padding>
             <Insets left="50.0" right="50.0" />

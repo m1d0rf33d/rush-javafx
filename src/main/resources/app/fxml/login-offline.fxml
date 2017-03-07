@@ -33,7 +33,7 @@
             <Insets top="10.0" />
          </VBox.margin>
       </Label>
-      <TextField fx:id="orTextField" maxWidth="300.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;">
+      <TextField fx:id="receiptTextField" maxWidth="300.0" minWidth="300.0" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30;">
          <font>
             <Font size="17.0" />
          </font>
@@ -68,6 +68,17 @@
             <Insets top="20.0" />
          </VBox.margin>
       </Button>
+      <Button fx:id="ocrButton" maxWidth="300.0" minHeight="-Infinity" minWidth="300.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: #53585b; -fx-background-radius: 30;" text="OCR" textFill="#f5f2f2">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <font>
+            <Font name="System Bold" size="23.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </Button>
       <Button fx:id="reconnectButton" maxWidth="300.0" minHeight="-Infinity" minWidth="300.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: #CDD2D6; -fx-background-radius: 30;" text="RECONNECT" textFill="#f5f2f2">
          <cursor>
             <Cursor fx:constant="HAND" />
@@ -76,7 +87,7 @@
             <Font name="System Bold" size="23.0" />
          </font>
          <VBox.margin>
-            <Insets top="20.0" />
+            <Insets top="10.0" />
          </VBox.margin>
       </Button>
    </children>

@@ -44,6 +44,7 @@ public class OcrService extends BaseService{
 
     public void triggerOCR() {
         disableMenu();
+        ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).setIconified(true);
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.5)
         );
@@ -66,6 +67,7 @@ public class OcrService extends BaseService{
                     ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).setIconified(false);
                 }
             });
+
             new Thread(task).start();
         });
         pause.play();
@@ -125,7 +127,7 @@ public class OcrService extends BaseService{
             javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
 
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath(System.getenv("TESSERACT_HOME"));
+            tesseract.setDatapath(System.getenv("TESSERACT_HOME").replace(";", ""));
             tesseract.setLanguage("eng");
             // Get OCR result
             String outText = null;
@@ -224,7 +226,7 @@ public class OcrService extends BaseService{
                     javafx.scene.image.Image image = SwingFXUtils.toFXImage(screenFullImage, null);
 
                     ITesseract tesseract = new Tesseract();
-                    tesseract.setDatapath(System.getenv("TESSERACT_HOME"));
+                    tesseract.setDatapath(System.getenv("TESSERACT_HOME").replace(";", ""));
                     tesseract.setLanguage("eng");
                     // Get OCR result
                     String outText = null;

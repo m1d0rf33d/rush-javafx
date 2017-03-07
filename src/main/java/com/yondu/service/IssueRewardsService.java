@@ -200,8 +200,9 @@ public class IssueRewardsService extends BaseService {
         pause.setOnFinished(event -> {
             Task task = issueRewardWorker(redeemId);
             task.setOnSucceeded((Event e) -> {
-                ApiResponse apiResponse = new ApiResponse();
+                ApiResponse apiResponse = (ApiResponse) task.getValue();
                 if (apiResponse.isSuccess()) {
+                    App.appContextHolder.memberDetailsService.getActiveVouchers();
                     renderRewards();
                 }
                 showPrompt(apiResponse.getMessage(), "ISSUE REWARD");

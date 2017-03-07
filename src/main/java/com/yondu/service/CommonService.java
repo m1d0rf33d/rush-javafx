@@ -25,13 +25,12 @@ import static com.yondu.model.constants.ApiConstants.*;
  */
 public class CommonService {
 
-    private RouteService routeService  = App.appContextHolder.routeService;
     private ApiService apiService = App.appContextHolder.apiService;
 
     public void exitMember() {
         App.appContextHolder.setCustomer(null);
-        VBox rootVBox = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#rootVBox");
-        routeService.loadContentPage(rootVBox, MEMBER_INQUIRY_SCREEN);
+        VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
+        App.appContextHolder.routeService.loadContentPage(bodyStackPane, MEMBER_INQUIRY_SCREEN);
 
         App.appContextHolder.setCurrentState(AppState.MEMBER_INQUIRY);
         updateButtonState();

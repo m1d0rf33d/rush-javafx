@@ -96,21 +96,24 @@ public class RouteService extends BaseService{
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
-             VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
-            this.loadContentPage(bodyStackPane, REDEEM_REWARDS_SCREEN);
 
-            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber());
-            if (!apiResponse.isSuccess()) {
-                notifyError(apiResponse.getMessage());
-                enableMenu();
-            }
+            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
+            this.loadContentPage(bodyStackPane, REDEEM_REWARDS_SCREEN);
 
         });
         pause.play();
     }
     public void loadEarnPointsScreen() {
-         VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
-        this.loadContentPage(bodyStackPane, EARN_POINTS_SCREEN);
+        disableMenu();
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
+            this.loadContentPage(bodyStackPane, EARN_POINTS_SCREEN);
+
+        });
+        pause.play();
     }
     public void loadPayWithPoints() {
         disableMenu();
@@ -118,14 +121,10 @@ public class RouteService extends BaseService{
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
-             VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
+
+            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, PAY_WITH_POINTS);
-            Customer customer = App.appContextHolder.getCustomer();
-            ApiResponse apiResponse  = memberDetailsService.loginCustomer(customer.getUuid());
-            if (!apiResponse.isSuccess()) {
-                notifyError(apiResponse.getMessage());
-            }
-            enableMenu();
+
         });
         pause.play();
     }
@@ -148,14 +147,9 @@ public class RouteService extends BaseService{
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
+
             VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, ISSUE_REWARDS_SCREEN);
-
-            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber());
-            if (!apiResponse.isSuccess()) {
-                notifyError(apiResponse.getMessage());
-                enableMenu();
-            }
         });
         pause.play();
     }
@@ -165,13 +159,9 @@ public class RouteService extends BaseService{
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
+
             VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, GIVE_STAMPS_SCREEN);
-
-            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getUuid());
-            if (!apiResponse.isSuccess()) {
-                notifyError(apiResponse.getMessage());
-            }
         });
         pause.play();
     }

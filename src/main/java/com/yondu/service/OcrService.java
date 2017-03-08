@@ -60,11 +60,13 @@ public class OcrService extends BaseService{
                         JSONObject payload =  apiResponse.getPayload();
                         receiptTextField.setText((String) payload.get("orNumber"));
                         amountTextField.setText((String) payload.get("amount"));
+                        ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).setIconified(false);
+
                     } else {
+                        ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).setIconified(false);
                         showPrompt(apiResponse.getMessage(), "EARN POINTS");
                     }
                     enableMenu();
-                    ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).setIconified(false);
                 }
             });
 

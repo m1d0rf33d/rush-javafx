@@ -82,20 +82,19 @@ public class MenuController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         App.appContextHolder.setRootContainer(rootVBox);
+        App.appContextHolder.setCurrentState(AppState.MENU);
 
         rootScrollPane.setFitToHeight(true);
         rootScrollPane.setFitToWidth(true);
-
-        bindLogout();
-        menuService.initialize();
-        bindRightClick();
-
+        rootScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         for (Node node : sideBarVBox.getChildren()) {
             node.setVisible(false);
         }
 
-        rootScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        menuService.initialize();
+        bindRightClick();
+        bindLogout();
 
         rootVBox.setOnMouseClicked((MouseEvent e) -> {
             if (e.getButton() == MouseButton.SECONDARY) {
@@ -104,8 +103,6 @@ public class MenuController implements Initializable {
                 contextMenu.hide();
             }
         });
-
-
 
 
         registerButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
@@ -246,10 +243,10 @@ public class MenuController implements Initializable {
 
     private void bindRightClick() {
         MenuItem menuItem = new MenuItem("Reload");
-        menuItem.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e) {
-                menuService.initialize();
-            }
+        menuItem.setOnAction(event -> {
+            App.appContextHolder.setCurrentState(AppState.MENU);
+            App.appContextHolder.commonService.updateButtonState();
+            menuService.initialize();
         });
         contextMenu.getItems().add(menuItem);
     }
@@ -267,11 +264,8 @@ public class MenuController implements Initializable {
             stage.resizableProperty().setValue(Boolean.FALSE);
             stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             stage.initOwner(rootVBox.getScene().getWindow());
-            stage.setOnCloseRequest(new javafx.event.EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent event) {
-                    enableMenu();
-                }
+            stage.setOnCloseRequest(event -> {
+                enableMenu();
             });
             stage.show();
         } catch (IOException e) {

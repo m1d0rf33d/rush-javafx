@@ -70,6 +70,7 @@ public class CommonService {
             case GUEST_PURCHASE: button =  (Button) App.appContextHolder.getRootContainer().getScene().lookup("#guestPurchaseButton");
                 break;
             case GIVE_STAMPS: button =  (Button) App.appContextHolder.getRootContainer().getScene().lookup("#giveStampsButton");
+                break;
         }
 
         button.getStyleClass().add("sidebar-selected");

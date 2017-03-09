@@ -197,4 +197,63 @@ public class ApiService  {
         }
         return null;
     }
+
+    public JSONObject callWidget(String url, String jsonString, String method, String token) {
+
+        try {
+
+            StringEntity stringEntity = null;
+            if (jsonString != null) {
+                stringEntity  = new StringEntity(jsonString);
+            }
+
+            DefaultHttpClient client = new DefaultHttpClient();
+            DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(5, true);
+            client.setHttpRequestRetryHandler(retryHandler);
+
+            HttpResponse response;
+            if (method.equalsIgnoreCase("get")) {
+                HttpGet httpGet = new HttpGet(url);
+                if (token != null) {
+                    httpGet.addHeader("Authorization", "Bearer " + token);
+                }
+                httpGet.addHeader("Content-Type", "application/json");
+                response = client.execute(httpGet);
+            } else {
+                HttpPost httpPost = new HttpPost(url);
+                if (stringEntity != null) {
+                    httpPost.setEntity(stringEntity);
+                }
+                if (token != null) {
+                    httpPost.addHeader("Authorization", "Bearer " + token);
+                }
+
+                httpPost.addHeader("Content-Type", "application/json");
+                response = client.execute(httpPost);
+            }
+
+            // use httpClient (no need to close it explicitly)
+            BufferedReader rd = new BufferedReader(
+                    new InputStreamReader(response.getEntity().getContent()));
+
+            StringBuffer result = new StringBuffer();
+            String line;
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+            client.close();
+            JSONParser parser = new JSONParser();
+            return (JSONObject) parser.parse(result.toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

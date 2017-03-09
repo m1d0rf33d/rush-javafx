@@ -36,7 +36,7 @@ public class MenuService extends BaseService{
         disableMenu();
 
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(1)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
             App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);

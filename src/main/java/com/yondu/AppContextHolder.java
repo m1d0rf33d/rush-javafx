@@ -2,6 +2,7 @@ package com.yondu;
 
 import com.yondu.model.*;
 import com.yondu.model.constants.AppState;
+import com.yondu.model.dto.MerchantDTO;
 import com.yondu.service.*;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
@@ -36,6 +37,8 @@ public class AppContextHolder {
     private Stage salesCaptureStage;
     private OcrConfig ocrConfig;
     private List<Reward> unclaimedRewards = new ArrayList<>();
+
+    private MerchantDTO merchantDTO;
 
     public static ApiService apiService = new ApiService();
     public static CommonService commonService = new CommonService();
@@ -164,5 +167,13 @@ public class AppContextHolder {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    public MerchantDTO getMerchantDTO() {
+        return merchantDTO;
+    }
+
+    public void setMerchantDTO(MerchantDTO merchantDTO) {
+        this.merchantDTO = merchantDTO;
     }
 }

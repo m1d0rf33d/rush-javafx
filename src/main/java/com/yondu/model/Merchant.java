@@ -12,12 +12,21 @@ public class Merchant {
     private String grayStampsUrl;
     private List<Reward> rewards;
 
-    public List<Reward> getRewards() {
-        return rewards;
+    private String uniqueKey;
+    private String token;
+    private Boolean withVk;
+    private String merchantType;
+
+    public String getMerchantType() {
+        return merchantType;
     }
 
-    public void setRewards(List<Reward> rewards) {
-        this.rewards = rewards;
+    public void setMerchantType(String merchantType) {
+        this.merchantType = merchantType;
+    }
+
+    public String getUniqueKey() {
+        return uniqueKey;
     }
 
     public String getBackgroundUrl() {
@@ -42,5 +51,33 @@ public class Merchant {
 
     public void setGrayStampsUrl(String grayStampsUrl) {
         this.grayStampsUrl = grayStampsUrl;
+    }
+
+    public List<Reward> getRewards() {
+        return rewards;
+    }
+
+    public void setRewards(List<Reward> rewards) {
+        this.rewards = rewards;
+    }
+
+    public void setUniqueKey(String uniqueKey) {
+        this.uniqueKey = uniqueKey;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public Boolean getWithVk() {
+        return withVk;
+    }
+
+    public void setWithVk(Boolean withVk) {
+        this.withVk = withVk;
     }
 }

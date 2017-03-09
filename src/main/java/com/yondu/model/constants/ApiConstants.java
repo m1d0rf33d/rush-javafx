@@ -44,6 +44,7 @@ public class ApiConstants {
     public static String CUSTOMER_APP_SECRET;
     public static String MERCHANT_TYPE;
 
-    public static Boolean WITH_VK;
 
+    public static String WIDGET_INITIALIZE_ENDPOINT;
+    public static String LOGIN_EMPLOYEE_ENDPOINT;
 }

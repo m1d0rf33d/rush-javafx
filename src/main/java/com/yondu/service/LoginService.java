@@ -1,11 +1,11 @@
 package com.yondu.service;
 
+import com.google.gson.Gson;
 import com.yondu.App;
 import com.yondu.controller.LoginOnlineController;
-import com.yondu.model.ApiResponse;
-import com.yondu.model.Branch;
-import com.yondu.model.Employee;
+import com.yondu.model.*;
 import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.model.dto.*;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -28,9 +28,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -51,7 +49,7 @@ public class LoginService extends BaseService{
         disableMenu();
 
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(1)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
             App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
@@ -65,8 +63,8 @@ public class LoginService extends BaseService{
                     } else {
                         commonService.showPrompt("Network connection error.", "LOGIN");
                         loadOffline();
-
                     }
+
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                     enableMenu();
                 }
@@ -146,35 +144,58 @@ public class LoginService extends BaseService{
         return new Task() {
             @Override
             protected ApiResponse call() throws Exception {
+
+                Merchant merchant = App.appContextHolder.getMerchant();
+
                 ApiResponse apiResponse = new ApiResponse();
                 apiResponse.setSuccess(false);
+                try {
 
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("employee_id", username));
-                params.add(new BasicNameValuePair("branch_id", branch.getId()));
-                if (pin != null) {
-                    params.add(new BasicNameValuePair("pin", pin));
-                }
+                    LoginDTO loginDTO = new LoginDTO();
+                    loginDTO.setBranchId(branch.getId());
+                    loginDTO.setEmployeeId(username);
+                    loginDTO.setPin(pin);
+                    loginDTO.setMerchantKey(merchant.getUniqueKey());
 
-                String url = BASE_URL + LOGIN_ENDPOINT;
-                JSONObject jsonObject = apiService.call((url), params, "post", MERCHANT_APP_RESOURCE_OWNER);
-                if (jsonObject != null) {
-                    apiResponse.setErrorCode((String) jsonObject.get("error_code"));
-                    if (jsonObject.get("error_code").equals("0x0")) {
-                        JSONObject data = (JSONObject) jsonObject.get("data");
-                        Employee employee = new Employee();
-                        employee.setEmployeeId((String) data.get("id"));
-                        employee.setEmployeeName((String) data.get("name"));
+                    Gson gson = new Gson();
+                    String payload = gson.toJson(loginDTO);
 
-                        App.appContextHolder.setBranch(branch);
-                        App.appContextHolder.setEmployee(employee);
-                        apiResponse.setSuccess(true);
+                    String url = CMS_URL + LOGIN_EMPLOYEE_ENDPOINT;
+                    JSONObject jsonObject = apiService.callWidget(url, payload, "post", merchant.getToken());
+                    if (jsonObject != null) {
+                        WidgetResponse<LoginResponseDTO> widgetResponse = gson.fromJson(jsonObject.toJSONString(), WidgetResponse.class);
+                        apiResponse.setErrorCode(widgetResponse.getErrorCode());
+                        if (widgetResponse.getErrorCode().equals("0x0")) {
+                            String str = gson.toJson(widgetResponse.getData());
+                            LoginResponseDTO loginResponseDTO = gson.fromJson(str, LoginResponseDTO.class);
+                            EmployeeDTO employeeDTO = loginResponseDTO.getEmployeeDTO();
+                            List<String> screenAccess = loginResponseDTO.getScreenAccess();
+                            Employee employee = new Employee();
+                            employee.setEmployeeId(employeeDTO.getId());
+                            employee.setEmployeeName(employeeDTO.getName());
+                            employee.setScreenAccess(screenAccess);
+                            App.appContextHolder.setEmployee(employee);
+                            App.appContextHolder.setBranch(branch);
+
+                            MerchantDTO merchantDTO = loginResponseDTO.getMerchantDTO();
+                            merchant.setBackgroundUrl(merchantDTO.getBackgroundUrl());
+                            merchant.setGrayStampsUrl(merchantDTO.getGrayStampsUrl());
+                            merchant.setStampsUrl(merchantDTO.getStampsUrl());
+
+                            apiResponse.setSuccess(true);
+                        } else if (widgetResponse.getErrorCode().equals("0x2")){
+                            apiResponse.setSuccess(true);
+                        } else {
+                            apiResponse.setMessage(widgetResponse.getMessage());
+                            apiResponse.setSuccess(false);
+                        }
+
                     } else {
-                        apiResponse.setSuccess(true);
-                        apiResponse.setMessage((String) jsonObject.get("message"));
+                        apiResponse.setMessage("Network connection error.");
+                        apiResponse.setSuccess(false);
                     }
-                } else {
-                    apiResponse.setMessage("Network connection error.");
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 return apiResponse;
             }
@@ -187,15 +208,44 @@ public class LoginService extends BaseService{
             protected ApiResponse call() throws Exception {
                 ApiResponse apiResponse = new ApiResponse();
 
-                loadWidgetEndpoints();
+              try {
+                  loadWidgetEndpoints();
+                  loadMerchantDetails();
 
-                if (commonService.fetchApiKeys()) {
-                    loadRushEndpoints();
-                    loadMerchantBranches();
-                    apiResponse.setSuccess(true);
-                } else {
-                    apiResponse.setSuccess(false);
-                }
+                  String merchantKey = App.appContextHolder.getMerchant().getUniqueKey();
+                  String url = CMS_URL + WIDGET_INITIALIZE_ENDPOINT.replace(":merchantKey", merchantKey);
+                  JSONObject jsonObject = apiService.callWidget(url, null, "get", null);
+                  if (jsonObject != null) {
+                      Gson gson = new Gson();
+                      WidgetResponse<WidgetInitDTO> widgetResponse = gson.fromJson(jsonObject.toJSONString(), WidgetResponse.class);
+                      String str = gson.toJson(widgetResponse.getData());
+                      WidgetInitDTO widgetInitDTO = gson.fromJson(str, WidgetInitDTO.class);
+                      List<Branch> branches = new ArrayList<>();
+                      List<BranchDTO> branchDTOs = widgetInitDTO.getBranchDTOs();
+                      for (BranchDTO branchDTO : branchDTOs) {
+                          Branch branch = new Branch();
+                          branch.setId(branchDTO.getUuid());
+                          branch.setName(branchDTO.getBranchName());
+                          branch.setLogoUrl(branchDTO.getLogoUrl());
+                          branches.add(branch);
+                      }
+                      App.appContextHolder.setBranches(branches);
+
+                      MerchantDTO merchantDTO = widgetInitDTO.getMerchantDTO();
+                      Merchant merchant = App.appContextHolder.getMerchant();
+                      merchant.setWithVk(merchantDTO.getWithVk());
+                      merchant.setToken(merchantDTO.getToken());
+                      merchant.setMerchantType(merchantDTO.getMerchantType());
+                      apiResponse.setSuccess(true);
+
+                      loadRushEndpoints();
+                  } else {
+                      apiResponse.setMessage("Network connection error");
+                      apiResponse.setSuccess(false);
+                  }
+              } catch (Exception e) {
+                  e.printStackTrace();
+              }
                 return apiResponse;
             }
         };
@@ -272,7 +322,8 @@ public class LoginService extends BaseService{
             } else {
                 throw new FileNotFoundException("property file api.properties not found in the classpath");
             }
-            String merchantType = MERCHANT_TYPE.toString().toLowerCase();
+            Merchant merchant = App.appContextHolder.getMerchant();
+            String merchantType = merchant.getMerchantType().toLowerCase();
             BASE_URL = prop.getProperty("base_url").replace(":merchant_type", merchantType);
             REGISTER_ENDPOINT = prop.getProperty("register_endpoint").replace(":merchant_type", merchantType);
             MEMBER_LOGIN_ENDPOINT = prop.getProperty("member_login_endpoint").replace(":merchant_type", merchantType);
@@ -299,6 +350,28 @@ public class LoginService extends BaseService{
             e.printStackTrace();
         }
     }
+    private void loadMerchantDetails() {
+      try {
+          File file = new File(RUSH_HOME + DIVIDER + AppConfigConstants.ACTIVATION_FILE);
+          if (file.exists()) {
+              BufferedReader br = new BufferedReader(new FileReader(file));
+              String l = "";
+              String merchantKey = null;
+              while ((l = br.readLine()) != null) {
+                  String[] arr = l.split("=");
+                  merchantKey = arr[1];
+              }
+              br.close();
+              Merchant merchant = new Merchant();
+              merchant.setUniqueKey(merchantKey);
+              App.appContextHolder.setMerchant(merchant);
+          }
+      } catch (FileNotFoundException e) {
+          e.printStackTrace();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+    }
 
     private void loadWidgetEndpoints() {
         try {
@@ -317,6 +390,9 @@ public class LoginService extends BaseService{
             OAUTH_ENDPOINT = prop.getProperty("oauth_endpoint");
             VALIDATE_MERCHANT_ENDPOINT = prop.getProperty("validate_merchant_endpoint");
             ACCESS_ENDPOINT = prop.getProperty("access_endpoint");
+
+            WIDGET_INITIALIZE_ENDPOINT = prop.getProperty("widget_initialize_endpoint");
+            LOGIN_EMPLOYEE_ENDPOINT = prop.getProperty("login_employee_endpoint");
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -329,6 +405,7 @@ public class LoginService extends BaseService{
             public void handle(WorkerStateEvent event) {
                 ApiResponse apiResponse = (ApiResponse) task.getValue();
                 if (apiResponse.isSuccess()) {
+
                     loadOnline();
                     enableMenu();
                 } else {

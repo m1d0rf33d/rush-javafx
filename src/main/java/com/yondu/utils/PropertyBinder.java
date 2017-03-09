@@ -2,6 +2,7 @@ package com.yondu.utils;
 
 import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
+import com.yondu.model.Merchant;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -93,7 +94,8 @@ public class PropertyBinder {
     }
 
     public static void bindVirtualKeyboard(TextField textField) {
-        if (!WITH_VK) {
+        Merchant merchant = App.appContextHolder.getMerchant();
+        if (!merchant.getWithVk()) {
             textField.focusedProperty().addListener(new ChangeListener<Boolean>()
             {
                 public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)

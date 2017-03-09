@@ -26,8 +26,10 @@ public class App extends Application{
             } else {
                 TESSERACT_HOME = "c:\\Program Files\\" + RUSH_FOLDER + "\\" + TESSERACT_FOLDER;
             }
+            RUSH_HOME = System.getenv("RUSH_HOME").replace(";", "");
+        } else {
+            RUSH_HOME = "/home/aomine/Projects/Rush-POS-Sync/";
         }
-        RUSH_HOME = System.getenv("RUSH_HOME").replace(";", "");
         launch(args);
     }
 

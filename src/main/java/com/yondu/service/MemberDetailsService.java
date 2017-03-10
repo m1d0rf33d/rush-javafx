@@ -1,7 +1,11 @@
 package com.yondu.service;
 
+import com.google.gson.Gson;
 import com.yondu.App;
 import com.yondu.model.*;
+import com.yondu.model.constants.AppState;
+import com.yondu.model.dto.LoginMemberDTO;
+import com.yondu.model.dto.MemberDTO;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -56,9 +60,9 @@ public class MemberDetailsService extends BaseService{
     }
 
     public void viewMember(String mobileNumber) {
-        disableMenu();
+      //  disableMenu();
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(1)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
             Task task = viewMemberWorker(mobileNumber);
@@ -67,7 +71,7 @@ public class MemberDetailsService extends BaseService{
                 public void handle(WorkerStateEvent event) {
                     ApiResponse apiResponse = (ApiResponse) task.getValue();
                     if (apiResponse.isSuccess()) {
-                        App.appContextHolder.routeService.loadMemberDetailsScreen();
+                        App.appContextHolder.routeService.loadMemberDetailsScreen(true);
                     } else {
                         showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY");
                         enableMenu();
@@ -86,7 +90,7 @@ public class MemberDetailsService extends BaseService{
             @Override
             protected ApiResponse call() throws Exception {
 
-                return loginCustomer(mobileNumber);
+                return loginCustomer(mobileNumber, AppState.MEMBER_INQUIRY);
             }
         };
     }
@@ -99,7 +103,7 @@ public class MemberDetailsService extends BaseService{
                 apiResponse.setSuccess(false);
 
                 Customer customer = App.appContextHolder.getCustomer();
-                ApiResponse loginResponse = loginCustomer(customer.getMobileNumber());
+                ApiResponse loginResponse = loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
                 if (loginResponse.isSuccess()) {
                     getActiveVouchers();
                     apiResponse.setSuccess(true);
@@ -112,39 +116,39 @@ public class MemberDetailsService extends BaseService{
         };
     }
 
-    public ApiResponse loginCustomer(String mobileNumber) {
+    public ApiResponse loginCustomer(String mobileNumber, AppState appState) {
 
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setSuccess(false);
-        JSONObject payload = new JSONObject();
-
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("mobile_no", mobileNumber));
-        String url = BASE_URL + MEMBER_LOGIN_ENDPOINT;
 
         Employee employee = App.appContextHolder.getEmployee();
-        url = url.replace(":employee_id", employee.getEmployeeId());
-        JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
+        Merchant merchant = App.appContextHolder.getMerchant();
+        String token = merchant.getToken();
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("merchant_key", merchant.getUniqueKey());
+        requestBody.put("employee_id", employee.getEmployeeId());
+        requestBody.put("merchant_type", merchant.getMerchantType());
+        requestBody.put("mobile_no", mobileNumber);
+        requestBody.put("app_state", appState.toString());
+
+        String url = CMS_URL + VIEW_MEMBER_ENDPOINT;
+        JSONObject jsonObject = apiService.callWidget(url, requestBody.toJSONString(), "post", token);
         if (jsonObject != null) {
             if (jsonObject.get("error_code").equals("0x0")) {
                 JSONObject data = (JSONObject) jsonObject.get("data");
+                JSONObject memberDTO = (JSONObject) data.get("memberDTO");
+
                 Customer customer = new Customer();
-                customer.setMobileNumber((String) data.get("mobile_no"));
-                customer.setGender((String) data.get("gender"));
-                customer.setMemberId((String) data.get("profile_id"));
-                customer.setName((String) data.get("name"));
-                customer.setDateOfBirth((String) data.get("birthdate"));
-                customer.setEmail((String) data.get("email"));
-                customer.setMemberSince((String) data.get("registration_date"));
-
-                customer.setUuid((String) data.get("id"));
-                customer.setMobileNumber((String) data.get("mobile_no"));
-
-                url = BASE_URL + GET_POINTS_ENDPOINT;
-                url = url.replace(":customer_uuid", customer.getUuid());
-                jsonObject = apiService.call(url, params, "get", MERCHANT_APP_RESOURCE_OWNER);
-                String points = (String) jsonObject.get("data");
-                customer.setAvailablePoints(points);
+                customer.setMobileNumber((String) memberDTO.get("mobile_no"));
+                customer.setGender((String) memberDTO.get("gender"));
+                customer.setMemberId((String) memberDTO.get("profile_id"));
+                customer.setName((String) memberDTO.get("name"));
+                customer.setDateOfBirth((String) memberDTO.get("birthdate"));
+                customer.setEmail((String) memberDTO.get("email"));
+                customer.setMemberSince((String) memberDTO.get("registration_date"));
+                customer.setUuid((String) memberDTO.get("id"));
+                customer.setAvailablePoints((String) memberDTO.get("points"));
 
                 App.appContextHolder.setCustomer(customer);
                 apiResponse.setSuccess(true);
@@ -156,8 +160,6 @@ public class MemberDetailsService extends BaseService{
         }else {
             apiResponse.setMessage("Network error.");
         }
-
-        apiResponse.setPayload(payload);
         return apiResponse;
     }
 

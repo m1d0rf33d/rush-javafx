@@ -66,7 +66,7 @@ public class TransactionService extends BaseService {
                 ApiResponse apiResponse = new ApiResponse();
 
                 Customer customer = App.appContextHolder.getCustomer();
-                ApiResponse loginResp = memberDetailsService.loginCustomer(customer.getMobileNumber());
+                ApiResponse loginResp = memberDetailsService.loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
                 if (loginResp.isSuccess()) {
                     ApiResponse transactionsResp = getTransactions();
                     if (transactionsResp.isSuccess()) {

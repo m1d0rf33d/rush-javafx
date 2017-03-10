@@ -59,10 +59,10 @@ public class MobileLoginController implements Initializable {
         submitButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             ((Stage) submitButton.getScene().getWindow()).close();
             PauseTransition pause = new PauseTransition(
-                    Duration.seconds(.5)
+                    Duration.seconds(.01)
             );
             pause.setOnFinished(event -> {
-                ApiResponse apiResponse = memberDetailsService.loginCustomer(mobileTextField.getText());
+                ApiResponse apiResponse = memberDetailsService.loginCustomer(mobileTextField.getText(), App.appContextHolder.getCurrentState());
                 if (apiResponse.isSuccess()) {
                     AppState state = App.appContextHolder.getCurrentState();
                     if (state.equals(AppState.EARN_POINTS)) {

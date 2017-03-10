@@ -66,7 +66,7 @@ public class EarnPointsService extends BaseService {
 
                 ApiResponse tempResp = getPointsRule();
                 if (tempResp.isSuccess()) {
-                    tempResp = App.appContextHolder.memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber());
+                    tempResp = App.appContextHolder.memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber(), App.appContextHolder.getCurrentState());
                     if (tempResp.isSuccess()) {
                         apiResponse.setSuccess(true);
                     } else {

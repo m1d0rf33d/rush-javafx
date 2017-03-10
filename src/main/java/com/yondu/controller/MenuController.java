@@ -127,7 +127,7 @@ public class MenuController implements Initializable {
                 routeService.loadContentPage(bodyStackPane, MEMBER_INQUIRY_SCREEN);
             } else {
                 disableMenu();
-                routeService.loadMemberDetailsScreen();
+                routeService.loadMemberDetailsScreen(false);
             }
         });
 

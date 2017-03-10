@@ -78,7 +78,7 @@ public class PayWithPointsService extends BaseService {
                 ApiResponse pointRuleResp = earnPointsService.getPointsRule();
                 if (pointRuleResp.isSuccess()) {
                     apiResponse.setSuccess(true);
-                    App.appContextHolder.memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber());
+                    App.appContextHolder.memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber(), App.appContextHolder.getCurrentState());
                 } else {
                     apiResponse.setMessage("Network connection error.");
                     return apiResponse;

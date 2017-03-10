@@ -86,7 +86,7 @@ public class RedeemRewardsService extends BaseService {
                 ApiResponse apiResponse = new ApiResponse();
 
                 Customer customer = App.appContextHolder.getCustomer();
-                ApiResponse loginResp = memberDetailsService.loginCustomer(customer.getMobileNumber());
+                ApiResponse loginResp = memberDetailsService.loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
                 if (loginResp.isSuccess()) {
                     ApiResponse rewardsResp = getRewards();
                     if (rewardsResp.isSuccess()) {

@@ -166,15 +166,22 @@ public class RouteService extends BaseService{
         });
         pause.play();
     }
-    public void loadMemberDetailsScreen() {
-        ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber());
-
-        if (!apiResponse.isSuccess()) {
-            showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY");
+    public void loadMemberDetailsScreen(boolean fromInquiry) {
+        if (!fromInquiry) {
+            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber(), App.appContextHolder.getCurrentState());
+            if (!apiResponse.isSuccess()) {
+                showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY");
+            } else {
+                VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
+                this.loadContentPage(bodyStackPane, MEMBER_DETAILS_SCREEN);
+            }
         } else {
             VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, MEMBER_DETAILS_SCREEN);
         }
+
+
+
     }
     public void loadMemberDetailsScreen(String mobileNumber) {
         disableMenu();
@@ -185,7 +192,7 @@ public class RouteService extends BaseService{
             VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, MEMBER_DETAILS_SCREEN);
 
-            ApiResponse apiResponse = memberDetailsService.loginCustomer(mobileNumber);
+            ApiResponse apiResponse = memberDetailsService.loginCustomer(mobileNumber, App.appContextHolder.getCurrentState());
             if (!apiResponse.isSuccess()) {
                 notifyError(apiResponse.getMessage());
             }
@@ -200,7 +207,7 @@ public class RouteService extends BaseService{
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
-            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber());
+            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber(), App.appContextHolder.getCurrentState());
             if (!apiResponse.isSuccess()) {
                 notifyError(apiResponse.getMessage());
             } else {

@@ -81,7 +81,7 @@ public class IssueRewardsService extends BaseService {
                 apiResponse.setSuccess(false);
 
                 Customer customer = App.appContextHolder.getCustomer();
-                ApiResponse apiResp = memberDetailsService.loginCustomer(customer.getMobileNumber());
+                ApiResponse apiResp = memberDetailsService.loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
                 if (apiResp.isSuccess()) {
                     apiResp = memberDetailsService.getActiveVouchers();
                     if (apiResp.isSuccess()) {

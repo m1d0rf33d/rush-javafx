@@ -48,6 +48,32 @@ public class MemberDetailsService extends BaseService{
                     if (apiResponse.isSuccess()) {
                         loadCustomerDetails();
                         loadActiveVouchers();
+                        loadCustomerTransactions();
+
+                        VBox vbox = App.appContextHolder.getRootContainer();
+                        TabPane vouchersTabPane = (TabPane) vbox.getScene().lookup("#vouchersTabPane");
+                        vouchersTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+                        for (Tab tab : vouchersTabPane.getTabs()) {
+                            if (tab.getId().equals("transactionsTab")) {
+                                tab.setGraphic(new Label("TRANSACTIONS"));
+                                tab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
+                                        "    -fx-tab-max-width:200px;\n" +
+                                        "    -fx-tab-min-height:30px;\n" +
+                                        "    -fx-tab-max-height:30px;\n" +
+                                        "    -fx-text-fill: white;\n" +
+                                        "    -fx-font-size: 17px;");
+                            } else {
+                                tab.setGraphic(new Label("ACTIVE VOUCHERS"));
+                                tab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
+                                        "    -fx-tab-max-width:200px;\n" +
+                                        "    -fx-tab-min-height:30px;\n" +
+                                        "    -fx-tab-max-height:30px;\n" +
+                                        "    -fx-text-fill: black;\n" +
+                                        "    -fx-font-size: 17px;");
+                            }
+
+                        }
+
                         App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                         enableMenu();
                     } else {
@@ -195,6 +221,22 @@ public class MemberDetailsService extends BaseService{
                     merchant.setRewards(rewards);
                 }
 
+                if (data.get("transactions") != null) {
+                    List<JSONObject> transactionsJSON = (ArrayList) data.get("transactions");
+                    List<Transaction> transactions = new ArrayList<>();
+                    for (JSONObject json : transactionsJSON) {
+                        Transaction transaction = new Transaction();
+                        transaction.setReceiptNumber((String) json.get("receipt_no"));
+                        transaction.setTransactionType((String) json.get("transaction_type"));
+                        transaction.setPointsEarned((String) json.get("points_earned"));
+                        transaction.setCashPaid(String.valueOf(json.get("amount_paid_with_cash")));
+                        transaction.setPointsPaid(String.valueOf(json.get("amount_paid_with_points")));
+                        transaction.setDate((String) json.get("date"));
+                        transactions.add(transaction);
+                    }
+                    customer.setTransactions(transactions);
+                }
+
                 App.appContextHolder.setCustomer(customer);
                 apiResponse.setSuccess(true);
                 apiResponse.setMessage("Redeem reward successful.");
@@ -290,14 +332,6 @@ public class MemberDetailsService extends BaseService{
     }
 
     public Node createActivateVoucherPage(int pageIndex) {
-        int pageCount = 0;
-        int maxEntries = 10;
-
-        Customer customer = App.appContextHolder.getCustomer();
-        pageCount = customer.getActiveVouchers().size() / maxEntries;
-        if (pageCount == 0) {
-            pageCount = 1;
-        }
 
         VBox box = new VBox();
         box.getChildren().addAll(buildTableView());
@@ -386,6 +420,104 @@ public class MemberDetailsService extends BaseService{
 
         tableView.getColumns().clear();
         tableView.getColumns().addAll(dateCol,orCol, rewardCol, mobileCol);
+    }
+
+
+    private void loadCustomerTransactions() {
+
+
+        VBox rootVBox = App.appContextHolder.getRootContainer();
+        Pagination transactionsPagination = (Pagination) rootVBox.getScene().lookup("#transactionsPagination");
+
+        transactionsPagination.setPageCount(0);
+        transactionsPagination.setPageFactory((Integer pageIndex) -> createTransactionsPage(pageIndex));
+    }
+
+    public Node createTransactionsPage(int pageIndex) {
+
+        VBox box = new VBox();
+        box.getChildren().addAll(buildTransactionsTableView());
+        return box;
+    }
+
+    private TableView<Transaction> buildTransactionsTableView() {
+        VBox rootVBox = App.appContextHolder.getRootContainer();
+        TextField searchTextField = (TextField) rootVBox.getScene().lookup("#searchTextField");
+        Pagination transactionsPagination = (Pagination) rootVBox.getScene().lookup("#transactionsPagination");
+
+        TableView<Transaction> transactionsTableView = new TableView();
+        transactionsTableView.setFixedCellSize(Region.USE_COMPUTED_SIZE);
+
+        ObservableList<Transaction> finalData = FXCollections.observableArrayList();
+        ObservableList<Transaction> textFilteredData = FXCollections.observableArrayList();
+        Customer customer = App.appContextHolder.getCustomer();
+        List<Transaction> transactions = customer.getTransactions();
+        if (transactions != null) {
+            if (searchTextField.getText() != null && !searchTextField.getText().isEmpty()) {
+                String searchTxt = searchTextField.getText().toLowerCase();
+                for (Transaction transaction : transactions) {
+                    if (transaction.getCashPaid().toLowerCase().contains(searchTxt)
+                            || transaction.getPointsEarned().toLowerCase().contains(searchTxt)
+                            || transaction.getDate().toLowerCase().contains(searchTxt)) {
+                        textFilteredData.add(transaction);
+                    }
+                }
+            } else {
+                textFilteredData.addAll(transactions);
+            }
+            int maxEntries = 10;
+            int pageCount = textFilteredData.size() / maxEntries;
+            if (pageCount == 0) {
+                pageCount = 1;
+            } else {
+                if (textFilteredData.size() % maxEntries > 0) {
+                    pageCount++;
+                }
+            }
+
+            transactionsPagination.setPageCount(pageCount);
+            int pageIndex = transactionsPagination.getCurrentPageIndex();
+            ObservableList<Transaction> indexFilteredData = FXCollections.observableArrayList();
+            for (Transaction transaction : textFilteredData) {
+                int objIndex = textFilteredData.indexOf(transaction);
+                if (objIndex >= (pageIndex * maxEntries)  && objIndex < ((pageIndex + 1) * maxEntries)) {
+                    indexFilteredData.add(transaction);
+                }
+                if (objIndex > ((pageIndex + 1) * maxEntries -1)) {
+                    break;
+                }
+            }
+            finalData = indexFilteredData;
+        }
+
+        buildTransactionsColumns(transactionsTableView);
+        transactionsTableView.setItems(finalData);
+        return transactionsTableView;
+    }
+
+    private void buildTransactionsColumns(TableView tableView) {
+
+
+        TableColumn date = new TableColumn("Date");
+        date.setPrefWidth(200);
+        date.setCellValueFactory(
+                new PropertyValueFactory<>("date"));
+
+
+        TableColumn receiptNumber = new TableColumn("OR number");
+        receiptNumber.setPrefWidth(200);
+        receiptNumber.setCellValueFactory(
+                new PropertyValueFactory<>("receiptNumber"));
+
+        TableColumn transactionType = new TableColumn("Transaction Type");
+        transactionType.setPrefWidth(400);
+        transactionType.setCellValueFactory(
+                new PropertyValueFactory<>("transactionType"));
+
+
+
+        tableView.getColumns().clear();
+        tableView.getColumns().addAll(date, receiptNumber, transactionType);
     }
 
 }

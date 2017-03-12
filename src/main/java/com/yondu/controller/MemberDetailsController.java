@@ -1,31 +1,22 @@
 package com.yondu.controller;
 
 import com.yondu.App;
-import com.yondu.model.Customer;
-import com.yondu.model.OfflineTransaction;
-import com.yondu.model.Reward;
 import com.yondu.service.CommonService;
 import com.yondu.service.MemberDetailsService;
-import com.yondu.service.RouteService;
 import com.yondu.utils.PropertyBinder;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import static com.yondu.model.constants.AppConfigConstants.MEMBER_INQUIRY_SCREEN;
 
 /**
  * Created by lynx on 2/9/17.
@@ -54,6 +45,16 @@ public class MemberDetailsController implements Initializable {
     public TextField searchTextField;
     @FXML
     public Button exitButton;
+    @FXML
+    public Pagination transactionsPagination;
+    @FXML
+    public VBox tableVBox;
+    @FXML
+    public TabPane vouchersTabPane;
+    @FXML
+    public Tab transactionsTab;
+    @FXML
+    public Tab vouchersTab;
 
     private CommonService commonService = App.appContextHolder.commonService;
     private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
@@ -61,7 +62,60 @@ public class MemberDetailsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         PropertyBinder.bindVirtualKeyboard(searchTextField);
+
         memberDetailsService.initialize();
+
+        transactionsTab.setOnSelectionChanged(new EventHandler<Event>() {
+            @Override
+            public void handle(Event event) {
+                for (Tab tab : vouchersTabPane.getTabs()) {
+                    if (tab.getId().equals("transactionsTab")) {
+                        tab.setGraphic(new Label("TRANSACTIONS"));
+                    } else {
+                        tab.setGraphic(new Label("ACTIVE VOUCHERS"));
+                    }
+                    tab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
+                            "    -fx-tab-max-width:200px;\n" +
+                            "    -fx-tab-min-height:30px;\n" +
+                            "    -fx-tab-max-height:30px;\n" +
+                            "    -fx-text-fill: white;\n" +
+                            "    -fx-font-size: 17px;");
+                }
+
+                transactionsTab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
+                        "    -fx-tab-max-width:200px;\n" +
+                        "    -fx-tab-min-height:30px;\n" +
+                        "    -fx-tab-max-height:30px;\n" +
+                        "    -fx-text-fill: black;\n" +
+                        "    -fx-font-size: 17px;");
+            }
+        });
+
+        vouchersTab.setOnSelectionChanged(new EventHandler<Event>() {
+            @Override
+            public void handle(Event event) {
+                for (Tab tab : vouchersTabPane.getTabs()) {
+                    if (tab.getId().equals("transactionsTab")) {
+                        tab.setGraphic(new Label("TRANSACTIONS"));
+                    } else {
+                        tab.setGraphic(new Label("ACTIVE VOUCHERS"));
+                    }
+                    tab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
+                            "    -fx-tab-max-width:200px;\n" +
+                            "    -fx-tab-min-height:30px;\n" +
+                            "    -fx-tab-max-height:30px;\n" +
+                            "    -fx-text-fill: white;\n" +
+                            "    -fx-font-size: 17px;");
+                }
+
+                vouchersTab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
+                        "    -fx-tab-max-width:200px;\n" +
+                        "    -fx-tab-min-height:30px;\n" +
+                        "    -fx-tab-max-height:30px;\n" +
+                        "    -fx-text-fill: black;\n" +
+                        "    -fx-font-size: 17px;");
+            }
+        });
 
         exitButton.setOnMouseClicked((MouseEvent e) -> {
             commonService.exitMember();
@@ -70,9 +124,25 @@ public class MemberDetailsController implements Initializable {
         searchTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                activeVouchersPagination.setPageFactory((Integer pageIndex) -> memberDetailsService.createActivateVoucherPage(pageIndex));
+                VBox rootVBox = App.appContextHolder.getRootContainer();
+                TabPane vouchersTabPane = (TabPane) rootVBox.getScene().lookup("#vouchersTabPane");
+                Tab tab = vouchersTabPane.getSelectionModel().getSelectedItem();
+                String tabId = tab.getId();
+                if (tabId.equals("transactionsTab")) {
+                    transactionsPagination.setPageFactory((Integer pageIndex) -> memberDetailsService.createTransactionsPage(pageIndex));
+                } else {
+                    activeVouchersPagination.setPageFactory((Integer pageIndex) -> memberDetailsService.createActivateVoucherPage(pageIndex));
+                }
             }
         });
+
+        tableVBox.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                App.appContextHolder.getRootContainer().setMinHeight(600 + newValue.doubleValue());
+            }
+        });
+
     }
 
 

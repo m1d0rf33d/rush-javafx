@@ -45,10 +45,35 @@
     /* -fx-text-fill:orange; */
 
 }.table-view .column-header {
-     -fx-font-size:17px;
+     -fx-font-size:15px;
  }
 
  .lbl-med {
      -fx-font-size: 17px;
-     -fx-font-weight: bold;
+   /*  -fx-font-weight: bold;*/
  }
+.tab-pane *.tab-header-area *.tab-header-background {
+    -fx-background-color: #7E7C78;
+}
+
+.tab-pane {
+    -fx-tab-min-width:200px;
+    -fx-tab-max-width:200px;
+    -fx-tab-min-height:30px;
+    -fx-tab-max-height:30px;
+    -fx-text-fill: white;
+    -fx-font-size: 17px;
+}
+
+.tab {
+    -fx-font-family: Arial;
+    -fx-background-radius: 0;
+    -fx-border-color: #B1ADA9;
+    -fx-background-color: #C8C3BE;
+    -fx-text-fill: white;
+}
+
+.tab:selected {
+    -fx-background-color: white ;
+    -fx-font-family: Arial;
+}

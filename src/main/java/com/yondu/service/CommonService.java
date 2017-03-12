@@ -76,26 +76,7 @@ public class CommonService {
         button.getStyleClass().add("sidebar-selected");
     }
 
-    public boolean fetchApiKeys() {
-        String merchantKey = this.getMerhant();
 
-        JSONObject payload = new JSONObject();
-        payload.put("uniqueKey", merchantKey);
-
-        String url = CMS_URL + TOMCAT_PORT + VALIDATE_MERCHANT_ENDPOINT;
-        JSONObject jsonObject = apiService.callWidgetAPI(url, payload, "post");
-        if (jsonObject != null) {
-            JSONObject data = (JSONObject) jsonObject.get("data");
-            MERCHANT_APP_KEY = (String) data.get("merchantApiKey");
-            MERCHANT_APP_SECRET = (String) data.get("merchantApiSecret");
-            CUSTOMER_APP_KEY =(String) data.get("customerApiKey");
-            CUSTOMER_APP_SECRET = (String) data.get("customerApiSecret");
-            MERCHANT_TYPE = (String) data.get("merchantType");
-
-            return true;
-        }
-        return false;
-    }
 
     public  String getMerhant() {
         try {

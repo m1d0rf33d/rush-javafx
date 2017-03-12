@@ -51,8 +51,6 @@ public class RouteService extends BaseService{
             LoginController controller = fxmlLoader.getController();
             controller.initAfterLoad();
 
-
-
             stage.setMaximized(true);
 
             if (currentStage != null) {

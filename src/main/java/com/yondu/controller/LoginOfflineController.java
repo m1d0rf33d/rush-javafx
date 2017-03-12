@@ -82,7 +82,7 @@ public class LoginOfflineController implements Initializable {
         PropertyBinder.addComma(amountTextField);
 
         reconnectButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            loginService.reconnect();
+            loginService.initialize();
         });
 
         givePointsButton.setOnMouseClicked((MouseEvent e) -> {
@@ -100,7 +100,7 @@ public class LoginOfflineController implements Initializable {
 
             String valid = validateFields();
             if (valid.isEmpty()) {
-                File file = new File(RUSH_HOME+ DIVIDER + OFFLINE_TRANSACTION_FILE);
+                File file = new File(RUSH_HOME+ DIVIDER + "temp.txt");
                 if (!file.exists()) {
                     file.createNewFile();
                 }

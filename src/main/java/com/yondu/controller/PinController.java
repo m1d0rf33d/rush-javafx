@@ -70,13 +70,13 @@ public class PinController implements Initializable {
     }
 
     private  void redeemStamps() {
-        Reward reward = App.appContextHolder.getReward();
+   /*     Reward reward = App.appContextHolder.getReward();
         String pin = pinTextField.getText();
         ApiResponse apiResponse = stampsService.redeemStamps(reward.getId(), pin);
         if (apiResponse.isSuccess()) {
 
         }
-
+*/
     }
 
     private void redeemRewards() {

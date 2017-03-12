@@ -151,28 +151,6 @@ public class IssueRewardsService extends BaseService {
 
     }
 
-    public void loadUnclaimedRewards() {
-
-        Employee employee = App.appContextHolder.getEmployee();
-        Customer customer = App.appContextHolder.getCustomer();
-        String url = BASE_URL + UNCLAIMED_REWARDS_ENDPOINT;
-        url = url.replace(":employee_id", employee.getEmployeeId());
-        url = url.replace(":customer_id", customer.getUuid());
-        JSONObject jsonObject = apiService.call(url, new ArrayList<>(), "get", MERCHANT_APP_RESOURCE_OWNER);
-        if (jsonObject != null) {
-            if (jsonObject.get("error_code").equals("0x0")) {
-                App.appContextHolder.getUnclaimedRewards().clear();
-                List<JSONObject> dataJSON = (ArrayList) jsonObject.get("data");
-                for (JSONObject data : dataJSON) {
-                    Reward reward = new Reward();
-                    reward.setId((String) data.get("id"));
-                    JSONObject innerJSON = (JSONObject) data.get("reward");
-                    reward.setName((String) innerJSON.get("name"));
-                    App.appContextHolder.getUnclaimedRewards().add(reward);
-                }
-            }
-        }
-    }
 
     public void issueReward(String redeemId) {
         PauseTransition pause = new PauseTransition(

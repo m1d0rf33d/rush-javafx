@@ -249,6 +249,7 @@ public class MemberDetailsService extends BaseService{
         }
         return apiResponse;
     }
+/*
 
     public CustomerCard getCustomerCard() {
 
@@ -286,38 +287,7 @@ public class MemberDetailsService extends BaseService{
         }
         return null;
     }
-
-
-    public ApiResponse getActiveVouchers() {
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setSuccess(false);
-
-        Customer customer = App.appContextHolder.getCustomer();
-
-        String url = BASE_URL + CUSTOMER_REWARDS_ENDPOINT;
-        url = url.replace(":id", customer.getUuid());
-        JSONObject jsonObject = apiService.call(url, new ArrayList<>(), "get", CUSTOMER_APP_RESOUCE_OWNER);
-        if (jsonObject != null) {
-            if (jsonObject.get("error_code").equals("0x0")) {
-                List<JSONObject> dataJSON = (ArrayList) jsonObject.get("data");
-                List<Reward> rewards = new ArrayList<>();
-                for (JSONObject rewardJSON : dataJSON) {
-                    Reward reward = new Reward();
-                    reward.setDetails((String) rewardJSON.get("details"));
-                    reward.setDate((String) rewardJSON.get("date"));
-                    reward.setName((String) rewardJSON.get("name"));/*
-                    reward.setQuantity((rewardJSON.get("quantity")).toString());*/
-                    reward.setId(((Long)rewardJSON.get("id")).toString());
-                    reward.setImageUrl((String) rewardJSON.get("image_url"));
-                    reward.setPointsRequired(String.valueOf(rewardJSON.get("points")));
-                    rewards.add(reward);
-                }
-                customer.setActiveVouchers(rewards);
-                apiResponse.setSuccess(true);
-            }
-        }
-        return apiResponse;
-    }
+*/
 
 
 

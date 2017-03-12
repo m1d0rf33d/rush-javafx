@@ -84,26 +84,6 @@ public class MenuController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
     }
-    private void bindLogout() {
-        employeeMenuButton.getItems().clear();
-
-        Label label = new Label("LOGOUT");
-        label.setId("logoutLabel");
-        MenuItem logoutMenuItem = new MenuItem();
-        logoutMenuItem.setGraphic(label);
-        logoutMenuItem.getStyleClass().add("menuitem");
-        logoutMenuItem.setId("logoutButton");
-        logoutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                App.appContextHolder.setEmployee(null);
-                App.appContextHolder.setCustomer(null);
-                routeService.goToLoginScreen((Stage) rootVBox.getScene().getWindow());
-            }
-        });
-        employeeMenuButton.getItems().addAll(logoutMenuItem);
-    }
-
     private void bindRightClick() {
         MenuItem menuItem = new MenuItem("Reload");
         menuItem.setOnAction(event -> {
@@ -162,7 +142,6 @@ public class MenuController implements Initializable {
 
         menuService.initialize();
         bindRightClick();
-        bindLogout();
 
         rootVBox.setOnMouseClicked((MouseEvent e) -> {
             if (e.getButton() == MouseButton.SECONDARY) {

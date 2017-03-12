@@ -4,11 +4,6 @@ import com.yondu.model.*;
 import com.yondu.model.constants.AppState;
 import com.yondu.model.dto.MerchantDTO;
 import com.yondu.service.*;
-import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -55,23 +50,7 @@ public class AppContextHolder {
     public static RegisterService registerService = new RegisterService();
     public static RouteService routeService = new RouteService();
     public static StampsService stampsService = new StampsService();
-    public static TransactionService transactionService = new TransactionService();
 
-    public List<Reward> getUnclaimedRewards() {
-        return unclaimedRewards;
-    }
-
-    public void setUnclaimedRewards(List<Reward> unclaimedRewards) {
-        this.unclaimedRewards = unclaimedRewards;
-    }
-
-    public OcrConfig getOcrConfig() {
-        return ocrConfig;
-    }
-
-    public void setOcrConfig(OcrConfig ocrConfig) {
-        this.ocrConfig = ocrConfig;
-    }
 
     public PointsRule getPointsRule() {
         return pointsRule;

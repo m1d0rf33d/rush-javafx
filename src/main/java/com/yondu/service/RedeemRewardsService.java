@@ -145,34 +145,6 @@ public class RedeemRewardsService extends BaseService {
         };
     }
 
-    public ApiResponse getRewards() {
-
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setSuccess(false);
-
-        String url = BASE_URL + GET_REWARDS_MERCHANT_ENDPOINT;
-        JSONObject jsonObject = apiService.call(url, new ArrayList<>(), "get", MERCHANT_APP_RESOURCE_OWNER);
-        if (jsonObject != null) {
-            List<Reward> rewards = new ArrayList<>();
-            List<JSONObject> dataJSON = (ArrayList) jsonObject.get("data");
-            for (JSONObject rewardJSON : dataJSON) {
-                Reward reward = new Reward();
-                reward.setImageUrl((String) rewardJSON.get("image_url"));
-                reward.setDetails((String) rewardJSON.get("details"));
-                reward.setName((String) rewardJSON.get("name"));
-                reward.setId((String) rewardJSON.get("id"));
-                reward.setPointsRequired(String.valueOf((Long) rewardJSON.get("points_required")));
-                rewards.add(reward);
-            }
-            apiResponse.setSuccess(true);
-            Merchant merchant = App.appContextHolder.getMerchant();
-            merchant.setRewards(rewards);
-        } else {
-            apiResponse.setMessage("Network error.");
-        }
-
-        return apiResponse;
-    }
 
     public void renderRewards() {
         VBox rootVBox = App.appContextHolder.getRootContainer();

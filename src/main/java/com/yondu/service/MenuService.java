@@ -8,6 +8,7 @@ import com.yondu.model.Merchant;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -18,6 +19,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.json.simple.JSONObject;
 
@@ -30,7 +32,7 @@ import static com.yondu.model.constants.ApiConstants.*;
  */
 public class MenuService extends BaseService{
 
-    private ApiService apiService = App.appContextHolder.apiService;
+    private RouteService routeService = App.appContextHolder.routeService;
 
     public void initialize() {
 
@@ -39,6 +41,25 @@ public class MenuService extends BaseService{
         VBox rootVBox = App.appContextHolder.getRootContainer();
         MenuButton employeeMenuButton = (MenuButton) rootVBox.getScene().lookup("#employeeMenuButton");
         employeeMenuButton.setText("Hi! " + App.appContextHolder.getEmployee().getEmployeeName());
+        employeeMenuButton.getItems().clear();
+
+        Label label = new Label("LOGOUT");
+        label.setId("logoutLabel");
+        MenuItem logoutMenuItem = new MenuItem();
+        logoutMenuItem.setGraphic(label);
+        logoutMenuItem.getGraphic().setStyle("-fx-min-width: " + employeeMenuButton.getWidth() + "px;");
+        logoutMenuItem.getStyleClass().add("menuitem");
+        logoutMenuItem.setId("logoutButton");
+        logoutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                App.appContextHolder.setEmployee(null);
+                App.appContextHolder.setCustomer(null);
+                App.appContextHolder.routeService.goToLoginScreen((Stage) rootVBox.getScene().getWindow());
+            }
+        });
+        employeeMenuButton.getItems().addAll(logoutMenuItem);
+
         Label branchNameLabel = (Label) rootVBox.getScene().lookup("#branchNameLabel");
         ImageView merchantLogoImageView = (ImageView) rootVBox.getScene().lookup("#merchantLogoImageView");
         branchNameLabel.setText(branch.getName());
@@ -119,63 +140,6 @@ public class MenuService extends BaseService{
         }
     }
 
-    public Task initializeWorker() {
-        return new Task() {
-            @Override
-            protected ApiResponse call() throws Exception {
-                ApiResponse apiResponse = new ApiResponse();
 
-                ApiResponse screenAccessResp = getScreenAccess();
-                if (screenAccessResp.isSuccess()) {
-                    return getMerchantDesign();
-                } else {
-                    return apiResponse;
-                }
-            }
-        };
-    }
-
-    public ApiResponse getMerchantDesign() {
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setSuccess(false);
-
-        String url = BASE_URL + MERCHANT_DESIGNS_ENDPOINT;
-        JSONObject jsonObject = apiService.call(url, new ArrayList<>(), "get", MERCHANT_APP_RESOURCE_OWNER);
-        if (jsonObject != null) {
-            JSONObject dataJSON = (JSONObject) jsonObject.get("data");
-            JSONObject merchantJSON = (JSONObject) dataJSON.get("merchant");
-            Merchant merchant = new Merchant();
-            merchant.setBackgroundUrl((String) merchantJSON.get("background_url"));
-            merchant.setStampsUrl((String) merchantJSON.get("stamp_url"));
-            merchant.setGrayStampsUrl((String) merchantJSON.get("stamp_gray_url"));
-            App.appContextHolder.setMerchant(merchant);
-
-            apiResponse.setSuccess(true);
-        } else {
-            apiResponse.setMessage("Network connection error.");
-        }
-        return apiResponse;
-    }
-
-    private ApiResponse getScreenAccess() {
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setSuccess(false);
-
-        Employee employee = App.appContextHolder.getEmployee();
-        Branch branch = App.appContextHolder.getBranch();
-
-        String url = CMS_URL + TOMCAT_PORT + ACCESS_ENDPOINT;
-        url = url.replace(":employee_id", employee.getEmployeeId()).replace(":branch_id", branch.getId());
-        JSONObject jsonObj = apiService.callWidgetAPI(url, new JSONObject(), "get");
-        if (jsonObj != null) {
-            JSONObject dataJson = (JSONObject) jsonObj.get("data");
-            List<String> screens = (ArrayList) dataJson.get("access");
-            employee.setScreenAccess(screens);
-            apiResponse.setSuccess(true);
-        } else {
-            apiResponse.setMessage("Network connection error.");
-        }
-        return apiResponse;
-    }
 
 }

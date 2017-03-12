@@ -234,7 +234,7 @@ public class LoginService extends BaseService{
                             merchant.setUniqueKey((String) merchantJSON.get("merchant_key"));
                             merchant.setToken((String) merchantJSON.get("token"));
                             merchant.setMerchantType((String) merchantJSON.get("merchant_type"));
-                            loadRushEndpoints();
+
                         }
                         apiResponse.setSuccess(true);
                     } else {
@@ -249,26 +249,6 @@ public class LoginService extends BaseService{
         };
     }
 
-    private void loadMerchantBranches() {
-        JSONArray branches = new JSONArray();
-
-        String url = BASE_URL + GET_BRANCHES_ENDPOINT;
-        java.util.List<NameValuePair> params = new ArrayList<>();
-        JSONObject jsonObject = apiService.call(url, params, "get", MERCHANT_APP_RESOURCE_OWNER);
-        if (jsonObject != null) {
-            List<JSONObject> data = (ArrayList) jsonObject.get("data");
-            for (JSONObject json : data) {
-                Branch branch = new Branch();
-                branch.setId((String) json.get("id"));
-                branch.setName((String) json.get("name"));
-                branch.setLogoUrl((String) json.get("logo_url"));
-                branches.add(branch);
-            }
-            App.appContextHolder.setBranches(branches);
-        } else {
-            loadOffline();
-        }
-    }
 
     private void loadOnline() {
         try {
@@ -311,46 +291,7 @@ public class LoginService extends BaseService{
         }
     }
 
-    private void loadRushEndpoints() {
-        try {
-            Properties prop = new Properties();
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(API_PROPERTIES);
-            if (inputStream != null) {
-                prop.load(inputStream);
-                inputStream.close();
-            } else {
-                throw new FileNotFoundException("property file api.properties not found in the classpath");
-            }
-            Merchant merchant = App.appContextHolder.getMerchant();
-            String merchantType = merchant.getMerchantType().toLowerCase();
-            BASE_URL = prop.getProperty("base_url").replace(":merchant_type", merchantType);
-            REGISTER_ENDPOINT = prop.getProperty("register_endpoint").replace(":merchant_type", merchantType);
-            MEMBER_LOGIN_ENDPOINT = prop.getProperty("member_login_endpoint").replace(":merchant_type", merchantType);
-            POINTS_CONVERSION_ENDPOINT = prop.getProperty("points_conversion_endpoint").replace(":merchant_type", merchantType);
-            GIVE_POINTS_ENDPOINT = prop.getProperty("give_points_endpoint").replace(":merchant_type", merchantType);
-            GET_POINTS_ENDPOINT = prop.getProperty("get_points_endpoint").replace(":merchant_type", merchantType);
-            PAY_WITH_POINTS_ENDPOINT = prop.getProperty("pay_points_endpoint").replace(":merchant_type", merchantType);
-            GET_REWARDS_ENDPOINT = prop.getProperty("get_rewards_endpoint").replace(":merchant_type", merchantType);
-            REDEEM_REWARDS_ENDPOINT = prop.getProperty("redeem_rewards_endpoint").replace(":merchant_type", merchantType);
-            UNCLAIMED_REWARDS_ENDPOINT = prop.getProperty("unclaimed_rewards_endpoint").replace(":merchant_type", merchantType);
-            CLAIM_REWARDS_ENDPOINT = prop.getProperty("claim_rewards_endpoint").replace(":merchant_type", merchantType);
-            GET_REWARDS_MERCHANT_ENDPOINT = prop.getProperty("get_rewards_merchant_endpoint").replace(":merchant_type", merchantType);
-            CUSTOMER_REWARDS_ENDPOINT = prop.getProperty("customer_rewards_endpoint").replace(":merchant_type", merchantType);
-            CUSTOMER_TRANSACTION_ENDPOINT = prop.getProperty("customer_transactions_endpoint").replace(":merchant_type", merchantType);
-            GET_BRANCHES_ENDPOINT = prop.getProperty("get_branches_endpoint").replace(":merchant_type", merchantType);
-            LOGIN_ENDPOINT = prop.getProperty("login_endpoint").replace(":merchant_type", merchantType);
-            AUTHORIZATION_ENDPOINT = prop.getProperty("authorization_endpoint").replace(":merchant_type", merchantType);
-            MERCHANT_DESIGNS_ENDPOINT = prop.getProperty("merchant_designs_endpoint").replace(":merchant_type", merchantType);
-            MERCHANT_SETTINGS_ENDPOINT = prop.getProperty("merchant_settings_endpoint").replace(":merchant_type", merchantType);
-            EARN_GUEST_ENDPOINT = prop.getProperty("earn_guest_endpoint").replace(":merchant_type", merchantType);
-            CUSTOMER_CARD_ENDPOINT = prop.getProperty("customer_card_endpoint").replace(":merchant_type", merchantType);
-            EARN_STAMPS_ENDPOINT = prop.getProperty("earn_stamps_endpoint").replace(":merchant_type", merchantType);
-            VIEW_MEMBER_ENDPOINT = prop.getProperty("view_member_endpoint");
 
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
     private void loadMerchantDetails() {
       try {
           File file = new File(RUSH_HOME + DIVIDER + AppConfigConstants.ACTIVATION_FILE);
@@ -386,11 +327,6 @@ public class LoginService extends BaseService{
             }
 
             CMS_URL = prop.getProperty("cms_url");
-            TOMCAT_PORT = prop.getProperty("tomcat_port");
-            OAUTH_SECRET = prop.getProperty("oauth_secret");
-            OAUTH_ENDPOINT = prop.getProperty("oauth_endpoint");
-            VALIDATE_MERCHANT_ENDPOINT = prop.getProperty("validate_merchant_endpoint");
-            ACCESS_ENDPOINT = prop.getProperty("access_endpoint");
 
             WIDGET_INITIALIZE_ENDPOINT = prop.getProperty("widget_initialize_endpoint");
             LOGIN_EMPLOYEE_ENDPOINT = prop.getProperty("login_employee_endpoint");
@@ -401,75 +337,9 @@ public class LoginService extends BaseService{
             WIDGET_REDEEM_ENDPOINT = prop.getProperty("widget_redeem_endpoint");
             WIDGET_PAY_ENDPOINT = prop.getProperty("widget_pay_endpoint");
             WIDGET_ISSUE_ENDPOINT = prop.getProperty("widget_issue_endpoint");
+            SEND_OFFLINE_ENDPOINT = prop.getProperty("send_offline_endpoint");
         } catch(IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void reconnect() {
-        Task task = reconnectWorker();
-        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                ApiResponse apiResponse = (ApiResponse) task.getValue();
-                if (apiResponse.isSuccess()) {
-
-                    loadOnline();
-                    enableMenu();
-                } else {
-                    showPrompt(apiResponse.getMessage(), "LOGIN");
-                    enableMenu();
-                }
-
-            }
-        });
-
-        disableMenu();
-        PauseTransition pause = new PauseTransition(
-                Duration.seconds(1)
-        );
-        pause.setOnFinished(event -> {
-            new Thread(task).start();
-        });
-        pause.play();
-    }
-
-    public Task reconnectWorker() {
-        return new Task() {
-            @Override
-            protected ApiResponse call() throws Exception {
-                ApiResponse apiResponse = new ApiResponse();
-                apiResponse.setSuccess(false);
-
-                if (App.appContextHolder.commonService.fetchApiKeys()) {
-                    loadRushEndpoints();
-
-                    JSONArray branches = new JSONArray();
-                    String url = BASE_URL + GET_BRANCHES_ENDPOINT;
-                    java.util.List<NameValuePair> params = new ArrayList<>();
-                    JSONObject jsonObject = App.appContextHolder.apiService.call(url, params, "get", MERCHANT_APP_RESOURCE_OWNER);
-                    if (jsonObject != null) {
-                        List<JSONObject> data = (ArrayList) jsonObject.get("data");
-                        for (JSONObject json : data) {
-                            Branch branch = new Branch();
-                            branch.setId((String) json.get("id"));
-                            branch.setName((String) json.get("name"));
-                            branch.setLogoUrl((String) json.get("logo_url"));
-                            branches.add(branch);
-                        }
-                        App.appContextHolder.setBranches(branches);
-                        apiResponse.setSuccess(true);
-                    } else {
-                        apiResponse.setMessage("Network connection error.");
-                        return apiResponse;
-                    }
-                } else {
-                    apiResponse.setMessage("Network connection error.");
-                    return apiResponse;
-                }
-
-                return apiResponse;
-            }
-        };
     }
 }

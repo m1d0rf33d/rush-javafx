@@ -39,7 +39,7 @@ public class StampsService extends BaseService  {
     private ApiService apiService = App.appContextHolder.apiService;
     private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
 
-    public ApiResponse earnStamps(String amount) {
+    /*public ApiResponse earnStamps(String amount) {
 
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setSuccess(false);
@@ -64,8 +64,8 @@ public class StampsService extends BaseService  {
         }
         return apiResponse;
     }
-
-    public ApiResponse redeemStamps(String rewardId, String pin) {
+*/
+   /* public ApiResponse redeemStamps(String rewardId, String pin) {
 
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setSuccess(false);
@@ -90,7 +90,7 @@ public class StampsService extends BaseService  {
             }
         }
         return apiResponse;
-    }
+    }*/
 
     public void loadStamps() {
         Task task = loadStampsWorker();
@@ -149,9 +149,9 @@ public class StampsService extends BaseService  {
         return new Task() {
             @Override
             protected Object call() throws Exception {
-                CustomerCard card = memberDetailsService.getCustomerCard();
-                Customer customer = App.appContextHolder.getCustomer();
-                customer.setCard(card);
+              //  CustomerCard card = memberDetailsService.getCustomerCard();
+  //              Customer customer = App.appContextHolder.getCustomer();
+//                customer.setCard(card);
 
                 return true;
             }

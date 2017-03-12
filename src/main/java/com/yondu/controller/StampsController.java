@@ -69,6 +69,11 @@ public class StampsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+    }
+
+   /* @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
         rewardsFlowPane.heightProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -178,6 +183,6 @@ public class StampsController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }

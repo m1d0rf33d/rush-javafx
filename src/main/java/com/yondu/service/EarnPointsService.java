@@ -150,30 +150,4 @@ public class EarnPointsService extends BaseService {
         pointsTextField.setText(null);
 
     }
-
-    public ApiResponse getPointsRule() {
-
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setSuccess(false);
-
-        String url = BASE_URL + POINTS_CONVERSION_ENDPOINT;
-        Employee employee = App.appContextHolder.getEmployee();
-        Customer customer = App.appContextHolder.getCustomer();
-        url = url.replace(":employee_id", employee.getEmployeeId()).replace(":customer_id", customer.getUuid());
-        JSONObject jsonObject = apiService.call(url, new ArrayList<>(), "get", MERCHANT_APP_RESOURCE_OWNER);
-        if (jsonObject != null) {
-            if (jsonObject.get("error_code").equals("0x0")) {
-                JSONObject dataJSON = (JSONObject) jsonObject.get("data");
-                PointsRule pointsRule = new PointsRule();
-                pointsRule.setEarningPeso((Long) dataJSON.get("earning_peso"));
-                pointsRule.setRedeemPeso((Long) dataJSON.get("redemption_peso"));
-                App.appContextHolder.setPointsRule(pointsRule);
-                apiResponse.setSuccess(true);
-            }
-        } else {
-            apiResponse.setMessage("Network connection error.");
-        }
-
-        return apiResponse;
-    }
 }

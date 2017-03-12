@@ -28,6 +28,7 @@ public class App extends Application{
             }
             RUSH_HOME = System.getenv("RUSH_HOME").replace(";", "");
         } else {
+            TESSERACT_HOME = "/usr/share/tesseract-ocr/";
             RUSH_HOME = "/home/aomine/Projects/Rush-POS-Sync/";
         }
         launch(args);

@@ -3,6 +3,7 @@ package com.yondu.service;
 import com.google.gson.Gson;
 import com.yondu.App;
 import com.yondu.controller.LoginOnlineController;
+import com.yondu.controller.MenuController;
 import com.yondu.model.*;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.model.dto.*;
@@ -16,6 +17,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -61,7 +63,7 @@ public class LoginService extends BaseService{
                     if (apiResponse.isSuccess()) {
                         loadOnline();
                     } else {
-                        commonService.showPrompt("Network connection error.", "LOGIN");
+
                         loadOffline();
                     }
 
@@ -268,24 +270,43 @@ public class LoginService extends BaseService{
 
     private void loadOffline() {
         try {
-            Text text = new Text("Network connection error.");
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-            alert.setTitle(AppConfigConstants.APP_TITLE);
-            alert.initStyle(StageStyle.UTILITY);
-            alert.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());
-            alert.setHeaderText("LOGIN");
-            alert.getDialogPane().setPadding(new javafx.geometry.Insets(10,10,10,10));
-            alert.getDialogPane().setContent(text);
-            alert.getDialogPane().setPrefWidth(400);
-            alert.show();
 
-            VBox numbersVBox = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#numbersVBox");
-            StackPane bodyStackPane = (StackPane) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
-            numbersVBox.setVisible(false);
-            bodyStackPane.getChildren().clear();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(AppConfigConstants.LOGIN_OFFLINE_FXML));
+            Stage currentStage =(Stage) App.appContextHolder.getRootContainer().getScene().getWindow();
+            if (currentStage != null) {
+                currentStage.close();
+            }
+
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/app/fxml/menu-offline.fxml"));
             Parent root = fxmlLoader.load();
-            bodyStackPane.getChildren().add(root);
+            stage.setScene(new Scene(root, 1000, 700));
+            stage.setTitle(APP_TITLE);
+            stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+
+            Scene scene = stage.getScene();
+            scene.getStylesheets().add(App.class.getResource("/app/css/menu.css").toExternalForm());
+            stage.show();
+            stage.setMaximized(true);
+
+
+
+            PauseTransition pause = new PauseTransition(
+                    Duration.seconds(.01)
+            );
+            pause.setOnFinished(event -> {
+
+                Text text = new Text("Network connection error.");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
+                alert.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());
+                alert.setHeaderText("LOGIN");
+                alert.getDialogPane().setPadding(new javafx.geometry.Insets(10,10,10,10));
+                alert.getDialogPane().setContent(text);
+                alert.getDialogPane().setPrefWidth(400);
+                alert.show();
+            });
+            pause.play();
         } catch (IOException e) {
             e.printStackTrace();
         }

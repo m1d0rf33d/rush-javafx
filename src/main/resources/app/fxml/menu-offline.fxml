@@ -8,13 +8,13 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fx:id="rootScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="+Infinity" minHeight="1100.0" minWidth="1000.0" prefHeight="1100.0" prefWidth="700.0" style="-fx-border-color: black;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.MenuController">
+<ScrollPane fx:id="rootScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="+Infinity" minHeight="1100.0" minWidth="1000.0" prefHeight="1100.0" prefWidth="700.0" style="-fx-border-color: black;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.MenuOfflineController">
     <content>
         <VBox fx:id="rootVBox" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="1000.0" minWidth="1000.0" VBox.vgrow="ALWAYS">
             <children>
                 <HBox minHeight="100.0" minWidth="1000.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #e7e7e7;">
                     <children>
-                        <HBox alignment="CENTER_RIGHT" maxWidth="1000.0" prefHeight="100.0" prefWidth="400.0" HBox.hgrow="ALWAYS">
+                        <HBox alignment="CENTER_RIGHT" maxWidth="1300.0" minWidth="1000.0" prefHeight="100.0" prefWidth="1000.0" HBox.hgrow="ALWAYS">
                             <children>
                                 <MenuButton fx:id="employeeMenuButton" mnemonicParsing="false" style="-fx-background-color: transparent;">
                                     <items>
@@ -35,7 +35,7 @@
                     <children>
                         <VBox fx:id="sideBarVBox" maxHeight="Infinity" maxWidth="300.0" minHeight="700.0" minWidth="240.0" prefHeight="572.0" prefWidth="240.0" style="-fx-background-color: #53585b;" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                             <children>
-                                <Button fx:id="registerButton" maxWidth="260.0" minWidth="200.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #333;" styleClass="sidebar-default" text="GIVE POINTS" textFill="#f8f6f6" VBox.vgrow="ALWAYS">
+                                <Button fx:id="givePointsButton" maxWidth="260.0" minWidth="200.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #333;" styleClass="sidebar-default" text="GIVE POINTS" textFill="#f8f6f6" VBox.vgrow="ALWAYS">
                                     <VBox.margin>
                                         <Insets left="20.0" right="20.0" top="20.0" />
                                     </VBox.margin>
@@ -46,7 +46,7 @@
                                         <Font name="System Bold" size="15.0" />
                                     </font>
                                 </Button>
-                                <Button fx:id="memberInquiryButton" maxWidth="260.0" minWidth="200.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #333;" styleClass="sidebar-default" text="BRANCH TRANSACTIONS" textFill="#f8f6f6" VBox.vgrow="ALWAYS">
+                                <Button fx:id="transactionsButton" maxWidth="260.0" minWidth="200.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #333;" styleClass="sidebar-default" text="BRANCH TRANSACTIONS" textFill="#f8f6f6" VBox.vgrow="ALWAYS">
                                     <VBox.margin>
                                         <Insets left="20.0" right="20.0" top="20.0" />
                                     </VBox.margin>
@@ -57,7 +57,7 @@
                                         <Font name="System Bold" size="15.0" />
                                     </font>
                                 </Button>
-                                <Button fx:id="givePointsButton" maxWidth="260.0" minWidth="200.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #333;" styleClass="sidebar-default" text="SETUP OCR" textFill="#f8f6f6" VBox.vgrow="ALWAYS">
+                                <Button fx:id="ocrButton" maxWidth="260.0" minWidth="200.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #333;" styleClass="sidebar-default" text="SETUP OCR" textFill="#f8f6f6" VBox.vgrow="ALWAYS">
                                     <VBox.margin>
                                         <Insets left="20.0" right="20.0" top="20.0" />
                                     </VBox.margin>

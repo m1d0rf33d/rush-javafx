@@ -53,7 +53,7 @@
    /*  -fx-font-weight: bold;*/
  }
 .tab-pane *.tab-header-area *.tab-header-background {
-    -fx-background-color: #7E7C78;
+    -fx-background-color: #333;
 }
 
 .tab-pane {
@@ -69,7 +69,7 @@
     -fx-font-family: Arial;
     -fx-background-radius: 0;
     -fx-border-color: #B1ADA9;
-    -fx-background-color: #C8C3BE;
+    -fx-background-color:  #53585b;
     -fx-text-fill: white;
 }
 

@@ -185,12 +185,7 @@ public class MenuController implements Initializable {
             App.appContextHolder.setPrevState(App.appContextHolder.getCurrentState());
             App.appContextHolder.setCurrentState(AppState.TRANSACTIONS);
             commonService.updateButtonState();
-            if (App.appContextHolder.getCustomer() == null) {
-                loadMobileLoginDialog();
-            } else {
-                disableMenu();
-                routeService.loadTransactionsScreen();
-            }
+            routeService.loadTransactionsScreen();
         });
         givePointsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             disableMenu();

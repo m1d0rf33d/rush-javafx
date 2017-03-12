@@ -426,9 +426,12 @@ public class MemberDetailsService extends BaseService{
             if (searchTextField.getText() != null && !searchTextField.getText().isEmpty()) {
                 String searchTxt = searchTextField.getText().toLowerCase();
                 for (Transaction transaction : transactions) {
-                    if (transaction.getCashPaid().toLowerCase().contains(searchTxt)
-                            || transaction.getPointsEarned().toLowerCase().contains(searchTxt)
-                            || transaction.getDate().toLowerCase().contains(searchTxt)) {
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(transaction.getDate());
+                    sb.append(transaction.getTransactionType());
+
+                    if (sb.toString().toLowerCase().contains(searchTxt)) {
                         textFilteredData.add(transaction);
                     }
                 }

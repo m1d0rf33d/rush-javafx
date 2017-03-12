@@ -206,20 +206,8 @@ public class RouteService extends BaseService{
     }
 
     public void loadTransactionsScreen() {
-        disableMenu();
-        PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
-        );
-        pause.setOnFinished(event -> {
-            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber(), App.appContextHolder.getCurrentState());
-            if (!apiResponse.isSuccess()) {
-                notifyError(apiResponse.getMessage());
-            } else {
-                VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
-                this.loadContentPage(bodyStackPane, TRANSACTIONS_SCREEN);
-            }
-        });
-        pause.play();
+        VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
+        this.loadContentPage(bodyStackPane, TRANSACTIONS_SCREEN);
     }
 
     public void loadOfflineTransactionScreen() {

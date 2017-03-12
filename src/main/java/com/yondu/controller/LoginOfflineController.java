@@ -3,6 +3,7 @@ package com.yondu.controller;
 import com.sun.javafx.scene.control.skin.FXVK;
 import com.yondu.App;
 import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.model.constants.AppState;
 import com.yondu.service.LoginService;
 import com.yondu.utils.PropertyBinder;
 import javafx.beans.value.ChangeListener;
@@ -33,8 +34,6 @@ import static com.yondu.model.constants.AppConfigConstants.*;
  */
 public class LoginOfflineController implements Initializable {
     @FXML
-    public Button reconnectButton;
-    @FXML
     public Button givePointsButton;
     @FXML
     public TextField mobileTextField;
@@ -44,8 +43,6 @@ public class LoginOfflineController implements Initializable {
     public TextField amountTextField;
     @FXML
     public Button ocrButton;
-
-    private LoginService loginService = App.appContextHolder.loginService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -80,10 +77,6 @@ public class LoginOfflineController implements Initializable {
 
         PropertyBinder.bindAmountOnly(amountTextField);
         PropertyBinder.addComma(amountTextField);
-
-        reconnectButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            loginService.initialize();
-        });
 
         givePointsButton.setOnMouseClicked((MouseEvent e) -> {
             saveOfflineTransaction();
@@ -127,7 +120,7 @@ public class LoginOfflineController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
             alert.setTitle(AppConfigConstants.APP_TITLE);
             alert.initStyle(StageStyle.UTILITY);
-            alert.initOwner(reconnectButton.getScene().getWindow());
+            alert.initOwner(givePointsButton.getScene().getWindow());
             alert.getDialogPane().setPadding(new javafx.geometry.Insets(10,10,10,10));
             alert.getDialogPane().setContent(text);
             alert.getDialogPane().setPrefWidth(400);

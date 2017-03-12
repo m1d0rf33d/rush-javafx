@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="1000.0" minHeight="800.0" minWidth="700.0" prefHeight="800.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.BranchController">
+   <children>
+      <HBox maxHeight="50.0" maxWidth="+Infinity" prefHeight="50.0" prefWidth="200.0">
+         <children>
+            <VBox maxWidth="500.0" prefHeight="200.0" prefWidth="350.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label prefHeight="50.0" prefWidth="350.0" text="BRANCH TRANSACTIONS">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+               <HBox.margin>
+                  <Insets left="20.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox prefHeight="50.0" prefWidth="170.0">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox alignment="TOP_RIGHT" maxWidth="170.0" prefHeight="50.0" prefWidth="170.0" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <VBox maxHeight="50.0" prefHeight="100.0" prefWidth="100.0">
+         <children>
+            <Line endX="720.0" startX="100.0" stroke="#e1dcdc">
+               <VBox.margin>
+                  <Insets left="50.0" top="10.0" />
+               </VBox.margin>
+            </Line>
+            <Label textFill="#a19797">
+               <font>
+                  <Font size="17.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="50.0" top="20.0" />
+               </VBox.margin>
+            </Label>
+         </children>
+      </VBox>
+      <VBox fx:id="tableVBox" maxHeight="700.0" maxWidth="900.0" minHeight="700.0" minWidth="600.0" prefHeight="700.0" prefWidth="600.0">
+         <children>
+            <TabPane fx:id="transactionsTabPane" maxHeight="700.0" maxWidth="800.0" minHeight="700.0" minWidth="500.0" prefHeight="700.0" prefWidth="500.0">
+               <tabs>
+                  <Tab fx:id="offlineTab">
+                     <content>
+                        <VBox>
+                           <children>
+                              <HBox maxHeight="50.0" maxWidth="900.0" minWidth="600.0" prefHeight="50.0" prefWidth="600.0">
+                                 <children>
+                                    <Label maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="50.0" text="Filter:">
+                                       <font>
+                                          <Font size="17.0" />
+                                       </font>
+                                    </Label>
+                                    <MenuButton fx:id="statusMenuButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0" style="-fx-background-radius: 0;">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                       <items>
+                                          <MenuItem mnemonicParsing="false" text="Action 1" />
+                                          <MenuItem mnemonicParsing="false" text="Action 2" />
+                                       </items>
+                                       <HBox.margin>
+                                          <Insets top="5.0" />
+                                       </HBox.margin>
+                                    </MenuButton>
+                                    <TextField fx:id="searchTextField" prefHeight="30.0" prefWidth="200.0" style="-fx-background-radius: 0;">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="20.0" top="5.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="20.0" top="20.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <Pagination fx:id="offlinePagination" maxHeight="400.0" maxWidth="800.0" minHeight="400.0" minWidth="500.0" prefHeight="400.0" prefWidth="500.0" />
+                              <HBox alignment="CENTER" maxHeight="50.0" maxWidth="1000.0" minHeight="50.0" minWidth="700.0" prefHeight="50.0" prefWidth="700.0" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <Button maxHeight="50.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="GIVE POINTS" />
+                                    <Button maxHeight="50.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="GENERATE CSV">
+                                       <HBox.margin>
+                                          <Insets left="20.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab fx:id="onlineTab">
+                     <content>
+                        <VBox>
+                           <children>
+                              <HBox alignment="TOP_RIGHT" maxHeight="50.0" maxWidth="900.0" minWidth="600.0" prefHeight="50.0" prefWidth="600.0">
+                                 <children>
+                                    <Label maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="80.0" text="Search:">
+                                       <font>
+                                          <Font size="17.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="searchTextField1" prefHeight="30.0" prefWidth="200.0" style="-fx-background-radius: 0;">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets top="5.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="20.0" top="20.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <Pagination fx:id="onlinePagination" maxHeight="400.0" maxWidth="800.0" minHeight="400.0" minWidth="500.0" prefHeight="400.0" prefWidth="500.0" />
+                              <HBox alignment="CENTER" maxHeight="50.0" maxWidth="1000.0" minHeight="50.0" minWidth="700.0" prefHeight="50.0" prefWidth="700.0" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <Button maxHeight="50.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="GIVE POINTS" />
+                                    <Button maxHeight="50.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30;" text="GENERATE CSV">
+                                       <HBox.margin>
+                                          <Insets left="20.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </content>
+                  </Tab>
+               </tabs>
+            </TabPane>
+         </children>
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" />
+         </VBox.margin>
+      </VBox>
+   </children>
+</VBox>

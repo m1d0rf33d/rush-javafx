@@ -2,7 +2,9 @@ package com.yondu.service;
 
 import com.yondu.App;
 import com.yondu.model.Customer;
+import com.yondu.model.TransactionType;
 import com.yondu.model.constants.AppConfigConstants;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -13,6 +15,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.StageStyle;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static com.yondu.model.constants.AppConfigConstants.DIVIDER;
+import static com.yondu.model.constants.AppConfigConstants.RUSH_HOME;
 
 /**
  * Created by erwin on 3/1/2017.
@@ -70,5 +81,59 @@ public class BaseService {
         birthdateLabel.setText(customer.getDateOfBirth());
         emailLabel.setText(customer.getEmail());
         pointsLabel.setText(customer.getAvailablePoints());
+    }
+
+    public void saveTransaction(TransactionType transactionType,
+                                String mobileNumber,
+                                String employeeName,
+                                String amount,
+                                String orNumber,
+                                String reward) {
+        Task task = saveTransactionWorker(transactionType, mobileNumber, employeeName, amount, orNumber, reward);
+        new Thread(task).start();
+    }
+
+
+    public Task saveTransactionWorker(TransactionType transactionType,
+                                      String mobileNumber,
+                                      String employeeName,
+                                      String amount,
+                                      String orNumber,
+                                      String reward) {
+        return new Task() {
+            @Override
+            protected Object call() throws Exception {
+
+                File file = new File(RUSH_HOME+ DIVIDER + "branchtransactions.txt");
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+                SimpleDateFormat df  = new SimpleDateFormat("MM/dd/YYYY");
+                String date = df.format(new Date());
+
+                PrintWriter fstream = new PrintWriter(new FileWriter(file,true));
+                StringBuilder sb = new StringBuilder();
+                sb.append("date=" + date);
+                sb.append(":");
+                sb.append("transactionType=" + transactionType);
+                sb.append(":");
+                sb.append("employeeName=" + (employeeName != null ? employeeName : " "));
+                sb.append(":");
+                sb.append("mobileNumber=" + (mobileNumber != null ? mobileNumber : " "));
+                sb.append(":");
+                sb.append("amount=" + (amount != null ? amount : " "));
+                sb.append(":");
+                sb.append("orNumber=" + (orNumber != null ? orNumber : " "));
+                sb.append(":");
+                sb.append("reward=" + (reward != null ? reward : " "));
+
+                byte[] encodedBytes = org.apache.commons.codec.binary.Base64.encodeBase64(sb.toString().getBytes());
+                fstream.println(new String(encodedBytes));
+                fstream.flush();
+                fstream.close();
+
+                return null;
+            }
+        };
     }
 }

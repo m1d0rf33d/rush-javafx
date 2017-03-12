@@ -52,65 +52,6 @@ public class OfflineController implements Initializable {
     }
 
 
-
-  /*  private TableView<OfflineTransaction> buildTableView() {
-
-        String status = statusMenuButton.getText();
-
-        TableView<OfflineTransaction> transactionsTableView = new TableView();
-        transactionsTableView.setFixedCellSize(Region.USE_COMPUTED_SIZE);
-
-        ObservableList<OfflineTransaction> statusFilteredData = FXCollections.observableArrayList();
-        for (OfflineTransaction offlineTransaction : masterData) {
-          if (status.equalsIgnoreCase("all")) {
-              statusFilteredData.add(offlineTransaction);
-          } else {
-              if (status.equalsIgnoreCase(offlineTransaction.getStatus())) {
-                  statusFilteredData.add(offlineTransaction);
-              }
-          }
-        }
-
-        ObservableList<OfflineTransaction> textFilteredData = FXCollections.observableArrayList();
-        if (searchTextField.getText() != null && !searchTextField.getText().isEmpty()) {
-            String searchTxt = searchTextField.getText().toLowerCase();
-            for (OfflineTransaction offlineTransaction : statusFilteredData) {
-                if (offlineTransaction.getOrNumber().toLowerCase().contains(searchTxt)
-                        || offlineTransaction.getMobileNumber().toLowerCase().contains(searchTxt)
-                        || offlineTransaction.getDate().toLowerCase().contains(searchTxt)
-                        || offlineTransaction.getStatus().toLowerCase().contains(searchTxt)) {
-                    textFilteredData.addAll(offlineTransaction);
-                }
-            }
-        } else {
-            textFilteredData = statusFilteredData;
-        }
-        PAGE_COUNT = textFilteredData.size() / MAX_ENTRIES_COUNT;
-        if (PAGE_COUNT == 0) {
-            PAGE_COUNT = 1;
-        }
-
-        int pageIndex = transactionsPagination.getCurrentPageIndex();
-        ObservableList<OfflineTransaction> indexFilteredData = FXCollections.observableArrayList();
-        for (OfflineTransaction offlineTransaction : textFilteredData) {
-            int objIndex = masterData.indexOf(offlineTransaction);
-            if (objIndex >= pageIndex && objIndex < ((pageIndex + 1) * MAX_ENTRIES_COUNT -1)) {
-                indexFilteredData.add(offlineTransaction);
-            }
-            if (objIndex > ((pageIndex + 1) * MAX_ENTRIES_COUNT -1)) {
-                break;
-            }
-        }
-
-
-        buildTableColumns(transactionsTableView);
-        transactionsTableView.setItems(indexFilteredData);
-        return transactionsTableView;
-    }
-*/
-
-
-
     private void buildStatusFilters() {
         Label allLabel = new Label("ALL");
         allLabel.setPrefWidth(150);

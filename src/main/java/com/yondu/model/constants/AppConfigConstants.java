@@ -31,11 +31,10 @@ public class AppConfigConstants {
 
     //FXML
     public static final String LOGIN_ONLINE_FXML = "/app/fxml/login-online.fxml";
-    public static final String LOGIN_OFFLINE_FXML = "/app/fxml/login-offline.fxml";
     public static final String REGISTER_SCREEN        = "/app/fxml/register.fxml";
     public static final String MEMBER_INQUIRY_SCREEN  = "/app/fxml/member-inquiry.fxml";
     public static final String MEMBER_DETAILS_SCREEN  = "/app/fxml/member-details.fxml";
-    public static final String TRANSACTIONS_SCREEN    = "/app/fxml/transactions.fxml";
+    public static final String TRANSACTIONS_SCREEN    = "/app/fxml/branch-transactions.fxml";
     public static final String MOBILE_LOGIN_SCREEN    = "/app/fxml/mobile-login.fxml";
     public static final String EARN_POINTS_SCREEN     = "/app/fxml/earn-points.fxml";
     public static final String REDEEM_REWARDS_SCREEN  = "/app/fxml/redeem-rewards.fxml";

@@ -143,7 +143,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Button>
-                        <Button fx:id="transactionsButton" maxWidth="260.0" minWidth="200.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #333;" styleClass="sidebar-default" text="TRANSACTIONS VIEW" textFill="#f8f6f6" VBox.vgrow="ALWAYS">
+                        <Button fx:id="transactionsButton" maxWidth="260.0" minWidth="200.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #333;" styleClass="sidebar-default" text="BRANCH TRANSACTIONS" textFill="#f8f6f6" VBox.vgrow="ALWAYS">
                            <cursor>
                               <Cursor fx:constant="OPEN_HAND" />
                            </cursor>

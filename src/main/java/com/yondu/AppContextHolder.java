@@ -50,7 +50,7 @@ public class AppContextHolder {
     public static RegisterService registerService = new RegisterService();
     public static RouteService routeService = new RouteService();
     public static StampsService stampsService = new StampsService();
-
+    public static BranchTransactionService branchTransactionService = new BranchTransactionService();
 
     public PointsRule getPointsRule() {
         return pointsRule;

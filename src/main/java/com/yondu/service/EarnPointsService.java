@@ -61,6 +61,7 @@ public class EarnPointsService extends BaseService {
                 ApiResponse resp = App.appContextHolder.memberDetailsService.loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
                 if (resp.isSuccess()) {
                     apiResponse.setSuccess(true);
+
                 } else {
                     apiResponse.setMessage("Network connection error");
                 }
@@ -128,6 +129,13 @@ public class EarnPointsService extends BaseService {
                         Label pointsLabel = (Label) vBox.getScene().lookup("#pointsLabel");
                         pointsLabel.setText(points);
                         clearFields();
+
+                        Customer customer = App.appContextHolder.getCustomer();
+                        Employee employee = App.appContextHolder.getEmployee();
+                        saveTransaction(TransactionType.EARN_OFFLINE,
+                                customer.getMobileNumber(),
+                                employee.getEmployeeName(),
+                                amount,orNumber, null);
                     }
                     showPrompt(apiResponse.getMessage(), "EARN POINTS");
                     enableMenu();

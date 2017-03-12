@@ -155,18 +155,17 @@ public class OCRController implements Initializable {
                 n.setDisable(true);
             }
             PauseTransition pause = new PauseTransition(
-                    Duration.seconds(.5)
+                    Duration.seconds(.01)
             );
             pause.setOnFinished(event -> {
                 saveDimensions();
+                App.appContextHolder.getRootContainer().setOpacity(1);
+                for (Node n : App.appContextHolder.getRootContainer().getChildren()) {
+                    n.setDisable(false);
+                }
+
             });
             pause.play();
-            App.appContextHolder.getRootContainer().setOpacity(1);
-            for (Node n : App.appContextHolder.getRootContainer().getChildren()) {
-                n.setDisable(false);
-            }
-
-
         });
 
         orPreviewImageView.setOnMouseClicked((MouseEvent e) -> {
@@ -257,7 +256,7 @@ public class OCRController implements Initializable {
     private void loadSavedConfig() {
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(RUSH_HOME + DIVIDER + OCR_PROPERTIES);
+            InputStream inputStream = new FileInputStream(new File(RUSH_HOME + DIVIDER + OCR_PROPERTIES));
             prop.load(inputStream);
 
             savedAmountPosX = prop.getProperty("sales_pos_x").isEmpty() ? null : Double.parseDouble(prop.getProperty("sales_pos_x"));

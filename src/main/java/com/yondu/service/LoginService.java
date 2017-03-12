@@ -47,12 +47,12 @@ public class LoginService extends BaseService{
 
     public void initialize() {
         disableMenu();
-
+        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
-            App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
+
             Task task = loginInitWorker();
             task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
@@ -105,11 +105,12 @@ public class LoginService extends BaseService{
         });
 
         disableMenu();
+        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(1)
         );
         pause.setOnFinished(event -> {
-            App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
+
             new Thread(task).start();
         });
         pause.play();
@@ -393,6 +394,13 @@ public class LoginService extends BaseService{
 
             WIDGET_INITIALIZE_ENDPOINT = prop.getProperty("widget_initialize_endpoint");
             LOGIN_EMPLOYEE_ENDPOINT = prop.getProperty("login_employee_endpoint");
+            VIEW_MEMBER_ENDPOINT = prop.getProperty("view_member_endpoint");
+            REGISTER_MEMBER_ENDPOINT = prop.getProperty("register_member_endpoint");
+            EARN_POINTS_ENDPOINT = prop.getProperty("earn_points_endpoint");
+            GUEST_PURCHASE_ENDPOINT = prop.getProperty("guest_purchase_endpoint");
+            WIDGET_REDEEM_ENDPOINT = prop.getProperty("widget_redeem_endpoint");
+            WIDGET_PAY_ENDPOINT = prop.getProperty("widget_pay_endpoint");
+            WIDGET_ISSUE_ENDPOINT = prop.getProperty("widget_issue_endpoint");
         } catch(IOException e) {
             e.printStackTrace();
         }

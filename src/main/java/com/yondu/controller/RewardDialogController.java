@@ -73,7 +73,7 @@ public class RewardDialogController implements Initializable {
     private void issueReward() {
         Reward reward = App.appContextHolder.getReward();
         ((Stage) rewardImageView.getScene().getWindow()).close();
-        issueRewardsService.issueReward(reward.getId());
+        issueRewardsService.issueReward(reward.getRedeemId());
     }
 
     public void showPinDialog() {

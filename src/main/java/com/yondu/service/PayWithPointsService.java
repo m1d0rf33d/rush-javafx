@@ -1,10 +1,8 @@
 package com.yondu.service;
 
 import com.yondu.App;
-import com.yondu.model.ApiResponse;
-import com.yondu.model.Customer;
-import com.yondu.model.Employee;
-import com.yondu.model.PointsRule;
+import com.yondu.model.*;
+import com.yondu.model.constants.AppState;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -37,9 +35,8 @@ public class PayWithPointsService extends BaseService {
 
     public void initialize() {
 
-        disableMenu();
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
             Task task = initializeWorker();
@@ -71,34 +68,33 @@ public class PayWithPointsService extends BaseService {
         return new Task() {
             @Override
             protected Object call() throws Exception {
-                ApiResponse apiResponse = new ApiResponse();
-                apiResponse.setSuccess(false);
 
+                String mobileNumber = App.appContextHolder.getCustomer().getMobileNumber();
+                AppState appState = App.appContextHolder.getCurrentState();
 
-                ApiResponse pointRuleResp = earnPointsService.getPointsRule();
-                if (pointRuleResp.isSuccess()) {
-                    apiResponse.setSuccess(true);
-                    App.appContextHolder.memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber(), App.appContextHolder.getCurrentState());
-                } else {
-                    apiResponse.setMessage("Network connection error.");
-                    return apiResponse;
-                }
+                return App.appContextHolder.memberDetailsService.loginCustomer(mobileNumber, appState);
 
-                return apiResponse;
             }
         };
     }
     public void payWithPoints(String pin) {
         disableMenu();
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
             Task task = payWithPointsWorker(pin);
             task.setOnSucceeded((Event e) -> {
                 ApiResponse apiResponse = (ApiResponse) task.getValue();
                 if (apiResponse.isSuccess()) {
-                    initialize();
+                    Customer customer = App.appContextHolder.getCustomer();
+                    PointsRule pointsRule = App.appContextHolder.getPointsRule();
+                    VBox rootVBox = App.appContextHolder.getRootContainer();
+                    Label pointsLabel = (Label) rootVBox.getScene().lookup("#pointsLabel");
+                    pointsLabel.setText(customer.getAvailablePoints());
+                    Label pesoValueLabel = (Label) rootVBox.getScene().lookup("#pesoValueLabel");
+                    pesoValueLabel.setText(String.valueOf(Double.parseDouble(customer.getAvailablePoints()) * pointsRule.getRedeemPeso()));
+
                     clearFields();
                 } else {
                     App.appContextHolder.commonService.updateButtonState();
@@ -118,26 +114,35 @@ public class PayWithPointsService extends BaseService {
                 ApiResponse apiResponse = new ApiResponse();
                 Employee employee = App.appContextHolder.getEmployee();
                 Customer customer = App.appContextHolder.getCustomer();
+                Merchant merchant = App.appContextHolder.getMerchant();
 
                 VBox rootVBox = App.appContextHolder.getRootContainer();
                 TextField amountTextField = (TextField) rootVBox.getScene().lookup("#amountTextField");
                 TextField receiptTextField = (TextField) rootVBox.getScene().lookup("#receiptTextField");
                 TextField pointsTextField = (TextField) rootVBox.getScene().lookup("#pointsTextField");
 
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("employee_uuid", employee.getEmployeeId()));
-                params.add(new BasicNameValuePair("or_no", receiptTextField.getText()));
-                params.add(new BasicNameValuePair("amount", amountTextField.getText()));
-                params.add(new BasicNameValuePair("points", pointsTextField.getText()));
-                params.add(new BasicNameValuePair("pin", pin));
+                JSONObject requestBody = new JSONObject();
+                requestBody.put("merchant_type", merchant.getMerchantType());
+                requestBody.put("merchant_key", merchant.getUniqueKey());
+                requestBody.put("customer_id", customer.getUuid());
+                requestBody.put("points", pointsTextField.getText());
+                requestBody.put("amount", amountTextField.getText());
+                requestBody.put("or_no", receiptTextField.getText());
+                requestBody.put("pin", pin);
+                requestBody.put("employee_id", employee.getEmployeeId());
 
-                String url = BASE_URL + PAY_WITH_POINTS_ENDPOINT;
-                url = url.replace(":customer_uuid", customer.getUuid());
-                JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
+                String token = merchant.getToken();
+
+                String url = CMS_URL + WIDGET_PAY_ENDPOINT;
+                JSONObject jsonObject = apiService.callWidget(url, requestBody.toJSONString(), "post", token);
                 if (jsonObject != null) {
                     if (jsonObject.get("error_code").equals("0x0")) {
                         apiResponse.setSuccess(true);
                         apiResponse.setMessage("Pay with points successful.");
+
+                        JSONObject data = (JSONObject) jsonObject.get("data");
+                        String points = (String) data.get("points");
+                        customer.setAvailablePoints(points);
                     } else if (jsonObject.get("error_code").equals("0x1")){
                         String message = "";
                         JSONObject errorJSON = (JSONObject) jsonObject.get("errors");

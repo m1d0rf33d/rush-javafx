@@ -4,10 +4,12 @@ import com.yondu.App;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.Customer;
 import com.yondu.model.Employee;
+import com.yondu.model.Merchant;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -33,20 +35,26 @@ public class RegisterService extends BaseService {
     public void register(Customer customer, ToggleGroup toggleGroup) {
 
         disableMenu();
+        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
             Task task = registerWorker(customer);
             task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
                 public void handle(WorkerStateEvent event) {
+                    boolean success = false;
                     ApiResponse apiResponse = (ApiResponse) task.getValue();
                     if (apiResponse.isSuccess()) {
                         clearFields(toggleGroup);
+                        success = true;
                     }
+
+
                     showPrompt(apiResponse.getMessage(), "REGISTER");
                     enableMenu();
+                    App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                 }
             });
             new Thread(task).start();
@@ -61,36 +69,43 @@ public class RegisterService extends BaseService {
             protected ApiResponse call() throws Exception {
                 ApiResponse apiResponse = new ApiResponse();
 
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("name", customer.getName()));
-                params.add(new BasicNameValuePair("email", customer.getEmail()));
-                params.add(new BasicNameValuePair("mobile_no", customer.getMobileNumber()));
-                params.add(new BasicNameValuePair("pin", customer.getMpin()));
+                JSONObject requestBody = new JSONObject();
+                requestBody.put("name", customer.getName());
+                requestBody.put("email", customer.getEmail());
+                requestBody.put("mobile_no", customer.getMobileNumber());
+                requestBody.put("pin", customer.getMpin());
 
                 if (customer.getBirthdate() != null) {
                     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/YYYY");
                     String str = customer.getBirthdate().format(dateTimeFormatter);
-                    params.add(new BasicNameValuePair("birthdate", str));
+                    requestBody.put("birthdate", str);
                 }
 
                 if (customer.getGender() != null) {
-                    params.add(new BasicNameValuePair("gender", customer.getGender()));
+                    requestBody.put("gender", customer.getGender());
                 }
 
                 Employee employee = App.appContextHolder.getEmployee();
-                String url = BASE_URL + REGISTER_ENDPOINT;
-                url = url.replace(":employee_id", employee.getEmployeeId());
-                JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
+                Merchant merchant = App.appContextHolder.getMerchant();
 
-                if (jsonObject != null) {
-                    if (jsonObject.get("error_code").equals("0x0")) {
+                requestBody.put("employee_id", employee.getEmployeeId());
+                requestBody.put("merchant_type", merchant.getMerchantType());
+                requestBody.put("merchant_key", merchant.getUniqueKey());
+
+                String token = merchant.getToken();
+
+                String url = CMS_URL + REGISTER_MEMBER_ENDPOINT;
+                JSONObject payload = apiService.callWidget(url, requestBody.toJSONString(), "post", token);
+                if (payload != null) {
+                    String errorCode = (String) payload.get("error_code");
+                    if (errorCode.equals("0x0")) {
                         apiResponse.setSuccess(true);
-                        apiResponse.setMessage("Registration successful");
+                        apiResponse.setMessage("Registration successful.");
                     } else {
-                        apiResponse.setMessage((String) jsonObject.get("message"));
+                        apiResponse.setMessage((String) payload.get("message"));
                     }
                 } else {
-                    apiResponse.setMessage("Network error.");
+                    apiResponse.setMessage("Network connection error.");
                 }
 
                 return apiResponse;

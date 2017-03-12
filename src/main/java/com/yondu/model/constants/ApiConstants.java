@@ -48,4 +48,11 @@ public class ApiConstants {
     public static String WIDGET_INITIALIZE_ENDPOINT;
     public static String LOGIN_EMPLOYEE_ENDPOINT;
     public static String VIEW_MEMBER_ENDPOINT;
+    public static String REGISTER_MEMBER_ENDPOINT;
+    public static String EARN_POINTS_ENDPOINT;
+    public static String GUEST_PURCHASE_ENDPOINT;
+    public static String WIDGET_REDEEM_ENDPOINT;
+    public static String WIDGET_PAY_ENDPOINT;
+    public static String WIDGET_ISSUE_ENDPOINT;
+
 }

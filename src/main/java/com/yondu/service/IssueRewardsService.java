@@ -1,10 +1,7 @@
 package com.yondu.service;
 
 import com.yondu.App;
-import com.yondu.model.ApiResponse;
-import com.yondu.model.Customer;
-import com.yondu.model.Employee;
-import com.yondu.model.Reward;
+import com.yondu.model.*;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -47,9 +44,9 @@ public class IssueRewardsService extends BaseService {
     private List<Reward> unclaimedRewards;
 
     public void initialize() {
-        disableMenu();
+        enableMenu();
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
             Task task = initializeWorker();
@@ -78,23 +75,11 @@ public class IssueRewardsService extends BaseService {
             @Override
             protected ApiResponse call() throws Exception {
                 ApiResponse apiResponse = new ApiResponse();
-                apiResponse.setSuccess(false);
-
                 Customer customer = App.appContextHolder.getCustomer();
-                ApiResponse apiResp = memberDetailsService.loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
-                if (apiResp.isSuccess()) {
-                    apiResp = memberDetailsService.getActiveVouchers();
-                    if (apiResp.isSuccess()) {
-
-                        List<Reward> rewards = App.appContextHolder.getCustomer().getActiveVouchers();
-                        customer.setActiveVouchers(rewards);
-                        apiResponse.setSuccess(true);
-                        loadUnclaimedRewards();
-                        return apiResponse;
-                    }
-                } else {
-                    return apiResponse;
-                }
+                ApiResponse loginResp = memberDetailsService.loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
+                apiResponse.setMessage(loginResp.getMessage());
+                apiResponse.setErrorCode(loginResp.getErrorCode());
+                apiResponse.setSuccess(loginResp.isSuccess());
                 return apiResponse;
             }
         };
@@ -108,11 +93,7 @@ public class IssueRewardsService extends BaseService {
         Customer customer = App.appContextHolder.getCustomer();
         List<VBox> vBoxes = new ArrayList<>();
         for (Reward reward : customer.getActiveVouchers()) {
-            for (Reward rew : App.appContextHolder.getUnclaimedRewards()) {
-                if (rew.getName().equals(reward.getName())) {
-                    reward.setId(rew.getId());
-                }
-            }
+
             VBox vBox = new VBox();
             ImageView imageView = new ImageView(reward.getImageUrl());
             imageView.setFitWidth(350);
@@ -195,14 +176,13 @@ public class IssueRewardsService extends BaseService {
 
     public void issueReward(String redeemId) {
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
             Task task = issueRewardWorker(redeemId);
             task.setOnSucceeded((Event e) -> {
                 ApiResponse apiResponse = (ApiResponse) task.getValue();
                 if (apiResponse.isSuccess()) {
-                    App.appContextHolder.memberDetailsService.getActiveVouchers();
                     renderRewards();
                 }
                 showPrompt(apiResponse.getMessage(), "ISSUE REWARD");
@@ -221,17 +201,33 @@ public class IssueRewardsService extends BaseService {
 
                 Customer customer = App.appContextHolder.getCustomer();
                 Employee employee = App.appContextHolder.getEmployee();
+                Merchant merchant = App.appContextHolder.getMerchant();
 
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("redeem_id", redeemId));
-                String url = BASE_URL + CLAIM_REWARDS_ENDPOINT;
-                url = url.replace(":customer_id", customer.getUuid());
-                url = url.replace(":employee_id", employee.getEmployeeId());
-                JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
+                JSONObject requestBody = new JSONObject();
+                requestBody.put("employee_id", employee.getEmployeeId());
+                requestBody.put("merchant_type", merchant.getMerchantType());
+                requestBody.put("merchant_key", merchant.getUniqueKey());
+                requestBody.put("customer_id", customer.getUuid());
+                requestBody.put("redeem_id", redeemId);
+
+
+                String url = CMS_URL + WIDGET_ISSUE_ENDPOINT;
+                JSONObject jsonObject = apiService.callWidget(url, requestBody.toJSONString(), "post", merchant.getToken());
                 if (jsonObject != null) {
                     if (jsonObject.get("error_code").equals("0x0")) {
                         apiResponse.setMessage("Issue reward successful.");
                         apiResponse.setSuccess(true);
+
+                        List<Reward> rewards = customer.getActiveVouchers();
+                        Reward delete = null;
+                        for (Reward reward : rewards) {
+                            if (reward.getRedeemId().equals(redeemId)) {
+                                delete = reward;
+                                break;
+                            }
+                        }
+                        rewards.remove(delete);
+
                     } else {
                         apiResponse.setMessage((String) jsonObject.get("message"));
                     }

@@ -33,35 +33,27 @@ public class MenuService extends BaseService{
     private ApiService apiService = App.appContextHolder.apiService;
 
     public void initialize() {
-        disableMenu();
 
-        PauseTransition pause = new PauseTransition(
-                Duration.seconds(.01)
-        );
-        pause.setOnFinished(event -> {
-            Branch branch = App.appContextHolder.getBranch();
+        Branch branch = App.appContextHolder.getBranch();
 
-            VBox rootVBox = App.appContextHolder.getRootContainer();
-            MenuButton employeeMenuButton = (MenuButton) rootVBox.getScene().lookup("#employeeMenuButton");
-            employeeMenuButton.setText("Hi! " + App.appContextHolder.getEmployee().getEmployeeName());
-            Label branchNameLabel = (Label) rootVBox.getScene().lookup("#branchNameLabel");
-            ImageView merchantLogoImageView = (ImageView) rootVBox.getScene().lookup("#merchantLogoImageView");
-            branchNameLabel.setText(branch.getName());
+        VBox rootVBox = App.appContextHolder.getRootContainer();
+        MenuButton employeeMenuButton = (MenuButton) rootVBox.getScene().lookup("#employeeMenuButton");
+        employeeMenuButton.setText("Hi! " + App.appContextHolder.getEmployee().getEmployeeName());
+        Label branchNameLabel = (Label) rootVBox.getScene().lookup("#branchNameLabel");
+        ImageView merchantLogoImageView = (ImageView) rootVBox.getScene().lookup("#merchantLogoImageView");
+        branchNameLabel.setText(branch.getName());
 
-            if (App.appContextHolder.getMerchant() != null && App.appContextHolder.getMerchant().getBackgroundUrl() != null) {
-                ImageView imageView = new ImageView(new Image(App.appContextHolder.getMerchant().getBackgroundUrl()));
-                VBox bodyStackPane = (VBox) rootVBox.getScene().lookup("#bodyStackPane");
-                bodyStackPane.getChildren().clear();
-                bodyStackPane.getChildren().add(imageView);
-            }
-            if (branch.getLogoUrl() != null) {
-                merchantLogoImageView.setImage(new Image(branch.getLogoUrl()));
-            }
+        if (App.appContextHolder.getMerchant() != null && App.appContextHolder.getMerchant().getBackgroundUrl() != null) {
+            ImageView imageView = new ImageView(new Image(App.appContextHolder.getMerchant().getBackgroundUrl()));
+            VBox bodyStackPane = (VBox) rootVBox.getScene().lookup("#bodyStackPane");
+            bodyStackPane.getChildren().clear();
+            bodyStackPane.getChildren().add(imageView);
+        }
+        if (branch.getLogoUrl() != null) {
+            merchantLogoImageView.setImage(new Image(branch.getLogoUrl()));
+        }
 
-            loadSideBar();
-            enableMenu();
-        });
-        pause.play();
+        loadSideBar();
     }
 
     private void loadSideBar() {

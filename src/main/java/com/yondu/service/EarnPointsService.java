@@ -1,14 +1,12 @@
 package com.yondu.service;
 
 import com.yondu.App;
-import com.yondu.model.ApiResponse;
-import com.yondu.model.Customer;
-import com.yondu.model.Employee;
-import com.yondu.model.PointsRule;
+import com.yondu.model.*;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -31,29 +29,24 @@ public class EarnPointsService extends BaseService {
     private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
 
     public void initialize() {
-        disableMenu();
-        PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
-        );
-        pause.setOnFinished(event -> {
-            Task task = earnPointsInitWorker();
-            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                @Override
-                public void handle(WorkerStateEvent event) {
-                    ApiResponse apiResponse = (ApiResponse) task.getValue();
-                    if (!apiResponse.isSuccess()) {
-                        showPrompt(apiResponse.getMessage(), "EARN POINTS");
-                        enableMenu();
-                    } else {
-                        loadCustomerDetails();
-                        enableMenu();
-                    }
-                }
-            });
-            new Thread(task).start();
 
+        Task task = earnPointsInitWorker();
+        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                ApiResponse apiResponse = (ApiResponse) task.getValue();
+                if (!apiResponse.isSuccess()) {
+                    showPrompt(apiResponse.getMessage(), "EARN POINTS");
+                    App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
+                    enableMenu();
+                } else {
+                    loadCustomerDetails();
+                    App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
+                    enableMenu();
+                }
+            }
         });
-        pause.play();
+        new Thread(task).start();
 
     }
 
@@ -64,14 +57,10 @@ public class EarnPointsService extends BaseService {
                 ApiResponse apiResponse = new ApiResponse();
                 apiResponse.setSuccess(false);
 
-                ApiResponse tempResp = getPointsRule();
-                if (tempResp.isSuccess()) {
-                    tempResp = App.appContextHolder.memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber(), App.appContextHolder.getCurrentState());
-                    if (tempResp.isSuccess()) {
-                        apiResponse.setSuccess(true);
-                    } else {
-                        apiResponse.setMessage("Network connection error");
-                    }
+                Customer customer = App.appContextHolder.getCustomer();
+                ApiResponse resp = App.appContextHolder.memberDetailsService.loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
+                if (resp.isSuccess()) {
+                    apiResponse.setSuccess(true);
                 } else {
                     apiResponse.setMessage("Network connection error");
                 }
@@ -90,21 +79,27 @@ public class EarnPointsService extends BaseService {
 
                 Employee employee = App.appContextHolder.getEmployee();
                 Customer customer = App.appContextHolder.getCustomer();
+                Merchant merchant = App.appContextHolder.getMerchant();
 
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("uuid", customer.getUuid()));
-                params.add(new BasicNameValuePair("or_no", orNumber));
-                params.add(new BasicNameValuePair("amount", amount.replace(",","")));
+                JSONObject requestBody = new JSONObject();
+                requestBody.put("customer_id", customer.getUuid());
+                requestBody.put("employee_id", employee.getEmployeeId());
+                requestBody.put("or_no", orNumber);
+                requestBody.put("amount", amount);
+                requestBody.put("merchant_key",merchant.getUniqueKey());
+                requestBody.put("merchant_type", merchant.getMerchantType());
 
-                String url = BASE_URL + GIVE_POINTS_ENDPOINT;
-                url = url.replace(":customer_uuid",customer.getUuid());
-                url = url.replace(":employee_id", employee.getEmployeeId());
-                JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
+                String token = merchant.getToken();
 
+                String url = CMS_URL + EARN_POINTS_ENDPOINT;
+                JSONObject jsonObject = apiService.callWidget(url, requestBody.toJSONString(), "post", token);
                 if (jsonObject != null) {
                     if (jsonObject.get("error_code").equals("0x0")) {
                         apiResponse.setMessage("Earn points successful.");
                         apiResponse.setSuccess(true);
+                        JSONObject payload = new JSONObject();
+                        payload.put("points", jsonObject.get("points"));
+                        apiResponse.setPayload(payload);
                     } else {
                         apiResponse.setMessage((String) jsonObject.get("message"));
                     }
@@ -128,7 +123,10 @@ public class EarnPointsService extends BaseService {
                 public void handle(WorkerStateEvent event) {
                     ApiResponse apiResponse = (ApiResponse) task.getValue();
                     if (apiResponse.isSuccess()) {
-                        initialize();
+                        String points = (String) apiResponse.getPayload().get("points");
+                        VBox vBox = App.appContextHolder.getRootContainer();
+                        Label pointsLabel = (Label) vBox.getScene().lookup("#pointsLabel");
+                        pointsLabel.setText(points);
                         clearFields();
                     }
                     showPrompt(apiResponse.getMessage(), "EARN POINTS");

@@ -58,6 +58,7 @@ public class MobileLoginController implements Initializable {
 
         submitButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             ((Stage) submitButton.getScene().getWindow()).close();
+
             PauseTransition pause = new PauseTransition(
                     Duration.seconds(.01)
             );
@@ -83,6 +84,9 @@ public class MobileLoginController implements Initializable {
                     for (Node n :  App.appContextHolder.getRootContainer().getChildren()) {
                         n.setDisable(false);
                     }
+
+                    App.appContextHolder.setCurrentState(App.appContextHolder.getPrevState());
+
                     commonService.updateButtonState();
                     Text text = new Text(apiResponse.getMessage());
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);

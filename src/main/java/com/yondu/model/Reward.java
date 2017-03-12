@@ -13,6 +13,15 @@ public class Reward {
     private String quantity;
     private String date;
     private Integer stamps;
+    private String redeemId;
+
+    public String getRedeemId() {
+        return redeemId;
+    }
+
+    public void setRedeemId(String redeemId) {
+        this.redeemId = redeemId;
+    }
 
     public Integer getStamps() {
         return stamps;

@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -47,10 +48,13 @@ public class MemberDetailsService extends BaseService{
                     if (apiResponse.isSuccess()) {
                         loadCustomerDetails();
                         loadActiveVouchers();
+                        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
+                        enableMenu();
                     } else {
                         showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
+                        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
+                        enableMenu();
                     }
-                    enableMenu();
                 }
             });
 
@@ -60,7 +64,8 @@ public class MemberDetailsService extends BaseService{
     }
 
     public void viewMember(String mobileNumber) {
-      //  disableMenu();
+        disableMenu();
+        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.01)
         );
@@ -75,6 +80,7 @@ public class MemberDetailsService extends BaseService{
                     } else {
                         showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY");
                         enableMenu();
+                        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                     }
 
                 }
@@ -105,12 +111,10 @@ public class MemberDetailsService extends BaseService{
                 Customer customer = App.appContextHolder.getCustomer();
                 ApiResponse loginResponse = loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
                 if (loginResponse.isSuccess()) {
-                    getActiveVouchers();
                     apiResponse.setSuccess(true);
                 } else {
                     showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
                 }
-
                 return apiResponse;
             }
         };
@@ -137,7 +141,7 @@ public class MemberDetailsService extends BaseService{
         if (jsonObject != null) {
             if (jsonObject.get("error_code").equals("0x0")) {
                 JSONObject data = (JSONObject) jsonObject.get("data");
-                JSONObject memberDTO = (JSONObject) data.get("memberDTO");
+                JSONObject memberDTO = (JSONObject) data.get("member");
 
                 Customer customer = new Customer();
                 customer.setMobileNumber((String) memberDTO.get("mobile_no"));
@@ -149,6 +153,47 @@ public class MemberDetailsService extends BaseService{
                 customer.setMemberSince((String) memberDTO.get("registration_date"));
                 customer.setUuid((String) memberDTO.get("id"));
                 customer.setAvailablePoints((String) memberDTO.get("points"));
+
+                List<JSONObject> rewardsJSON = (ArrayList) data.get("rewards");
+                if (rewardsJSON != null) {
+                    List<Reward> rewards = new ArrayList<>();
+                    for (JSONObject rewardJSON : rewardsJSON) {
+                        Reward reward = new Reward();
+                        if (rewardJSON.get("redeem_id") != null) {
+                            reward.setRedeemId((String) rewardJSON.get("redeem_id"));
+                        }
+                        reward.setDate((String) rewardJSON.get("date"));
+                        reward.setDetails((String) rewardJSON.get("details"));
+                        reward.setId((String) rewardJSON.get("id"));
+                        reward.setImageUrl((String) rewardJSON.get("image_url"));
+                        reward.setName((String) rewardJSON.get("name"));
+                        reward.setPointsRequired(String.valueOf(rewardJSON.get("points_required")));
+                        rewards.add(reward);
+                    }
+                    customer.setActiveVouchers(rewards);
+                }
+                JSONObject pointsRuleJSON = (JSONObject) data.get("pointsRule");
+                if (pointsRuleJSON != null) {
+                    PointsRule pointsRule = new PointsRule();
+                    pointsRule.setEarningPeso((Long) pointsRuleJSON.get("earning_peso"));
+                    pointsRule.setRedeemPeso((Long) pointsRuleJSON.get("redemption_peso"));
+                    App.appContextHolder.setPointsRule(pointsRule);
+                }
+
+                if (data.get("merchantRewards") != null) {
+                    List<JSONObject> merchantRewards = (ArrayList) data.get("merchantRewards");
+                    List<Reward> rewards = new ArrayList<>();
+                    for (JSONObject rewardJSON : merchantRewards) {
+                        Reward reward = new Reward();
+                        reward.setImageUrl((String) rewardJSON.get("image_url"));
+                        reward.setDetails((String) rewardJSON.get("details"));
+                        reward.setName((String) rewardJSON.get("name"));
+                        reward.setId((String) rewardJSON.get("id"));
+                        reward.setPointsRequired(String.valueOf((Long) rewardJSON.get("points_required")));
+                        rewards.add(reward);
+                    }
+                    merchant.setRewards(rewards);
+                }
 
                 App.appContextHolder.setCustomer(customer);
                 apiResponse.setSuccess(true);

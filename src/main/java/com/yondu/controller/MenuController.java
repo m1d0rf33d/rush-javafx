@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -81,6 +82,73 @@ public class MenuController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+    }
+    private void bindLogout() {
+        employeeMenuButton.getItems().clear();
+
+        Label label = new Label("LOGOUT");
+        label.setId("logoutLabel");
+        MenuItem logoutMenuItem = new MenuItem();
+        logoutMenuItem.setGraphic(label);
+        logoutMenuItem.getStyleClass().add("menuitem");
+        logoutMenuItem.setId("logoutButton");
+        logoutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                App.appContextHolder.setEmployee(null);
+                App.appContextHolder.setCustomer(null);
+                routeService.goToLoginScreen((Stage) rootVBox.getScene().getWindow());
+            }
+        });
+        employeeMenuButton.getItems().addAll(logoutMenuItem);
+    }
+
+    private void bindRightClick() {
+        MenuItem menuItem = new MenuItem("Reload");
+        menuItem.setOnAction(event -> {
+            App.appContextHolder.setCurrentState(AppState.MENU);
+            App.appContextHolder.commonService.updateButtonState();
+            menuService.initialize();
+        });
+        contextMenu.getItems().add(menuItem);
+    }
+
+    private void loadMobileLoginDialog() {
+        try {
+
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(MOBILE_LOGIN_SCREEN));
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root, 450,200);
+            stage.setScene(scene);
+            stage.setTitle(APP_TITLE);
+            stage.resizableProperty().setValue(Boolean.FALSE);
+            stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+            stage.initOwner(rootVBox.getScene().getWindow());
+            stage.setOnCloseRequest(event -> {
+                enableMenu();
+            });
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    public void disableMenu() {
+        rootVBox.setOpacity(.50);
+        for (Node n : rootVBox.getChildren()) {
+            n.setDisable(true);
+        }
+    }
+    public void enableMenu() {
+        rootVBox.setOpacity(1);
+        for (Node n : rootVBox.getChildren()) {
+            n.setDisable(false);
+        }
+    }
+
+    public void initAfterLoad() {
         App.appContextHolder.setRootContainer(rootVBox);
         App.appContextHolder.setCurrentState(AppState.MENU);
 
@@ -120,13 +188,16 @@ public class MenuController implements Initializable {
         });
 
         memberInquiryButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
+
             App.appContextHolder.setPrevState(App.appContextHolder.getCurrentState());
             App.appContextHolder.setCurrentState(AppState.MEMBER_INQUIRY);
+
             commonService.updateButtonState();
             if (App.appContextHolder.getCustomer() == null) {
                 routeService.loadContentPage(bodyStackPane, MEMBER_INQUIRY_SCREEN);
             } else {
                 disableMenu();
+                App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
                 routeService.loadMemberDetailsScreen(false);
             }
         });
@@ -146,10 +217,12 @@ public class MenuController implements Initializable {
             disableMenu();
             App.appContextHolder.setPrevState(App.appContextHolder.getCurrentState());
             App.appContextHolder.setCurrentState(AppState.EARN_POINTS);
+
             commonService.updateButtonState();
             if (App.appContextHolder.getCustomer() == null) {
                 loadMobileLoginDialog();
             } else {
+                App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
                 routeService.loadEarnPointsScreen();
             }
         });
@@ -157,11 +230,13 @@ public class MenuController implements Initializable {
         redeemRewardsButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             App.appContextHolder.setPrevState(App.appContextHolder.getCurrentState());
             App.appContextHolder.setCurrentState(AppState.REDEEM_REWARDS);
+
             commonService.updateButtonState();
             disableMenu();
             if (App.appContextHolder.getCustomer() == null) {
                 loadMobileLoginDialog();
             } else {
+                App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
                 routeService.loadRedeemRewardsScreen();
             }
 
@@ -177,7 +252,7 @@ public class MenuController implements Initializable {
             if (App.appContextHolder.getCustomer() == null) {
                 loadMobileLoginDialog();
             } else {
-               routeService.loadPayWithPoints();
+                routeService.loadPayWithPoints();
             }
         });
 
@@ -185,7 +260,7 @@ public class MenuController implements Initializable {
             App.appContextHolder.setPrevState(App.appContextHolder.getCurrentState());
             App.appContextHolder.setCurrentState(AppState.ISSUE_REWARDS);
             commonService.updateButtonState();
-            disableMenu();
+           // disableMenu();
 
             if (App.appContextHolder.getCustomer() == null) {
                 loadMobileLoginDialog();
@@ -221,69 +296,4 @@ public class MenuController implements Initializable {
             routeService.loadOCRScreen();
         });
     }
-    private void bindLogout() {
-        employeeMenuButton.getItems().clear();
-
-        Label label = new Label("LOGOUT");
-        label.setId("logoutLabel");
-        MenuItem logoutMenuItem = new MenuItem();
-        logoutMenuItem.setGraphic(label);
-        logoutMenuItem.getStyleClass().add("menuitem");
-        logoutMenuItem.setId("logoutButton");
-        logoutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                App.appContextHolder.setEmployee(null);
-                App.appContextHolder.setCustomer(null);
-                routeService.goToLoginScreen((Stage) rootVBox.getScene().getWindow());
-            }
-        });
-        employeeMenuButton.getItems().addAll(logoutMenuItem);
-    }
-
-    private void bindRightClick() {
-        MenuItem menuItem = new MenuItem("Reload");
-        menuItem.setOnAction(event -> {
-            App.appContextHolder.setCurrentState(AppState.MENU);
-            App.appContextHolder.commonService.updateButtonState();
-            menuService.initialize();
-        });
-        contextMenu.getItems().add(menuItem);
-    }
-
-    private void loadMobileLoginDialog() {
-        try {
-            disableMenu();
-
-            Stage stage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(MOBILE_LOGIN_SCREEN));
-            Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 450,200);
-            stage.setScene(scene);
-            stage.setTitle(APP_TITLE);
-            stage.resizableProperty().setValue(Boolean.FALSE);
-            stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
-            stage.initOwner(rootVBox.getScene().getWindow());
-            stage.setOnCloseRequest(event -> {
-                enableMenu();
-            });
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-    public void disableMenu() {
-        rootVBox.setOpacity(.50);
-        for (Node n : rootVBox.getChildren()) {
-            n.setDisable(true);
-        }
-    }
-    public void enableMenu() {
-        rootVBox.setOpacity(1);
-        for (Node n : rootVBox.getChildren()) {
-            n.setDisable(false);
-        }
-    }
-
 }

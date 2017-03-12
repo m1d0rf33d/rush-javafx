@@ -3,6 +3,7 @@ package com.yondu.service;
 import com.yondu.App;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.Employee;
+import com.yondu.model.Merchant;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -65,14 +66,20 @@ public class GuestPurchaseService extends BaseService {
                 apiResponse.setSuccess(false);
 
                 Employee employee = App.appContextHolder.getEmployee();
+                Merchant merchant = App.appContextHolder.getMerchant();
 
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("mobile_no", mobileNo));
-                params.add(new BasicNameValuePair("or_no", orNumber));
-                params.add(new BasicNameValuePair("amount", amount.replace(",","")));
-                String url = BASE_URL +  EARN_GUEST_ENDPOINT;
-                url = url.replace(":employee_id", employee.getEmployeeId());
-                JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
+                JSONObject requestBody = new JSONObject();
+                requestBody.put("employee_id", employee.getEmployeeId());
+                requestBody.put("merchant_type", merchant.getMerchantType());
+                requestBody.put("merchant_key", merchant.getUniqueKey());
+                requestBody.put("or_no", orNumber);
+                requestBody.put("mobile_no", mobileNo);
+                requestBody.put("amount", amount);
+
+                String token = merchant.getToken();
+
+                String url = CMS_URL +  GUEST_PURCHASE_ENDPOINT;
+                JSONObject jsonObject = apiService.callWidget(url, requestBody.toJSONString(), "post", token);
                 if (jsonObject != null) {
                     if (jsonObject.get("error_code").equals("0x0")) {
                         apiResponse.setSuccess(true);

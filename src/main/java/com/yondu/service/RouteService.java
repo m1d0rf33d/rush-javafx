@@ -1,6 +1,9 @@
 package com.yondu.service;
 
 import com.yondu.App;
+import com.yondu.controller.LoginController;
+import com.yondu.controller.LoginOnlineController;
+import com.yondu.controller.MenuController;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.Customer;
 import com.yondu.model.constants.AppConfigConstants;
@@ -37,13 +40,19 @@ public class RouteService extends BaseService{
         try {
 
             Stage stage = new Stage();
-            Parent root = FXMLLoader.load(App.class.getResource(AppConfigConstants.LOGIN_FXML));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(LOGIN_FXML));
+            Parent root = fxmlLoader.load();
             stage.setScene(new Scene(root, 1000,700));
             stage.setTitle(APP_TITLE);
             stage.getIcons().add(new Image(App.class.getResource(AppConfigConstants.R_LOGO).toExternalForm()));
             Scene scene  = stage.getScene();
             scene.getStylesheets().add(App.class.getResource("/app/css/menu.css").toExternalForm());
             stage.show();
+            LoginController controller = fxmlLoader.getController();
+            controller.initAfterLoad();
+
+
+
             stage.setMaximized(true);
 
             if (currentStage != null) {
@@ -57,8 +66,8 @@ public class RouteService extends BaseService{
     public void goToMenuScreen(Stage currentStage) {
         try {
             Stage stage = new Stage();
-
-            Parent root = FXMLLoader.load(App.class.getResource("/app/fxml/menu.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/app/fxml/menu.fxml"));
+            Parent root = fxmlLoader.load();
             stage.setScene(new Scene(root, 1000, 700));
             stage.setTitle(APP_TITLE);
             stage.getIcons().add(new Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
@@ -70,6 +79,15 @@ public class RouteService extends BaseService{
             if (currentStage != null) {
                 currentStage.close();
             }
+            PauseTransition pause = new PauseTransition(
+                    Duration.seconds(.01)
+            );
+            pause.setOnFinished(event -> {
+                        MenuController menuController = fxmlLoader.getController();
+                        menuController.initAfterLoad();
+            });
+            pause.play();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -92,12 +110,10 @@ public class RouteService extends BaseService{
     }
 
     public void loadRedeemRewardsScreen() {
-        disableMenu();
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
-
             VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
             this.loadContentPage(bodyStackPane, REDEEM_REWARDS_SCREEN);
 
@@ -105,9 +121,8 @@ public class RouteService extends BaseService{
         pause.play();
     }
     public void loadEarnPointsScreen() {
-        disableMenu();
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
             VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
@@ -117,17 +132,8 @@ public class RouteService extends BaseService{
         pause.play();
     }
     public void loadPayWithPoints() {
-        disableMenu();
-        PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
-        );
-        pause.setOnFinished(event -> {
-
-            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
-            this.loadContentPage(bodyStackPane, PAY_WITH_POINTS);
-
-        });
-        pause.play();
+        VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
+        this.loadContentPage(bodyStackPane, PAY_WITH_POINTS);
     }
     public void loadGuestPurchase() {
         disableMenu();
@@ -143,9 +149,9 @@ public class RouteService extends BaseService{
     }
 
     public void loadIssueRewardsScreen() {
-        disableMenu();
+     //   disableMenu();
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
 

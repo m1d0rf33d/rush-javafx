@@ -47,36 +47,26 @@ public class RedeemRewardsService extends BaseService {
 
     public void initialize() {
 
-        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
-        disableMenu();
-        PauseTransition pause = new PauseTransition(
-                Duration.seconds(1)
-        );
-        pause.setOnFinished(event -> {
-
-            Task task = initializeWorker();
-            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                @Override
-                public void handle(WorkerStateEvent event) {
-                    ApiResponse apiResponse = (ApiResponse) task.getValue();
-                    if (apiResponse.isSuccess()) {
-                        loadCustomerDetails();
-                        renderRewards();
-                        enableMenu();
-                        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
-                    } else {
-                        showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
-                        enableMenu();
-                        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
-                    }
-
-
+        Task task = initializeWorker();
+        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                ApiResponse apiResponse = (ApiResponse) task.getValue();
+                if (apiResponse.isSuccess()) {
+                    loadCustomerDetails();
+                    renderRewards();
+                    enableMenu();
+                    App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
+                } else {
+                    showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
+                    enableMenu();
+                    App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                 }
-            });
 
-            new Thread(task).start();
+
+            }
         });
-        pause.play();
+        new Thread(task).start();
     }
 
     public Task initializeWorker() {
@@ -84,35 +74,28 @@ public class RedeemRewardsService extends BaseService {
             @Override
             protected ApiResponse call() throws Exception {
                 ApiResponse apiResponse = new ApiResponse();
-
                 Customer customer = App.appContextHolder.getCustomer();
                 ApiResponse loginResp = memberDetailsService.loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
-                if (loginResp.isSuccess()) {
-                    ApiResponse rewardsResp = getRewards();
-                    if (rewardsResp.isSuccess()) {
-                        apiResponse.setSuccess(true);
-                    } else {
-                        apiResponse.setMessage(apiResponse.getMessage());
-                    }
-                } else {
-                    apiResponse.setMessage("Network connection error.");
-                    return apiResponse;
-                }
+                apiResponse.setMessage(loginResp.getMessage());
+                apiResponse.setErrorCode(loginResp.getErrorCode());
+                apiResponse.setSuccess(loginResp.isSuccess());
                 return apiResponse;
             }
         };
     }
 
     public void redeemRewards(String pin) {
-
+        enableMenu();
         Task task = redeemRewardWorker(pin);
         task.setOnSucceeded((Event event) -> {
             ApiResponse apiResponse = (ApiResponse) task.getValue();
             if (apiResponse.isSuccess()) {
+                Customer customer = App.appContextHolder.getCustomer();
+
                 VBox rootVBox = App.appContextHolder.getRootContainer();
                 Label pointsLabel = (Label) rootVBox.getScene().lookup("#pointsLabel");
-                JSONObject payload = apiResponse.getPayload();
-                pointsLabel.setText((String) payload.get("points"));
+                pointsLabel.setText(customer.getAvailablePoints());
+
             }
             showPrompt(apiResponse.getMessage(), "REDEEM REWARDS");
             enableMenu();
@@ -128,36 +111,28 @@ public class RedeemRewardsService extends BaseService {
                 ApiResponse apiResponse = new ApiResponse();
                 apiResponse.setSuccess(false);
 
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("pin", pin));
-                String url = BASE_URL + REDEEM_REWARDS_ENDPOINT;
-
-                Reward reward = App.appContextHolder.getReward();
-
                 Customer customer = App.appContextHolder.getCustomer();
                 Employee employee = App.appContextHolder.getEmployee();
-                url = url.replace(":customer_id", customer.getUuid());
-                url = url.replace(":employee_id", employee.getEmployeeId());
-                url = url.replace(":reward_id", reward.getId());
-                JSONObject jsonObject = apiService.call(url, params, "post", MERCHANT_APP_RESOURCE_OWNER);
+                Reward reward = App.appContextHolder.getReward();
+                Merchant merchant = App.appContextHolder.getMerchant();
+
+                JSONObject requestBody = new JSONObject();
+                requestBody.put("merchant_type", merchant.getMerchantType());
+                requestBody.put("merchant_key", merchant.getUniqueKey());
+                requestBody.put("employee_id", employee.getEmployeeId());
+                requestBody.put("customer_id", customer.getUuid());
+                requestBody.put("pin", pin);
+                requestBody.put("reward_id", reward.getId());
+
+                String url = CMS_URL + WIDGET_REDEEM_ENDPOINT;
+                JSONObject jsonObject = apiService.callWidget(url, requestBody.toJSONString(), "post", merchant.getToken());
                 if (jsonObject != null) {
                     if (jsonObject.get("error_code").equals("0x0")) {
                         apiResponse.setSuccess(true);
                         apiResponse.setMessage("Redeem reward successful.");
-
-                        params = new ArrayList<>();
-                        url = BASE_URL + GET_POINTS_ENDPOINT;
-                        url = url.replace(":customer_uuid", customer.getUuid());
-                        jsonObject = apiService.call(url, params, "get", MERCHANT_APP_RESOURCE_OWNER);
-                        if (jsonObject != null) {
-                            JSONObject payload = new JSONObject();
-                            payload.put("points", jsonObject.get("data"));
-                            apiResponse.setSuccess(true);
-                            apiResponse.setPayload(payload);
-                        } else {
-                            apiResponse.setMessage("Network error.");
-                        }
-
+                        JSONObject data = (JSONObject) jsonObject.get("data");
+                        merchant.getRewards().remove(reward);
+                        customer.setAvailablePoints((String) data.get("points"));
                     } else {
                         apiResponse.setMessage((String) jsonObject.get("message"));
                     }
@@ -232,6 +207,7 @@ public class RedeemRewardsService extends BaseService {
             vBox.setMargin(imageView, new Insets(10,10,10,10));
             vBox.setMargin(label, new Insets(10,10,10,10));
             vBox.setPrefHeight(200);
+            vBox.setId(reward.getId());
             vBoxes.add(vBox);
         }
         rewardsFlowPane.getChildren().clear();

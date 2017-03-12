@@ -92,6 +92,11 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+
+    }
+
+    public void initAfterLoad() {
         App.appContextHolder.setCurrentState(AppState.LOGIN);
         App.appContextHolder.setRootContainer(rootVBox);
         rootScrollPane.setFitToHeight(true);
@@ -130,6 +135,5 @@ public class LoginController implements Initializable {
         });
 
         loginService.initialize();
-
     }
 }

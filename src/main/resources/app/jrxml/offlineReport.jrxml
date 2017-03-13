@@ -31,26 +31,44 @@
 		<band height="20">
 			<staticText>
 				<reportElement x="-20" y="0" width="100" height="20" uuid="0ed96e1c-e79e-4d14-b402-eec6f9fa2ae2"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[DATE]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="80" y="0" width="100" height="20" uuid="d715813d-bc54-48a5-9bed-22f40c5b313d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[MOBILE NUMBER]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="180" y="0" width="100" height="20" uuid="fcc3ae67-5602-4f6c-9aff-2b5645a66ff6"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[OR NUMBER]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="280" y="0" width="100" height="20" uuid="53b02ae0-142a-490e-9f2e-b1fa458d26aa"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[AMOUNT]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="380" y="0" width="100" height="20" uuid="1c957089-a604-4c3e-9c9c-1a988cd402c0"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[STATUS]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="480" y="0" width="100" height="20" uuid="b2fa862b-8ed5-49e6-8131-2badb3de15b5"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[MESSAGE]]></text>
 			</staticText>
 		</band>

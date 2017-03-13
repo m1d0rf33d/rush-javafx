@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="onlineReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5dc2542d-cb98-4892-a5ad-c50561228178">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="1"/>
+	<property name="ireport.y" value="0"/>
+	<field name="date" class="java.lang.String">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
+	<field name="transactionType" class="java.lang.String">
+		<fieldDescription><![CDATA[transactionType]]></fieldDescription>
+	</field>
+	<field name="employeeName" class="java.lang.String">
+		<fieldDescription><![CDATA[employeeName]]></fieldDescription>
+	</field>
+	<field name="mobileNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[mobileNumber]]></fieldDescription>
+	</field>
+	<field name="amount" class="java.lang.String">
+		<fieldDescription><![CDATA[amount]]></fieldDescription>
+	</field>
+	<field name="orNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[orNumber]]></fieldDescription>
+	</field>
+	<field name="reward" class="java.lang.String">
+		<fieldDescription><![CDATA[reward]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement x="-20" y="0" width="100" height="20" uuid="01a15ff7-bcdc-437a-bdcb-0fa5cd9599fa"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="0" width="100" height="20" uuid="a983e1e5-dc9d-4100-9289-730c7b07b630"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TRANSACTION TYPE	]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="0" width="100" height="20" uuid="fff8b080-6321-4d23-894c-d8dd5ee00102"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMPLOYEE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="0" width="100" height="20" uuid="4efc23f0-0b1d-48b0-bafc-8e7492d7c334"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[MOBILE NUMBER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="0" width="100" height="20" uuid="b15924bb-7f30-4479-b337-d3911935a474"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[AMOUNT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="480" y="0" width="100" height="20" uuid="5c2f0b3c-205f-4110-a64a-faa1895b7696"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[OR NUMBER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="580" y="0" width="100" height="20" uuid="da59140f-0267-452a-aa90-88efd9839260"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[REWARD]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="-20" y="0" width="100" height="20" uuid="de12d7a5-ca2f-4eb5-8a15-fe647f270153"/>
+				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="0" width="100" height="20" uuid="a68cc997-bafa-4930-b17e-7bc96bb971b8"/>
+				<textFieldExpression><![CDATA[$F{transactionType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="0" width="100" height="20" uuid="c31c29e2-8f24-4cbb-bb61-e9a26d5caafe"/>
+				<textFieldExpression><![CDATA[$F{employeeName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="0" width="100" height="20" uuid="922fa5db-f471-4828-ae5d-fb788bcb4411"/>
+				<textFieldExpression><![CDATA[$F{mobileNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="0" width="100" height="20" uuid="a50cbb8d-b42d-44f2-9995-ce63b1ad4543"/>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="0" width="100" height="20" uuid="1f7471f6-f46e-401a-a1b7-783b3c15b90b"/>
+				<textFieldExpression><![CDATA[$F{orNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="580" y="0" width="100" height="20" uuid="3e645f77-ca24-4968-876c-42e354f01d0b"/>
+				<textFieldExpression><![CDATA[$F{reward}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

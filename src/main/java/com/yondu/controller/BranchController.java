@@ -100,18 +100,7 @@ public class BranchController implements Initializable {
         });
 
         onlineGenerateButton.setOnMouseClicked((MouseEvent e) -> {
-            Label label = new Label("Under development. peace out");
-            label.setPadding(new Insets(10,0,0,0));
-            label.setFont(new Font(15.0));
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-            alert.setTitle(AppConfigConstants.APP_TITLE);
-            alert.initStyle(StageStyle.UTILITY);
-            alert.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());
-            alert.setHeaderText("CONSTRUCTION ON-GOING");
-            alert.getDialogPane().setPadding(new Insets(10,10,10,10));
-            alert.getDialogPane().setContent(label);
-            alert.getDialogPane().setPrefWidth(400);
-            alert.show();
+            App.appContextHolder.branchTransactionService.exportOnlineReport();
         });
     }
 

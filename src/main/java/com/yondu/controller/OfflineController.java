@@ -38,12 +38,12 @@ public class OfflineController implements Initializable {
 
         statusMenuButton.setText("All");
 
-        searchTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+       /* searchTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 offlinePagination.setPageFactory((Integer pageIndex) -> offlineService.createOfflinePage(pageIndex));
             }
-        });
+        });*/
 
         givePointsButton.setOnMouseClicked((MouseEvent e) -> {
             offlineService.givePoints();

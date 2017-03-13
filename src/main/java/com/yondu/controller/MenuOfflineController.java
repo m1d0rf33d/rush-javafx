@@ -38,6 +38,8 @@ public class MenuOfflineController implements Initializable {
     public VBox bodyStackPane;
     @FXML
     public Button ocrButton;
+    @FXML
+    public Button transactionsButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -62,7 +64,7 @@ public class MenuOfflineController implements Initializable {
         logoutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                App.appContextHolder.loginService.initialize();
+                App.appContextHolder.loginService.reconnectSuccess();
             }
         });
         employeeMenuButton.getItems().addAll(logoutMenuItem);
@@ -97,7 +99,20 @@ public class MenuOfflineController implements Initializable {
 
         });
 
+        transactionsButton.setOnMouseClicked((Event e) -> {
+            App.appContextHolder.setCurrentState(AppState.TRANSACTIONS);
+            App.appContextHolder.commonService.updateButtonState();
+            try {
+                bodyStackPane.getChildren().clear();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/app/fxml/branch-transactions.fxml"));
+                Parent root = fxmlLoader.load();
+                bodyStackPane.getChildren().add(root);
 
+            } catch (IOException err) {
+                err.printStackTrace();
+            }
+
+        });
     }
 
 }

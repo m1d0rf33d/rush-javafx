@@ -57,7 +57,7 @@ public class BranchTransactionService {
                             "    -fx-tab-max-width:200px;\n" +
                             "    -fx-tab-min-height:30px;\n" +
                             "    -fx-tab-max-height:30px;\n" +
-                            "    -fx-text-fill: white;\n" +
+                            "    -fx-text-fill: black;\n" +
                             "    -fx-font-size: 17px;");
                 } else {
                     tab.setGraphic(new Label("ONLINE"));
@@ -65,10 +65,14 @@ public class BranchTransactionService {
                             "    -fx-tab-max-width:200px;\n" +
                             "    -fx-tab-min-height:30px;\n" +
                             "    -fx-tab-max-height:30px;\n" +
-                            "    -fx-text-fill: black;\n" +
+                            "    -fx-text-fill: white;\n" +
                             "    -fx-font-size: 17px;");
                 }
 
+            }
+            Button givePointsButton = (Button) rootVBox.getScene().lookup("#givePointsButton");
+            if (App.appContextHolder.getEmployee() == null) {
+                givePointsButton.setVisible(false);
             }
 
         });
@@ -344,6 +348,13 @@ public class BranchTransactionService {
 
         onlinePagination.setPageCount(0);
         onlinePagination.setPageFactory((Integer pageIndex) -> createOnlinePage(pageIndex));
+        TextField onlineTextField = (TextField) rootVBox.getScene().lookup("#onlineTextField");
+        onlineTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                onlinePagination.setPageFactory((Integer pageIndex) -> createOnlinePage(pageIndex));
+            }
+        });
     }
 
     public Node createOnlinePage(int pageIndex) {
@@ -357,7 +368,7 @@ public class BranchTransactionService {
 
 
         VBox rootVBox = App.appContextHolder.getRootContainer();
-        TextField searchTextField = (TextField) rootVBox.getScene().lookup("#searchTextField");
+        TextField onlineTextField = (TextField) rootVBox.getScene().lookup("#onlineTextField");
         Pagination onlinePagination = (Pagination) rootVBox.getScene().lookup("#onlinePagination");
 
         TableView<OnlineTransaction> transactionsTableView = new TableView();
@@ -367,8 +378,8 @@ public class BranchTransactionService {
         ObservableList<OnlineTransaction> textFilteredData = FXCollections.observableArrayList();
 
         if (onlineData != null) {
-            if (searchTextField.getText() != null && !searchTextField.getText().isEmpty()) {
-                String searchTxt = searchTextField.getText().toLowerCase();
+            if (onlineTextField.getText() != null && !onlineTextField.getText().isEmpty()) {
+                String searchTxt = onlineTextField.getText().toLowerCase();
                 for (OnlineTransaction ot : onlineData) {
                     String temp = "";
                     temp = temp + (ot.getMobileNumber() != null ? ot.getMobileNumber() : "");

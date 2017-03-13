@@ -7,6 +7,7 @@ import com.yondu.model.constants.AppState;
 import com.yondu.service.ApiService;
 import com.yondu.service.CommonService;
 import com.yondu.service.LoginService;
+import com.yondu.service.ReportService;
 import com.yondu.utils.PropertyBinder;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
@@ -23,6 +24,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import net.sf.jasperreports.engine.JRException;
 import org.apache.http.NameValuePair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -127,7 +129,14 @@ public class LoginController implements Initializable {
                 loginTextField.setText(subStr);
             }
         });
-
+  /*      ReportService reportService = new ReportService();
+      try {
+            reportService.exportXls();
+        } catch (JRException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
         loginService.initialize();
     }
 

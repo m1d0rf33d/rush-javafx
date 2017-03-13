@@ -67,7 +67,7 @@ public class OfflineService extends BaseService {
 
     public void givePoints() {
 
-       // disableMenu();
+       disableMenu();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.5)
         );

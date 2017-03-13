@@ -251,11 +251,15 @@ public class LoginService extends BaseService{
         };
     }
 
+    public void reconnectSuccess() {
+        Stage stage = (Stage) App.appContextHolder.getRootContainer().getScene().getWindow();
+
+        App.appContextHolder.routeService.goToLoginScreen(stage);
+    }
 
     private void loadOnline() {
         try {
-            VBox numbersVBox = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#numbersVBox");
-            numbersVBox.setVisible(true);
+
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(LOGIN_ONLINE_FXML));
             Parent root = fxmlLoader.load();
             StackPane bodyStackPane = (StackPane) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
@@ -290,7 +294,7 @@ public class LoginService extends BaseService{
 
 
 
-            PauseTransition pause = new PauseTransition(
+           /* PauseTransition pause = new PauseTransition(
                     Duration.seconds(.01)
             );
             pause.setOnFinished(event -> {
@@ -306,7 +310,7 @@ public class LoginService extends BaseService{
                 alert.getDialogPane().setPrefWidth(400);
                 alert.show();
             });
-            pause.play();
+            pause.play();*/
         } catch (IOException e) {
             e.printStackTrace();
         }

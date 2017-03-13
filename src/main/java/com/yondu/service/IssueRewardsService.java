@@ -44,7 +44,7 @@ public class IssueRewardsService extends BaseService {
     private List<Reward> unclaimedRewards;
 
     public void initialize() {
-        enableMenu();
+      disableMenu();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.01)
         );

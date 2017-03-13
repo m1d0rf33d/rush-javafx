@@ -56,8 +56,6 @@ public class MenuController implements Initializable {
     @FXML
     public Button issueRewardsButton;
     @FXML
-    public Button offlineButton;
-    @FXML
     public Button ocrButton;
     @FXML
     public ScrollPane rootScrollPane;
@@ -234,7 +232,7 @@ public class MenuController implements Initializable {
             App.appContextHolder.setPrevState(App.appContextHolder.getCurrentState());
             App.appContextHolder.setCurrentState(AppState.ISSUE_REWARDS);
             commonService.updateButtonState();
-           // disableMenu();
+             disableMenu();
 
             if (App.appContextHolder.getCustomer() == null) {
                 loadMobileLoginDialog();
@@ -254,13 +252,6 @@ public class MenuController implements Initializable {
             } else {
                 routeService.loadGiveStampsScreen();
             }
-        });
-
-        offlineButton.setOnMouseClicked((MouseEvent e) -> {
-            App.appContextHolder.setPrevState(App.appContextHolder.getCurrentState());
-            App.appContextHolder.setCurrentState(AppState.OFFLINE);
-            commonService.updateButtonState();
-            routeService.loadOfflineTransactionScreen();
         });
 
         ocrButton.setOnMouseClicked((MouseEvent e) -> {

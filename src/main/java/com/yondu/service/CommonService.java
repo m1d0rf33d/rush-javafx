@@ -71,6 +71,8 @@ public class CommonService {
                 break;
             case GIVE_STAMPS: button =  (Button) App.appContextHolder.getRootContainer().getScene().lookup("#giveStampsButton");
                 break;
+            case EARN_OFFLINE: button =  (Button) App.appContextHolder.getRootContainer().getScene().lookup("#menuEarnButton");
+                break;
         }
 
         button.getStyleClass().add("sidebar-selected");

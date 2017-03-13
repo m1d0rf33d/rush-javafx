@@ -1,45 +1,24 @@
 package com.yondu.controller;
 
 import com.yondu.App;
-import com.yondu.model.Branch;
-import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.model.constants.AppState;
-import com.yondu.service.ApiService;
-import com.yondu.service.CommonService;
 import com.yondu.service.LoginService;
-import com.yondu.service.ReportService;
 import com.yondu.utils.PropertyBinder;
-import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.stage.StageStyle;
-import javafx.util.Duration;
-import net.sf.jasperreports.engine.JRException;
-import org.apache.http.NameValuePair;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
-import static com.yondu.model.constants.AppConfigConstants.*;
-import static com.yondu.model.constants.ApiConstants.*;
+import static com.yondu.model.constants.AppConfigConstants.DIVIDER;
 
 
 /**

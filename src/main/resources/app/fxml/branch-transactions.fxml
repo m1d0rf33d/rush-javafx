@@ -49,13 +49,13 @@
             </Label>
          </children>
       </VBox>
-      <VBox fx:id="tableVBox" maxHeight="700.0" maxWidth="900.0" minHeight="700.0" minWidth="600.0" prefHeight="700.0" prefWidth="600.0">
+      <VBox fx:id="tableVBox" maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="600.0" prefHeight="600.0" prefWidth="600.0" style="-fx-border-color: gray;">
          <children>
             <TabPane fx:id="transactionsTabPane" maxHeight="700.0" maxWidth="800.0" minHeight="700.0" minWidth="500.0" prefHeight="700.0" prefWidth="500.0">
                <tabs>
                   <Tab fx:id="offlineTab">
                      <content>
-                        <VBox>
+                        <VBox maxWidth="800.0" minWidth="500.0" prefWidth="500.0">
                            <children>
                               <HBox maxHeight="50.0" maxWidth="900.0" minWidth="600.0" prefHeight="50.0" prefWidth="600.0">
                                  <children>
@@ -118,7 +118,7 @@
                   </Tab>
                   <Tab fx:id="onlineTab">
                      <content>
-                        <VBox>
+                        <VBox maxWidth="800.0" minWidth="500.0" prefWidth="500.0">
                            <children>
                               <HBox alignment="TOP_RIGHT" maxHeight="50.0" maxWidth="900.0" minWidth="600.0" prefHeight="50.0" prefWidth="600.0">
                                  <children>
@@ -132,7 +132,7 @@
                                           <Font size="15.0" />
                                        </font>
                                        <HBox.margin>
-                                          <Insets top="5.0" />
+                                          <Insets right="20.0" top="5.0" />
                                        </HBox.margin>
                                     </TextField>
                                  </children>

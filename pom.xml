@@ -16,12 +16,6 @@
             </properties>
         </profile>
         <profile>
-            <id>dev</id>
-            <properties>
-                <environment>dev</environment>
-            </properties>
-        </profile>
-        <profile>
             <id>staging</id>
             <properties>
                 <environment>staging</environment>
@@ -34,33 +28,6 @@
 
     <!-- Download jar dependencies -->
     <dependencies>
-      <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.11</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.lowagie</groupId>
-            <artifactId>itext</artifactId>
-            <version>2.1.7</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports</artifactId>
-            <version>6.1.1</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -125,10 +92,9 @@
             <filter>src/main/resources/filters/filter-${environment}.properties</filter>
         </filters>
         <resources>
-             <resource>
+            <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
-
             </resource>
             <resource>
                 <directory>${project.build.directory}/generated-resources</directory>
@@ -144,7 +110,6 @@
                         <nonFilteredFileExtension>eot</nonFilteredFileExtension>
                         <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
                         <nonFilteredFileExtension>woff</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>jasper</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
@@ -164,7 +129,7 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.4.3</version>
                 <executions>
-                    <!--<execution>
+                    <execution>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
@@ -181,7 +146,7 @@
                                 </transformer>
                             </transformers>
                         </configuration>
-                    </execution>-->
+                    </execution>
                 </executions>
             </plugin>
             <!-- End of uber-jar generator -->

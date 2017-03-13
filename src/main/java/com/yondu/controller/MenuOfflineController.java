@@ -33,7 +33,7 @@ public class MenuOfflineController implements Initializable {
     @FXML
     public MenuButton employeeMenuButton;
     @FXML
-    public Button givePointsButton;
+    public Button menuEarnButton;
     @FXML
     public VBox bodyStackPane;
     @FXML
@@ -69,8 +69,8 @@ public class MenuOfflineController implements Initializable {
         });
         employeeMenuButton.getItems().addAll(logoutMenuItem);
 
-        givePointsButton.setOnMouseClicked((Event e) -> {
-            App.appContextHolder.setCurrentState(AppState.EARN_POINTS);
+        menuEarnButton.setOnMouseClicked((Event e) -> {
+            App.appContextHolder.setCurrentState(AppState.EARN_OFFLINE);
             App.appContextHolder.commonService.updateButtonState();
             try {
                 bodyStackPane.getChildren().clear();

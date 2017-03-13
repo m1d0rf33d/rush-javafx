@@ -88,12 +88,6 @@
       </properties>
     </profile>
     <profile>
-      <id>dev</id>
-      <properties>
-        <environment>dev</environment>
-      </properties>
-    </profile>
-    <profile>
       <id>staging</id>
       <properties>
         <environment>staging</environment>

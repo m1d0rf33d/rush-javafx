@@ -48,7 +48,7 @@ public class AppConfigConstants {
     public static final String GUEST_PURCHASE_SCREEN = "/app/fxml/guest-purchase.fxml";
 
     public static final String APP_TITLE = "Rush POS Sync";
-    public static String DIVIDER = "/";
+    public static String DIVIDER = "\\";
     public static String RUSH_HOME = "";
     public static final String RUSH_FOLDER = "Rush-POS-Sync";
     public static String TESSERACT_HOME;

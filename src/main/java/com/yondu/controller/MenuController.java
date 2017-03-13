@@ -5,6 +5,7 @@ import com.yondu.model.constants.AppState;
 import com.yondu.service.CommonService;
 import com.yondu.service.MenuService;
 import com.yondu.service.RouteService;
+import javafx.animation.PauseTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -25,6 +26,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -82,15 +84,7 @@ public class MenuController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
     }
-    private void bindRightClick() {
-        MenuItem menuItem = new MenuItem("Reload");
-        menuItem.setOnAction(event -> {
-            App.appContextHolder.setCurrentState(AppState.MENU);
-            App.appContextHolder.commonService.updateButtonState();
-            menuService.initialize();
-        });
-        contextMenu.getItems().add(menuItem);
-    }
+
 
     private void loadMobileLoginDialog() {
         try {
@@ -139,7 +133,6 @@ public class MenuController implements Initializable {
         }
 
         menuService.initialize();
-        bindRightClick();
 
         rootVBox.setOnMouseClicked((MouseEvent e) -> {
             if (e.getButton() == MouseButton.SECONDARY) {

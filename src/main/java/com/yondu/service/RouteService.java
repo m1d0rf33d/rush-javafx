@@ -171,20 +171,24 @@ public class RouteService extends BaseService{
         pause.play();
     }
     public void loadMemberDetailsScreen(boolean fromInquiry) {
-        if (!fromInquiry) {
-            ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber(), App.appContextHolder.getCurrentState());
-            if (!apiResponse.isSuccess()) {
-                showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY");
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.01)
+        );
+        pause.setOnFinished(event -> {
+            if (!fromInquiry) {
+                ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber(), App.appContextHolder.getCurrentState());
+                if (!apiResponse.isSuccess()) {
+                    showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY");
+                } else {
+                    VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
+                    this.loadContentPage(bodyStackPane, MEMBER_DETAILS_SCREEN);
+                }
             } else {
                 VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
                 this.loadContentPage(bodyStackPane, MEMBER_DETAILS_SCREEN);
             }
-        } else {
-            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
-            this.loadContentPage(bodyStackPane, MEMBER_DETAILS_SCREEN);
-        }
-
-
+        });
+        pause.play();
 
     }
     public void loadMemberDetailsScreen(String mobileNumber) {

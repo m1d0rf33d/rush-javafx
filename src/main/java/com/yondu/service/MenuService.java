@@ -35,46 +35,55 @@ public class MenuService extends BaseService{
     private RouteService routeService = App.appContextHolder.routeService;
 
     public void initialize() {
+        disableMenu();
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.01)
+        );
+        pause.setOnFinished(event -> {
+            Branch branch = App.appContextHolder.getBranch();
 
-        Branch branch = App.appContextHolder.getBranch();
+            VBox rootVBox = App.appContextHolder.getRootContainer();
+            MenuButton employeeMenuButton = (MenuButton) rootVBox.getScene().lookup("#employeeMenuButton");
+            employeeMenuButton.setText("Hi! " + App.appContextHolder.getEmployee().getEmployeeName());
+            employeeMenuButton.getItems().clear();
 
-        VBox rootVBox = App.appContextHolder.getRootContainer();
-        MenuButton employeeMenuButton = (MenuButton) rootVBox.getScene().lookup("#employeeMenuButton");
-        employeeMenuButton.setText("Hi! " + App.appContextHolder.getEmployee().getEmployeeName());
-        employeeMenuButton.getItems().clear();
+            Label label = new Label("LOGOUT");
+            label.setId("logoutLabel");
+            MenuItem logoutMenuItem = new MenuItem();
+            logoutMenuItem.setGraphic(label);
+            logoutMenuItem.getGraphic().setStyle("-fx-min-width: " + employeeMenuButton.getWidth() + "px;");
+            logoutMenuItem.getStyleClass().add("menuitem");
+            logoutMenuItem.setId("logoutButton");
+            logoutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    App.appContextHolder.setEmployee(null);
+                    App.appContextHolder.setCustomer(null);
+                    App.appContextHolder.routeService.goToLoginScreen((Stage) rootVBox.getScene().getWindow());
+                }
+            });
+            employeeMenuButton.getItems().addAll(logoutMenuItem);
 
-        Label label = new Label("LOGOUT");
-        label.setId("logoutLabel");
-        MenuItem logoutMenuItem = new MenuItem();
-        logoutMenuItem.setGraphic(label);
-        logoutMenuItem.getGraphic().setStyle("-fx-min-width: " + employeeMenuButton.getWidth() + "px;");
-        logoutMenuItem.getStyleClass().add("menuitem");
-        logoutMenuItem.setId("logoutButton");
-        logoutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                App.appContextHolder.setEmployee(null);
-                App.appContextHolder.setCustomer(null);
-                App.appContextHolder.routeService.goToLoginScreen((Stage) rootVBox.getScene().getWindow());
+            Label branchNameLabel = (Label) rootVBox.getScene().lookup("#branchNameLabel");
+            ImageView merchantLogoImageView = (ImageView) rootVBox.getScene().lookup("#merchantLogoImageView");
+            branchNameLabel.setText(branch.getName());
+
+            if (App.appContextHolder.getMerchant() != null && App.appContextHolder.getMerchant().getBackgroundUrl() != null) {
+                ImageView imageView = new ImageView(new Image(App.appContextHolder.getMerchant().getBackgroundUrl()));
+                VBox bodyStackPane = (VBox) rootVBox.getScene().lookup("#bodyStackPane");
+                bodyStackPane.getChildren().clear();
+                bodyStackPane.getChildren().add(imageView);
             }
+            if (branch.getLogoUrl() != null) {
+                merchantLogoImageView.setImage(new Image(branch.getLogoUrl()));
+            }
+
+            loadSideBar();
+            enableMenu();
         });
-        employeeMenuButton.getItems().addAll(logoutMenuItem);
+        pause.play();
 
-        Label branchNameLabel = (Label) rootVBox.getScene().lookup("#branchNameLabel");
-        ImageView merchantLogoImageView = (ImageView) rootVBox.getScene().lookup("#merchantLogoImageView");
-        branchNameLabel.setText(branch.getName());
 
-        if (App.appContextHolder.getMerchant() != null && App.appContextHolder.getMerchant().getBackgroundUrl() != null) {
-            ImageView imageView = new ImageView(new Image(App.appContextHolder.getMerchant().getBackgroundUrl()));
-            VBox bodyStackPane = (VBox) rootVBox.getScene().lookup("#bodyStackPane");
-            bodyStackPane.getChildren().clear();
-            bodyStackPane.getChildren().add(imageView);
-        }
-        if (branch.getLogoUrl() != null) {
-            merchantLogoImageView.setImage(new Image(branch.getLogoUrl()));
-        }
-
-        loadSideBar();
     }
 
     private void loadSideBar() {

@@ -72,7 +72,8 @@ public class BranchTransactionService {
             }
             Button givePointsButton = (Button) rootVBox.getScene().lookup("#givePointsButton");
             if (App.appContextHolder.getEmployee() == null) {
-                givePointsButton.setVisible(false);
+               // offlineGiveButton.setVisible(false);
+
             }
 
         });

@@ -26,6 +26,7 @@
             <nonFilteredFileExtension>eot</nonFilteredFileExtension>
             <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
             <nonFilteredFileExtension>woff</nonFilteredFileExtension>
+            <nonFilteredFileExtension>jasper</nonFilteredFileExtension>
           </nonFilteredFileExtensions>
         </configuration>
       </plugin>
@@ -38,7 +39,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <phase>package</phase>

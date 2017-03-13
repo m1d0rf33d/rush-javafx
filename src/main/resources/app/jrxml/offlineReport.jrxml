@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="test" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="03bdb86a-2938-44b9-aa9f-6b5c2268b235">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/home/aomine/java/javafx/rush-pos/src/main/resources/app/jrxml/"]]></defaultValueExpression>
+	</parameter>
+	<field name="mobileNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[mobileNumber]]></fieldDescription>
+	</field>
+	<field name="orNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[orNumber]]></fieldDescription>
+	</field>
+	<field name="amount" class="java.lang.String">
+		<fieldDescription><![CDATA[amount]]></fieldDescription>
+	</field>
+	<field name="date" class="java.lang.String">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
+	<field name="status" class="java.lang.String">
+		<fieldDescription><![CDATA[status]]></fieldDescription>
+	</field>
+	<field name="message" class="java.lang.String">
+		<fieldDescription><![CDATA[message]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement x="-20" y="0" width="100" height="20" uuid="0ed96e1c-e79e-4d14-b402-eec6f9fa2ae2"/>
+				<text><![CDATA[DATE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="0" width="100" height="20" uuid="d715813d-bc54-48a5-9bed-22f40c5b313d"/>
+				<text><![CDATA[MOBILE NUMBER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="0" width="100" height="20" uuid="fcc3ae67-5602-4f6c-9aff-2b5645a66ff6"/>
+				<text><![CDATA[OR NUMBER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="0" width="100" height="20" uuid="53b02ae0-142a-490e-9f2e-b1fa458d26aa"/>
+				<text><![CDATA[AMOUNT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="0" width="100" height="20" uuid="1c957089-a604-4c3e-9c9c-1a988cd402c0"/>
+				<text><![CDATA[STATUS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="480" y="0" width="100" height="20" uuid="b2fa862b-8ed5-49e6-8131-2badb3de15b5"/>
+				<text><![CDATA[MESSAGE]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="-20" y="0" width="100" height="20" uuid="a4246158-b6e7-4cd2-b988-8ab9b61eabca"/>
+				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="0" width="100" height="20" uuid="477fad70-76d8-4106-87d4-a7c710331fe2"/>
+				<textFieldExpression><![CDATA[$F{mobileNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="0" width="100" height="20" uuid="8acb6511-6154-4891-9d1f-eefff567b767"/>
+				<textFieldExpression><![CDATA[$F{orNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="0" width="100" height="20" uuid="f7ead594-37c2-4dff-b85d-9ec6a1ba4622"/>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="0" width="100" height="20" uuid="21f099c3-1ea1-4a58-943e-6eb06fcd32e6"/>
+				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="0" width="100" height="20" uuid="b6c79154-6f54-4261-9950-686ddf91b20a"/>
+				<textFieldExpression><![CDATA[$F{message}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

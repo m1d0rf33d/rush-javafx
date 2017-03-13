@@ -3,6 +3,7 @@ package com.yondu.controller;
 import com.yondu.App;
 import com.yondu.model.constants.AppState;
 import com.yondu.service.LoginService;
+import com.yondu.service.ReportService;
 import com.yondu.utils.PropertyBinder;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,7 +15,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import net.sf.jasperreports.engine.JRException;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -108,14 +111,8 @@ public class LoginController implements Initializable {
                 loginTextField.setText(subStr);
             }
         });
-  /*      ReportService reportService = new ReportService();
-      try {
-            reportService.exportXls();
-        } catch (JRException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+     /*   ReportService reportService = new ReportService();
+        reportService.exportXls();*/
         loginService.initialize();
     }
 

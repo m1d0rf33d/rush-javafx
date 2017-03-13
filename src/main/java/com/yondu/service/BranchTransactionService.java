@@ -15,14 +15,19 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 
-import static com.yondu.model.constants.AppConfigConstants.DIVIDER;
-import static com.yondu.model.constants.AppConfigConstants.OFFLINE_TRANSACTION_FILE;
-import static com.yondu.model.constants.AppConfigConstants.RUSH_HOME;
+import static com.yondu.model.constants.AppConfigConstants.*;
 
 /**
  * Created by aomine on 3/12/17.
@@ -31,6 +36,8 @@ public class BranchTransactionService {
 
     private ObservableList<OfflineTransaction> offlineData = FXCollections.observableArrayList();
     private ObservableList<OnlineTransaction> onlineData = FXCollections.observableArrayList();
+    private ObservableList<OfflineTransaction> filteredOfflineData = FXCollections.observableArrayList();
+    private ObservableList<OnlineTransaction> filteredOnlineData = FXCollections.observableArrayList();
 
     public void initialize() {
 
@@ -169,6 +176,7 @@ public class BranchTransactionService {
             }
             finalData = indexFilteredData;
         }
+        filteredOfflineData = finalData;
         buildOfflineColumns(transactionsTableView);
         transactionsTableView.setItems(finalData);
         return transactionsTableView;
@@ -211,7 +219,7 @@ public class BranchTransactionService {
         tableView.getColumns().addAll(dateCol, mobileCol,amountCol, orCol, statusCol, messageCol);
     }
 
-    public void     loadOfflineTransactions() {
+    public void  loadOfflineTransactions() {
         offlineData = FXCollections.observableArrayList();
         File file = new File(RUSH_HOME + DIVIDER + OFFLINE_TRANSACTION_FILE);
         if (file.exists()) {
@@ -423,6 +431,7 @@ public class BranchTransactionService {
             }
             finalData = indexFilteredData;
         }
+        filteredOnlineData = finalData;
         buildOnlineColumns(transactionsTableView);
         transactionsTableView.setItems(finalData);
         return transactionsTableView;
@@ -496,6 +505,90 @@ public class BranchTransactionService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void exportOfflineReport() {
+
+        try {
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-YYYY-HH:mm");
+
+            File file = new File(RUSH_HOME + "/" + "offlinetransactions-" +sdf.format(date) + ".xls");
+            file.createNewFile();
+            InputStream is = this.getClass().getResourceAsStream("/app/jrxml/offlineReport.jrxml");
+            JasperReport jasperPath = JasperCompileManager.compileReport(is);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperPath, new HashMap<>(), new JRBeanCollectionDataSource(filteredOfflineData));
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.create.custom.palette", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.one.page.per.sheet", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.remove.empty.space.between.rows", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.remove.empty.space.between.columns", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.white.page.background", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.detect.cell.type", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.size.fix.enabled", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.ignore.graphics", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.collapse.row.span", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.ignore.cell.border", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.ignore.cell.background", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.max.rows.per.sheet", "0");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.wrap.text", "true");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.use.timezone", "false");
+            JRXlsExporter exporter = new JRXlsExporter();
+
+            exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+            SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
+            configuration.setOnePagePerSheet(true);
+            configuration.setDetectCellType(true);
+            configuration.setCollapseRowSpan(false);
+            exporter.setConfiguration(configuration);
+            exporter.exportReport();
+        } catch (JRException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void exportOnlineReport() {
+
+        try {
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-YYYY-HH:mm");
+
+            File file = new File(RUSH_HOME + "/" + "onlinetransactions-" +sdf.format(date) + ".xls");
+            file.createNewFile();
+            InputStream is = this.getClass().getResourceAsStream("/app/jrxml/offlineReport.jrxml");
+            JasperReport jasperPath = JasperCompileManager.compileReport(is);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperPath, new HashMap<>(), new JRBeanCollectionDataSource(filteredOfflineData));
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.create.custom.palette", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.one.page.per.sheet", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.remove.empty.space.between.rows", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.remove.empty.space.between.columns", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.white.page.background", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.detect.cell.type", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.size.fix.enabled", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.ignore.graphics", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.collapse.row.span", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.ignore.cell.border", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.ignore.cell.background", "false");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.max.rows.per.sheet", "0");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.wrap.text", "true");
+            jasperPrint.setProperty("net.sf.jasperreports.export.xls.use.timezone", "false");
+            JRXlsExporter exporter = new JRXlsExporter();
+
+            exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+            SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
+            configuration.setOnePagePerSheet(true);
+            configuration.setDetectCellType(true);
+            configuration.setCollapseRowSpan(false);
+            exporter.setConfiguration(configuration);
+            exporter.exportReport();
+        } catch (JRException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

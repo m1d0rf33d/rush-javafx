@@ -185,6 +185,7 @@ public class LoginService extends BaseService{
                             merchant.setBackgroundUrl((String) merchantJSON.get("background_url"));
                             merchant.setGrayStampsUrl((String)merchantJSON.get("gray_stamps_url"));
                             merchant.setStampsUrl((String)merchantJSON.get("stamps_url"));
+                            merchant.setWithVk(branch.getWithVk());
 
                             apiResponse.setSuccess(true);
                         } else if (errorCode.equals("0x2")){
@@ -226,6 +227,7 @@ public class LoginService extends BaseService{
                                 branch.setId((String) branchJSON.get("id"));
                                 branch.setName((String) branchJSON.get("name"));
                                 branch.setLogoUrl((String) branchJSON.get("logo_url"));
+                                branch.setWithVk((Boolean) branchJSON.get("with_vk"));
                                 branches.add(branch);
                             }
                             App.appContextHolder.setBranches(branches);

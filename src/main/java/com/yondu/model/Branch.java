@@ -7,6 +7,15 @@ public class Branch {
     private String id;
     private String name;
     private String logoUrl;
+    private Boolean withVk;
+
+    public Boolean getWithVk() {
+        return withVk;
+    }
+
+    public void setWithVk(Boolean withVk) {
+        this.withVk = withVk;
+    }
 
     public String getLogoUrl() {
         return logoUrl;

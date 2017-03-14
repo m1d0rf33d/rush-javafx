@@ -162,6 +162,10 @@ public class IssueRewardsService extends BaseService {
                 ApiResponse apiResponse = (ApiResponse) task.getValue();
                 if (apiResponse.isSuccess()) {
                     renderRewards();
+                    Reward reward = App.appContextHolder.getReward();
+                    Customer customer = App.appContextHolder.getCustomer();
+                    Employee employee = App.appContextHolder.getEmployee();
+                    saveTransaction(TransactionType.ISSUE_REWARD, customer.getMobileNumber(), employee.getEmployeeName(), null, null, reward.getName());
                 }
                 showPrompt(apiResponse.getMessage(), "ISSUE REWARD");
                 enableMenu();

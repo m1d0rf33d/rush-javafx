@@ -1,10 +1,7 @@
 package com.yondu.service;
 
 import com.yondu.App;
-import com.yondu.model.ApiResponse;
-import com.yondu.model.Customer;
-import com.yondu.model.Employee;
-import com.yondu.model.Merchant;
+import com.yondu.model.*;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -49,6 +46,8 @@ public class RegisterService extends BaseService {
                     if (apiResponse.isSuccess()) {
                         clearFields(toggleGroup);
                         success = true;
+                        Employee employee = App.appContextHolder.getEmployee();
+                        saveTransaction(TransactionType.REGISTER, customer.getMobileNumber(), employee.getEmployeeName(), null, null, null);
                     }
 
 

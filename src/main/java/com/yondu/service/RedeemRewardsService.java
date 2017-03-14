@@ -91,7 +91,9 @@ public class RedeemRewardsService extends BaseService {
             ApiResponse apiResponse = (ApiResponse) task.getValue();
             if (apiResponse.isSuccess()) {
                 Customer customer = App.appContextHolder.getCustomer();
-
+                Reward reward = App.appContextHolder.getReward();
+                Employee employee = App.appContextHolder.getEmployee();
+                saveTransaction(TransactionType.REDEEM_REWARDS, customer.getMobileNumber(), employee.getEmployeeName(), null, null, reward.getName());
                 VBox rootVBox = App.appContextHolder.getRootContainer();
                 Label pointsLabel = (Label) rootVBox.getScene().lookup("#pointsLabel");
                 pointsLabel.setText(customer.getAvailablePoints());

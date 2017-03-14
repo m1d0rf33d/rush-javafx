@@ -56,7 +56,7 @@ public class GuestPurchaseController implements Initializable {
         submitButton.setOnMouseClicked((MouseEvent e) -> {
             String mobileNo = mobileTextField.getText();
             String orNumber = receiptTextField.getText();
-            String amount = amountTextField.getText();
+            String amount = amountTextField.getText().replace(",", "");
             guestPurchaseService.givePoints(mobileNo, orNumber, amount);
 
         });

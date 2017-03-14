@@ -4,6 +4,7 @@ import com.yondu.App;
 import com.yondu.model.OfflineTransaction;
 import com.yondu.model.OnlineTransaction;
 import com.yondu.model.TransactionType;
+import com.yondu.utils.PropertyBinder;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -82,8 +83,7 @@ public class BranchTransactionService extends BaseService{
             }
             Button givePointsButton = (Button) rootVBox.getScene().lookup("#givePointsButton");
             if (App.appContextHolder.getEmployee() == null) {
-                givePointsButton.setVisible(false);
-
+                givePointsButton.setDisable(true);
             }
 
         });
@@ -288,6 +288,8 @@ public class BranchTransactionService extends BaseService{
             }
         });
 
+        PropertyBinder.bindVirtualKeyboard(searchTextField);
+
         Label allLabel = new Label("ALL");
         allLabel.setPrefWidth(150);
         allLabel.setWrapText(true);
@@ -367,6 +369,7 @@ public class BranchTransactionService extends BaseService{
                 onlinePagination.setPageFactory((Integer pageIndex) -> createOnlinePage(pageIndex));
             }
         });
+        PropertyBinder.bindVirtualKeyboard(onlineTextField);
     }
 
     public Node createOnlinePage(int pageIndex) {
@@ -518,9 +521,9 @@ public class BranchTransactionService extends BaseService{
             protected Object call() throws Exception {
                 try {
                     Date date = new Date();
-                    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-YYYY-HH:mm");
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-YYYY");
 
-                    File file = new File(RUSH_HOME + "/" + "offlinetransactions-" +sdf.format(date) + ".xls");
+                    File file = new File(System.getenv("USERPROFILE") + "\\Desktop\\" + "offlinetransactions-" +sdf.format(date) + ".xls");
                     file.createNewFile();
                     InputStream is = this.getClass().getResourceAsStream("/app/jrxml/offlineReport.jrxml");
                     JasperReport jasperPath = JasperCompileManager.compileReport(is);
@@ -585,9 +588,9 @@ public class BranchTransactionService extends BaseService{
             protected Object call() throws Exception {
                 try {
                     Date date = new Date();
-                    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-YYYY-HH:mm");
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-YYYY");
 
-                    File file = new File(RUSH_HOME + "/" + "onlinetransactions-" +sdf.format(date) + ".xls");
+                    File file = new File(System.getenv("USERPROFILE") + "\\Desktop\\" + "onlinetransactions-" +sdf.format(date) + ".xls");
                     file.createNewFile();
                     InputStream is = this.getClass().getResourceAsStream("/app/jrxml/onlineReport.jrxml");
                     JasperReport jasperPath = JasperCompileManager.compileReport(is);

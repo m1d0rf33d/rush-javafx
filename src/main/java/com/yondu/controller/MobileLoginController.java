@@ -43,6 +43,7 @@ public class MobileLoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        PropertyBinder.bindVirtualKeyboard(mobileTextField);
         PropertyBinder.bindNumberOnly(mobileTextField);
         PropertyBinder.bindMaxLength(11, mobileTextField);
 

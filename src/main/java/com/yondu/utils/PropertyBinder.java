@@ -95,7 +95,7 @@ public class PropertyBinder {
 
     public static void bindVirtualKeyboard(TextField textField) {
         Merchant merchant = App.appContextHolder.getMerchant();
-        if (!merchant.getWithVk()) {
+        if (merchant != null && merchant.getWithVk() != null && !merchant.getWithVk()) {
             textField.focusedProperty().addListener(new ChangeListener<Boolean>()
             {
                 public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)

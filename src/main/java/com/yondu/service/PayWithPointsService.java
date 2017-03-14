@@ -159,7 +159,7 @@ public class PayWithPointsService extends BaseService {
                             message = (String) arr.get(0);
                         }
                         apiResponse.setMessage(message);
-                    } else if (jsonObject.get("error_code").equals("0x8")) {
+                    } else  {
                         apiResponse.setMessage((String) jsonObject.get("message"));
                     }
                 } else {

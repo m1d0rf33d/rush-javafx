@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.File;
@@ -47,6 +48,8 @@ public class BaseService {
     }
 
     public void showPrompt(String message, String header) {
+        Stage stage = (Stage) App.appContextHolder.getRootContainer().getScene().getWindow();
+        stage.setIconified(false);
         Label label = new Label(message);
         label.setPadding(new Insets(10,0,0,0));
         label.setFont(new Font(15.0));

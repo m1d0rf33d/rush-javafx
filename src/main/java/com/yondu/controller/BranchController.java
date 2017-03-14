@@ -2,6 +2,7 @@ package com.yondu.controller;
 
 import com.yondu.App;
 import com.yondu.model.constants.AppConfigConstants;
+import com.yondu.utils.PropertyBinder;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -39,6 +40,7 @@ public class BranchController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         App.appContextHolder.branchTransactionService.initialize();
         offlineTab.setOnSelectionChanged(new EventHandler<Event>() {
             @Override

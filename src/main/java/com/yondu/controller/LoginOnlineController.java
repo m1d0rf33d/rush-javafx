@@ -59,7 +59,8 @@ public class LoginOnlineController implements Initializable{
 
     public void initAfterLoad() {
         PropertyBinder.bindVirtualKeyboard(loginTextField);
-        PropertyBinder.bindNumberWitDot(loginTextField);
+        PropertyBinder.bindNumberOnly(loginTextField);
+        PropertyBinder.bindMaxLength(4, loginTextField);
 
         for (Branch branch : App.appContextHolder.getBranches()) {
             branchComboBox.getItems().add(branch.getName());

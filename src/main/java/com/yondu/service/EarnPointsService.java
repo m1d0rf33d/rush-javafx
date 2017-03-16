@@ -132,12 +132,19 @@ public class EarnPointsService extends BaseService {
 
                         Customer customer = App.appContextHolder.getCustomer();
                         Employee employee = App.appContextHolder.getEmployee();
-                        saveTransaction(TransactionType.EARN_OFFLINE,
+                        saveTransaction(TransactionType.EARN_POINTS,
                                 customer.getMobileNumber(),
                                 employee.getEmployeeName(),
                                 amount,orNumber, null);
                     }
                     showPrompt(apiResponse.getMessage(), "EARN POINTS");
+                    enableMenu();
+                }
+            });
+            task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent event) {
+                    showPrompt("Network connection error.", "EARN POINTS");
                     enableMenu();
                 }
             });

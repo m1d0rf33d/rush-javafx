@@ -471,26 +471,40 @@ public class MemberDetailsService extends BaseService{
     private void buildTransactionsColumns(TableView tableView) {
 
 
-        TableColumn date = new TableColumn("Date");
-        date.setPrefWidth(200);
-        date.setCellValueFactory(
+        TableColumn c1 = new TableColumn("Date");
+        c1.setPrefWidth(200);
+        c1.setCellValueFactory(
                 new PropertyValueFactory<>("date"));
 
 
-        TableColumn receiptNumber = new TableColumn("OR number");
-        receiptNumber.setPrefWidth(200);
-        receiptNumber.setCellValueFactory(
+        TableColumn c2 = new TableColumn("OR number");
+        c2.setPrefWidth(200);
+        c2.setCellValueFactory(
                 new PropertyValueFactory<>("receiptNumber"));
 
-        TableColumn transactionType = new TableColumn("Transaction Type");
-        transactionType.setPrefWidth(400);
-        transactionType.setCellValueFactory(
+        TableColumn c3 = new TableColumn("Transaction Type");
+        c3.setPrefWidth(400);
+        c3.setCellValueFactory(
                 new PropertyValueFactory<>("transactionType"));
 
+        TableColumn c4 = new TableColumn("Points earned");
+        c4.setPrefWidth(100);
+        c4.setCellValueFactory(
+                new PropertyValueFactory<>("pointsEarned"));
+
+        TableColumn c5 = new TableColumn("Points paid");
+        c5.setPrefWidth(100);
+        c5.setCellValueFactory(
+                new PropertyValueFactory<>("pointsPaid"));
+
+        TableColumn c6 = new TableColumn("Cash paid");
+        c6.setPrefWidth(100);
+        c6.setCellValueFactory(
+                new PropertyValueFactory<>("cashPaid"));
 
 
         tableView.getColumns().clear();
-        tableView.getColumns().addAll(date, receiptNumber, transactionType);
+        tableView.getColumns().addAll(c1,c2,c3,c4,c5,c6);
     }
 
 }

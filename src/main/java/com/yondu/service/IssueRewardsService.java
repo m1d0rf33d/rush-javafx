@@ -61,6 +61,7 @@ public class IssueRewardsService extends BaseService {
                         loadCustomerDetails();
                         renderRewards();
                         enableMenu();
+
                     }
                 }
             });

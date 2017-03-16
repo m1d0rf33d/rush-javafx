@@ -33,6 +33,18 @@ public class PropertyBinder {
         });
     }
 
+    public static void bindLettersOnly(TextField textField) {
+        textField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (newValue !=null && (newValue != null && !newValue.isEmpty()) && !newValue.matches("[a-zA-Z ]")) {
+                    textField.setText(newValue.replaceAll("[^a-zA-Z ]", ""));
+                }
+            }
+        });
+    }
+
+
     public static void bindAmountOnly(TextField textField) {
         textField.textProperty().addListener(new ChangeListener<String>() {
             @Override

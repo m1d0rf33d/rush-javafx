@@ -13,7 +13,7 @@
    <children>
       <VBox maxHeight="50.0" maxWidth="+Infinity" minHeight="50.0" prefHeight="50.0" prefWidth="799.0" VBox.vgrow="ALWAYS">
          <children>
-            <Label prefHeight="21.0" prefWidth="256.0" text="REGISTER NEW MEMBER">
+            <Label prefHeight="21.0" prefWidth="500.0" text="REGISTER NEW MEMBER">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>

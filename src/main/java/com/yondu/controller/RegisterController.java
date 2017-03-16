@@ -43,7 +43,7 @@ public class RegisterController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        PropertyBinder.bindLettersOnly(nameTextField);
         PropertyBinder.bindVirtualKeyboard(nameTextField);
         PropertyBinder.bindVirtualKeyboard(emailTextField);
         PropertyBinder.bindVirtualKeyboard(mobileTextField);

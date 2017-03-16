@@ -1,6 +1,7 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import com.yondu.model.Merchant;
 import com.yondu.model.constants.AppState;
 import com.yondu.service.CommonService;
 import com.yondu.service.MenuService;
@@ -147,7 +148,14 @@ public class MenuController implements Initializable {
             App.appContextHolder.setPrevState(App.appContextHolder.getCurrentState());
             App.appContextHolder.setCurrentState(AppState.REGISTRATION);
             commonService.updateButtonState();
-            routeService.loadContentPage(bodyStackPane, REGISTER_SCREEN);
+
+            Merchant merchant = App.appContextHolder.getMerchant();
+            if (merchant.getMerchantClassification().equals("BASIC")) {
+                routeService.loadContentPage(bodyStackPane, REGISTER_SCREEN);
+            } else {
+                routeService.loadContentPage(bodyStackPane, SG_REGISTER_FXML);
+            }
+
         });
 
         guestPurchaseButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {

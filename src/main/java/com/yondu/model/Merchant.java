@@ -16,6 +16,25 @@ public class Merchant {
     private String token;
     private Boolean withVk;
     private String merchantType;
+    private String merchantClassification;
+
+    private List<Title> titles;
+
+    public List<Title> getTitles() {
+        return titles;
+    }
+
+    public void setTitles(List<Title> titles) {
+        this.titles = titles;
+    }
+
+    public String getMerchantClassification() {
+        return merchantClassification;
+    }
+
+    public void setMerchantClassification(String merchantClassification) {
+        this.merchantClassification = merchantClassification;
+    }
 
     public String getMerchantType() {
         return merchantType;

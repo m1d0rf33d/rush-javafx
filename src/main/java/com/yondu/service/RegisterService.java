@@ -7,6 +7,7 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -84,6 +85,13 @@ public class RegisterService extends BaseService {
                     requestBody.put("gender", customer.getGender());
                 }
 
+                if (customer.getTitle() != null) {
+                    requestBody.put("title_id", customer.getTitle().getId());
+                }
+                if (customer.getAccountNumber() != null) {
+                    requestBody.put("account_number", customer.getAccountNumber());
+                }
+
                 Employee employee = App.appContextHolder.getEmployee();
                 Merchant merchant = App.appContextHolder.getMerchant();
 
@@ -120,6 +128,14 @@ public class RegisterService extends BaseService {
         TextField mobileTextField = (TextField) rootVBox.getScene().lookup("#mobileTextField");
         TextField mpinTextField = (TextField) rootVBox.getScene().lookup("#mpinTextField");
         DatePicker birthdatePicker = (DatePicker) rootVBox.getScene().lookup("#birthdatePicker");
+
+        Merchant merchant = App.appContextHolder.getMerchant();
+        if (!merchant.getMerchantClassification().equals("BASIC")) {
+            TextField accountNumberTextField = (TextField) rootVBox.getScene().lookup("#accountNumberTextField");
+            ComboBox titleComboBox = (ComboBox) rootVBox.getScene().lookup("#titleComboBox");
+            titleComboBox.getSelectionModel().select(null);
+            accountNumberTextField.setText(null);
+        }
 
         nameTextField.setText(null);
         emailTextField.setText(null);

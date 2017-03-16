@@ -187,6 +187,18 @@ public class LoginService extends BaseService{
                             merchant.setStampsUrl((String)merchantJSON.get("stamps_url"));
                             merchant.setWithVk(branch.getWithVk());
 
+                            if (data.get("titles") != null) {
+                                List<JSONObject> titlesJSON = (ArrayList) data.get("titles");
+                                List<Title> titles = new ArrayList<>();
+                                for (JSONObject json :titlesJSON) {
+                                    Title title = new Title();
+                                    title.setName((String) json.get("name"));
+                                    title.setId((Long) json.get("id"));
+                                    titles.add(title);
+                                }
+                                merchant.setTitles(titles);
+                            }
+
                             apiResponse.setSuccess(true);
                         } else if (errorCode.equals("0x2")){
                             apiResponse.setSuccess(true);
@@ -237,7 +249,7 @@ public class LoginService extends BaseService{
                             merchant.setUniqueKey((String) merchantJSON.get("merchant_key"));
                             merchant.setToken((String) merchantJSON.get("token"));
                             merchant.setMerchantType((String) merchantJSON.get("merchant_type"));
-
+                            merchant.setMerchantClassification((String) merchantJSON.get("merchant_class"));
                         }
                         apiResponse.setSuccess(true);
                     } else {

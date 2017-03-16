@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="1000.0" maxWidth="1000.0" minHeight="900.0" minWidth="-Infinity" prefHeight="900.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.MemberDetailsController">
+    <children>
+        <HBox maxHeight="50.0" maxWidth="+Infinity" minHeight="50.0" prefHeight="50.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <children>
+                <VBox maxWidth="500.0" prefHeight="200.0" prefWidth="350.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label prefHeight="50.0" prefWidth="350.0" text="VIEW MEMBER'S PROFILE">
+                            <font>
+                                <Font name="System Bold" size="18.0" />
+                            </font>
+                        </Label>
+                    </children>
+                    <HBox.margin>
+                        <Insets left="50.0" />
+                    </HBox.margin>
+                </VBox>
+                <VBox alignment="TOP_RIGHT" maxWidth="500.0" prefHeight="200.0" prefWidth="350.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Button fx:id="exitButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #D61707;" text="EXIT MEMBER" textFill="#fffbfb">
+                            <font>
+                                <Font name="System Bold" size="15.0" />
+                            </font>
+                            <cursor>
+                                <Cursor fx:constant="OPEN_HAND" />
+                            </cursor></Button>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+        <VBox maxHeight="50.0" minHeight="50.0" prefHeight="50.0" prefWidth="100.0">
+            <children>
+                <Line endX="800.0" startX="-100.0" stroke="#e1dcdc">
+                    <VBox.margin>
+                        <Insets left="50.0" top="10.0" />
+                    </VBox.margin>
+                </Line>
+                <Label text="BASIC INFORMATION" textFill="#a19797">
+                    <VBox.margin>
+                        <Insets left="50.0" top="20.0" />
+                    </VBox.margin>
+                    <font>
+                        <Font size="17.0" />
+                    </font>
+                </Label>
+            </children>
+        </VBox>
+      <HBox maxHeight="100.0" maxWidth="+Infinity" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label text="myBusiness Account Number">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+               </children>
+               <HBox.margin>
+                  <Insets left="50.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label text="myBusiness Account Name">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <HBox maxHeight="100.0" maxWidth="+Infinity" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="accountNumberLabel">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+               </children>
+               <HBox.margin>
+                  <Insets left="50.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="accountNameLabel">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+        <HBox maxHeight="100.0" maxWidth="+Infinity" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <children>
+                <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <HBox.margin>
+                        <Insets left="50.0" />
+                    </HBox.margin>
+                    <children>
+                        <Label text="Member ID">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                </VBox>
+                <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="Name">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                </VBox>
+                <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="Mobiler Number">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+        <HBox maxHeight="100.0" maxWidth="+Infinity" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <children>
+                <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label fx:id="memberIdLabel">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                    <HBox.margin>
+                        <Insets left="50.0" />
+                    </HBox.margin>
+                </VBox>
+                <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label fx:id="nameLabel">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                </VBox>
+                <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label fx:id="mobileNumberLabel">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+        <HBox maxHeight="100.0" maxWidth="+Infinity" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <children>
+                <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="Date of Birth">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                    <HBox.margin>
+                        <Insets left="50.0" />
+                    </HBox.margin>
+                </VBox>
+                <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="Gender">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                </VBox>
+                <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="Member Since">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+        <HBox maxHeight="100.0" maxWidth="+Infinity" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <children>
+                <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label fx:id="birthdateLabel">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                    <HBox.margin>
+                        <Insets left="50.0" />
+                    </HBox.margin>
+                </VBox>
+                <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label fx:id="genderLabel">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                </VBox>
+                <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label fx:id="membershipDateLabel">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+        <HBox maxHeight="100.0" maxWidth="+Infinity" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <children>
+                <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="Email">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                    <HBox.margin>
+                        <Insets left="50.0" />
+                    </HBox.margin>
+                </VBox>
+                <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="Available Points">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </VBox>
+            </children>
+        </HBox>
+        <HBox maxHeight="100.0" maxWidth="+Infinity" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <children>
+                <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label fx:id="emailLabel">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                    <HBox.margin>
+                        <Insets left="50.0" />
+                    </HBox.margin>
+                </VBox>
+                <VBox maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label fx:id="pointsLabel">
+                            <font>
+                                <Font size="17.0" />
+                            </font></Label>
+                    </children>
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </VBox>
+            </children>
+        </HBox>
+        <HBox maxHeight="50.0" maxWidth="900.0" minWidth="600.0" prefHeight="50.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+            <children>
+
+                <HBox alignment="BOTTOM_RIGHT" maxHeight="50.0" maxWidth="800.0" minWidth="400.0" prefHeight="50.0" prefWidth="400.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label prefHeight="20.0" prefWidth="80.0" text="Search :">
+                            <font>
+                                <Font size="17.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="searchTextField" prefHeight="20.0" style="-fx-background-radius: 0;">
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                            <font>
+                                <Font size="17.0" />
+                            </font>
+                        </TextField>
+                    </children>
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </HBox>
+            </children>
+            <VBox.margin>
+                <Insets left="50.0" right="50.0" top="20.0" />
+            </VBox.margin>
+        </HBox>
+        <VBox fx:id="tableVBox" maxHeight="500.0" maxWidth="900.0" minHeight="500.0" minWidth="600.0" prefHeight="500.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+            <children>
+                <TabPane fx:id="vouchersTabPane" maxHeight="500.0" maxWidth="800.0" minHeight="500.0" minWidth="500.0" prefHeight="500.0" prefWidth="500.0">
+                    <tabs>
+                        <Tab fx:id="vouchersTab">
+                            <content>
+                                <Pagination fx:id="activeVouchersPagination" maxHeight="400.0" maxWidth="800.0" minHeight="400.0" minWidth="500.0" prefHeight="400.0" prefWidth="500.0">
+                                    <VBox.margin>
+                                        <Insets />
+                                    </VBox.margin>
+                                </Pagination>
+                            </content>
+                        </Tab>
+                    </tabs>
+                    <tabs>
+                        <Tab fx:id="transactionsTab">
+                            <content>
+                                <Pagination fx:id="transactionsPagination" maxHeight="400.0" maxWidth="800.0" minHeight="400.0" minWidth="500.0" prefHeight="400.0" prefWidth="500.0">
+                                    <VBox.margin>
+                                        <Insets />
+                                    </VBox.margin>
+
+                                </Pagination>
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+            </children>
+            <VBox.margin>
+                <Insets left="50.0" right="50.0" top="10.0" />
+            </VBox.margin>
+        </VBox>
+    </children>
+</VBox>

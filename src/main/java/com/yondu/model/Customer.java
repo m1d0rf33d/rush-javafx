@@ -20,6 +20,33 @@ public class Customer {
     private CustomerCard card;
     private String uuid;
     private String mpin;
+    private Title title;
+    private String accountNumber;
+    private String accountName;
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
+    public Title getTitle() {
+        return title;
+    }
+
+    public void setTitle(Title title) {
+        this.title = title;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
 
     private LocalDate birthdate;
     private List<Transaction> transactions;

@@ -46,6 +46,8 @@ public class AppConfigConstants {
     public static final String OCR_SCREEN = "/app/fxml/ocr.fxml";
     public static final String PIN_SCREEN = "/app/fxml/pin.fxml";
     public static final String GUEST_PURCHASE_SCREEN = "/app/fxml/guest-purchase.fxml";
+    public static final String SG_REGISTER_FXML = "/app/fxml/sg-register.fxml";
+    public static final String SG_MEMBER_DETAILS_FXML = "/app/fxml/sg-member-details.fxml";
 
     public static final String APP_TITLE = "Rush POS Sync";
     public static String DIVIDER = "\\";

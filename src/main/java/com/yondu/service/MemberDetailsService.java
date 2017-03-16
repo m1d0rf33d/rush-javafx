@@ -73,6 +73,14 @@ public class MemberDetailsService extends BaseService{
                             }
 
                         }
+                        Label accountNumberLabel = (Label) vbox.getScene().lookup("#accountNumberLabel");
+                        Label accountNameLabel = (Label) vbox.getScene().lookup("#accountNameLabel");
+                        Merchant merchant = App.appContextHolder.getMerchant();
+                        Customer customer = App.appContextHolder.getCustomer();
+                        if (!merchant.getMerchantClassification().equals("BASIC")) {
+                            accountNumberLabel.setText(customer.getAccountNumber());
+                            accountNameLabel.setText(customer.getAccountName());
+                        }
 
                         App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                         enableMenu();
@@ -179,6 +187,8 @@ public class MemberDetailsService extends BaseService{
                 customer.setMemberSince((String) memberDTO.get("registration_date"));
                 customer.setUuid((String) memberDTO.get("id"));
                 customer.setAvailablePoints((String) memberDTO.get("points"));
+                customer.setAccountNumber((String) memberDTO.get("account_number"));
+                customer.setAccountName((String) memberDTO.get("account_name"));
 
                 List<JSONObject> rewardsJSON = (ArrayList) data.get("rewards");
                 if (rewardsJSON != null) {

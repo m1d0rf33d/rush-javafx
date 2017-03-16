@@ -6,6 +6,7 @@ import com.yondu.controller.LoginOnlineController;
 import com.yondu.controller.MenuController;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.Customer;
+import com.yondu.model.Merchant;
 import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.utils.ResizeHelper;
 import javafx.animation.PauseTransition;
@@ -175,17 +176,25 @@ public class RouteService extends BaseService{
                 Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
+            Merchant merchant = App.appContextHolder.getMerchant();
+            String screen = "";
+            if (merchant.getMerchantClassification().equals("BASIC")) {
+                screen = MEMBER_DETAILS_SCREEN;
+            } else {
+                screen = SG_MEMBER_DETAILS_FXML;
+            }
             if (!fromInquiry) {
                 ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber(), App.appContextHolder.getCurrentState());
                 if (!apiResponse.isSuccess()) {
                     showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY");
                 } else {
                     VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
-                    this.loadContentPage(bodyStackPane, MEMBER_DETAILS_SCREEN);
+
+                    this.loadContentPage(bodyStackPane, screen);
                 }
             } else {
                 VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
-                this.loadContentPage(bodyStackPane, MEMBER_DETAILS_SCREEN);
+                this.loadContentPage(bodyStackPane, screen);
             }
         });
         pause.play();

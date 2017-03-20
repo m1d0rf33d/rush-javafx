@@ -42,7 +42,7 @@
                         <Cursor fx:constant="OPEN_HAND" />
                      </cursor>
                   </Button>
-                  <Label fx:id="lockLabel" text="You have insufficient points for this reward.">
+                  <Label fx:id="lockLabel" text="You have insufficient points for this reward." wrapText="true">
                      <font>
                         <Font size="17.0" />
                      </font>

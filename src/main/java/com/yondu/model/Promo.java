@@ -8,13 +8,13 @@ import java.util.List;
 public class Promo {
 
     private List<Reward> rewards;
-    private int stamps;
+    private Long stamps;
 
-    public int getStamps() {
+    public Long getStamps() {
         return stamps;
     }
 
-    public void setStamps(int stamps) {
+    public void setStamps(Long stamps) {
         this.stamps = stamps;
     }
 

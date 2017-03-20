@@ -27,5 +27,7 @@ public class ApiConstants {
     public static String WIDGET_PAY_ENDPOINT;
     public static String WIDGET_ISSUE_ENDPOINT;
     public static String SEND_OFFLINE_ENDPOINT;
+    public static String EARN_STAMP_ENDPOINT;
+    public static String REDEEM_STAMP_ENDPOINT;
 
 }

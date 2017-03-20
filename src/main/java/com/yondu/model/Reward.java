@@ -14,6 +14,15 @@ public class Reward {
     private String date;
     private Integer stamps;
     private String redeemId;
+    private Boolean status;
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
 
     public String getRedeemId() {
         return redeemId;

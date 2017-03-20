@@ -35,6 +35,7 @@ public class MemberDetailsService extends BaseService{
     private ApiService apiService = App.appContextHolder.apiService;
 
     public void initialize() {
+
         disableMenu();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(1)
@@ -99,7 +100,7 @@ public class MemberDetailsService extends BaseService{
     }
 
     public void viewMember(String mobileNumber) {
-        disableMenu();
+       // disableMenu();
         App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.01)
@@ -246,6 +247,44 @@ public class MemberDetailsService extends BaseService{
                         transactions.add(transaction);
                     }
                     customer.setTransactions(transactions);
+                }
+
+                if (data.get("customer_card") != null) {
+                    JSONObject customerCard = (JSONObject) data.get("customer_card");
+                    CustomerCard card = new CustomerCard();
+
+                    JSONObject promoJSON = (JSONObject) customerCard.get("promo");
+                    List<JSONObject> rewJSON = (ArrayList) promoJSON.get("rewards");
+                    List<Reward> rewards = new ArrayList<>();
+                    for (JSONObject json : rewJSON) {
+                        Reward reward = new Reward();
+                        reward.setId((String) json.get("id"));
+                        reward.setName((String) json.get("name"));
+                        reward.setDetails((String) json.get("details"));
+                        reward.setStamps(((Long) json.get("stamps")).intValue());
+                        reward.setImageUrl((String) json.get("image_url"));
+                        rewards.add(reward);
+                    }
+
+                    Promo promo = new Promo();
+                    promo.setRewards(rewards);
+                    promo.setStamps((Long) promoJSON.get("stamps"));
+                    card.setPromo(promo);
+                    card.setStampCount((Long) customerCard.get("stamps"));
+                    customer.setCard(card);
+
+                    List<Reward> redeemedRewards = new ArrayList<>();
+                    List<JSONObject> rewardsList = (ArrayList) customerCard.get("rewards");
+                    for (JSONObject json :rewardsList) {
+                        Reward reward = new Reward();
+                        reward.setId((String) json.get("reward_id"));
+                        reward.setName((String) json.get("reward_name"));
+                        reward.setDate((String) json.get("date"));
+                        reward.setImageUrl((String) json.get("reward_image_url"));
+                        redeemedRewards.add(reward);
+                    }
+                    card.setRewards(redeemedRewards);
+
                 }
 
                 App.appContextHolder.setCustomer(customer);

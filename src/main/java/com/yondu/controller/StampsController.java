@@ -63,12 +63,23 @@ public class StampsController implements Initializable {
     public TextField amountTextField;
 
     private StampsService stampsService = App.appContextHolder.stampsService;
-    private CommonService commonService = App.appContextHolder.commonService;
-    private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        stampsService.initialize();
+
+        rewardsFlowPane.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                App.appContextHolder.getRootContainer().setMinHeight(800 + newValue.doubleValue());
+            }
+        });
+
+        earnStampsButton.setOnMouseClicked((MouseEvent e) -> {
+            String amount = amountTextField.getText();
+            stampsService.earnStamps(amount);
+        });
     }
 
    /* @Override

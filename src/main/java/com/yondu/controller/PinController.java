@@ -55,7 +55,7 @@ public class PinController implements Initializable {
             } else if (state.equals(AppState.REDEEM_REWARDS)) {
                 redeemRewards();
             } else if (state.equals(AppState.GIVE_STAMPS)) {
-                redeemStamps();
+                stampsService.redeemReward(pinTextField.getText());
             }
 
         });
@@ -71,15 +71,7 @@ public class PinController implements Initializable {
         });
     }
 
-    private  void redeemStamps() {
-   /*     Reward reward = App.appContextHolder.getReward();
-        String pin = pinTextField.getText();
-        ApiResponse apiResponse = stampsService.redeemStamps(reward.getId(), pin);
-        if (apiResponse.isSuccess()) {
 
-        }
-*/
-    }
 
     private void redeemRewards() {
         redeemRewardsService.redeemRewards(pinTextField.getText());

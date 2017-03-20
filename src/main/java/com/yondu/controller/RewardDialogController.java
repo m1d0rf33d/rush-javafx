@@ -112,7 +112,22 @@ public class RewardDialogController implements Initializable {
         this.rewardImageView.setFitHeight(200);
         this.nameLabel.setText(reward.getName());
         this.detailsLabel.setText(reward.getDetails());
-        this.requiredPointsLabel.setText(reward.getPointsRequired() + " points");
+
+        String pointsTxt;
+        if (App.appContextHolder.getCurrentState().equals(AppState.GIVE_STAMPS)) {
+            pointsTxt = reward.getStamps() + " stamps";
+
+            if (reward.getDate() != null) {
+                redeemButton.setVisible(false);
+                lockLabel.setText("Redemption date: " + reward.getDate());
+            } else {
+                lockLabel.setVisible(false);
+            }
+
+        } else {
+            pointsTxt = reward.getPointsRequired() + " points";
+        }
+        this.requiredPointsLabel.setText(pointsTxt);
 
         if (App.appContextHolder.getCurrentState().equals(AppState.REDEEM_REWARDS)) {
             Customer customer = App.appContextHolder.getCustomer();
@@ -127,5 +142,6 @@ public class RewardDialogController implements Initializable {
                 redeemButton.setVisible(true);
             }
         }
+
     }
 }

@@ -8,6 +8,24 @@ import java.util.List;
 public class CustomerCard {
 
     Promo promo;
+    Long stampCount;
+    List<Reward> rewards;
+
+    public List<Reward> getRewards() {
+        return rewards;
+    }
+
+    public void setRewards(List<Reward> rewards) {
+        this.rewards = rewards;
+    }
+
+    public Long getStampCount() {
+        return stampCount;
+    }
+
+    public void setStampCount(Long stampCount) {
+        this.stampCount = stampCount;
+    }
 
     public Promo getPromo() {
         return promo;

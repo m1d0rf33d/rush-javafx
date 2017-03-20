@@ -73,11 +73,12 @@ public class MemberDetailsService extends BaseService{
                             }
 
                         }
-                        Label accountNumberLabel = (Label) vbox.getScene().lookup("#accountNumberLabel");
-                        Label accountNameLabel = (Label) vbox.getScene().lookup("#accountNameLabel");
+
                         Merchant merchant = App.appContextHolder.getMerchant();
                         Customer customer = App.appContextHolder.getCustomer();
                         if (!merchant.getMerchantClassification().equals("BASIC")) {
+                            Label accountNumberLabel = (Label) vbox.getScene().lookup("#accountNumberLabel");
+                            Label accountNameLabel = (Label) vbox.getScene().lookup("#accountNameLabel");
                             accountNumberLabel.setText(customer.getAccountNumber());
                             accountNameLabel.setText(customer.getAccountName());
                         }

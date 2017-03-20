@@ -41,6 +41,15 @@ public class EarnPointsService extends BaseService {
                 } else {
                     loadCustomerDetails();
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
+                    Merchant merchant = App.appContextHolder.getMerchant();
+                    Customer customer = App.appContextHolder.getCustomer();
+                    VBox vbox = App.appContextHolder.getRootContainer();
+                    if (!merchant.getMerchantClassification().equals("BASIC")) {
+                        Label accountNumberLabel = (Label) vbox.getScene().lookup("#accountNumberLabel");
+                        Label accountNameLabel = (Label) vbox.getScene().lookup("#accountNameLabel");
+                        accountNumberLabel.setText(customer.getAccountNumber());
+                        accountNameLabel.setText(customer.getAccountName());
+                    }
                     enableMenu();
                 }
             }

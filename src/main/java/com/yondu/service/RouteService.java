@@ -125,7 +125,14 @@ public class RouteService extends BaseService{
         );
         pause.setOnFinished(event -> {
             VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
-            this.loadContentPage(bodyStackPane, EARN_POINTS_SCREEN);
+            String page;
+            Merchant merchant = App.appContextHolder.getMerchant();
+            if (merchant.getMerchantClassification().equals("BASIC")) {
+                page = EARN_POINTS_SCREEN;
+            } else {
+                page = SG_EARN_POINTS_SCREEN;
+            }
+            this.loadContentPage(bodyStackPane, page);
 
         });
         pause.play();

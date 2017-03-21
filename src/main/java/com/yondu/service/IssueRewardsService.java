@@ -2,6 +2,7 @@ package com.yondu.service;
 
 import com.yondu.App;
 import com.yondu.model.*;
+import com.yondu.model.constants.AppState;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -92,8 +93,25 @@ public class IssueRewardsService extends BaseService {
         rewardsFlowPane.getChildren().clear();
 
         Customer customer = App.appContextHolder.getCustomer();
+        Merchant merchant = App.appContextHolder.getMerchant();
+        List<Reward> rewards;
+        if (merchant.getMerchantType().equals("punchcard")) {
+            rewards = customer.getCard().getRewards();
+            if (App.appContextHolder.getCurrentState().equals(AppState.ISSUE_REWARDS)) {
+                List<Reward> forRemoval = new ArrayList<>();
+                for (Reward reward : rewards) {
+                    if (reward.getStatus()) {
+                        forRemoval.add(reward);
+                    }
+                }
+                rewards.removeAll(forRemoval);
+            }
+        } else {
+            rewards = customer.getActiveVouchers();
+        }
+
         List<VBox> vBoxes = new ArrayList<>();
-        for (Reward reward : customer.getActiveVouchers()) {
+        for (Reward reward : rewards) {
 
             VBox vBox = new VBox();
             ImageView imageView = new ImageView(reward.getImageUrl());
@@ -123,7 +141,7 @@ public class IssueRewardsService extends BaseService {
 
         disableMenu();
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
             VBox rootVBox =  App.appContextHolder.getRootContainer();
@@ -217,6 +235,78 @@ public class IssueRewardsService extends BaseService {
 
                 } else {
                     apiResponse.setMessage("Network error.");
+                }
+
+                return apiResponse;
+            }
+        };
+    }
+
+    public void issueStampReward(String pin) {
+
+        Task task = issueStampRewardWorker(pin);
+        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                ApiResponse apiResponse = (ApiResponse) task.getValue();
+                if (apiResponse.isSuccess()) {
+                    renderRewards();
+                }
+                showPrompt(apiResponse.getMessage(), "ISSUE REWARD");
+                enableMenu();
+            }
+        });
+
+        disableMenu();
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.5)
+        );
+        pause.setOnFinished(event -> {
+            new Thread(task).start();
+        });
+        pause.play();
+    }
+
+
+    public Task issueStampRewardWorker(String pin) {
+        return new Task() {
+            @Override
+            protected Object call() throws Exception {
+
+                ApiResponse apiResponse = new ApiResponse();
+                apiResponse.setSuccess(false);
+
+                Employee employee = App.appContextHolder.getEmployee();
+                Merchant merchant = App.appContextHolder.getMerchant();
+                Customer customer = App.appContextHolder.getCustomer();
+                Reward reward = App.appContextHolder.getReward();
+
+                JSONObject requestBody = new JSONObject();
+                requestBody.put("employee_id", employee.getEmployeeId());
+                requestBody.put("customer_id", customer.getUuid());
+                requestBody.put("reward_id", reward.getId());
+                requestBody.put("merchant_key", merchant.getUniqueKey());
+                requestBody.put("pin", pin);
+
+                String url = CMS_URL + ISSUE_STAMP_ENDPOINT;
+
+                JSONObject jsonObject = apiService.callWidget(url, requestBody.toJSONString(), "post", merchant.getToken());
+                if (jsonObject != null) {
+
+                    String message = (String) jsonObject.get("message");
+                    String errorCode = (String) jsonObject.get("error_code");
+                    apiResponse.setMessage(message);
+                    apiResponse.setErrorCode(errorCode);
+
+                    if (errorCode.equals("0x0")) {
+                        apiResponse.setSuccess(true);
+
+                        List<Reward> rewards = customer.getCard().getRewards();
+                        rewards.remove(reward);
+                    }
+
+                } else {
+                    apiResponse.setMessage("Network connection error");
                 }
 
                 return apiResponse;

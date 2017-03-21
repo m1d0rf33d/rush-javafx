@@ -29,5 +29,6 @@ public class ApiConstants {
     public static String SEND_OFFLINE_ENDPOINT;
     public static String EARN_STAMP_ENDPOINT;
     public static String REDEEM_STAMP_ENDPOINT;
+    public static String ISSUE_STAMP_ENDPOINT;
 
 }

@@ -281,6 +281,8 @@ public class MemberDetailsService extends BaseService{
                         reward.setName((String) json.get("reward_name"));
                         reward.setDate((String) json.get("date"));
                         reward.setImageUrl((String) json.get("reward_image_url"));
+                        Long status = (Long) json.get("status");
+                        reward.setStatus(status == 1 ? true : false);
                         redeemedRewards.add(reward);
                     }
                     card.setRewards(redeemedRewards);

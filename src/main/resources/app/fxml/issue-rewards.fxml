@@ -207,7 +207,7 @@
             </VBox>
             <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label text="Available Points">
+                  <Label fx:id="availablePointsLabel" text="Available Points">
                      <font>
                         <Font size="17.0" />
                      </font>

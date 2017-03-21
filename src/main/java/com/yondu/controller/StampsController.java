@@ -61,8 +61,13 @@ public class StampsController implements Initializable {
     public Button earnStampsButton;
     @FXML
     public TextField amountTextField;
+    @FXML
+    public Label availablePointsLabel;
+    @FXML
+    public Button exitButton;
 
     private StampsService stampsService = App.appContextHolder.stampsService;
+    private CommonService commonService = App.appContextHolder.commonService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -79,6 +84,16 @@ public class StampsController implements Initializable {
         earnStampsButton.setOnMouseClicked((MouseEvent e) -> {
             String amount = amountTextField.getText();
             stampsService.earnStamps(amount);
+        });
+
+        Merchant merchant = App.appContextHolder.getMerchant();
+        if (merchant.getMerchantType().equals("punchcard")) {
+            pointsLabel.setVisible(false);
+            availablePointsLabel.setVisible(false);
+        }
+
+        exitButton.setOnMouseClicked((MouseEvent e) -> {
+            commonService.exitMember();
         });
     }
 

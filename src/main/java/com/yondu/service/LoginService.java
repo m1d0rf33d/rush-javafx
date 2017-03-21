@@ -378,6 +378,7 @@ public class LoginService extends BaseService{
             SEND_OFFLINE_ENDPOINT = prop.getProperty("send_offline_endpoint");
             EARN_STAMP_ENDPOINT = prop.getProperty("earn_stamps_endpoint");
             REDEEM_STAMP_ENDPOINT = prop.getProperty("redeem_stamps_endpoint");
+            ISSUE_STAMP_ENDPOINT = prop.getProperty("issue_stamp_endpoint");
         } catch(IOException e) {
             e.printStackTrace();
         }

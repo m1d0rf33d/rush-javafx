@@ -3,10 +3,7 @@ package com.yondu.controller;
 import com.yondu.App;
 import com.yondu.model.Branch;
 import com.yondu.model.constants.AppState;
-import com.yondu.service.LoginService;
-import com.yondu.service.PayWithPointsService;
-import com.yondu.service.RedeemRewardsService;
-import com.yondu.service.StampsService;
+import com.yondu.service.*;
 import com.yondu.utils.PropertyBinder;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -37,6 +34,7 @@ public class PinController implements Initializable {
     private RedeemRewardsService redeemRewardsService = App.appContextHolder.redeemRewardsService;
     private StampsService stampsService = App.appContextHolder.stampsService;
     private LoginService loginService = App.appContextHolder.loginService;
+    private IssueRewardsService issueRewardsService = App.appContextHolder.issueRewardsService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -56,6 +54,8 @@ public class PinController implements Initializable {
                 redeemRewards();
             } else if (state.equals(AppState.GIVE_STAMPS)) {
                 stampsService.redeemReward(pinTextField.getText());
+            } else if (state.equals(AppState.ISSUE_REWARDS)) {
+                issueRewardsService.issueStampReward(pinTextField.getText());
             }
 
         });

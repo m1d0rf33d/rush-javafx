@@ -1,6 +1,7 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import com.yondu.model.Merchant;
 import com.yondu.model.constants.AppState;
 import com.yondu.service.CommonService;
 import com.yondu.service.IssueRewardsService;
@@ -44,6 +45,8 @@ public class IssueRewardsController implements Initializable{
     public VBox issueRootVBox;
     @FXML
     public Button exitButton;
+    @FXML
+    public Label availablePointsLabel;
 
     private CommonService commonService = App.appContextHolder.commonService;
     private IssueRewardsService issueRewardsService = new IssueRewardsService();
@@ -65,9 +68,13 @@ public class IssueRewardsController implements Initializable{
             }
         });
 
-
-
         App.appContextHolder.setCurrentState(AppState.ISSUE_REWARDS);
+
+        Merchant merchant = App.appContextHolder.getMerchant();
+        if (merchant.getMerchantType().equals("punchcard")) {
+            pointsLabel.setVisible(false);
+            availablePointsLabel.setVisible(false);
+        }
     }
 
 

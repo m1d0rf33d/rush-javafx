@@ -1,6 +1,7 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import com.yondu.model.Merchant;
 import com.yondu.service.CommonService;
 import com.yondu.service.MemberDetailsService;
 import com.yondu.utils.PropertyBinder;
@@ -55,6 +56,8 @@ public class MemberDetailsController implements Initializable {
     public Tab transactionsTab;
     @FXML
     public Tab vouchersTab;
+    @FXML
+    public Label availablePointsLabel;
 
     private CommonService commonService = App.appContextHolder.commonService;
     private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
@@ -62,6 +65,8 @@ public class MemberDetailsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         PropertyBinder.bindVirtualKeyboard(searchTextField);
+        transactionsPagination.setPageCount(0);
+        activeVouchersPagination.setPageCount(0);
 
         memberDetailsService.initialize();
 
@@ -142,7 +147,11 @@ public class MemberDetailsController implements Initializable {
                 App.appContextHolder.getRootContainer().setMinHeight(600 + newValue.doubleValue());
             }
         });
-
+        Merchant merchant = App.appContextHolder.getMerchant();
+        if (merchant.getMerchantType().equals("punchcard")) {
+            pointsLabel.setVisible(false);
+            availablePointsLabel.setVisible(false);
+        }
     }
 
 

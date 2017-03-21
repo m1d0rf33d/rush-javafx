@@ -2,6 +2,7 @@ package com.yondu.controller;
 
 import com.yondu.App;
 import com.yondu.model.Customer;
+import com.yondu.model.Merchant;
 import com.yondu.model.Reward;
 import com.yondu.model.constants.AppState;
 import com.yondu.service.IssueRewardsService;
@@ -63,7 +64,13 @@ public class RewardDialogController implements Initializable {
             if (state.equals(AppState.REDEEM_REWARDS)) {
                 showPinDialog();
             } else if (state.equals(AppState.ISSUE_REWARDS)) {
-                issueReward();
+                Merchant merchant = App.appContextHolder.getMerchant();
+                if (merchant.getMerchantType().equals("loyalty")) {
+                    issueReward();
+                } else {
+                    showPinDialog();
+                }
+
             } else if (state.equals(AppState.GIVE_STAMPS)) {
                 showPinDialog();
             }
@@ -113,34 +120,39 @@ public class RewardDialogController implements Initializable {
         this.nameLabel.setText(reward.getName());
         this.detailsLabel.setText(reward.getDetails());
 
-        String pointsTxt;
-        if (App.appContextHolder.getCurrentState().equals(AppState.GIVE_STAMPS)) {
-            pointsTxt = reward.getStamps() + " stamps";
+        Merchant merchant = App.appContextHolder.getMerchant();
+        if (merchant.getMerchantType().equals("punchcard")) {
 
-            if (reward.getDate() != null) {
-                redeemButton.setVisible(false);
-                lockLabel.setText("Redemption date: " + reward.getDate());
-            } else {
+            if (App.appContextHolder.getCurrentState().equals(AppState.GIVE_STAMPS)) {
+                if (reward.getDate() != null) {
+                    redeemButton.setVisible(false);
+                    lockLabel.setText("Redemption date: " + reward.getDate());
+                } else {
+                    lockLabel.setVisible(false);
+                }
+
+                this.requiredPointsLabel.setText(reward.getStamps() + " stamps");
+            } else if (App.appContextHolder.getCurrentState().equals(AppState.ISSUE_REWARDS)) {
                 lockLabel.setVisible(false);
             }
+            this.requiredPointsLabel.setVisible(false);
 
         } else {
-            pointsTxt = reward.getPointsRequired() + " points";
-        }
-        this.requiredPointsLabel.setText(pointsTxt);
 
-        if (App.appContextHolder.getCurrentState().equals(AppState.REDEEM_REWARDS)) {
-            Customer customer = App.appContextHolder.getCustomer();
+            if (App.appContextHolder.getCurrentState().equals(AppState.REDEEM_REWARDS)) {
+                Customer customer = App.appContextHolder.getCustomer();
 
-            Long pointsRequired = Long.parseLong(reward.getPointsRequired());
-            Double customerPoints = Double.parseDouble(customer.getAvailablePoints());
-            if (pointsRequired > customerPoints) {
-                lockLabel.setVisible(true);
-                redeemButton.setVisible(false);
-            } else {
-                lockLabel.setVisible(false);
-                redeemButton.setVisible(true);
+                Long pointsRequired = Long.parseLong(reward.getPointsRequired());
+                Double customerPoints = Double.parseDouble(customer.getAvailablePoints());
+                if (pointsRequired > customerPoints) {
+                    lockLabel.setVisible(true);
+                    redeemButton.setVisible(false);
+                } else {
+                    lockLabel.setVisible(false);
+                    redeemButton.setVisible(true);
+                }
             }
+            this.requiredPointsLabel.setText(reward.getPointsRequired() + " points");
         }
 
     }

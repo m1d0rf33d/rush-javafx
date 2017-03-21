@@ -19,6 +19,7 @@ import net.sf.jasperreports.engine.JRException;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.yondu.model.constants.AppConfigConstants.DIVIDER;
@@ -75,6 +76,7 @@ public class LoginController implements Initializable {
     }
 
     public void initAfterLoad() {
+        List<String> s = javafx.scene.text.Font.getFamilies();
         App.appContextHolder.setCurrentState(AppState.LOGIN);
         App.appContextHolder.setRootContainer(rootVBox);
         rootScrollPane.setFitToHeight(true);

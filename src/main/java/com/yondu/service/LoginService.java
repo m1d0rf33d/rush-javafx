@@ -126,6 +126,7 @@ public class LoginService extends BaseService{
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(PIN_SCREEN));
             Parent root = fxmlLoader.load();
             Scene scene = new Scene(root, 420,220);
+            scene.getStylesheets().add(App.class.getResource("/app/css/menu.css").toExternalForm());
             stage.setScene(scene);
             stage.setTitle(APP_TITLE);
             stage.resizableProperty().setValue(Boolean.FALSE);

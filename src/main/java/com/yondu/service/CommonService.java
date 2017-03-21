@@ -25,8 +25,6 @@ import static com.yondu.model.constants.ApiConstants.*;
  */
 public class CommonService {
 
-    private ApiService apiService = App.appContextHolder.apiService;
-
     public void exitMember() {
         App.appContextHolder.setCustomer(null);
         VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
@@ -42,7 +40,7 @@ public class CommonService {
         for (Node n : nodes) {
         if (n instanceof Button) {
             Button b = (Button) n;
-            b.getStyleClass().remove("sidebar-selected");
+            b.getStyleClass().remove("sidebar-button-selected");
             }
         }
 
@@ -75,7 +73,7 @@ public class CommonService {
                 break;
         }
 
-        button.getStyleClass().add("sidebar-selected");
+        button.getStyleClass().add("sidebar-button-selected");
     }
 
 

@@ -97,8 +97,8 @@ public class RouteService extends BaseService{
         try {
             bodyStackPane.getChildren().clear();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(page));
-
             Parent root = fxmlLoader.load();
+
             bodyStackPane.getChildren().add(root);
             return fxmlLoader;
         } catch (IOException e) {

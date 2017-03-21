@@ -27,7 +27,7 @@
             <Insets top="15.0" />
          </VBox.margin>
       </ComboBox>
-      <Button fx:id="loginButton" maxWidth="300.0" minHeight="-Infinity" minWidth="300.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="LOGIN" textFill="#f5f2f2" VBox.vgrow="ALWAYS">
+      <Button fx:id="loginButton" maxWidth="300.0" minHeight="-Infinity" minWidth="300.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" styleClass="primary-button" text="LOGIN" textFill="#f5f2f2" VBox.vgrow="ALWAYS">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>

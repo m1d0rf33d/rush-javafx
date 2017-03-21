@@ -196,7 +196,7 @@
          <children>
             <VBox alignment="CENTER_RIGHT" maxWidth="500.0" minWidth="300" prefHeight="100.0" prefWidth="300.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="registerButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="SEND" textFill="#f2ecec" VBox.vgrow="ALWAYS">
+                  <Button fx:id="registerButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" styleClass="primary-button" text="SEND" textFill="#f2ecec" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="System Bold" size="17.0" />
                      </font>
@@ -214,7 +214,7 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
                <children>
-                  <Button fx:id="clearButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #CDD2D6;" text="CLEAR ALL" textFill="#f2ecec" VBox.vgrow="ALWAYS">
+                  <Button fx:id="clearButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #CDD2D6;" styleClass="cancel-button" text="CLEAR ALL" textFill="#f2ecec" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="System Bold" size="17.0" />
                      </font>

@@ -23,14 +23,14 @@
          </font></PasswordField>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Button fx:id="submitButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="190.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" text="SUBMIT" textFill="#eeecec">
+            <Button fx:id="submitButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="190.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" styleClass="primary-button" text="SUBMIT" textFill="#eeecec">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
                <cursor>
                   <Cursor fx:constant="OPEN_HAND" />
                </cursor></Button>
-            <Button fx:id="cancelButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="190.0" style="-fx-background-color: #CDD2D6; -fx-background-radius: 30;" text="CANCEL" textFill="#fffefe">
+            <Button fx:id="cancelButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="190.0" style="-fx-background-color: #CDD2D6; -fx-background-radius: 30;" styleClass="cancel-button" text="CANCEL" textFill="#fffefe">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>

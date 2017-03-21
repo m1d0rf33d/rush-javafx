@@ -1,3 +1,4 @@
+/*
 
 .sidebar-selected {
     -fx-background-color:  #e7e7e7 !important;
@@ -10,6 +11,7 @@
     -fx-font-family: 'System';
     -fx-font-size: 15px;
 }
+*/
 
 .table-row-cell {
     -fx-cell-size: 50px;
@@ -76,4 +78,95 @@
 .tab:selected {
     -fx-background-color: white ;
     -fx-font-family: Arial;
+}
+
+.primary-button {
+    -fx-background-color: #ffb600 !important;
+    -fx-text-fill:  white;
+    -fx-border-radius: 30;
+    -fx-border-width: 5;
+    -fx-background-radius: 30;
+    -fx-font-family: Ubuntu;
+    -fx-font-size: 28px;
+}
+
+
+.primary-button:hover {
+    -fx-background-color: white !important;
+    -fx-text-fill:  #ffb600;
+    -fx-border-color:  #ffb600;
+    -fx-border-radius: 30;
+    -fx-border-width: 2;
+    -fx-background-radius: 30;
+    -fx-font-family: Ubuntu;
+    -fx-font-size: 28px;
+}
+
+.primary-button:focused {
+    -fx-background-color: #ffb600 !important;
+    -fx-text-fill:  white;
+    -fx-border-radius: 30;
+    -fx-border-width: 2;
+    -fx-background-radius: 30;
+}
+
+.cancel-button {
+    -fx-background-color:  #CDD2D6 !important;
+    -fx-text-fill:  white;
+    -fx-border-radius: 30;
+    -fx-border-width: 5;
+    -fx-background-radius: 30;
+    -fx-font-family: Ubuntu;
+    -fx-font-size: 28px;
+}
+
+
+.cancel-button:hover {
+    -fx-background-color: white !important;
+    -fx-text-fill:   #CDD2D6;
+    -fx-border-color:   #CDD2D6;
+    -fx-border-radius: 30;
+    -fx-border-width: 2;
+    -fx-background-radius: 30;
+    -fx-font-family: Ubuntu;
+    -fx-font-size: 28px;
+}
+
+
+.sidebar-button {
+    -fx-background-color:  #333;
+    -fx-text-fill: white;
+    -fx-font-family: Ubuntu;
+    -fx-font-size: 20px;
+
+}
+
+.sidebar-button:hover {
+    -fx-background-color:  white !important;
+    -fx-text-fill: #333;
+    -fx-font-family: Ubuntu;
+    -fx-font-size: 20px;
+    -fx-border-width: 2;
+    -fx-border-color: #333;
+}
+
+
+.sidebar-button-selected{
+    -fx-background-color:  #e7e7e7 !important;
+    -fx-text-fill: black !important;
+    -fx-font-family: Ubuntu;
+    -fx-font-size: 20px;
+
+}
+
+.sidebar-button-selected:hover{
+    -fx-background-color:  white !important;
+    -fx-text-fill: #333;
+    -fx-font-family: Ubuntu;
+    -fx-font-size: 20px;
+}
+
+.label {
+    -fx-font-family: Ubuntu;
+    -fx-font-size: 20px;
 }

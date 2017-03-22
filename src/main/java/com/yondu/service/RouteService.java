@@ -183,33 +183,37 @@ public class RouteService extends BaseService{
         pause.play();
     }
     public void loadMemberDetailsScreen(boolean fromInquiry) {
-        showLoadingScreen();
-        PauseTransition pause = new PauseTransition(
-                Duration.seconds(.01)
-        );
-        pause.setOnFinished(event -> {
-            Merchant merchant = App.appContextHolder.getMerchant();
-            String screen = "";
-            if (merchant.getMerchantClassification().equals("BASIC")) {
-                screen = MEMBER_DETAILS_SCREEN;
-            } else {
-                screen = SG_MEMBER_DETAILS_FXML;
-            }
-            if (!fromInquiry) {
+        Merchant merchant = App.appContextHolder.getMerchant();
+        String screen = "";
+        if (merchant.getMerchantClassification().equals("BASIC")) {
+            screen = MEMBER_DETAILS_SCREEN;
+        } else {
+            screen = SG_MEMBER_DETAILS_FXML;
+        }
+        String scrn = screen;
+        if (!fromInquiry) {
+            showLoadingScreen();
+            PauseTransition pause = new PauseTransition(
+                    Duration.seconds(.5)
+            );
+            pause.setOnFinished(event -> {
+
                 ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber(), App.appContextHolder.getCurrentState());
                 if (!apiResponse.isSuccess()) {
                     showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY");
                 } else {
                     VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
 
-                    this.loadContentPage(bodyStackPane, screen);
+                    this.loadContentPage(bodyStackPane, scrn);
                 }
-            } else {
-                VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
-                this.loadContentPage(bodyStackPane, screen);
-            }
-        });
-        pause.play();
+            });
+            pause.play();
+        } else {
+            VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
+            this.loadContentPage(bodyStackPane, scrn);
+        }
+
+
 
     }
     public void loadMemberDetailsScreen(String mobileNumber) {
@@ -298,14 +302,14 @@ public class RouteService extends BaseService{
     public void loadPinScreen() {
         disableMenu();
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
             try {
                 Stage stage = new Stage();
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(PIN_SCREEN));
                 Parent root = fxmlLoader.load();
-                Scene scene = new Scene(root, 500,300);
+                Scene scene = new Scene(root, 420,220);
                 stage.setScene(scene);
                 stage.setTitle(APP_TITLE);
                 stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));

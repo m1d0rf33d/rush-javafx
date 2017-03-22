@@ -167,6 +167,7 @@ public class RewardDialogController implements Initializable {
                 quantityTextField.setText("1");
                 PropertyBinder.bindNumberOnly(quantityTextField);
                 PropertyBinder.bindDefaultOne(quantityTextField);
+                PropertyBinder.bindVirtualKeyboard(quantityTextField);
                 plusButton.setOnMouseClicked((Event e)-> {
                     Integer q = Integer.parseInt(quantityTextField.getText());
                     quantityTextField.setText(String.valueOf(++q));
@@ -186,10 +187,12 @@ public class RewardDialogController implements Initializable {
                     lockLabel.setVisible(false);
                     redeemButton.setVisible(true);
                 }
+                this.requiredPointsLabel.setText(reward.getPointsRequired() + " points");
             } else {
                 quantityHBox.setVisible(false);
+                this.requiredPointsLabel.setText("Quantity: " + reward.getQuantity());
             }
-            this.requiredPointsLabel.setText(reward.getPointsRequired() + " points");
+
         }
     }
 

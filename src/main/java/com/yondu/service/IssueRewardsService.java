@@ -13,6 +13,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
@@ -111,30 +112,40 @@ public class IssueRewardsService extends BaseService {
             rewards = customer.getActiveVouchers();
         }
 
-        List<VBox> vBoxes = new ArrayList<>();
         for (Reward reward : rewards) {
-
-            VBox vBox = new VBox();
-            ImageView imageView = new ImageView(reward.getImageUrl());
-            imageView.setFitWidth(350);
-            imageView.setFitHeight(200);
-            imageView.setOnMouseClicked((MouseEvent e) -> {
-                showRewardsDialog(reward);
+            Task task = imageLoaderWorker(reward);
+            task.setOnSucceeded((Event e)-> {
+                VBox vbox = (VBox) task.getValue();
+                rewardsFlowPane.getChildren().add(vbox);
             });
-            vBox.getChildren().add(imageView);
-            Label label = new Label();
-            label.getStyleClass().add("label-3");
-            label.setText(reward.getName());
-            label.getStyleClass().add("lbl-med");
-            vBox.getChildren().addAll(label);
-            vBox.setPrefWidth(200);
-            vBox.setMargin(imageView, new Insets(10,10,10,10));
-            vBox.setMargin(label, new Insets(10,10,10,10));
-            vBox.setPrefHeight(200);
-            vBoxes.add(vBox);
+            new Thread(task).start();
         }
+    }
 
-        rewardsFlowPane.getChildren().addAll(vBoxes);
+    private Task imageLoaderWorker(Reward reward) {
+        return new Task() {
+            @Override
+            protected VBox call() throws Exception {
+                VBox vBox = new VBox();
+                ImageView imageView = new ImageView(reward.getImageUrl());
+                imageView.setFitWidth(350);
+                imageView.setFitHeight(200);
+                imageView.setOnMouseClicked((MouseEvent e) -> {
+                    showRewardsDialog(reward);
+                });
+                vBox.getChildren().add(imageView);
+                Label label = new Label();
+                label.getStyleClass().add("label-3");
+                label.setText(reward.getName());
+                label.getStyleClass().add("lbl-med");
+                vBox.getChildren().addAll(label);
+                vBox.setPrefWidth(200);
+                vBox.setMargin(imageView, new Insets(10,10,10,10));
+                vBox.setMargin(label, new Insets(10,10,10,10));
+                vBox.setPrefHeight(200);
+                return vBox;
+            }
+        };
     }
 
     private void showRewardsDialog(Reward reward) {
@@ -153,6 +164,7 @@ public class IssueRewardsService extends BaseService {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REWARDS_DIALOG_SCREEN));
                 Parent root = fxmlLoader.load();
                 Scene scene = new Scene(root, 350,520);
+                scene.getStylesheets().add(App.class.getResource("/app/css/menu.css").toExternalForm());
                 stage.setScene(scene);
                 stage.setTitle(APP_TITLE);
                 stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));

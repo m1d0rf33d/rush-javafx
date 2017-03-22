@@ -42,6 +42,7 @@ public class PinController implements Initializable {
 
         PropertyBinder.bindVirtualKeyboard(pinTextField);
         PropertyBinder.bindNumberOnly(pinTextField);
+        PropertyBinder.bindMaxLength(4, pinTextField);
 
         submitButton.setOnMouseClicked((MouseEvent e) -> {
             submitTrigger();

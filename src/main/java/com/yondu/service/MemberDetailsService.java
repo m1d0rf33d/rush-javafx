@@ -36,73 +36,67 @@ public class MemberDetailsService extends BaseService{
 
     public void initialize() {
 
-        disableMenu();
-        PauseTransition pause = new PauseTransition(
-                Duration.seconds(.01)
-        );
-        pause.setOnFinished(event -> {
-            Task task = initializeWorker();
-            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                @Override
-                public void handle(WorkerStateEvent event) {
-                    ApiResponse apiResponse = (ApiResponse) task.getValue();
-                    if (apiResponse.isSuccess()) {
-                        loadCustomerDetails();
-                        loadActiveVouchers();
-                        loadCustomerTransactions();
 
-                        VBox vbox = App.appContextHolder.getRootContainer();
-                        TabPane vouchersTabPane = (TabPane) vbox.getScene().lookup("#vouchersTabPane");
-                        vouchersTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-                        for (Tab tab : vouchersTabPane.getTabs()) {
-                            if (tab.getId().equals("transactionsTab")) {
-                                tab.setGraphic(new Label("TRANSACTIONS"));
-                                tab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
-                                        "    -fx-tab-max-width:200px;\n" +
-                                        "    -fx-tab-min-height:30px;\n" +
-                                        "    -fx-tab-max-height:30px;\n" +
-                                        "    -fx-text-fill: white;\n" +
-                                        "    -fx-font-size: 17px;");
-                            } else {
-                                tab.setGraphic(new Label("ACTIVE VOUCHERS"));
-                                tab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
-                                        "    -fx-tab-max-width:200px;\n" +
-                                        "    -fx-tab-min-height:30px;\n" +
-                                        "    -fx-tab-max-height:30px;\n" +
-                                        "    -fx-text-fill: black;\n" +
-                                        "    -fx-font-size: 17px;");
-                            }
+        Task task = initializeWorker();
+        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                ApiResponse apiResponse = (ApiResponse) task.getValue();
+                if (apiResponse.isSuccess()) {
+                    loadCustomerDetails();
+                    loadActiveVouchers();
+                    loadCustomerTransactions();
 
+                    VBox vbox = App.appContextHolder.getRootContainer();
+                    TabPane vouchersTabPane = (TabPane) vbox.getScene().lookup("#vouchersTabPane");
+                    vouchersTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+                    for (Tab tab : vouchersTabPane.getTabs()) {
+                        if (tab.getId().equals("transactionsTab")) {
+                            tab.setGraphic(new Label("TRANSACTIONS"));
+                            tab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
+                                    "    -fx-tab-max-width:200px;\n" +
+                                    "    -fx-tab-min-height:30px;\n" +
+                                    "    -fx-tab-max-height:30px;\n" +
+                                    "    -fx-text-fill: white;\n" +
+                                    "    -fx-font-size: 17px;");
+                        } else {
+                            tab.setGraphic(new Label("ACTIVE VOUCHERS"));
+                            tab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
+                                    "    -fx-tab-max-width:200px;\n" +
+                                    "    -fx-tab-min-height:30px;\n" +
+                                    "    -fx-tab-max-height:30px;\n" +
+                                    "    -fx-text-fill: black;\n" +
+                                    "    -fx-font-size: 17px;");
                         }
 
-                        Merchant merchant = App.appContextHolder.getMerchant();
-                        Customer customer = App.appContextHolder.getCustomer();
-                        if (!merchant.getMerchantClassification().equals("BASIC")) {
-                            Label accountNumberLabel = (Label) vbox.getScene().lookup("#accountNumberLabel");
-                            Label accountNameLabel = (Label) vbox.getScene().lookup("#accountNameLabel");
-                            accountNumberLabel.setText(customer.getAccountNumber());
-                            accountNameLabel.setText(customer.getAccountName());
-                        }
-
-                        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
-                        enableMenu();
-                        hideLoadingScreen();
-                    } else {
-                        showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
-                        App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
-                        enableMenu();
-                        hideLoadingScreen();
                     }
-                }
-            });
 
-            new Thread(task).start();
+                    Merchant merchant = App.appContextHolder.getMerchant();
+                    Customer customer = App.appContextHolder.getCustomer();
+                    if (!merchant.getMerchantClassification().equals("BASIC")) {
+                        Label accountNumberLabel = (Label) vbox.getScene().lookup("#accountNumberLabel");
+                        Label accountNameLabel = (Label) vbox.getScene().lookup("#accountNameLabel");
+                        accountNumberLabel.setText(customer.getAccountNumber());
+                        accountNameLabel.setText(customer.getAccountName());
+                    }
+
+                    App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
+                    enableMenu();
+                    hideLoadingScreen();
+                } else {
+                    showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
+                    App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
+                    enableMenu();
+                    hideLoadingScreen();
+                }
+            }
         });
-        pause.play();
+
+        new Thread(task).start();
     }
 
     public void viewMember(String mobileNumber) {
-       // disableMenu();
+        disableMenu();
         App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.01)
@@ -202,6 +196,7 @@ public class MemberDetailsService extends BaseService{
                         if (rewardJSON.get("redeem_id") != null) {
                             reward.setRedeemId((String) rewardJSON.get("redeem_id"));
                         }
+                        reward.setQuantity((rewardJSON.get("quantity").toString()));
                         reward.setDate((String) rewardJSON.get("date"));
                         reward.setDetails((String) rewardJSON.get("details"));
                         reward.setId((String) rewardJSON.get("id"));

@@ -239,6 +239,7 @@ public class LoginService extends BaseService{
                                 Branch branch = new Branch();
                                 branch.setId((String) branchJSON.get("id"));
                                 branch.setName((String) branchJSON.get("name"));
+                                branch.setWithVk((Boolean) branchJSON.get("with_vk"));
                                 branch.setLogoUrl((String) branchJSON.get("logo_url"));
                                 branches.add(branch);
                             }

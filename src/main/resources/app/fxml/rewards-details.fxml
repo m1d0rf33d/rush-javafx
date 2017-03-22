@@ -35,13 +35,16 @@
                   </HBox>
                   <HBox fx:id="quantityHBox" alignment="TOP_RIGHT" maxWidth="200.0" minWidth="200.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="quantityTextField" maxHeight="50.0" maxWidth="70.0" minHeight="50.0" minWidth="70.0" prefHeight="50.0" prefWidth="70.0" style="-fx-background-radius: 0; -fx-background-insets: 0; -fx-border-color: gray; -fx-border-width: 1;" />
-                        <Button fx:id="plusButton" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white; -fx-border-width: 1; -fx-background-insets: 0;" text="+" textFill="WHITE">
+                        <TextField fx:id="quantityTextField" maxHeight="50.0" maxWidth="60.0" minHeight="50.0" minWidth="60.0" prefHeight="50.0" prefWidth="60.0" style="-fx-background-radius: 0; -fx-background-insets: 0; -fx-border-color: gray; -fx-border-width: 1;">
+                           <HBox.margin>
+                              <Insets top="1.0" />
+                           </HBox.margin></TextField>
+                        <Button fx:id="plusButton" maxHeight="52.0" maxWidth="50.0" minHeight="52.0" minWidth="50.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="50.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white; -fx-border-width: 1; -fx-background-insets: 0;" text="+" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="21.0" />
                            </font>
                         </Button>
-                        <Button fx:id="minusButton" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white; -fx-border-width: 1; -fx-background-insets: 0;" text="-" textFill="WHITE">
+                        <Button fx:id="minusButton" maxHeight="52.0" maxWidth="50.0" minHeight="52.0" minWidth="50.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="50.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white; -fx-border-width: 1; -fx-background-insets: 0;" text="-" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="21.0" />
                            </font>

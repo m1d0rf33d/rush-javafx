@@ -277,22 +277,22 @@
 
 
 .ocr-button {
-    -fx-background-color: transparent;
+    -fx-background-color: white;
     -fx-border-color:  #ffb600;
-    -fx-border-radius: 10;
+    -fx-border-radius: 5;
     -fx-border-width: 3;
-    -fx-text-fill: black;
+    -fx-text-fill: #ffb600;
     -fx-font-family: "Lucida Sans";
     -fx-font-size: 18px;
     -fx-cursor: hand;
 }
 
 .exit-button {
-    -fx-background-color: transparent;
+    -fx-background-color: white;
     -fx-border-color:  #ffb600;
-    -fx-border-radius: 10;
+    -fx-border-radius: 5;
     -fx-border-width: 3;
-    -fx-text-fill: black;
+    -fx-text-fill: #ffb600;
     -fx-font-family: "Lucida Sans";
     -fx-font-size: 18px;
     -fx-cursor: hand;

@@ -127,4 +127,15 @@ public class PropertyBinder {
             });
         }
     }
+
+    public static void bindDefaultOne(TextField textField) {
+        textField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+              if (newValue.isEmpty() || (!newValue.isEmpty() && newValue.equals("0"))) {
+                  textField.setText("1");
+              }
+            }
+        });
+    }
 }

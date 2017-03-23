@@ -128,6 +128,7 @@ public class RedeemRewardsService extends BaseService {
                 requestBody.put("customer_id", customer.getUuid());
                 requestBody.put("pin", pin);
                 requestBody.put("reward_id", reward.getId());
+                requestBody.put("quantity", reward.getQuantity());
 
                 String url = CMS_URL + WIDGET_REDEEM_ENDPOINT;
                 JSONObject jsonObject = apiService.callWidget(url, requestBody.toJSONString(), "post", merchant.getToken());
@@ -219,6 +220,7 @@ public class RedeemRewardsService extends BaseService {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REWARDS_DIALOG_SCREEN));
                 Parent root = fxmlLoader.load();
                 Scene scene = new Scene(root, 350,520);
+                scene.getStylesheets().add(App.class.getResource("/app/css/menu.css").toExternalForm());
                 stage.setScene(scene);
                 stage.setTitle(APP_TITLE);
                 stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));

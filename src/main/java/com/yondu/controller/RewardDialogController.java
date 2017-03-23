@@ -7,6 +7,9 @@ import com.yondu.model.Reward;
 import com.yondu.model.constants.AppState;
 import com.yondu.service.IssueRewardsService;
 import com.yondu.service.MemberDetailsService;
+import com.yondu.utils.PropertyBinder;
+import javafx.concurrent.Task;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,11 +18,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.apache.poi.ss.formula.functions.Even;
 
 import java.io.IOException;
 import java.net.URL;
@@ -45,6 +51,14 @@ public class RewardDialogController implements Initializable {
     public Label lockLabel;
     @FXML
     public Label requiredPointsLabel;
+    @FXML
+    public TextField quantityTextField;
+    @FXML
+    public HBox quantityHBox;
+    @FXML
+    public Button minusButton;
+    @FXML
+    public Button plusButton;
 
     private IssueRewardsService issueRewardsService = App.appContextHolder.issueRewardsService;
 
@@ -62,6 +76,8 @@ public class RewardDialogController implements Initializable {
         redeemButton.setOnMouseClicked((MouseEvent e) -> {
 
             if (state.equals(AppState.REDEEM_REWARDS)) {
+                Reward reward = App.appContextHolder.getReward();
+                reward.setQuantity(quantityTextField.getText());
                 showPinDialog();
             } else if (state.equals(AppState.ISSUE_REWARDS)) {
                 Merchant merchant = App.appContextHolder.getMerchant();
@@ -113,7 +129,13 @@ public class RewardDialogController implements Initializable {
     public void renderReward() {
         Reward reward = App.appContextHolder.getReward();
 
-        this.rewardImageView.setImage(new Image(reward.getImageUrl()));
+        Task task = imageLoadWorker(reward.getImageUrl());
+        task.setOnSucceeded((Event e) -> {
+            Image image = (Image) task.getValue();
+            this.rewardImageView.setImage(image);
+        });
+        new Thread(task).start();
+
         this.rewardImageView.setFitWidth(350);
         this.rewardImageView.setPreserveRatio(false);
         this.rewardImageView.setFitHeight(200);
@@ -122,6 +144,7 @@ public class RewardDialogController implements Initializable {
 
         Merchant merchant = App.appContextHolder.getMerchant();
         if (merchant.getMerchantType().equals("punchcard")) {
+            quantityHBox.setVisible(false);
 
             if (App.appContextHolder.getCurrentState().equals(AppState.GIVE_STAMPS)) {
                 if (reward.getDate() != null) {
@@ -141,6 +164,18 @@ public class RewardDialogController implements Initializable {
 
             if (App.appContextHolder.getCurrentState().equals(AppState.REDEEM_REWARDS)) {
                 Customer customer = App.appContextHolder.getCustomer();
+                quantityTextField.setText("1");
+                PropertyBinder.bindNumberOnly(quantityTextField);
+                PropertyBinder.bindDefaultOne(quantityTextField);
+                plusButton.setOnMouseClicked((Event e)-> {
+                    Integer q = Integer.parseInt(quantityTextField.getText());
+                    quantityTextField.setText(String.valueOf(++q));
+                });
+
+                minusButton.setOnMouseClicked((Event e)-> {
+                    Integer q = Integer.parseInt(quantityTextField.getText());
+                    quantityTextField.setText(String.valueOf(--q));
+                });
 
                 Long pointsRequired = Long.parseLong(reward.getPointsRequired());
                 Double customerPoints = Double.parseDouble(customer.getAvailablePoints());
@@ -151,9 +186,19 @@ public class RewardDialogController implements Initializable {
                     lockLabel.setVisible(false);
                     redeemButton.setVisible(true);
                 }
+            } else {
+                quantityHBox.setVisible(false);
             }
             this.requiredPointsLabel.setText(reward.getPointsRequired() + " points");
         }
+    }
 
+    private Task imageLoadWorker(String url) {
+        return new Task() {
+            @Override
+            protected Image call() throws Exception {
+                return new Image(url);
+            }
+        };
     }
 }

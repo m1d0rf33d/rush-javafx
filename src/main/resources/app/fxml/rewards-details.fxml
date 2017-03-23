@@ -15,18 +15,41 @@
             <ImageView fx:id="rewardImageView" fitHeight="200.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
-      <VBox maxHeight="300.0" minHeight="300.0" prefHeight="300.0" prefWidth="370.0">
+      <VBox maxHeight="300.0" maxWidth="330.0" minHeight="300.0" minWidth="330.0" prefHeight="300.0" prefWidth="330.0">
          <children>
             <Label fx:id="nameLabel" prefHeight="50.0" prefWidth="300.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <Label fx:id="requiredPointsLabel" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" textFill="#cd0b0b">
-               <font>
-                  <Font size="17.0" />
-               </font>
-            </Label>
+            <HBox maxWidth="330.0" minWidth="330.0" prefWidth="330.0">
+               <children>
+                  <HBox maxWidth="130.0" minWidth="130.0" prefWidth="130.0">
+                     <children>
+                        <Label fx:id="requiredPointsLabel" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" textFill="#cd0b0b">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox fx:id="quantityHBox" alignment="TOP_RIGHT" maxWidth="200.0" minWidth="200.0" prefWidth="200.0">
+                     <children>
+                        <TextField fx:id="quantityTextField" maxHeight="50.0" maxWidth="70.0" minHeight="50.0" minWidth="70.0" prefHeight="50.0" prefWidth="70.0" style="-fx-background-radius: 0; -fx-background-insets: 0; -fx-border-color: gray; -fx-border-width: 1;" />
+                        <Button fx:id="plusButton" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white; -fx-border-width: 1; -fx-background-insets: 0;" text="+" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="21.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="minusButton" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white; -fx-border-width: 1; -fx-background-insets: 0;" text="-" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="21.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
             <Label fx:id="detailsLabel" ellipsisString="" maxHeight="150.0" maxWidth="300.0" minWidth="150.0" prefHeight="150.0" prefWidth="200.0" textFill="#514646" textOverrun="CLIP" wrapText="true">
                <font>
                   <Font size="17.0" />
@@ -54,7 +77,7 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
          <VBox.margin>
-            <Insets left="20.0" right="20.0" />
+            <Insets left="10.0" right="10.0" />
          </VBox.margin>
       </VBox>
    </children>

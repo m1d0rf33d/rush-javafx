@@ -38,7 +38,7 @@ import static com.yondu.model.constants.AppConfigConstants.REWARDS_DIALOG_SCREEN
 /**
  * Created by erwin on 2/28/2017.
  */
-public class StampsController implements Initializable {
+public class StampsController  extends BaseController implements Initializable {
     @FXML
     public Label nameLabel;
     @FXML
@@ -73,6 +73,7 @@ public class StampsController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         stampsService.initialize();
+
 
         rewardsFlowPane.heightProperty().addListener(new ChangeListener<Number>() {
             @Override

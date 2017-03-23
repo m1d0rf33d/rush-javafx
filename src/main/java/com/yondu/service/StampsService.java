@@ -6,6 +6,7 @@ import com.yondu.model.*;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -54,6 +55,7 @@ public class StampsService extends BaseService  {
                     showPrompt(apiResponse.getMessage(), "EARN STAMPS", apiResponse.isSuccess());
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                     enableMenu();
+                    hideLoadingScreen();
                 } else {
                     loadCustomerDetails();
                     loadRewards();
@@ -68,6 +70,7 @@ public class StampsService extends BaseService  {
                         accountNameLabel.setText(customer.getAccountName());
                     }
                     enableMenu();
+                    hideLoadingScreen();
                 }
             }
         });
@@ -100,60 +103,83 @@ public class StampsService extends BaseService  {
         VBox rootVBox = App.appContextHolder.getRootContainer();
         FlowPane rewardsFlowPane = (FlowPane) rootVBox.getScene().lookup("#rewardsFlowPane");
         rewardsFlowPane.getChildren().clear();
+
         Customer customer = App.appContextHolder.getCustomer();
-        Promo promo = customer.getCard().getPromo();
-        Long stamps = customer.getCard().getPromo().getStamps();
-        Long customerStampCount = customer.getCard().getStampCount();
-        List<VBox> vBoxes = new ArrayList<>();
-        for (int x=0; x < stamps; x++) {
+        if (customer.getCard() != null) {
+            Promo promo = customer.getCard().getPromo();
+            Long customerStampCount = customer.getCard().getStampCount();
+            Long stamps = customer.getCard().getPromo().getStamps();
 
-            VBox vBox = new VBox();
-            StackPane stackPane = new StackPane();
-            ImageView imageView = new ImageView();
-            imageView.setFitWidth(200);
-            imageView.setFitHeight(200);
+            List<VBox> vBoxes = new ArrayList<>();
+            for (int x=0; x < stamps; x++) {
 
-            if (customerStampCount < x) {
-                imageView.setImage(new Image(App.appContextHolder.getMerchant().getGrayStampsUrl()));
-            } else {
-                imageView.setImage(new Image(App.appContextHolder.getMerchant().getStampsUrl()));
-            }
+                VBox vBox = new VBox();
+                StackPane stackPane = new StackPane();
+                ImageView imageView = new ImageView();
+                imageView.setFitWidth(200);
+                imageView.setFitHeight(200);
 
-            stackPane.getChildren().addAll(imageView);
-
-            for (Reward reward : promo.getRewards()) {
-                if (reward.getStamps() == x) {
-                    ImageView starImg = new ImageView();
-                    starImg.setImage(new Image(App.class.getResource("/app/images/star-unredeemed.png").toExternalForm()));
-                    for (Reward rew: customer.getCard().getRewards()) {
-                        if (rew.getId().equals(reward.getId())) {
-                            starImg.setImage(new Image(App.class.getResource("/app/images/star-redeemed.png").toExternalForm()));
-                            reward.setDate(rew.getDate());
-                        }
-                    }
-                    starImg.setFitHeight(50);
-                    starImg.setFitWidth(50);
-                    stackPane.setMargin(starImg, new Insets(120, 0,0,120));
-                    stackPane.getChildren().add(starImg);
-
-                    imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent event) {
-                            showRewardsDialog(reward);
-                        }
-                    });
+                String url = "";
+                if (customerStampCount < x) {
+                    url = App.appContextHolder.getMerchant().getGrayStampsUrl();
+                } else {
+                    url = App.appContextHolder.getMerchant().getStampsUrl();
                 }
+
+                Task task =  imageLoaderWorker(url);
+                task.setOnSucceeded((Event e) -> {
+                    Image image = (Image) task.getValue();
+                    imageView.setImage(image);
+                });
+                new Thread(task).start();
+
+                stackPane.getChildren().addAll(imageView);
+
+                for (Reward reward : promo.getRewards()) {
+                    if (reward.getStamps() == x) {
+                        ImageView starImg = new ImageView();
+                        starImg.setImage(new Image(App.class.getResource("/app/images/star-unredeemed.png").toExternalForm()));
+                        for (Reward rew: customer.getCard().getRewards()) {
+                            if (rew.getId().equals(reward.getId())) {
+                                starImg.setImage(new Image(App.class.getResource("/app/images/star-redeemed.png").toExternalForm()));
+                                reward.setDate(rew.getDate());
+                            }
+                        }
+                        starImg.setFitHeight(50);
+                        starImg.setFitWidth(50);
+                        stackPane.setMargin(starImg, new Insets(120, 0,0,120));
+                        stackPane.getChildren().add(starImg);
+
+                        imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent event) {
+                                showRewardsDialog(reward);
+                            }
+                        });
+                    }
+                }
+
+
+                vBox.getChildren().add(stackPane);
+                vBox.setPrefWidth(200);
+                vBox.setMargin(stackPane, new Insets(10,10,10,10));
+                vBox.setPrefHeight(200);
+                vBoxes.add(vBox);
             }
-
-
-            vBox.getChildren().add(stackPane);
-            vBox.setPrefWidth(200);
-            vBox.setMargin(stackPane, new Insets(10,10,10,10));
-            vBox.setPrefHeight(200);
-            vBoxes.add(vBox);
+            rewardsFlowPane.getChildren().addAll(vBoxes);
         }
-        rewardsFlowPane.getChildren().addAll(vBoxes);
+
     }
+
+    private Task imageLoaderWorker(String url) {
+        return new Task() {
+            @Override
+            protected Image call() throws Exception {
+                return new Image(url);
+            }
+        };
+    }
+
     private void showRewardsDialog(Reward reward) {
         App.appContextHolder.setReward(reward);
         App.appContextHolder.getRootContainer().setOpacity(.50);

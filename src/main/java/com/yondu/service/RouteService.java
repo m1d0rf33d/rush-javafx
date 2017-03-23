@@ -171,9 +171,9 @@ public class RouteService extends BaseService{
     }
     public void loadGiveStampsScreen() {
         disableMenu();
-
+        showLoadingScreen();
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(.5)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
 

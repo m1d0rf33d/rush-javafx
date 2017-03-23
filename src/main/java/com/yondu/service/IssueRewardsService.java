@@ -95,18 +95,20 @@ public class IssueRewardsService extends BaseService {
 
         Customer customer = App.appContextHolder.getCustomer();
         Merchant merchant = App.appContextHolder.getMerchant();
-        List<Reward> rewards;
+        List<Reward> rewards= new ArrayList<>();
         if (merchant.getMerchantType().equals("punchcard")) {
-            rewards = customer.getCard().getRewards();
-            if (App.appContextHolder.getCurrentState().equals(AppState.ISSUE_REWARDS)) {
-                List<Reward> forRemoval = new ArrayList<>();
-                for (Reward reward : rewards) {
-                    if (reward.getStatus()) {
-                        forRemoval.add(reward);
-                    }
-                }
-                rewards.removeAll(forRemoval);
-            }
+           if (customer.getCard() != null) {
+               rewards = customer.getCard().getRewards();
+               if (App.appContextHolder.getCurrentState().equals(AppState.ISSUE_REWARDS)) {
+                   List<Reward> forRemoval = new ArrayList<>();
+                   for (Reward reward : rewards) {
+                       if (reward.getStatus()) {
+                           forRemoval.add(reward);
+                       }
+                   }
+                   rewards.removeAll(forRemoval);
+               }
+           }
         } else {
             rewards = customer.getActiveVouchers();
         }

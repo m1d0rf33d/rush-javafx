@@ -14,6 +14,7 @@ public class AppConfigConstants {
     public static final String ACTIVATION_FILE = "activation.txt";
     public static final String TESSERACT_FOLDER = "Tesseract-OCR";
     public static final String OCR_CONFIG = "ocr.config";
+    public static final String MERCHANT_CONFIG = "merchant.config";
 
     public static final String SPLASH_FXML        = "/app/fxml/splash.fxml";
     public static final String SALES_CAPTURE_FXML = "/app/fxml/sales-capture.fxml";

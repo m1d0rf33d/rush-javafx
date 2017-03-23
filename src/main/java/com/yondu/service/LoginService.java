@@ -252,6 +252,16 @@ public class LoginService extends BaseService{
                             merchant.setToken((String) merchantJSON.get("token"));
                             merchant.setMerchantType((String) merchantJSON.get("merchant_type"));
                             merchant.setMerchantClassification((String) merchantJSON.get("merchant_class"));
+
+                            File file = new File(RUSH_HOME + DIVIDER + MERCHANT_CONFIG);
+                            if (!file.exists()) {
+                                file.createNewFile();
+                                PrintWriter fstream = new PrintWriter(new FileWriter(file));
+                                fstream.println("type=" + merchant.getMerchantType());
+                                fstream.flush();
+                                fstream.close();
+                            }
+
                         }
                         apiResponse.setSuccess(true);
                     } else {

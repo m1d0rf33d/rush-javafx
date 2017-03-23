@@ -16,9 +16,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.util.Properties;
 import java.util.ResourceBundle;
+
+import static com.yondu.model.constants.AppConfigConstants.*;
 
 /**
  * Created by aomine on 3/12/17.
@@ -46,6 +49,20 @@ public class MenuOfflineController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         App.appContextHolder.setRootContainer(rootVBox);
+
+        File file = new File(RUSH_HOME + DIVIDER + MERCHANT_CONFIG);
+        if (file.exists()) {
+            try {  Properties prop = new Properties();
+                InputStream inputStream = new FileInputStream(file);
+                prop.load(inputStream);
+                String str= prop.getProperty("type");
+                if (str.equals("punchcard")) {
+                    sideBarVBox.getChildren().remove(menuEarnButton);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         rootScrollPane.setFitToHeight(true);
         rootScrollPane.setFitToWidth(true);

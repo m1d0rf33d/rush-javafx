@@ -41,6 +41,7 @@ public class AppContextHolder {
     private List<Reward> unclaimedRewards = new ArrayList<>();
 
     private MerchantDTO merchantDTO;
+    private Boolean ocrEnabled;
 
     public static ApiService apiService = new ApiService();
     public static CommonService commonService = new CommonService();
@@ -60,6 +61,14 @@ public class AppContextHolder {
     public static BranchTransactionService branchTransactionService = new BranchTransactionService();
 
     public static Stage loadingStage;
+
+    public Boolean getOcrEnabled() {
+        return ocrEnabled;
+    }
+
+    public void setOcrEnabled(Boolean ocrEnabled) {
+        this.ocrEnabled = ocrEnabled;
+    }
 
     public PointsRule getPointsRule() {
         return pointsRule;

@@ -24,12 +24,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Properties;
 
 import static com.yondu.model.constants.AppConfigConstants.*;
 
@@ -181,4 +179,5 @@ public class BaseService {
     public void hideLoadingScreen() {
         App.appContextHolder.loadingStage.close();
     }
+
 }

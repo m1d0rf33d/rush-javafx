@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 /**
  * Created by lynx on 2/10/17.
  */
-public class PayWithPointsController implements Initializable {
+public class PayWithPointsController  extends BaseController implements Initializable {
     @FXML
     public Label nameLabel;
     @FXML
@@ -63,6 +63,11 @@ public class PayWithPointsController implements Initializable {
         PropertyBinder.bindVirtualKeyboard(amountTextField);
 
         payWithPointsService.initialize();
+
+
+        if (!readOcrConfig()) {
+            ocrButton.setVisible(false);
+        }
 
         exitButton.setOnMouseClicked((MouseEvent e) -> {
             commonService.exitMember();

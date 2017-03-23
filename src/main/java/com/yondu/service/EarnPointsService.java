@@ -33,6 +33,7 @@ public class EarnPointsService extends BaseService {
         task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
+
                 ApiResponse apiResponse = (ApiResponse) task.getValue();
                 if (!apiResponse.isSuccess()) {
                     showPrompt(apiResponse.getMessage(), "EARN POINTS", apiResponse.isSuccess());
@@ -71,10 +72,11 @@ public class EarnPointsService extends BaseService {
                 ApiResponse resp = App.appContextHolder.memberDetailsService.loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
                 if (resp.isSuccess()) {
                     apiResponse.setSuccess(true);
-
                 } else {
                     apiResponse.setMessage("Network connection error");
                 }
+
+
                 return apiResponse;
             }
         };

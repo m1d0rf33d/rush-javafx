@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 /**
  * Created by lynx on 2/22/17.
  */
-public class GuestPurchaseController implements Initializable {
+public class GuestPurchaseController extends BaseController implements Initializable {
 
     @FXML
     public TextField amountTextField;
@@ -52,6 +52,11 @@ public class GuestPurchaseController implements Initializable {
             receiptTextField.setText(null);
             mobileTextField.setText(null);
         });
+
+
+        if (!readOcrConfig()) {
+            ocrButton.setVisible(false);
+        }
 
         submitButton.setOnMouseClicked((MouseEvent e) -> {
             String mobileNo = mobileTextField.getText();

@@ -80,13 +80,28 @@ public class OCRController implements Initializable {
     private Double savedAmountWidth;
     private Double savedAmountHeight;
 
+    private ToggleGroup toggleGroup = new ToggleGroup();
     private RouteService routeService = App.appContextHolder.routeService;
     private OcrService ocrService = App.appContextHolder.ocrService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        ToggleGroup toggleGroup = new ToggleGroup();
+        File file = new File(RUSH_HOME + DIVIDER + OCR_CONFIG);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+                PrintWriter fstream = new PrintWriter(new FileWriter(file));
+                fstream.println("enabled=" + "on");
+                fstream.flush();
+                fstream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        onToggle.setUserData("on");
+        offToggle.setUserData("off");
         toggleGroup.getToggles().add(onToggle);
         toggleGroup.getToggles().add(offToggle);
         toggleGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
@@ -101,6 +116,13 @@ public class OCRController implements Initializable {
                    }
             }
         });
+
+        String ocrEnabled = readOcrConfig();
+        if (ocrEnabled.equals("on")) {
+            toggleGroup.selectToggle(onToggle);
+        } else {
+            toggleGroup.selectToggle(offToggle);
+        }
 
         errorLabel.setVisible(false);
         loadSavedConfig();
@@ -161,6 +183,7 @@ public class OCRController implements Initializable {
             );
             pause.setOnFinished(event -> {
                 saveDimensions();
+                saveOcrConfig();
                 App.appContextHolder.getRootContainer().setOpacity(1);
                 for (Node n : App.appContextHolder.getRootContainer().getChildren()) {
                     n.setDisable(false);
@@ -200,6 +223,32 @@ public class OCRController implements Initializable {
             ocrService.preview(config, "sales");
 
         });
+    }
+
+    public String readOcrConfig() {
+        try {
+            Properties prop = new Properties();
+            InputStream inputStream = new FileInputStream(new File(RUSH_HOME + DIVIDER + OCR_CONFIG));
+            prop.load(inputStream);
+            return prop.getProperty("enabled");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void saveOcrConfig() {
+        try {
+            File file = new File(RUSH_HOME + DIVIDER + OCR_CONFIG);
+            PrintWriter fstream = new PrintWriter(new FileWriter(file));
+            fstream.println("enabled=" + toggleGroup.getSelectedToggle().getUserData().toString());
+            fstream.flush();
+            fstream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void saveDimensions() {

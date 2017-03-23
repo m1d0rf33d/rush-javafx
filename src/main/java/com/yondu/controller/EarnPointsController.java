@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 /**
  * Created by lynx on 2/9/17.
  */
-public class EarnPointsController implements Initializable {
+public class EarnPointsController extends BaseController implements Initializable {
     @FXML
     public Label nameLabel;
     @FXML
@@ -65,6 +65,12 @@ public class EarnPointsController implements Initializable {
         PropertyBinder.bindVirtualKeyboard(receiptTextField);
 
         earnPointsService.initialize();
+
+        if (!readOcrConfig()) {
+            ocrButton.setVisible(false);
+        }
+
+
         pointsTextField.setDisable(true);
 
         exitButton.setOnMouseClicked((MouseEvent e) -> {

@@ -32,7 +32,7 @@ import static com.yondu.model.constants.AppConfigConstants.*;
 /**
  * Created by lynx on 2/24/17.
  */
-public class LoginOfflineController implements Initializable {
+public class LoginOfflineController extends BaseController implements Initializable {
     @FXML
     public Button givePointsButton;
     @FXML
@@ -47,6 +47,9 @@ public class LoginOfflineController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        if (!readOcrConfig()) {
+            ocrButton.setVisible(false);
+        }
         //Event handlers for clickable nodes
         mobileTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)

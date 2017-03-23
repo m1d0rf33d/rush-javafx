@@ -4,6 +4,7 @@ import com.yondu.App;
 import com.yondu.model.ApiResponse;
 import com.yondu.model.Employee;
 import com.yondu.model.Merchant;
+import com.yondu.model.TransactionType;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -30,6 +31,7 @@ public class GuestPurchaseService extends BaseService {
     public void givePoints(String mobileNo, String orNumber, String amount) {
 
         disableMenu();
+        showLoadingScreen();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.5)
         );
@@ -48,6 +50,7 @@ public class GuestPurchaseService extends BaseService {
                         receiptTextField.setText(null);
                         amountTextField.setText(null);
                     }
+                    hideLoadingScreen();
                     showPrompt(apiResponse.getMessage(), "GUEST EARN POINTS");
                     enableMenu();
                 }
@@ -84,6 +87,7 @@ public class GuestPurchaseService extends BaseService {
                     if (jsonObject.get("error_code").equals("0x0")) {
                         apiResponse.setSuccess(true);
                         apiResponse.setMessage("Earn points successful.");
+                        saveTransaction(TransactionType.EARN_POINTS_GUEST, mobileNo, employee.getEmployeeName(), amount, orNumber, null);
                     } else {
                         apiResponse.setMessage((String) jsonObject.get("message"));
                     }

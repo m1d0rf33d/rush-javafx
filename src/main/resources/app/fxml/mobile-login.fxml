@@ -9,7 +9,7 @@
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.MobileLoginController">
    <children>
-      <Label prefHeight="50.0" text="ENTER MOBILE NUMBER" textFill="#4a4444">
+      <Label prefHeight="50.0" text="Enter mobile number" textFill="#4a4444">
          <VBox.margin>
             <Insets top="10.0" />
          </VBox.margin>
@@ -30,14 +30,14 @@
       </TextField>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Button fx:id="submitButton" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="SUBMIT" textFill="WHITE">
+            <Button fx:id="submitButton" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" styleClass="primary-button" text="SUBMIT" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
                <cursor>
                   <Cursor fx:constant="OPEN_HAND" />
                </cursor></Button>
-            <Button fx:id="cancelButton" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #CDD2D6;" text="CANCEL" textFill="WHITE">
+            <Button fx:id="cancelButton" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #CDD2D6;" styleClass="cancel-button" text="CANCEL" textFill="WHITE">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>

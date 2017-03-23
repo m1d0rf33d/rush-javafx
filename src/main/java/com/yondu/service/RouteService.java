@@ -109,6 +109,7 @@ public class RouteService extends BaseService{
     }
 
     public void loadRedeemRewardsScreen() {
+        showLoadingScreen();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.01)
         );
@@ -120,6 +121,7 @@ public class RouteService extends BaseService{
         pause.play();
     }
     public void loadEarnPointsScreen() {
+        showLoadingScreen();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.01)
         );
@@ -156,6 +158,7 @@ public class RouteService extends BaseService{
 
     public void loadIssueRewardsScreen() {
      //   disableMenu();
+        showLoadingScreen();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.01)
         );
@@ -168,6 +171,7 @@ public class RouteService extends BaseService{
     }
     public void loadGiveStampsScreen() {
         disableMenu();
+
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.5)
         );
@@ -179,6 +183,7 @@ public class RouteService extends BaseService{
         pause.play();
     }
     public void loadMemberDetailsScreen(boolean fromInquiry) {
+        showLoadingScreen();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.01)
         );

@@ -31,7 +31,7 @@ public class RegisterService extends BaseService {
     private ApiService apiService = App.appContextHolder.apiService;
 
     public void register(Customer customer, ToggleGroup toggleGroup) {
-
+        showLoadingScreen();
         disableMenu();
         App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
         PauseTransition pause = new PauseTransition(
@@ -51,7 +51,7 @@ public class RegisterService extends BaseService {
                         saveTransaction(TransactionType.REGISTER, customer.getMobileNumber(), employee.getEmployeeName(), null, null, null);
                     }
 
-
+                    hideLoadingScreen();
                     showPrompt(apiResponse.getMessage(), "REGISTER");
                     enableMenu();
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);

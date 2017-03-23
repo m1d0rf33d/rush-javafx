@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" maxHeight="300.0" maxWidth="500.0" minHeight="300.0" minWidth="500.0" prefHeight="300.0" prefWidth="500.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.LoadingController">
+   <children>
+      <ImageView fx:id="rushLogoImageView" fitHeight="60.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true" />
+      <Label styleClass="label-1" text="Connecting to RUSH server...">
+         <VBox.margin>
+            <Insets bottom="20.0" top="20.0" />
+         </VBox.margin>
+      </Label>
+      <ImageView fx:id="loadingImageView" fitHeight="70.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+   </children>
+</VBox>

@@ -9,7 +9,7 @@
 
 <VBox fx:id="onlineVBox" alignment="TOP_CENTER" maxWidth="+Infinity" prefHeight="200.0" prefWidth="100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.LoginOnlineController">
    <children>
-      <Label text="EMPLOYEE LOGIN">
+      <Label styleClass="label-1" text="EMPLOYEE LOGIN">
          <font>
             <Font size="25.0" />
          </font>
@@ -27,7 +27,7 @@
             <Insets top="15.0" />
          </VBox.margin>
       </ComboBox>
-      <Button fx:id="loginButton" maxWidth="300.0" minHeight="-Infinity" minWidth="300.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" styleClass="primary-button" text="LOGIN" textFill="#f5f2f2" VBox.vgrow="ALWAYS">
+      <Button fx:id="loginButton" maxWidth="300.0" minHeight="-Infinity" minWidth="300.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: #ffb600; -fx-background-radius: 30;" styleClass="login-button" text="LOGIN" textFill="#f5f2f2" VBox.vgrow="ALWAYS">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>

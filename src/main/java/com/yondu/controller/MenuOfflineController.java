@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -50,16 +51,19 @@ public class MenuOfflineController implements Initializable {
         rootScrollPane.setFitToWidth(true);
         rootScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
-        employeeMenuButton.setMinWidth(140);
-        employeeMenuButton.setText("OFFLINE");
+        employeeMenuButton.setMinWidth(150);
         employeeMenuButton.getItems().clear();
+        Label lbl1 = new Label();
+        lbl1.setText("OFFLINE");
+        lbl1.getStyleClass().add("label-1");
+        employeeMenuButton.setGraphic(lbl1);
 
         Label label = new Label("GO ONLINE");
         label.setId("logoutLabel");
+        label.getStyleClass().add("label-1");
         MenuItem logoutMenuItem = new MenuItem();
         logoutMenuItem.setGraphic(label);
-        logoutMenuItem.getGraphic().setStyle("-fx-min-width: " + employeeMenuButton.getWidth() + "px;");
-        logoutMenuItem.getStyleClass().add("menuitem");
+        logoutMenuItem.getStyleClass().add("menu-item-hover");
         logoutMenuItem.setId("logoutButton");
         logoutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -68,6 +72,17 @@ public class MenuOfflineController implements Initializable {
             }
         });
         employeeMenuButton.getItems().addAll(logoutMenuItem);
+
+        employeeMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                employeeMenuButton.getStyleClass().add("menu-hover");
+            }
+        });
+        rootVBox.setOnMouseClicked((MouseEvent e) -> {
+            employeeMenuButton.hide();
+            employeeMenuButton.getStyleClass().remove("menu-hover");
+        });
 
         menuEarnButton.setOnMouseClicked((Event e) -> {
             App.appContextHolder.setCurrentState(AppState.EARN_OFFLINE);

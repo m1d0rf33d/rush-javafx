@@ -9,6 +9,7 @@ import com.yondu.utils.PropertyBinder;
 import javafx.animation.PauseTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,6 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -54,7 +56,6 @@ public class LoginOnlineController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
     }
 
     public void initAfterLoad() {
@@ -89,6 +90,37 @@ public class LoginOnlineController implements Initializable{
             }
             loginService.loginEmployee(username, selectedBranch, null);
 
+        });
+
+        loginTextField.setOnKeyPressed((event)-> {
+            if(event.getCode() == KeyCode.ENTER) {
+                String username = this.loginTextField.getText();
+                String branchName = (String) branchComboBox.getSelectionModel().getSelectedItem();
+
+                Branch selectedBranch = null;
+                for (Branch branch : App.appContextHolder.getBranches()) {
+                    if (branch.getName().equals(branchName)) {
+                        selectedBranch = branch;
+                        break;
+                    }
+                }
+                loginService.loginEmployee(username, selectedBranch, null);
+            }
+        });
+        branchComboBox.setOnKeyPressed((event)-> {
+            if(event.getCode() == KeyCode.ENTER) {
+                String username = this.loginTextField.getText();
+                String branchName = (String) branchComboBox.getSelectionModel().getSelectedItem();
+
+                Branch selectedBranch = null;
+                for (Branch branch : App.appContextHolder.getBranches()) {
+                    if (branch.getName().equals(branchName)) {
+                        selectedBranch = branch;
+                        break;
+                    }
+                }
+                loginService.loginEmployee(username, selectedBranch, null);
+            }
         });
     }
 }

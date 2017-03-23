@@ -4,11 +4,18 @@ import com.yondu.model.*;
 import com.yondu.model.constants.AppState;
 import com.yondu.model.dto.MerchantDTO;
 import com.yondu.service.*;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.yondu.model.constants.AppConfigConstants.APP_TITLE;
 
 /** This will serve as a single instance application context holder that
  *  contains shared data within the application. I don't want to fckng pass shared variables on every
@@ -51,6 +58,8 @@ public class AppContextHolder {
     public static RouteService routeService = new RouteService();
     public static StampsService stampsService = new StampsService();
     public static BranchTransactionService branchTransactionService = new BranchTransactionService();
+
+    public static Stage loadingStage;
 
     public PointsRule getPointsRule() {
         return pointsRule;

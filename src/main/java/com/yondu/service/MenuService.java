@@ -5,19 +5,21 @@ import com.yondu.model.ApiResponse;
 import com.yondu.model.Branch;
 import com.yondu.model.Employee;
 import com.yondu.model.Merchant;
+import com.yondu.model.constants.AppState;
 import javafx.animation.PauseTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -41,20 +43,30 @@ public class MenuService extends BaseService{
         );
         pause.setOnFinished(event -> {
             Branch branch = App.appContextHolder.getBranch();
+            Employee employee = App.appContextHolder.getEmployee();
 
             VBox rootVBox = App.appContextHolder.getRootContainer();
             MenuButton employeeMenuButton = (MenuButton) rootVBox.getScene().lookup("#employeeMenuButton");
-            employeeMenuButton.setText("Hi! " + App.appContextHolder.getEmployee().getEmployeeName());
+            Label lbl1 = new Label("Hi! "+ employee.getEmployeeName());
+            lbl1.getStyleClass().add("label-2");
+            employeeMenuButton.setGraphic(lbl1);
             employeeMenuButton.getItems().clear();
+            MenuItem m1 = new MenuItem();
+            Label label = new Label("Logout");
+            label.getStyleClass().add("label-2");
+            m1.setGraphic(label);
+            m1.getStyleClass().add("menu-item-hover");
+            employeeMenuButton.getItems().add(m1);
+            employeeMenuButton.getStyleClass().add("employee-combo-box");
 
-            Label label = new Label("LOGOUT");
-            label.setId("logoutLabel");
-            MenuItem logoutMenuItem = new MenuItem();
-            logoutMenuItem.setGraphic(label);
-            logoutMenuItem.getGraphic().setStyle("-fx-min-width: " + employeeMenuButton.getWidth() + "px;");
-            logoutMenuItem.getStyleClass().add("menuitem");
-            logoutMenuItem.setId("logoutButton");
-            logoutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            employeeMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    label.setPrefWidth(employeeMenuButton.getWidth() - 45);
+                    employeeMenuButton.getStyleClass().add("menu-hover");
+                }
+            });
+            m1.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                     App.appContextHolder.setEmployee(null);
@@ -62,28 +74,54 @@ public class MenuService extends BaseService{
                     App.appContextHolder.routeService.goToLoginScreen((Stage) rootVBox.getScene().getWindow());
                 }
             });
-            employeeMenuButton.getItems().addAll(logoutMenuItem);
+            rootVBox.setOnMouseClicked((MouseEvent e) -> {
+                employeeMenuButton.hide();
+                employeeMenuButton.getStyleClass().remove("menu-hover");
+            });
 
             Label branchNameLabel = (Label) rootVBox.getScene().lookup("#branchNameLabel");
             ImageView merchantLogoImageView = (ImageView) rootVBox.getScene().lookup("#merchantLogoImageView");
             branchNameLabel.setText(branch.getName());
 
             if (App.appContextHolder.getMerchant() != null && App.appContextHolder.getMerchant().getBackgroundUrl() != null) {
-                ImageView imageView = new ImageView(new Image(App.appContextHolder.getMerchant().getBackgroundUrl()));
-                VBox bodyStackPane = (VBox) rootVBox.getScene().lookup("#bodyStackPane");
-                bodyStackPane.getChildren().clear();
-                bodyStackPane.getChildren().add(imageView);
+                Task task = imageLoaderWorker(App.appContextHolder.getMerchant().getBackgroundUrl());
+                task.setOnSucceeded((Event e) -> {
+                    if (App.appContextHolder.getCurrentState().equals(AppState.MENU)) {
+                        Image image = (Image) task.getValue();
+                        ImageView imageView = new ImageView(image);
+                        VBox bodyStackPane = (VBox) rootVBox.getScene().lookup("#bodyStackPane");
+                        bodyStackPane.getChildren().clear();
+                        bodyStackPane.getChildren().add(imageView);
+                    }
+
+                });
+                new Thread(task).start();
+
             }
             if (branch.getLogoUrl() != null) {
-                merchantLogoImageView.setImage(new Image(branch.getLogoUrl()));
+
+                Task task = imageLoaderWorker(branch.getLogoUrl());
+                task.setOnSucceeded((Event e)-> {
+                    Image image = (Image) task.getValue();
+                    merchantLogoImageView.setImage(image);
+                });
+                new Thread(task).start();
+
             }
 
             loadSideBar();
             enableMenu();
         });
         pause.play();
+    }
 
-
+    private Task imageLoaderWorker(String url) {
+        return new Task() {
+            @Override
+            protected Image call() throws Exception {
+                return new Image(url);
+            }
+        };
     }
 
     private void loadSideBar() {

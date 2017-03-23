@@ -13,7 +13,7 @@
    <children>
       <HBox maxWidth="800.0" minWidth="500.0" prefHeight="50.0" prefWidth="500.0">
          <children>
-            <Label text="SETUP OCR">
+            <Label styleClass="label-1" text="SETUP OCR">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -23,14 +23,14 @@
             </Label>
          </children>
       </HBox>
-      <VBox maxHeight="50.0" maxWidth="800.0" minWidth="500.0" prefHeight="100.0" prefWidth="500.0">
+      <VBox maxHeight="100.0" maxWidth="800.0" minHeight="100.0" minWidth="500.0" prefHeight="100.0" prefWidth="500.0">
          <children>
             <Line endX="800.0" startX="-100.0" stroke="#e1dcdc">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </Line>
-            <Label text="Locate the screen position where the amount and receipt number will be captured." textFill="#a19797">
+            <Label alignment="TOP_LEFT" maxHeight="100.0" maxWidth="500.0" minHeight="100.0" minWidth="500.0" prefHeight="100.0" prefWidth="500.0" styleClass="label-2" text="Locate the screen position where the amount and receipt number will be captured." textFill="#a19797" wrapText="true">
                <font>
                   <Font size="15.0" />
                </font>
@@ -46,7 +46,7 @@
                <children>
                   <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Label fx:id="amountPosLabel" maxWidth="100.0" minWidth="100.0" prefHeight="30.0" prefWidth="100.0" text="AMOUNT ">
+                        <Label fx:id="amountPosLabel" maxWidth="180.0" minWidth="180.0" prefHeight="30.0" prefWidth="180.0" styleClass="label-3" text="AMOUNT POSITION ">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>
@@ -54,14 +54,6 @@
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="amountPosTextField" maxWidth="150.0" minWidth="150.0" prefHeight="30.0" prefWidth="150.0" style="-fx-background-radius: 0;">
-                           <HBox.margin>
-                              <Insets left="10.0" />
-                           </HBox.margin>
-                           <font>
-                              <Font size="17.0" />
-                           </font>
-                        </TextField>
                         <ImageView fx:id="amountPosImageView" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <HBox.margin>
                               <Insets left="10.0" />
@@ -81,7 +73,7 @@
                   </HBox>
                   <HBox>
                      <children>
-                        <Label maxWidth="100.0" minWidth="100.0" prefHeight="30.0" prefWidth="100.0" text="OR NUMBER ">
+                        <Label maxWidth="180.0" minWidth="180.0" prefHeight="30.0" prefWidth="180.0" styleClass="label-3" text="OR NUMBER POSITION">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>
@@ -89,14 +81,6 @@
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="orPosTextField" maxWidth="150.0" minWidth="150.0" prefHeight="30.0" prefWidth="150.0" style="-fx-background-radius: 0;">
-                           <HBox.margin>
-                              <Insets left="10.0" />
-                           </HBox.margin>
-                           <font>
-                              <Font size="17.0" />
-                           </font>
-                        </TextField>
                         <ImageView fx:id="orPosImageView" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <HBox.margin>
                               <Insets left="10.0" />
@@ -119,7 +103,7 @@
             <VBox alignment="CENTER" maxHeight="200.0" maxWidth="200.0" minHeight="200.0" minWidth="200.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;">
                <children>
                   <ImageView fx:id="previewImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
-                  <Label fx:id="previewLabel" maxHeight="50.0" maxWidth="150.0" minHeight="50.0" minWidth="150.0" prefHeight="50.0" prefWidth="150.0" />
+                  <Label fx:id="previewLabel" maxHeight="50.0" maxWidth="150.0" minHeight="50.0" minWidth="150.0" prefHeight="50.0" prefWidth="150.0" styleClass="label-3" />
                </children>
                <HBox.margin>
                   <Insets left="70.0" />
@@ -130,9 +114,9 @@
             <Insets top="20.0" />
          </VBox.margin>
       </HBox>
-      <Label fx:id="errorLabel" text="All fields are required" textFill="#ee0404">
+      <Label fx:id="errorLabel" styleClass="label-3" text="Please set amount and or number position" textFill="#ee0404">
          <VBox.margin>
-            <Insets bottom="20.0" left="150.0" top="10.0" />
+            <Insets bottom="20.0" left="50.0" top="10.0" />
          </VBox.margin>
          <font>
             <Font size="17.0" />
@@ -140,20 +124,9 @@
       </Label>
       <HBox maxWidth="500.0" minWidth="500.0" prefHeight="100.0" prefWidth="500.0">
          <children>
-            <Button fx:id="saveButton" maxHeight="50.0" maxWidth="170.0" minHeight="50.0" minWidth="170.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="SAVE" textFill="WHITE">
+            <Button fx:id="saveButton" maxHeight="50.0" maxWidth="170.0" minHeight="50.0" minWidth="170.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" styleClass="primary-button" text="SAVE" textFill="WHITE">
                <HBox.margin>
-                  <Insets left="80.0" />
-               </HBox.margin>
-               <font>
-                  <Font name="System Bold" size="17.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="OPEN_HAND" />
-               </cursor>
-            </Button>
-            <Button fx:id="resetButton" maxHeight="50.0" maxWidth="170.0" minHeight="50.0" minWidth="170.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #CDD2D6;" text="RESET" textFill="WHITE">
-               <HBox.margin>
-                  <Insets left="10.0" />
+                  <Insets left="130.0" />
                </HBox.margin>
                <font>
                   <Font name="System Bold" size="17.0" />

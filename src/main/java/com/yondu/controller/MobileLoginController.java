@@ -12,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -58,53 +59,63 @@ public class MobileLoginController implements Initializable {
         });
 
         submitButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
-            ((Stage) submitButton.getScene().getWindow()).close();
-
-            PauseTransition pause = new PauseTransition(
-                    Duration.seconds(.01)
-            );
-            pause.setOnFinished(event -> {
-                ApiResponse apiResponse = memberDetailsService.loginCustomer(mobileTextField.getText(), App.appContextHolder.getCurrentState());
-                if (apiResponse.isSuccess()) {
-                    AppState state = App.appContextHolder.getCurrentState();
-                    if (state.equals(AppState.EARN_POINTS)) {
-                        routeService.loadEarnPointsScreen();
-                    } else if (state.equals(AppState.REDEEM_REWARDS)) {
-                        routeService.loadRedeemRewardsScreen();
-                    } else if (state.equals(AppState.ISSUE_REWARDS)) {
-                        routeService.loadIssueRewardsScreen();
-                    } else if (state.equals(AppState.PAY_WITH_POINTS)) {
-                        routeService.loadPayWithPoints();
-                    } else if (state.equals(AppState.TRANSACTIONS)) {
-                        routeService.loadTransactionsScreen();
-                    } else if (state.equals(AppState.GIVE_STAMPS)) {
-                        routeService.loadGiveStampsScreen();
-                    }
-                } else {
-                    App.appContextHolder.getRootContainer().setOpacity(1);
-                    for (Node n :  App.appContextHolder.getRootContainer().getChildren()) {
-                        n.setDisable(false);
-                    }
-
-                    App.appContextHolder.setCurrentState(App.appContextHolder.getPrevState());
-
-                    commonService.updateButtonState();
-                    Text text = new Text(apiResponse.getMessage());
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-                    alert.setTitle(AppConfigConstants.APP_TITLE);
-                    alert.initStyle(StageStyle.UTILITY);
-                    alert.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());
-                    alert.setHeaderText("LOGIN MEMBER");
-                    alert.getDialogPane().setPadding(new Insets(10,10,10,10));
-                    alert.getDialogPane().setContent(text);
-                    alert.getDialogPane().setPrefWidth(400);
-                    alert.show();
-                }
-            });
-            pause.play();
+            submitTrigger();
 
         });
 
+        mobileTextField.setOnKeyPressed((event)-> {
+            if(event.getCode() == KeyCode.ENTER) {
+                submitTrigger();
+            }
+        });
+
+    }
+
+    private void submitTrigger() {
+        ((Stage) submitButton.getScene().getWindow()).close();
+
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.01)
+        );
+        pause.setOnFinished(event -> {
+            ApiResponse apiResponse = memberDetailsService.loginCustomer(mobileTextField.getText(), App.appContextHolder.getCurrentState());
+            if (apiResponse.isSuccess()) {
+                AppState state = App.appContextHolder.getCurrentState();
+                if (state.equals(AppState.EARN_POINTS)) {
+                    routeService.loadEarnPointsScreen();
+                } else if (state.equals(AppState.REDEEM_REWARDS)) {
+                    routeService.loadRedeemRewardsScreen();
+                } else if (state.equals(AppState.ISSUE_REWARDS)) {
+                    routeService.loadIssueRewardsScreen();
+                } else if (state.equals(AppState.PAY_WITH_POINTS)) {
+                    routeService.loadPayWithPoints();
+                } else if (state.equals(AppState.TRANSACTIONS)) {
+                    routeService.loadTransactionsScreen();
+                } else if (state.equals(AppState.GIVE_STAMPS)) {
+                    routeService.loadGiveStampsScreen();
+                }
+            } else {
+                App.appContextHolder.getRootContainer().setOpacity(1);
+                for (Node n :  App.appContextHolder.getRootContainer().getChildren()) {
+                    n.setDisable(false);
+                }
+
+                App.appContextHolder.setCurrentState(App.appContextHolder.getPrevState());
+
+                commonService.updateButtonState();
+                Text text = new Text(apiResponse.getMessage());
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+                alert.setTitle(AppConfigConstants.APP_TITLE);
+                alert.initStyle(StageStyle.UTILITY);
+                alert.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());
+                alert.setHeaderText("LOGIN MEMBER");
+                alert.getDialogPane().setPadding(new Insets(10,10,10,10));
+                alert.getDialogPane().setContent(text);
+                alert.getDialogPane().setPrefWidth(400);
+                alert.show();
+            }
+        });
+        pause.play();
     }
 
 }

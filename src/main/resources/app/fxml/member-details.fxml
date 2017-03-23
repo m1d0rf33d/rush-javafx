@@ -26,7 +26,7 @@
             </VBox>
             <VBox alignment="TOP_RIGHT" maxWidth="500.0" prefHeight="200.0" prefWidth="350.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="exitButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #D61707;" text="EXIT MEMBER" textFill="#fffbfb">
+                  <Button fx:id="exitButton" maxHeight="50.0" minHeight="50.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" styleClass="exit-button" text="EXIT MEMBER" textFill="#fffbfb">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
@@ -285,7 +285,7 @@
                <tabs>
                   <Tab fx:id="transactionsTab">
                      <content>
-                        <Pagination fx:id="transactionsPagination" maxHeight="400.0" maxWidth="800.0" minHeight="400.0" minWidth="500.0" prefHeight="400.0" prefWidth="500.0">
+                        <Pagination fx:id="transactionsPagination" maxHeight="400.0" maxWidth="800.0" minHeight="400.0" minWidth="500.0" pageCount="1" prefHeight="400.0" prefWidth="500.0">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>

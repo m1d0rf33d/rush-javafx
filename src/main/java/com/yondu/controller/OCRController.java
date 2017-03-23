@@ -46,10 +46,6 @@ public class OCRController implements Initializable {
     @FXML
     public Button saveButton;
     @FXML
-    public TextField orPosTextField;
-    @FXML
-    public TextField amountPosTextField;
-    @FXML
     public ImageView orPreviewImageView;
     @FXML
     public ImageView amountPreviewImageView;
@@ -57,8 +53,6 @@ public class OCRController implements Initializable {
     public ImageView previewImageView;
     @FXML
     public Label previewLabel;
-    @FXML
-    public Button resetButton;
     @FXML
     public Label errorLabel;
 
@@ -86,8 +80,6 @@ public class OCRController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         errorLabel.setVisible(false);
-        orPosTextField.setEditable(false);
-        amountPosTextField.setEditable(false);
         loadSavedConfig();
 
         orPosImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/edit.png").toExternalForm()));
@@ -95,19 +87,6 @@ public class OCRController implements Initializable {
         orPreviewImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/preview.png").toExternalForm()));
         amountPreviewImageView.setImage(new javafx.scene.image.Image(App.class.getResource("/app/images/preview.png").toExternalForm()));
 
-        resetButton.setOnMouseClicked((MouseEvent e)-> {
-            orPosX = null;
-            orPosY = null;
-            orWidth = null;
-            orHeight = null;
-
-            amountPosX = null;
-            amountPosY = null;
-            amountWidth = null;
-            amountHeight = null;
-
-            loadSavedConfig();
-        });
 
         orPosImageView.setOnMouseClicked((MouseEvent e) -> {
 
@@ -119,7 +98,7 @@ public class OCRController implements Initializable {
                 orWidth = stage.getWidth();
                 orHeight = stage.getHeight();
                 String pos = orPosX + " " + orPosY + " "  + orWidth + " " + orHeight;
-                orPosTextField.setText(pos);
+
                 App.appContextHolder.getOrCaptureStage().close();
                 App.appContextHolder.setOrCaptureStage(null);
 
@@ -139,7 +118,7 @@ public class OCRController implements Initializable {
                 amountWidth = stage.getWidth();
                 amountHeight = stage.getHeight();
                 String pos = amountPosX + " " + amountPosY + " "  + amountWidth + " " + amountHeight;
-                amountPosTextField.setText(pos);
+
                 App.appContextHolder.getSalesCaptureStage().close();
                 App.appContextHolder.setSalesCaptureStage(null);
 
@@ -278,7 +257,6 @@ public class OCRController implements Initializable {
                 sb.append(prop.getProperty("sales_width"));
                 sb.append(", ");
                 sb.append(prop.getProperty("sales_height"));
-                amountPosTextField.setText(sb.toString());
 
                 sb = new StringBuilder();
                 sb.append(prop.getProperty("or_pos_x"));
@@ -290,7 +268,7 @@ public class OCRController implements Initializable {
                 sb.append(prop.getProperty("or_height"));
             }
 
-            orPosTextField.setText(sb.toString());
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

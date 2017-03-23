@@ -14,7 +14,7 @@
          <children>
             <VBox maxWidth="500.0" prefHeight="200.0" prefWidth="350.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label prefHeight="50.0" prefWidth="350.0" text="BRANCH TRANSACTIONS">
+                  <Label prefHeight="50.0" prefWidth="350.0" styleClass="label-1" text="BRANCH TRANSACTIONS">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
@@ -59,7 +59,7 @@
                            <children>
                               <HBox maxHeight="50.0" maxWidth="900.0" minWidth="600.0" prefHeight="50.0" prefWidth="600.0">
                                  <children>
-                                    <Label maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="50.0" text="Filter:">
+                                    <Label maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="50.0" styleClass="label-3" text="Filter:">
                                        <font>
                                           <Font size="17.0" />
                                        </font>
@@ -89,17 +89,17 @@
                                     <Insets left="20.0" top="20.0" />
                                  </VBox.margin>
                               </HBox>
-                              <Pagination fx:id="offlinePagination" maxHeight="400.0" maxWidth="800.0" minHeight="400.0" minWidth="500.0" prefHeight="400.0" prefWidth="500.0" />
+                              <Pagination fx:id="offlinePagination" maxHeight="400.0" maxWidth="800.0" minHeight="400.0" minWidth="500.0" pageCount="1" prefHeight="400.0" prefWidth="500.0" />
                               <HBox alignment="CENTER" maxHeight="50.0" maxWidth="1000.0" minHeight="50.0" minWidth="700.0" prefHeight="50.0" prefWidth="700.0" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <Button fx:id="givePointsButton" maxHeight="50.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="GIVE POINTS" textFill="WHITE">
+                                    <Button fx:id="givePointsButton" maxHeight="50.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" styleClass="primary-button" text="GIVE POINTS" textFill="WHITE">
                                        <font>
                                           <Font name="System Bold" size="17.0" />
                                        </font>
                                        <cursor>
                                           <Cursor fx:constant="OPEN_HAND" />
                                        </cursor></Button>
-                                    <Button fx:id="generateButton" maxHeight="50.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #CDD2D6;" text="GENERATE CSV" textFill="WHITE">
+                                    <Button fx:id="generateButton" maxHeight="50.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" styleClass="cancel-button" text="GENERATE CSV" textFill="WHITE">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>

@@ -26,7 +26,7 @@
                 </VBox>
                 <VBox prefHeight="50.0" prefWidth="170.0">
                     <children>
-                        <Button fx:id="ocrButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #53585b;" text="OCR" textFill="#f5f3f3">
+                        <Button fx:id="ocrButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-border-color: #ffb600; -fx-border-width: 3; -fx-background-color: transparent; -fx-border-radius: 10;" styleClass="ocr-button" text="OCR" textFill="#0a0a0a">
                             <cursor>
                                 <Cursor fx:constant="OPEN_HAND" />
                             </cursor>
@@ -41,7 +41,7 @@
                 </VBox>
                 <VBox alignment="TOP_RIGHT" maxWidth="170.0" prefHeight="50.0" prefWidth="170.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Button fx:id="exitButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #D61707;" text="EXIT MEMBER" textFill="#f2eded">
+                        <Button fx:id="exitButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: #ffb600; -fx-border-radius: 10; -fx-border-width: 3;" styleClass="exit-button" text="EXIT MEMBER" textFill="#f50303">
                             <cursor>
                                 <Cursor fx:constant="OPEN_HAND" />
                             </cursor>
@@ -294,7 +294,7 @@
         </HBox>
         <HBox alignment="BOTTOM_CENTER" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
             <children>
-                <Button fx:id="earnStampsButton" maxWidth="170.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="SUBMIT" textFill="#fffbfb" HBox.hgrow="ALWAYS">
+                <Button fx:id="earnStampsButton" maxWidth="170.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" styleClass="primary-button" text="SUBMIT" textFill="#fffbfb" HBox.hgrow="ALWAYS">
                     <cursor>
                         <Cursor fx:constant="OPEN_HAND" />
                     </cursor>
@@ -302,7 +302,7 @@
                         <Font name="System Bold" size="17.0" />
                     </font>
                 </Button>
-                <Button fx:id="clearButton" maxHeight="50.0" maxWidth="170.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #CDD2D6;" text="CLEAR" textFill="#fffbfb" HBox.hgrow="ALWAYS">
+                <Button fx:id="clearButton" maxHeight="50.0" maxWidth="170.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #CDD2D6;" styleClass="cancel-button" text="CLEAR" textFill="#fffbfb" HBox.hgrow="ALWAYS">
                     <cursor>
                         <Cursor fx:constant="OPEN_HAND" />
                     </cursor>

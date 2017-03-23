@@ -9,7 +9,7 @@
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="420.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.PinController">
    <children>
-      <Label prefHeight="50.0" text="ENTER PIN" textFill="#4d4a4a">
+      <Label prefHeight="50.0" text="Enter PIN" textFill="#4d4a4a">
          <font>
             <Font size="25.0" />
          </font>

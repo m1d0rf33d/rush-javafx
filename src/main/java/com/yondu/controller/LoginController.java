@@ -76,7 +76,6 @@ public class LoginController implements Initializable {
     }
 
     public void initAfterLoad() {
-        List<String> s = javafx.scene.text.Font.getFamilies();
         App.appContextHolder.setCurrentState(AppState.LOGIN);
         App.appContextHolder.setRootContainer(rootVBox);
         rootScrollPane.setFitToHeight(true);
@@ -113,9 +112,8 @@ public class LoginController implements Initializable {
                 loginTextField.setText(subStr);
             }
         });
-     /*   ReportService reportService = new ReportService();
-        reportService.exportXls();*/
         loginService.initialize();
+
     }
 
     @Override

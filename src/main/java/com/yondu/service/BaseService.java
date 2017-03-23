@@ -5,8 +5,11 @@ import com.yondu.model.Customer;
 import com.yondu.model.TransactionType;
 import com.yondu.model.constants.AppConfigConstants;
 import javafx.concurrent.Task;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -16,20 +19,22 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.yondu.model.constants.AppConfigConstants.DIVIDER;
-import static com.yondu.model.constants.AppConfigConstants.RUSH_HOME;
+import static com.yondu.model.constants.AppConfigConstants.*;
 
 /**
  * Created by erwin on 3/1/2017.
  */
 public class BaseService {
+
 
     public void enableMenu() {
         VBox rootVBox = App.appContextHolder.getRootContainer();
@@ -138,5 +143,27 @@ public class BaseService {
                 return null;
             }
         };
+    }
+
+    public void showLoadingScreen() {
+        try {
+            App.appContextHolder.loadingStage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/app/fxml/rush-loading.fxml"));
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root, 500,300);
+            scene.getStylesheets().add(App.class.getResource("/app/css/menu.css").toExternalForm());
+            App.appContextHolder.loadingStage.setScene(scene);
+            App.appContextHolder.loadingStage.setTitle(APP_TITLE);
+            App.appContextHolder.loadingStage.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());
+            App.appContextHolder.loadingStage.initStyle(StageStyle.UNDECORATED);
+            App.appContextHolder.loadingStage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
+            App.appContextHolder.loadingStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void hideLoadingScreen() {
+        App.appContextHolder.loadingStage.close();
     }
 }

@@ -79,6 +79,7 @@ public class PayWithPointsService extends BaseService {
     }
     public void payWithPoints(String pin) {
         disableMenu();
+        showLoadingScreen();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.01)
         );
@@ -99,6 +100,7 @@ public class PayWithPointsService extends BaseService {
                 } else {
                     App.appContextHolder.commonService.updateButtonState();
                 }
+                hideLoadingScreen();
                 showPrompt(apiResponse.getMessage(), "PAY WITH POINTS");
                 enableMenu();
             });
@@ -159,6 +161,7 @@ public class PayWithPointsService extends BaseService {
                             message = (String) arr.get(0);
                         }
                         apiResponse.setMessage(message);
+                        saveTransaction(TransactionType.PAY_WITH_POINTS, customer.getMobileNumber(), employee.getEmployeeName(), amountTextField.getText(), receiptTextField.getText(), null);
                     } else  {
                         apiResponse.setMessage((String) jsonObject.get("message"));
                     }

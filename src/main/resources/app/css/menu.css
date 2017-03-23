@@ -33,8 +33,60 @@
 
 .menuitem {
     -fx-background-color: #e7e7e7;
-    -fx-border-color: transparent;
-    -fx-font-size: 17px;
+    -fx-border-color: #ffb600;
+}
+
+.menuitem-label {
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 24px;
+    -fx-fill-height: true;
+    -fx-fill-width: true;
+}
+
+
+
+.combo-box {
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
+    -fx-cursor: hand;
+}
+
+.employee-combo-box {
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 22px;
+    -fx-font-weight: normal;
+    -fx-text-fill: black;
+    -fx-background-color: #e7e7e7 !important;
+    -fx-border-color:  #e7e7e7 !important;
+    -fx-cursor: hand;
+}
+
+.employee-combo-box .menu-item {
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 22px;
+    -fx-cursor: hand;
+}
+.menu-hover {
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 22px;
+    -fx-background-color: white !important;
+    -fx-border-color: #ffb600 !important;
+    -fx-border-width: 3;
+    -fx-text-fill: #ffb600;
+    -fx-cursor: hand;
+}
+
+.menu-item-hover {
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 22px;
+    -fx-cursor: hand;
+}
+
+.text-field {
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-font-weight: normal;
 }
 
 .scroll-bar {
@@ -43,11 +95,13 @@
 }
 
 .table-view .table-cell{
-    -fx-font-size:17px;           //the font size you asked in the comments below
-    /* -fx-text-fill:orange; */
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
 
 }.table-view .column-header {
-     -fx-font-size:15px;
+     -fx-font-family: "Lucida Sans";
+     -fx-font-size: 18px;
+    -fx-font-style: normal;
  }
 
  .lbl-med {
@@ -68,16 +122,31 @@
 }
 
 .tab {
-    -fx-font-family: Arial;
     -fx-background-radius: 0;
     -fx-border-color: #B1ADA9;
     -fx-background-color:  #53585b;
     -fx-text-fill: white;
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
 }
 
 .tab:selected {
     -fx-background-color: white ;
-    -fx-font-family: Arial;
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-text-fill: black;
+}
+
+.table-view .column-header-background .label{
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-font-weight: normal;
+}
+
+.table-view .table-cell{
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-font-weight: normal;
 }
 
 .primary-button {
@@ -86,8 +155,9 @@
     -fx-border-radius: 30;
     -fx-border-width: 5;
     -fx-background-radius: 30;
-    -fx-font-family: Ubuntu;
-    -fx-font-size: 28px;
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
 }
 
 
@@ -98,17 +168,35 @@
     -fx-border-radius: 30;
     -fx-border-width: 2;
     -fx-background-radius: 30;
-    -fx-font-family: Ubuntu;
-    -fx-font-size: 28px;
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
 }
 
-.primary-button:focused {
+.login-button {
     -fx-background-color: #ffb600 !important;
     -fx-text-fill:  white;
     -fx-border-radius: 30;
+    -fx-border-width: 5;
+    -fx-background-radius: 30;
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 24px;
+    -fx-cursor: hand;
+}
+
+
+.login-button:hover {
+    -fx-background-color: white !important;
+    -fx-text-fill:  #ffb600;
+    -fx-border-color:  #ffb600;
+    -fx-border-radius: 30;
     -fx-border-width: 2;
     -fx-background-radius: 30;
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 24px;
+    -fx-cursor: hand;
 }
+
 
 .cancel-button {
     -fx-background-color:  #CDD2D6 !important;
@@ -116,8 +204,9 @@
     -fx-border-radius: 30;
     -fx-border-width: 5;
     -fx-background-radius: 30;
-    -fx-font-family: Ubuntu;
-    -fx-font-size: 28px;
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
 }
 
 
@@ -128,45 +217,107 @@
     -fx-border-radius: 30;
     -fx-border-width: 2;
     -fx-background-radius: 30;
-    -fx-font-family: Ubuntu;
-    -fx-font-size: 28px;
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
 }
 
 
 .sidebar-button {
     -fx-background-color:  #333;
     -fx-text-fill: white;
-    -fx-font-family: Ubuntu;
-    -fx-font-size: 20px;
-
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
 }
 
 .sidebar-button:hover {
     -fx-background-color:  white !important;
     -fx-text-fill: #333;
-    -fx-font-family: Ubuntu;
-    -fx-font-size: 20px;
-    -fx-border-width: 2;
-    -fx-border-color: #333;
+    -fx-font-family: "Lucida Sans";
+    -fx-cursor: hand;
 }
 
 
 .sidebar-button-selected{
     -fx-background-color:  #e7e7e7 !important;
     -fx-text-fill: black !important;
-    -fx-font-family: Ubuntu;
-    -fx-font-size: 20px;
-
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
 }
 
 .sidebar-button-selected:hover{
     -fx-background-color:  white !important;
     -fx-text-fill: #333;
-    -fx-font-family: Ubuntu;
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
+}
+
+.label-1 {
+    -fx-font-family: "Lucida Sans";
     -fx-font-size: 20px;
 }
 
-.label {
-    -fx-font-family: Ubuntu;
-    -fx-font-size: 20px;
+.label-2 {
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+}
+
+.label-3 {
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 16px;
+}
+
+.radio-button {
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 16px;
+}
+
+
+.ocr-button {
+    -fx-background-color: transparent;
+    -fx-border-color:  #ffb600;
+    -fx-border-radius: 10;
+    -fx-border-width: 3;
+    -fx-text-fill: black;
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
+}
+
+.exit-button {
+    -fx-background-color: transparent;
+    -fx-border-color:  #ffb600;
+    -fx-border-radius: 10;
+    -fx-border-width: 3;
+    -fx-text-fill: black;
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
+}
+
+.ocr-button:hover {
+    -fx-background-color: #ffb600 !important;
+    -fx-border-color:  #ffb600;
+    -fx-border-radius: 10;
+    -fx-border-width: 3;
+    -fx-text-fill: white;
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.exit-button:hover {
+    -fx-background-color: #ffb600 !important;
+    -fx-border-color:  #ffb600;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-width: 3;
+    -fx-text-fill: white;
+    -fx-font-family: "Lucida Sans";
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
 }

@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -43,21 +44,13 @@ public class PinController implements Initializable {
         PropertyBinder.bindNumberOnly(pinTextField);
 
         submitButton.setOnMouseClicked((MouseEvent e) -> {
-            ((Stage) pinTextField.getScene().getWindow()).close();
+            submitTrigger();
+        });
 
-            AppState state = App.appContextHolder.getCurrentState();
-            if (state.equals(AppState.LOGIN)) {
-                login();
-            } else if (state.equals(AppState.PAY_WITH_POINTS)) {
-                payWithPoints();
-            } else if (state.equals(AppState.REDEEM_REWARDS)) {
-                redeemRewards();
-            } else if (state.equals(AppState.GIVE_STAMPS)) {
-                stampsService.redeemReward(pinTextField.getText());
-            } else if (state.equals(AppState.ISSUE_REWARDS)) {
-                issueRewardsService.issueStampReward(pinTextField.getText());
+        pinTextField.setOnKeyPressed((event)-> {
+            if(event.getCode() == KeyCode.ENTER) {
+               submitTrigger();
             }
-
         });
 
         cancelButton.setOnMouseClicked((MouseEvent e) -> {
@@ -69,8 +62,26 @@ public class PinController implements Initializable {
             }
             ((Stage) pinTextField.getScene().getWindow()).close();
         });
-    }
 
+
+
+    }
+    private void submitTrigger() {
+        ((Stage) pinTextField.getScene().getWindow()).close();
+
+        AppState state = App.appContextHolder.getCurrentState();
+        if (state.equals(AppState.LOGIN)) {
+            login();
+        } else if (state.equals(AppState.PAY_WITH_POINTS)) {
+            payWithPoints();
+        } else if (state.equals(AppState.REDEEM_REWARDS)) {
+            redeemRewards();
+        } else if (state.equals(AppState.GIVE_STAMPS)) {
+            stampsService.redeemReward(pinTextField.getText());
+        } else if (state.equals(AppState.ISSUE_REWARDS)) {
+            issueRewardsService.issueStampReward(pinTextField.getText());
+        }
+    }
 
 
     private void redeemRewards() {

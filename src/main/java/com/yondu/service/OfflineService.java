@@ -67,13 +67,15 @@ public class OfflineService extends BaseService {
 
     public void givePoints() {
 
-       disableMenu();
+        disableMenu();
+        showLoadingScreen();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.5)
         );
         pause.setOnFinished(event -> {
             Task task = givePointsWorker();
             task.setOnSucceeded((Event e) -> {
+                hideLoadingScreen();
                 showPrompt("Submit offline transactions complete.", "OFFLINE TRANSACTION");
                 initialize();
             });

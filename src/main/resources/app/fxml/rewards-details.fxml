@@ -34,7 +34,7 @@
             </Label>
             <StackPane prefHeight="50.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="redeemButton" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="REDEEM" textFill="#fffbfb">
+                  <Button fx:id="redeemButton" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="50.0" prefWidth="200.0" styleClass="primary-button" text="REDEEM" textFill="#fffbfb">
                      <font>
                         <Font name="System Bold" size="17.0" />
                      </font>
@@ -42,7 +42,7 @@
                         <Cursor fx:constant="OPEN_HAND" />
                      </cursor>
                   </Button>
-                  <Label fx:id="lockLabel" text="You have insufficient points for this reward." wrapText="true">
+                  <Label fx:id="lockLabel" styleClass="label-3" text="You have insufficient points for this reward." wrapText="true">
                      <font>
                         <Font size="17.0" />
                      </font>

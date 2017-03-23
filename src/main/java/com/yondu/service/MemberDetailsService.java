@@ -38,7 +38,7 @@ public class MemberDetailsService extends BaseService{
 
         disableMenu();
         PauseTransition pause = new PauseTransition(
-                Duration.seconds(1)
+                Duration.seconds(.01)
         );
         pause.setOnFinished(event -> {
             Task task = initializeWorker();
@@ -86,10 +86,12 @@ public class MemberDetailsService extends BaseService{
 
                         App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                         enableMenu();
+                        hideLoadingScreen();
                     } else {
                         showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
                         App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                         enableMenu();
+                        hideLoadingScreen();
                     }
                 }
             });

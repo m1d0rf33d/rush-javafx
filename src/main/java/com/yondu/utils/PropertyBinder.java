@@ -10,10 +10,12 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.text.DecimalFormat;
 import static com.yondu.model.constants.ApiConstants.*;
@@ -101,6 +103,13 @@ public class PropertyBinder {
             } else {
                 loginTextField.setText(number);
             }
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    loginTextField.requestFocus();
+                }
+            });
 
         });
     }

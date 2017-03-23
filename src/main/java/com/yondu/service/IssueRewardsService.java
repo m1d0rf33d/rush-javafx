@@ -58,11 +58,12 @@ public class IssueRewardsService extends BaseService {
                     if (!apiResponse.isSuccess()) {
                         showPrompt(apiResponse.getMessage(), "ISSUE REWARDS");
                         enableMenu();
+                        hideLoadingScreen();
                     } else {
                         loadCustomerDetails();
                         renderRewards();
                         enableMenu();
-
+                        hideLoadingScreen();
                     }
                 }
             });
@@ -122,6 +123,7 @@ public class IssueRewardsService extends BaseService {
             });
             vBox.getChildren().add(imageView);
             Label label = new Label();
+            label.getStyleClass().add("label-3");
             label.setText(reward.getName());
             label.getStyleClass().add("lbl-med");
             vBox.getChildren().addAll(label);
@@ -172,6 +174,7 @@ public class IssueRewardsService extends BaseService {
 
 
     public void issueReward(String redeemId) {
+        showLoadingScreen();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.01)
         );
@@ -186,6 +189,7 @@ public class IssueRewardsService extends BaseService {
                     Employee employee = App.appContextHolder.getEmployee();
                     saveTransaction(TransactionType.ISSUE_REWARD, customer.getMobileNumber(), employee.getEmployeeName(), null, null, reward.getName());
                 }
+                hideLoadingScreen();
                 showPrompt(apiResponse.getMessage(), "ISSUE REWARD");
                 enableMenu();
             });

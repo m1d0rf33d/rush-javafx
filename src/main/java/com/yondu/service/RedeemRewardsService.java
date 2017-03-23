@@ -46,7 +46,6 @@ public class RedeemRewardsService extends BaseService {
     private MemberDetailsService memberDetailsService = App.appContextHolder.memberDetailsService;
 
     public void initialize() {
-
         Task task = initializeWorker();
         task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
@@ -56,10 +55,12 @@ public class RedeemRewardsService extends BaseService {
                     loadCustomerDetails();
                     renderRewards();
                     enableMenu();
+                    hideLoadingScreen();
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                 } else {
                     showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
                     enableMenu();
+                    hideLoadingScreen();
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                 }
 
@@ -85,7 +86,8 @@ public class RedeemRewardsService extends BaseService {
     }
 
     public void redeemRewards(String pin) {
-        enableMenu();
+        disableMenu();
+        showLoadingScreen();
         Task task = redeemRewardWorker(pin);
         task.setOnSucceeded((Event event) -> {
             ApiResponse apiResponse = (ApiResponse) task.getValue();
@@ -99,6 +101,7 @@ public class RedeemRewardsService extends BaseService {
                 pointsLabel.setText(customer.getAvailablePoints());
 
             }
+            hideLoadingScreen();
             showPrompt(apiResponse.getMessage(), "REDEEM REWARDS");
             enableMenu();
         });
@@ -151,41 +154,57 @@ public class RedeemRewardsService extends BaseService {
     public void renderRewards() {
         VBox rootVBox = App.appContextHolder.getRootContainer();
         FlowPane rewardsFlowPane = (FlowPane) rootVBox.getScene().lookup("#rewardsFlowPane");
-
-        Merchant merchant = App.appContextHolder.getMerchant();
-        List<VBox> vBoxes = new ArrayList<>();
-        for (Reward reward : merchant.getRewards()) {
-            VBox vBox = new VBox();
-            ImageView imageView = new ImageView(reward.getImageUrl());
-            imageView.setFitWidth(350);
-            imageView.setFitHeight(200);
-            imageView.setOnMouseClicked((MouseEvent e) -> {
-                showRewardsDialog(reward);
-            });
-            vBox.getChildren().add(imageView);
-            Label label = new Label();
-            label.setText(reward.getName());
-            label.getStyleClass().add("lbl-med");
-            Label pointsLabel = new Label();
-            pointsLabel.setText(reward.getPointsRequired() + " points");
-            pointsLabel.getStyleClass().add("lbl-med");
-            pointsLabel.setTextFill(Color.web("red"));
-
-            HBox hBox = new HBox();
-            hBox.getChildren().add(label);
-            hBox.getChildren().addAll(pointsLabel);
-            hBox.setMargin(label, new Insets(0, 0, 0, 20));
-            hBox.setMargin(pointsLabel, new Insets(0, 0, 0, 20));
-            vBox.getChildren().addAll(hBox);
-            vBox.setPrefWidth(200);
-            vBox.setMargin(imageView, new Insets(10,10,10,10));
-            vBox.setMargin(label, new Insets(10,10,10,10));
-            vBox.setPrefHeight(200);
-            vBox.setId(reward.getId());
-            vBoxes.add(vBox);
-        }
         rewardsFlowPane.getChildren().clear();
-        rewardsFlowPane.getChildren().addAll(vBoxes);
+        Merchant merchant = App.appContextHolder.getMerchant();
+        for (Reward reward : merchant.getRewards()) {
+            Task task = imageLoaderWorker(reward);
+            task.setOnSucceeded((Event e) -> {
+                VBox vBox = (VBox) task.getValue();
+                rewardsFlowPane.getChildren().add(vBox);
+            });
+            new Thread(task).start();
+        }
+
+
+    }
+
+    public Task imageLoaderWorker(Reward reward) {
+        return new Task() {
+            @Override
+            protected VBox call() throws Exception {
+
+                VBox vBox = new VBox();
+                ImageView imageView = new ImageView(reward.getImageUrl());
+                imageView.setFitWidth(350);
+                imageView.setFitHeight(200);
+                imageView.setOnMouseClicked((MouseEvent e) -> {
+                    showRewardsDialog(reward);
+                });
+                vBox.getChildren().add(imageView);
+                Label label = new Label();
+                label.getStyleClass().add("label-3");
+                label.setText(reward.getName());
+                label.getStyleClass().add("lbl-med");
+                Label pointsLabel = new Label();
+                pointsLabel.getStyleClass().add("label-3");
+                pointsLabel.setText(reward.getPointsRequired() + " points");
+                pointsLabel.getStyleClass().add("lbl-med");
+                pointsLabel.setTextFill(Color.web("red"));
+
+                HBox hBox = new HBox();
+                hBox.getChildren().add(label);
+                hBox.getChildren().addAll(pointsLabel);
+                hBox.setMargin(label, new Insets(0, 0, 0, 20));
+                hBox.setMargin(pointsLabel, new Insets(0, 0, 0, 20));
+                vBox.getChildren().addAll(hBox);
+                vBox.setPrefWidth(200);
+                vBox.setMargin(imageView, new Insets(10,10,10,10));
+                vBox.setMargin(label, new Insets(10,10,10,10));
+                vBox.setPrefHeight(200);
+                vBox.setId(reward.getId());
+                return vBox;
+            }
+        };
     }
 
     private void showRewardsDialog(Reward reward) {

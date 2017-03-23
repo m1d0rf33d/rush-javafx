@@ -94,6 +94,7 @@ public class MenuController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(MOBILE_LOGIN_SCREEN));
             Parent root = fxmlLoader.load();
             Scene scene = new Scene(root, 450,200);
+            scene.getStylesheets().add(App.class.getResource("/app/css/menu.css").toExternalForm());
             stage.setScene(scene);
             stage.setTitle(APP_TITLE);
             stage.resizableProperty().setValue(Boolean.FALSE);

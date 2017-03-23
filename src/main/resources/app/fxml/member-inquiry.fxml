@@ -45,7 +45,7 @@
                   <Font size="17.0" />
                </font>
             </TextField>
-            <Button fx:id="viewMemberButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="VIEW DETAILS" textFill="#fffdfd" VBox.vgrow="ALWAYS">
+            <Button fx:id="viewMemberButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" styleClass="primary-button" text="VIEW DETAILS" textFill="#fffdfd" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets left="50.0" top="20.0" />
                </VBox.margin>

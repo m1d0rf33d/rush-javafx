@@ -1,12 +1,15 @@
 package com.yondu.controller;
 
 import com.yondu.App;
+import com.yondu.model.Branch;
 import com.yondu.service.MemberDetailsService;
 import com.yondu.utils.PropertyBinder;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
@@ -35,6 +38,18 @@ public class MemberInquiryController implements Initializable {
 
         PropertyBinder.bindNumberOnly(mobileTextField);
         PropertyBinder.bindMaxLength(11, mobileTextField);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                mobileTextField.requestFocus();
+            }
+        });
+
+        mobileTextField.setOnKeyPressed((event)-> {
+            if(event.getCode() == KeyCode.ENTER) {
+                memberDetailsService.viewMember(mobileTextField.getText());
+            }
+        });
     }
 
 }

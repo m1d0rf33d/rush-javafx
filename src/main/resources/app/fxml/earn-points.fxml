@@ -27,7 +27,7 @@
             </VBox>
             <VBox prefHeight="50.0" prefWidth="170.0">
                <children>
-                  <Button fx:id="ocrButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #53585b;" text="OCR" textFill="#f5f3f3">
+                  <Button fx:id="ocrButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" styleClass="ocr-button" text="OCR" textFill="#f5f3f3">
                      <font>
                         <Font name="System Bold" size="17.0" />
                      </font>
@@ -42,7 +42,7 @@
             </VBox>
             <VBox alignment="TOP_RIGHT" maxWidth="170.0" prefHeight="50.0" prefWidth="170.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="exitButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #D61707;" text="EXIT MEMBER" textFill="#f2eded">
+                  <Button fx:id="exitButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" styleClass="exit-button" text="EXIT MEMBER" textFill="#f2eded">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
@@ -277,7 +277,7 @@
                   <Insets left="50.0" />
                </HBox.margin>
                <children>
-                  <Label maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" text="Receipt No" VBox.vgrow="ALWAYS">
+                  <Label maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" styleClass="label-3" text="Receipt No" VBox.vgrow="ALWAYS">
                      <font>
                         <Font size="15.0" />
                      </font>
@@ -292,7 +292,7 @@
             </VBox>
             <VBox maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" text="Purchase Amount" VBox.vgrow="ALWAYS">
+                  <Label maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" styleClass="label-3" text="Purchase Amount" VBox.vgrow="ALWAYS">
                      <font>
                         <Font size="15.0" />
                      </font>
@@ -313,7 +313,7 @@
             </VBox>
             <VBox maxWidth="330.0" prefHeight="200.0" prefWidth="230.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" text="Points to earn" VBox.vgrow="ALWAYS">
+                  <Label maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="200.0" styleClass="label-3" text="Points to earn" VBox.vgrow="ALWAYS">
                      <font>
                         <Font size="15.0" />
                      </font>
@@ -339,14 +339,14 @@
       </HBox>
       <HBox alignment="BOTTOM_CENTER" maxHeight="100.0" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <children>
-            <Button fx:id="submitButton" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #ffb600;" text="SUBMIT" textFill="#fffbfb" HBox.hgrow="ALWAYS">
+            <Button fx:id="submitButton" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" styleClass="primary-button" text="SUBMIT" textFill="#fffbfb" HBox.hgrow="ALWAYS">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
                <cursor>
                   <Cursor fx:constant="OPEN_HAND" />
                </cursor></Button>
-            <Button fx:id="clearButton" maxHeight="50.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-radius: 30; -fx-background-color: #CDD2D6;" text="CLEAR" textFill="#fffbfb" HBox.hgrow="ALWAYS">
+            <Button fx:id="clearButton" maxHeight="50.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" styleClass="cancel-button" text="CLEAR" textFill="#fffbfb" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>

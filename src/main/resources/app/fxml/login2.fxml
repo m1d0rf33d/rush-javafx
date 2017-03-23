@@ -9,7 +9,6 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
 <ScrollPane fx:id="rootScrollPane" maxHeight="Infinity" maxWidth="Infinity" minHeight="1100.0" minWidth="1000.0" prefHeight="1100.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yondu.controller.LoginController">
    <content>
       <VBox fx:id="rootVBox" maxWidth="Infinity" prefHeight="700.0" prefWidth="1000.0">
@@ -37,7 +36,7 @@
                                  <children>
                                     <Button fx:id="oneButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="1" textFill="#71747a">
                                        <cursor>
-                                          <Cursor fx:constant="CLOSED_HAND" />
+                                          <Cursor fx:constant="HAND" />
                                        </cursor>
                                        <effect>
                                           <DropShadow blurType="TWO_PASS_BOX" />
@@ -51,7 +50,7 @@
                                     </Button>
                                     <Button fx:id="twoButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="2" textFill="#71747a">
                                        <cursor>
-                                          <Cursor fx:constant="CLOSED_HAND" />
+                                          <Cursor fx:constant="HAND" />
                                        </cursor>
                                        <effect>
                                           <DropShadow blurType="TWO_PASS_BOX" />
@@ -65,7 +64,7 @@
                                     </Button>
                                     <Button fx:id="threeButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="3" textFill="#71747a">
                                        <cursor>
-                                          <Cursor fx:constant="CLOSED_HAND" />
+                                          <Cursor fx:constant="HAND" />
                                        </cursor>
                                        <effect>
                                           <DropShadow blurType="TWO_PASS_BOX" />
@@ -86,7 +85,7 @@
                                  <children>
                                     <Button fx:id="fourButton" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="4" textFill="#71747a">
                                        <cursor>
-                                          <Cursor fx:constant="CLOSED_HAND" />
+                                          <Cursor fx:constant="HAND" />
                                        </cursor>
                                        <effect>
                                           <DropShadow blurType="TWO_PASS_BOX" />
@@ -100,7 +99,7 @@
                                     </Button>
                                     <Button fx:id="fiveButton" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="5" textFill="#71747a">
                                        <cursor>
-                                          <Cursor fx:constant="CLOSED_HAND" />
+                                          <Cursor fx:constant="HAND" />
                                        </cursor>
                                        <effect>
                                           <DropShadow blurType="TWO_PASS_BOX" />
@@ -114,7 +113,7 @@
                                     </Button>
                                     <Button fx:id="sixButton" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="6" textFill="#71747a">
                                        <cursor>
-                                          <Cursor fx:constant="CLOSED_HAND" />
+                                          <Cursor fx:constant="HAND" />
                                        </cursor>
                                        <effect>
                                           <DropShadow blurType="TWO_PASS_BOX" />
@@ -135,7 +134,7 @@
                                  <children>
                                     <Button fx:id="sevenButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="7" textFill="#71747a" HBox.hgrow="ALWAYS">
                                        <cursor>
-                                          <Cursor fx:constant="CLOSED_HAND" />
+                                          <Cursor fx:constant="HAND" />
                                        </cursor>
                                        <effect>
                                           <DropShadow blurType="TWO_PASS_BOX" />
@@ -149,7 +148,7 @@
                                     </Button>
                                     <Button fx:id="eightButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="8" textFill="#71747a">
                                        <cursor>
-                                          <Cursor fx:constant="CLOSED_HAND" />
+                                          <Cursor fx:constant="HAND" />
                                        </cursor>
                                        <effect>
                                           <DropShadow blurType="TWO_PASS_BOX" />
@@ -163,7 +162,7 @@
                                     </Button>
                                     <Button fx:id="nineButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="9" textFill="#71747a">
                                        <cursor>
-                                          <Cursor fx:constant="CLOSED_HAND" />
+                                          <Cursor fx:constant="HAND" />
                                        </cursor>
                                        <effect>
                                           <DropShadow blurType="TWO_PASS_BOX" />
@@ -184,7 +183,7 @@
                                  <children>
                                     <Button fx:id="removeButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" textFill="#71747a">
                                        <cursor>
-                                          <Cursor fx:constant="CLOSED_HAND" />
+                                          <Cursor fx:constant="HAND" />
                                        </cursor>
                                        <effect>
                                           <DropShadow blurType="TWO_PASS_BOX" />
@@ -201,7 +200,7 @@
                                     </Button>
                                     <Button fx:id="zeroButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="0" textFill="#71747a">
                                        <cursor>
-                                          <Cursor fx:constant="CLOSED_HAND" />
+                                          <Cursor fx:constant="HAND" />
                                        </cursor>
                                        <effect>
                                           <DropShadow blurType="TWO_PASS_BOX" />
@@ -215,7 +214,7 @@
                                     </Button>
                                     <Button fx:id="dotButton" maxHeight="130.0" maxWidth="130.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: white; -fx-background-radius: 30;" text="." textFill="#71747a">
                                        <cursor>
-                                          <Cursor fx:constant="CLOSED_HAND" />
+                                          <Cursor fx:constant="HAND" />
                                        </cursor>
                                        <effect>
                                           <DropShadow blurType="TWO_PASS_BOX" />

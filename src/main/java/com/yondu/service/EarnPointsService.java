@@ -37,6 +37,7 @@ public class EarnPointsService extends BaseService {
                 if (!apiResponse.isSuccess()) {
                     showPrompt(apiResponse.getMessage(), "EARN POINTS");
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
+                    hideLoadingScreen();
                     enableMenu();
                 } else {
                     loadCustomerDetails();
@@ -50,6 +51,7 @@ public class EarnPointsService extends BaseService {
                         accountNumberLabel.setText(customer.getAccountNumber());
                         accountNameLabel.setText(customer.getAccountName());
                     }
+                    hideLoadingScreen();
                     enableMenu();
                 }
             }
@@ -122,6 +124,7 @@ public class EarnPointsService extends BaseService {
 
     public void earnPoints(String orNumber, String amount) {
         disableMenu();
+        showLoadingScreen();
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.5)
         );
@@ -145,6 +148,7 @@ public class EarnPointsService extends BaseService {
                                 employee.getEmployeeName(),
                                 amount,orNumber, null);
                     }
+                    hideLoadingScreen();
                     showPrompt(apiResponse.getMessage(), "EARN POINTS");
                     enableMenu();
                 }

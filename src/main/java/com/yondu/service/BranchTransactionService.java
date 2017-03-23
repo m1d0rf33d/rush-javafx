@@ -573,8 +573,8 @@ public class BranchTransactionService extends BaseService{
             task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
                 public void handle(WorkerStateEvent event) {
-                    enableMenu();
-                    showPrompt("Export successful.", "EXPORT OFFLINE REPORT");
+
+                    showPrompt("Export successful.", "EXPORT OFFLINE REPORT", true);
                 }
             });
             new Thread(task).start();
@@ -641,8 +641,8 @@ public class BranchTransactionService extends BaseService{
             task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
                 public void handle(WorkerStateEvent event) {
-                    enableMenu();
-                    showPrompt("Export successful.", "EXPORT ONLINE REPORT");
+
+                    showPrompt("Export successful.", "EXPORT ONLINE REPORT", true);
                 }
             });
             new Thread(task).start();

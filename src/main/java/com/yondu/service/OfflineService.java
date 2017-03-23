@@ -76,7 +76,7 @@ public class OfflineService extends BaseService {
             Task task = givePointsWorker();
             task.setOnSucceeded((Event e) -> {
                 hideLoadingScreen();
-                showPrompt("Submit offline transactions complete.", "OFFLINE TRANSACTION");
+                showPrompt("Submit offline transactions complete.", "OFFLINE TRANSACTION", true);
                 initialize();
             });
             new Thread(task).start();

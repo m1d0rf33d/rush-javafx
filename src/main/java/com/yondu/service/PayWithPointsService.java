@@ -53,7 +53,7 @@ public class PayWithPointsService extends BaseService {
                         Label pesoValueLabel = (Label) rootVBox.getScene().lookup("#pesoValueLabel");
                         pesoValueLabel.setText(String.valueOf(Double.parseDouble(customer.getAvailablePoints()) * pointsRule.getRedeemPeso()));
                     } else {
-                        showPrompt(apiResponse.getMessage(), "PAY WITH POINTS");
+                        showPrompt(apiResponse.getMessage(), "PAY WITH POINTS",apiResponse.isSuccess());
                     }
                     enableMenu();
                 }
@@ -101,8 +101,8 @@ public class PayWithPointsService extends BaseService {
                     App.appContextHolder.commonService.updateButtonState();
                 }
                 hideLoadingScreen();
-                showPrompt(apiResponse.getMessage(), "PAY WITH POINTS");
-                enableMenu();
+                showPrompt(apiResponse.getMessage(), "PAY WITH POINTS", apiResponse.isSuccess());
+
             });
             new Thread(task).start();
         });

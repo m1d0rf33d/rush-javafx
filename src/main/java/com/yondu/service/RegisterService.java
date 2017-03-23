@@ -52,8 +52,8 @@ public class RegisterService extends BaseService {
                     }
 
                     hideLoadingScreen();
-                    showPrompt(apiResponse.getMessage(), "REGISTER");
-                    enableMenu();
+                    showPrompt(apiResponse.getMessage(), "REGISTER", apiResponse.isSuccess());
+
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                 }
             });

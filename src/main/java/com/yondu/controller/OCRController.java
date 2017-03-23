@@ -6,6 +6,8 @@ import com.yondu.model.constants.AppConfigConstants;
 import com.yondu.service.OcrService;
 import com.yondu.service.RouteService;
 import javafx.animation.PauseTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -55,6 +57,10 @@ public class OCRController implements Initializable {
     public Label previewLabel;
     @FXML
     public Label errorLabel;
+    @FXML
+    public ToggleButton onToggle;
+    @FXML
+    public ToggleButton offToggle;
 
     private Double orPosX;
     private Double orPosY;
@@ -79,6 +85,23 @@ public class OCRController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        ToggleGroup toggleGroup = new ToggleGroup();
+        toggleGroup.getToggles().add(onToggle);
+        toggleGroup.getToggles().add(offToggle);
+        toggleGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
+            public void changed(ObservableValue<? extends Toggle> ov,
+                                Toggle toggle, Toggle newToggle) {
+                   if(newToggle == onToggle) {
+                       onToggle.setStyle("-fx-background-color: #ffb600");
+                       offToggle.setStyle("-fx-background-color: #333");
+                   } else {
+                       offToggle.setStyle("-fx-background-color: #ffb600");
+                       onToggle.setStyle("-fx-background-color: #333");
+                   }
+            }
+        });
+
         errorLabel.setVisible(false);
         loadSavedConfig();
 
@@ -248,32 +271,13 @@ public class OCRController implements Initializable {
             savedOrWidth = prop.getProperty("or_width").isEmpty() ? null : Double.parseDouble(prop.getProperty("or_width"));
             savedOrHeight = prop.getProperty("or_height").isEmpty() ? null : Double.parseDouble(prop.getProperty("or_height"));
 
-            StringBuilder sb = new StringBuilder();
-            if (savedOrPosX != null) {
-                sb.append(prop.getProperty("sales_pos_x"));
-                sb.append(", ");
-                sb.append(prop.getProperty("sales_pos_y"));
-                sb.append(", ");
-                sb.append(prop.getProperty("sales_width"));
-                sb.append(", ");
-                sb.append(prop.getProperty("sales_height"));
-
-                sb = new StringBuilder();
-                sb.append(prop.getProperty("or_pos_x"));
-                sb.append(", ");
-                sb.append(prop.getProperty("or_pos_y"));
-                sb.append(", ");
-                sb.append(prop.getProperty("or_width"));
-                sb.append(", ");
-                sb.append(prop.getProperty("or_height"));
-            }
-
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
 
 }

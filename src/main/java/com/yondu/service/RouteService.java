@@ -200,7 +200,7 @@ public class RouteService extends BaseService{
 
                 ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber(), App.appContextHolder.getCurrentState());
                 if (!apiResponse.isSuccess()) {
-                    showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY");
+                    showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY", apiResponse.isSuccess());
                 } else {
                     VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
 

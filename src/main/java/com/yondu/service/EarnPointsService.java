@@ -35,10 +35,10 @@ public class EarnPointsService extends BaseService {
             public void handle(WorkerStateEvent event) {
                 ApiResponse apiResponse = (ApiResponse) task.getValue();
                 if (!apiResponse.isSuccess()) {
-                    showPrompt(apiResponse.getMessage(), "EARN POINTS");
+                    showPrompt(apiResponse.getMessage(), "EARN POINTS", apiResponse.isSuccess());
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                     hideLoadingScreen();
-                    enableMenu();
+
                 } else {
                     loadCustomerDetails();
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
@@ -52,8 +52,8 @@ public class EarnPointsService extends BaseService {
                         accountNameLabel.setText(customer.getAccountName());
                     }
                     hideLoadingScreen();
-                    enableMenu();
                 }
+                enableMenu();
             }
         });
         new Thread(task).start();
@@ -149,15 +149,15 @@ public class EarnPointsService extends BaseService {
                                 amount,orNumber, null);
                     }
                     hideLoadingScreen();
-                    showPrompt(apiResponse.getMessage(), "EARN POINTS");
-                    enableMenu();
+                    showPrompt(apiResponse.getMessage(), "EARN POINTS",apiResponse.isSuccess());
+
                 }
             });
             task.setOnFailed(new EventHandler<WorkerStateEvent>() {
                 @Override
                 public void handle(WorkerStateEvent event) {
-                    showPrompt("Network connection error.", "EARN POINTS");
-                    enableMenu();
+                    showPrompt("Network connection error.", "EARN POINTS", false);
+
                 }
             });
             new Thread(task).start();

@@ -84,9 +84,9 @@ public class MemberDetailsService extends BaseService{
                     enableMenu();
                     hideLoadingScreen();
                 } else {
-                    showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
+                    showPrompt(apiResponse.getMessage(), "MEMBER DETAILS", apiResponse.isSuccess());
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
-                    enableMenu();
+
                     hideLoadingScreen();
                 }
             }
@@ -110,8 +110,8 @@ public class MemberDetailsService extends BaseService{
                     if (apiResponse.isSuccess()) {
                         App.appContextHolder.routeService.loadMemberDetailsScreen(true);
                     } else {
-                        showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY");
-                        enableMenu();
+                        showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY",apiResponse.isSuccess());
+
                         App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                     }
 
@@ -145,7 +145,7 @@ public class MemberDetailsService extends BaseService{
                 if (loginResponse.isSuccess()) {
                     apiResponse.setSuccess(true);
                 } else {
-                    showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
+                    showPrompt(apiResponse.getMessage(), "MEMBER DETAILS", apiResponse.isSuccess());
                 }
                 return apiResponse;
             }
@@ -196,7 +196,9 @@ public class MemberDetailsService extends BaseService{
                         if (rewardJSON.get("redeem_id") != null) {
                             reward.setRedeemId((String) rewardJSON.get("redeem_id"));
                         }
-                        reward.setQuantity((rewardJSON.get("quantity").toString()));
+                        Long quantity = (Long) rewardJSON.get("quantity");
+                        Long claimed = (Long) rewardJSON.get("claimed");
+                        reward.setQuantity(String.valueOf(quantity - claimed));
                         reward.setDate((String) rewardJSON.get("date"));
                         reward.setDetails((String) rewardJSON.get("details"));
                         reward.setId((String) rewardJSON.get("id"));

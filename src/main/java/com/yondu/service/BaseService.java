@@ -1,6 +1,8 @@
 package com.yondu.service;
 
 import com.yondu.App;
+import com.yondu.controller.LoginController;
+import com.yondu.controller.NotifController;
 import com.yondu.model.Customer;
 import com.yondu.model.TransactionType;
 import com.yondu.model.constants.AppConfigConstants;
@@ -14,6 +16,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -52,21 +55,33 @@ public class BaseService {
         }
     }
 
-    public void showPrompt(String message, String header) {
+    public void showPrompt(String message, String header, Boolean success) {
         Stage stage = (Stage) App.appContextHolder.getRootContainer().getScene().getWindow();
         stage.setIconified(false);
-        Label label = new Label(message);
-        label.setPadding(new Insets(10,0,0,0));
-        label.setFont(new Font(15.0));
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-        alert.setTitle(AppConfigConstants.APP_TITLE);
-        alert.initStyle(StageStyle.UTILITY);
-        alert.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());
-        alert.setHeaderText(header);
-        alert.getDialogPane().setPadding(new Insets(10,10,10,10));
-        alert.getDialogPane().setContent(label);
-        alert.getDialogPane().setPrefWidth(400);
-        alert.show();
+
+        try {
+            Stage notifStage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/app/fxml/notif.fxml"));
+            Parent root = fxmlLoader.load();
+            notifStage.setScene(new Scene(root, 500,330));
+            notifStage.setTitle(APP_TITLE);
+            notifStage.getIcons().add(new Image(App.class.getResource(AppConfigConstants.R_LOGO).toExternalForm()));
+            Scene scene  = notifStage.getScene();
+            notifStage.initStyle(StageStyle.UNDECORATED);
+            notifStage.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());
+            scene.getStylesheets().add(App.class.getResource("/app/css/menu.css").toExternalForm());
+            notifStage.setOnCloseRequest(new javafx.event.EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    enableMenu();
+                }
+            });
+            notifStage.show();
+            NotifController controller = fxmlLoader.getController();
+            controller.initAfterLoad(header, message, success);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void loadCustomerDetails() {

@@ -57,15 +57,14 @@ public class IssueRewardsService extends BaseService {
                 public void handle(WorkerStateEvent event) {
                     ApiResponse apiResponse = (ApiResponse) task.getValue();
                     if (!apiResponse.isSuccess()) {
-                        showPrompt(apiResponse.getMessage(), "ISSUE REWARDS");
-                        enableMenu();
+                        showPrompt(apiResponse.getMessage(), "ISSUE REWARDS", apiResponse.isSuccess());
                         hideLoadingScreen();
                     } else {
                         loadCustomerDetails();
                         renderRewards();
-                        enableMenu();
                         hideLoadingScreen();
                     }
+                    enableMenu();
                 }
             });
             new Thread(task).start();
@@ -80,7 +79,7 @@ public class IssueRewardsService extends BaseService {
             protected ApiResponse call() throws Exception {
                 ApiResponse apiResponse = new ApiResponse();
                 Customer customer = App.appContextHolder.getCustomer();
-                ApiResponse loginResp = memberDetailsService.loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
+                ApiResponse loginResp = App.appContextHolder.memberDetailsService.loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
                 apiResponse.setMessage(loginResp.getMessage());
                 apiResponse.setErrorCode(loginResp.getErrorCode());
                 apiResponse.setSuccess(loginResp.isSuccess());
@@ -195,15 +194,18 @@ public class IssueRewardsService extends BaseService {
             task.setOnSucceeded((Event e) -> {
                 ApiResponse apiResponse = (ApiResponse) task.getValue();
                 if (apiResponse.isSuccess()) {
-                    renderRewards();
                     Reward reward = App.appContextHolder.getReward();
                     Customer customer = App.appContextHolder.getCustomer();
                     Employee employee = App.appContextHolder.getEmployee();
                     saveTransaction(TransactionType.ISSUE_REWARD, customer.getMobileNumber(), employee.getEmployeeName(), null, null, reward.getName());
+                    VBox rootVBox = App.appContextHolder.getRootContainer();
+                    FlowPane rewardsFlowPane = (FlowPane) rootVBox.getScene().lookup("#rewardsFlowPane");
+                    rewardsFlowPane.getChildren().clear();
+                    initialize();
                 }
                 hideLoadingScreen();
-                showPrompt(apiResponse.getMessage(), "ISSUE REWARD");
-                enableMenu();
+                showPrompt(apiResponse.getMessage(), "ISSUE REWARD", apiResponse.isSuccess());
+
             });
             new Thread(task).start();
         });
@@ -219,6 +221,7 @@ public class IssueRewardsService extends BaseService {
                 Customer customer = App.appContextHolder.getCustomer();
                 Employee employee = App.appContextHolder.getEmployee();
                 Merchant merchant = App.appContextHolder.getMerchant();
+                Reward r = App.appContextHolder.getReward();
 
                 JSONObject requestBody = new JSONObject();
                 requestBody.put("employee_id", employee.getEmployeeId());
@@ -226,6 +229,7 @@ public class IssueRewardsService extends BaseService {
                 requestBody.put("merchant_key", merchant.getUniqueKey());
                 requestBody.put("customer_id", customer.getUuid());
                 requestBody.put("redeem_id", redeemId);
+                requestBody.put("quantity", r.getQuantityToIssue());
 
 
                 String url = CMS_URL + WIDGET_ISSUE_ENDPOINT;
@@ -234,16 +238,6 @@ public class IssueRewardsService extends BaseService {
                     if (jsonObject.get("error_code").equals("0x0")) {
                         apiResponse.setMessage("Issue reward successful.");
                         apiResponse.setSuccess(true);
-
-                        List<Reward> rewards = customer.getActiveVouchers();
-                        Reward delete = null;
-                        for (Reward reward : rewards) {
-                            if (reward.getRedeemId().equals(redeemId)) {
-                                delete = reward;
-                                break;
-                            }
-                        }
-                        rewards.remove(delete);
 
                     } else {
                         apiResponse.setMessage((String) jsonObject.get("message"));
@@ -268,8 +262,8 @@ public class IssueRewardsService extends BaseService {
                 if (apiResponse.isSuccess()) {
                     renderRewards();
                 }
-                showPrompt(apiResponse.getMessage(), "ISSUE REWARD");
-                enableMenu();
+                showPrompt(apiResponse.getMessage(), "ISSUE REWARD", apiResponse.isSuccess());
+
             }
         });
 

@@ -40,6 +40,31 @@
             </Label>
          </children>
       </VBox>
+      <HBox prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label styleClass="label-3" text="ENABLE OCR">
+               <HBox.margin>
+                  <Insets left="40.0" />
+               </HBox.margin>
+            </Label>
+            <ToggleButton fx:id="onToggle" maxHeight="40.0" maxWidth="50.0" minHeight="40.0" minWidth="50.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" style="-fx-background-radius: 0; -fx-background-color: #333;" text="ON" textFill="#f8f5f5">
+               <HBox.margin>
+                  <Insets left="100.0" />
+               </HBox.margin>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </ToggleButton>
+            <ToggleButton fx:id="offToggle" maxHeight="40.0" maxWidth="50.0" minHeight="40.0" minWidth="50.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" style="-fx-background-radius: 0; -fx-background-color: #333;" text="OFF" textFill="#f8f5f5">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </ToggleButton>
+         </children>
+      </HBox>
       <HBox alignment="TOP_CENTER" maxHeight="200.0" maxWidth="600.0" minHeight="200.0" minWidth="600.0" prefHeight="200.0" prefWidth="600.0">
          <children>
             <VBox maxHeight="200.0" minHeight="200.0" prefHeight="200.0">

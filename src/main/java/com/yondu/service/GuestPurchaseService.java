@@ -51,8 +51,8 @@ public class GuestPurchaseService extends BaseService {
                         amountTextField.setText(null);
                     }
                     hideLoadingScreen();
-                    showPrompt(apiResponse.getMessage(), "GUEST EARN POINTS");
-                    enableMenu();
+                    showPrompt(apiResponse.getMessage(), "GUEST EARN POINTS", apiResponse.isSuccess());
+
                 }
             });
             new Thread(task).start();

@@ -1,6 +1,6 @@
 package com.yondu.service;
 
-import com.yondu.App;
+import com.yondu    .App;
 import com.yondu.controller.RewardDialogController;
 import com.yondu.model.*;
 import javafx.animation.PauseTransition;
@@ -51,7 +51,7 @@ public class StampsService extends BaseService  {
             public void handle(WorkerStateEvent event) {
                 ApiResponse apiResponse = (ApiResponse) task.getValue();
                 if (!apiResponse.isSuccess()) {
-                    showPrompt(apiResponse.getMessage(), "EARN STAMPS");
+                    showPrompt(apiResponse.getMessage(), "EARN STAMPS", apiResponse.isSuccess());
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                     enableMenu();
                 } else {
@@ -202,8 +202,8 @@ public class StampsService extends BaseService  {
                     card.setStampCount(stampCount);
                     loadRewards();
                 }
-                showPrompt(apiResponse.getMessage(), "EARN STAMPS");
-                enableMenu();
+                showPrompt(apiResponse.getMessage(), "EARN STAMPS", apiResponse.isSuccess());
+
             }
         });
         disableMenu();
@@ -280,8 +280,8 @@ public class StampsService extends BaseService  {
                     if (apiResponse.isSuccess()) {
                         loadRewards();
                     }
-                    showPrompt(apiResponse.getMessage(), "REDEEM REWARD");
-                    enableMenu();
+                    showPrompt(apiResponse.getMessage(), "REDEEM REWARD", apiResponse.isSuccess());
+
                 }
             });
             new Thread(task).start();

@@ -58,7 +58,7 @@ public class RedeemRewardsService extends BaseService {
                     hideLoadingScreen();
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                 } else {
-                    showPrompt(apiResponse.getMessage(), "MEMBER DETAILS");
+                    showPrompt(apiResponse.getMessage(), "MEMBER DETAILS", apiResponse.isSuccess());
                     enableMenu();
                     hideLoadingScreen();
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
@@ -102,8 +102,8 @@ public class RedeemRewardsService extends BaseService {
 
             }
             hideLoadingScreen();
-            showPrompt(apiResponse.getMessage(), "REDEEM REWARDS");
-            enableMenu();
+            showPrompt(apiResponse.getMessage(), "REDEEM REWARDS", apiResponse.isSuccess());
+
         });
         new Thread(task).start();
 

@@ -15,6 +15,15 @@ public class Reward {
     private Integer stamps;
     private String redeemId;
     private Boolean status;
+    private String quantityToIssue;
+
+    public String getQuantityToIssue() {
+        return quantityToIssue;
+    }
+
+    public void setQuantityToIssue(String quantityToIssue) {
+        this.quantityToIssue = quantityToIssue;
+    }
 
     public Boolean getStatus() {
         return status;

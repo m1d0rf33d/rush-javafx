@@ -91,16 +91,16 @@ public class LoginService extends BaseService{
                         } else if (apiResponse.getErrorCode().equals("0x2")){
                             showPinDialog();
                         } else {
-                            showPrompt(apiResponse.getMessage(), "LOGIN");
-                            enableMenu();
+                            showPrompt(apiResponse.getMessage(), "LOGIN", apiResponse.isSuccess());
+
                         }
 
                     } else {
                        if (apiResponse.getMessage().contains("Network"))  {
                            loadOffline();
                        }
-                        showPrompt(apiResponse.getMessage(), "LOGIN");
-                        enableMenu();
+                        showPrompt(apiResponse.getMessage(), "LOGIN", apiResponse.isSuccess());
+
                     }
                 App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
             }

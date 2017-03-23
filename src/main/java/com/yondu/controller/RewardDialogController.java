@@ -82,6 +82,8 @@ public class RewardDialogController implements Initializable {
             } else if (state.equals(AppState.ISSUE_REWARDS)) {
                 Merchant merchant = App.appContextHolder.getMerchant();
                 if (merchant.getMerchantType().equals("loyalty")) {
+                    Reward reward = App.appContextHolder.getReward();
+                    reward.setQuantityToIssue(quantityTextField.getText());
                     issueReward();
                 } else {
                     showPinDialog();
@@ -161,22 +163,25 @@ public class RewardDialogController implements Initializable {
             this.requiredPointsLabel.setVisible(false);
 
         } else {
+            PropertyBinder.bindNumberOnly(quantityTextField);
+            PropertyBinder.bindDefaultOne(quantityTextField);
+            PropertyBinder.bindVirtualKeyboard(quantityTextField);
+
+            quantityTextField.setText("1");
+
+            plusButton.setOnMouseClicked((Event e)-> {
+                Integer q = Integer.parseInt(quantityTextField.getText());
+                quantityTextField.setText(String.valueOf(++q));
+            });
+
+            minusButton.setOnMouseClicked((Event e)-> {
+                Integer q = Integer.parseInt(quantityTextField.getText());
+                quantityTextField.setText(String.valueOf(--q));
+            });
 
             if (App.appContextHolder.getCurrentState().equals(AppState.REDEEM_REWARDS)) {
                 Customer customer = App.appContextHolder.getCustomer();
-                quantityTextField.setText("1");
-                PropertyBinder.bindNumberOnly(quantityTextField);
-                PropertyBinder.bindDefaultOne(quantityTextField);
-                PropertyBinder.bindVirtualKeyboard(quantityTextField);
-                plusButton.setOnMouseClicked((Event e)-> {
-                    Integer q = Integer.parseInt(quantityTextField.getText());
-                    quantityTextField.setText(String.valueOf(++q));
-                });
 
-                minusButton.setOnMouseClicked((Event e)-> {
-                    Integer q = Integer.parseInt(quantityTextField.getText());
-                    quantityTextField.setText(String.valueOf(--q));
-                });
 
                 Long pointsRequired = Long.parseLong(reward.getPointsRequired());
                 Double customerPoints = Double.parseDouble(customer.getAvailablePoints());
@@ -189,7 +194,6 @@ public class RewardDialogController implements Initializable {
                 }
                 this.requiredPointsLabel.setText(reward.getPointsRequired() + " points");
             } else {
-                quantityHBox.setVisible(false);
                 this.requiredPointsLabel.setText("Quantity: " + reward.getQuantity());
             }
 

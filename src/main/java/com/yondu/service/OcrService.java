@@ -64,7 +64,7 @@ public class OcrService extends BaseService{
 
                     } else {
                         ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).setIconified(false);
-                        showPrompt(apiResponse.getMessage(), "EARN POINTS");
+                        showPrompt(apiResponse.getMessage(), "EARN POINTS", apiResponse.isSuccess());
                     }
                     enableMenu();
                 }
@@ -172,7 +172,7 @@ public class OcrService extends BaseService{
                             previewLabel.setText((String) payload.get("text"));
                             previewImageView.setImage(image);
                         } else {
-                            showPrompt(apiResponse.getMessage(), "OCR");
+                            showPrompt(apiResponse.getMessage(), "OCR", apiResponse.isSuccess());
                         }
                         ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).setIconified(false);
                         enableMenu();

@@ -14,7 +14,7 @@
             <children>
                 <VBox maxWidth="500.0" prefHeight="200.0" prefWidth="350.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label prefHeight="50.0" prefWidth="350.0" text="VIEW MEMBER'S PROFILE">
+                        <Label prefHeight="50.0" prefWidth="350.0" styleClass="label-1" text="VIEW MEMBER'S PROFILE">
                             <font>
                                 <Font name="System Bold" size="18.0" />
                             </font>
@@ -26,7 +26,7 @@
                 </VBox>
                 <VBox alignment="TOP_RIGHT" maxWidth="500.0" prefHeight="200.0" prefWidth="350.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Button fx:id="exitButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #D61707;" text="EXIT MEMBER" textFill="#fffbfb">
+                        <Button fx:id="exitButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" styleClass="exit-button" text="EXIT MEMBER" textFill="#fffbfb">
                             <font>
                                 <Font name="System Bold" size="15.0" />
                             </font>
@@ -44,7 +44,7 @@
                         <Insets left="50.0" top="10.0" />
                     </VBox.margin>
                 </Line>
-                <Label text="BASIC INFORMATION" textFill="#a19797">
+                <Label styleClass="label-2" text="BASIC INFORMATION" textFill="#a19797">
                     <VBox.margin>
                         <Insets left="50.0" top="20.0" />
                     </VBox.margin>
@@ -58,7 +58,7 @@
          <children>
             <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="300.0" minHeight="50.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label text="myBusiness Account Number" wrapText="true">
+                  <Label styleClass="label-3" text="myBusiness Account Number" wrapText="true">
                      <font>
                         <Font size="17.0" />
                      </font>
@@ -70,7 +70,7 @@
             </VBox>
             <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="300.0" minHeight="50.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label text="myBusiness Account Name" wrapText="true">
+                  <Label styleClass="label-3" text="myBusiness Account Name" wrapText="true">
                      <font>
                         <Font size="17.0" />
                      </font>
@@ -121,7 +121,7 @@
                         <Insets left="50.0" />
                     </HBox.margin>
                     <children>
-                        <Label text="Member ID">
+                        <Label styleClass="label-3" text="Member ID">
                             <font>
                                 <Font size="17.0" />
                             </font></Label>
@@ -129,7 +129,7 @@
                 </VBox>
                 <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="300.0" minHeight="50.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label text="Name">
+                        <Label styleClass="label-3" text="Name">
                             <font>
                                 <Font size="17.0" />
                             </font></Label>
@@ -137,7 +137,7 @@
                 </VBox>
                 <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="300.0" minHeight="50.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label text="Mobiler Number">
+                        <Label styleClass="label-3" text="Mobiler Number">
                             <font>
                                 <Font size="17.0" />
                             </font></Label>
@@ -180,7 +180,7 @@
             <children>
                 <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="300.0" minHeight="50.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label text="Date of Birth">
+                        <Label styleClass="label-3" text="Date of Birth">
                             <font>
                                 <Font size="17.0" />
                             </font></Label>
@@ -191,7 +191,7 @@
                 </VBox>
                 <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="300.0" minHeight="50.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label text="Gender">
+                        <Label styleClass="label-3" text="Gender">
                             <font>
                                 <Font size="17.0" />
                             </font></Label>
@@ -199,7 +199,7 @@
                 </VBox>
                 <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="300.0" minHeight="50.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label text="Member Since">
+                        <Label styleClass="label-3" text="Member Since">
                             <font>
                                 <Font size="17.0" />
                             </font></Label>
@@ -242,7 +242,7 @@
             <children>
                 <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="300.0" minHeight="50.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label text="Email">
+                        <Label styleClass="label-3" text="Email">
                             <font>
                                 <Font size="17.0" />
                             </font></Label>
@@ -253,7 +253,7 @@
                 </VBox>
                 <VBox alignment="BOTTOM_LEFT" maxHeight="50.0" maxWidth="300.0" minHeight="50.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label text="Available Points">
+                        <Label styleClass="label-3" text="Available Points">
                             <font>
                                 <Font size="17.0" />
                             </font></Label>
@@ -345,7 +345,7 @@
                     <tabs>
                         <Tab fx:id="transactionsTab">
                             <content>
-                                <Pagination fx:id="transactionsPagination" maxHeight="400.0" maxWidth="800.0" minHeight="400.0" minWidth="500.0" prefHeight="400.0" prefWidth="500.0">
+                                <Pagination fx:id="transactionsPagination" maxHeight="400.0" maxWidth="800.0" minHeight="400.0" minWidth="500.0" pageCount="1" prefHeight="400.0" prefWidth="500.0">
                                     <VBox.margin>
                                         <Insets />
                                     </VBox.margin>

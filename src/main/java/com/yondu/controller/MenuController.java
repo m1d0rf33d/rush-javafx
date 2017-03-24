@@ -177,7 +177,7 @@ public class MenuController implements Initializable {
             } else {
                 disableMenu();
                 App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
-                routeService.loadMemberDetailsScreen(false);
+                routeService.loadMemberDetailsScreen();
             }
         });
 

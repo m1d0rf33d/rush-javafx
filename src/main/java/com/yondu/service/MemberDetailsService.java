@@ -97,6 +97,7 @@ public class MemberDetailsService extends BaseService{
 
     public void viewMember(String mobileNumber) {
         disableMenu();
+        showLoadingScreen();
         App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.WAIT);
         PauseTransition pause = new PauseTransition(
                 Duration.seconds(.01)
@@ -108,10 +109,11 @@ public class MemberDetailsService extends BaseService{
                 public void handle(WorkerStateEvent event) {
                     ApiResponse apiResponse = (ApiResponse) task.getValue();
                     if (apiResponse.isSuccess()) {
-                        App.appContextHolder.routeService.loadMemberDetailsScreen(true);
+                        hideLoadingScreen();
+                        App.appContextHolder.routeService.loadMemberDetailsScreen();
                     } else {
                         showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY",apiResponse.isSuccess());
-
+                        hideLoadingScreen();
                         App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
                     }
 

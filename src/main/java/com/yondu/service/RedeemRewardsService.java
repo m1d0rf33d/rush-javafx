@@ -75,11 +75,15 @@ public class RedeemRewardsService extends BaseService {
             @Override
             protected ApiResponse call() throws Exception {
                 ApiResponse apiResponse = new ApiResponse();
-                Customer customer = App.appContextHolder.getCustomer();
-                ApiResponse loginResp = memberDetailsService.loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
-                apiResponse.setMessage(loginResp.getMessage());
-                apiResponse.setErrorCode(loginResp.getErrorCode());
-                apiResponse.setSuccess(loginResp.isSuccess());
+               try {
+                   Customer customer = App.appContextHolder.getCustomer();
+                   ApiResponse loginResp = memberDetailsService.loginCustomer(customer.getMobileNumber(), App.appContextHolder.getCurrentState());
+                   apiResponse.setMessage(loginResp.getMessage());
+                   apiResponse.setErrorCode(loginResp.getErrorCode());
+                   apiResponse.setSuccess(loginResp.isSuccess());
+               } catch (Exception e) {
+                   e.printStackTrace();
+               }
                 return apiResponse;
             }
         };

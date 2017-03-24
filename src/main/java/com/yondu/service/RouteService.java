@@ -182,37 +182,25 @@ public class RouteService extends BaseService{
         });
         pause.play();
     }
-    public void loadMemberDetailsScreen(boolean fromInquiry) {
+    public void loadMemberDetailsScreen() {
         Merchant merchant = App.appContextHolder.getMerchant();
-        String screen = "";
-        if (merchant.getMerchantClassification().equals("BASIC")) {
-            screen = MEMBER_DETAILS_SCREEN;
-        } else {
-            screen = SG_MEMBER_DETAILS_FXML;
-        }
-        String scrn = screen;
-        if (!fromInquiry) {
-            showLoadingScreen();
-            PauseTransition pause = new PauseTransition(
-                    Duration.seconds(.5)
-            );
-            pause.setOnFinished(event -> {
 
-                ApiResponse apiResponse = memberDetailsService.loginCustomer(App.appContextHolder.getCustomer().getMobileNumber(), App.appContextHolder.getCurrentState());
-                if (!apiResponse.isSuccess()) {
-                    showPrompt(apiResponse.getMessage(), "MEMBER INQUIRY", apiResponse.isSuccess());
-                } else {
-                    VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
+        showLoadingScreen();
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.01)
+        );
+        pause.setOnFinished(event -> {
+            String screen = "";
+            if (merchant.getMerchantClassification().equals("BASIC")) {
+                screen = MEMBER_DETAILS_SCREEN;
+            } else {
+                screen = SG_MEMBER_DETAILS_FXML;
+            }
 
-                    this.loadContentPage(bodyStackPane, scrn);
-                }
-            });
-            pause.play();
-        } else {
             VBox bodyStackPane = (VBox) App.appContextHolder.getRootContainer().getScene().lookup("#bodyStackPane");
-            this.loadContentPage(bodyStackPane, scrn);
-        }
-
+            this.loadContentPage(bodyStackPane, screen);
+        });
+        pause.play();
 
 
     }

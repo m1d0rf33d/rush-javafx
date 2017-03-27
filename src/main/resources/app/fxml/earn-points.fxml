@@ -15,7 +15,7 @@
          <children>
             <VBox maxWidth="500.0" prefHeight="200.0" prefWidth="350.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label prefHeight="50.0" prefWidth="350.0" text="PAYMENT DETAILS">
+                  <Label prefHeight="50.0" prefWidth="350.0" styleClass="label-1" text="GIVE POINTS">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>

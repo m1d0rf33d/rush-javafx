@@ -54,6 +54,7 @@ public class MenuService extends BaseService{
             MenuItem m1 = new MenuItem();
             Label label = new Label("Logout");
             label.getStyleClass().add("label-2");
+            label.setStyle("-fx-min-height: 20px;-fx-max-height: 20px;");
             m1.setGraphic(label);
             m1.getStyleClass().add("menu-item-hover");
             employeeMenuButton.getItems().add(m1);
@@ -62,7 +63,7 @@ public class MenuService extends BaseService{
             employeeMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    label.setPrefWidth(employeeMenuButton.getWidth() - 45);
+                    label.setPrefWidth(employeeMenuButton.getWidth() - 43);
                     employeeMenuButton.getStyleClass().add("menu-hover");
                 }
             });

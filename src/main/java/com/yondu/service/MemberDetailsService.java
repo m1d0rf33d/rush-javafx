@@ -7,6 +7,8 @@ import com.yondu.model.constants.AppState;
 import com.yondu.model.dto.LoginMemberDTO;
 import com.yondu.model.dto.MemberDTO;
 import javafx.animation.PauseTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -52,24 +54,18 @@ public class MemberDetailsService extends BaseService{
                     vouchersTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
                     for (Tab tab : vouchersTabPane.getTabs()) {
                         if (tab.getId().equals("transactionsTab")) {
-                            tab.setGraphic(new Label("TRANSACTIONS"));
-                            tab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
-                                    "    -fx-tab-max-width:200px;\n" +
-                                    "    -fx-tab-min-height:30px;\n" +
-                                    "    -fx-tab-max-height:30px;\n" +
-                                    "    -fx-text-fill: white;\n" +
-                                    "    -fx-font-size: 17px;");
-                        } else {
-                            tab.setGraphic(new Label("ACTIVE VOUCHERS"));
-                            tab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
-                                    "    -fx-tab-max-width:200px;\n" +
-                                    "    -fx-tab-min-height:30px;\n" +
-                                    "    -fx-tab-max-height:30px;\n" +
-                                    "    -fx-text-fill: black;\n" +
-                                    "    -fx-font-size: 17px;");
-                        }
+                            Label label = new Label("TRANSACTIONS");
+                            label.getStyleClass().add("tab-label");
 
+                            tab.setGraphic(label);
+                        } else {
+                            Label label = new Label("ACTIVE VOUCHERS");
+                            label.getStyleClass().add("tab-label");
+                            label.getStyleClass().add("tab-label-selected");
+                            tab.setGraphic(label);
+                        }
                     }
+
 
                     Merchant merchant = App.appContextHolder.getMerchant();
                     Customer customer = App.appContextHolder.getCustomer();

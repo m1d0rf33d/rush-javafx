@@ -70,55 +70,16 @@ public class MemberDetailsController implements Initializable {
 
         memberDetailsService.initialize();
 
-        transactionsTab.setOnSelectionChanged(new EventHandler<Event>() {
+        vouchersTabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override
-            public void handle(Event event) {
-                for (Tab tab : vouchersTabPane.getTabs()) {
-                    if (tab.getId().equals("transactionsTab")) {
-                        tab.setGraphic(new Label("TRANSACTIONS"));
-                    } else {
-                        tab.setGraphic(new Label("ACTIVE VOUCHERS"));
-                    }
-                    tab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
-                            "    -fx-tab-max-width:200px;\n" +
-                            "    -fx-tab-min-height:30px;\n" +
-                            "    -fx-tab-max-height:30px;\n" +
-                            "    -fx-text-fill: white;\n" +
-                            "    -fx-font-size: 17px;");
+            public void changed(ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) {
+                if (newValue == transactionsTab) {
+                    vouchersTab.getGraphic().getStyleClass().remove("tab-label-selected");
+                    transactionsTab.getGraphic().getStyleClass().add("tab-label-selected");
+                } else {
+                    transactionsTab.getGraphic().getStyleClass().remove("tab-label-selected");
+                    vouchersTab.getGraphic().getStyleClass().add("tab-label-selected");
                 }
-
-                transactionsTab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
-                        "    -fx-tab-max-width:200px;\n" +
-                        "    -fx-tab-min-height:30px;\n" +
-                        "    -fx-tab-max-height:30px;\n" +
-                        "    -fx-text-fill: black;\n" +
-                        "    -fx-font-size: 17px;");
-            }
-        });
-
-        vouchersTab.setOnSelectionChanged(new EventHandler<Event>() {
-            @Override
-            public void handle(Event event) {
-                for (Tab tab : vouchersTabPane.getTabs()) {
-                    if (tab.getId().equals("transactionsTab")) {
-                        tab.setGraphic(new Label("TRANSACTIONS"));
-                    } else {
-                        tab.setGraphic(new Label("ACTIVE VOUCHERS"));
-                    }
-                    tab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
-                            "    -fx-tab-max-width:200px;\n" +
-                            "    -fx-tab-min-height:30px;\n" +
-                            "    -fx-tab-max-height:30px;\n" +
-                            "    -fx-text-fill: white;\n" +
-                            "    -fx-font-size: 17px;");
-                }
-
-                vouchersTab.getGraphic().setStyle("-fx-tab-min-width:200px;\n" +
-                        "    -fx-tab-max-width:200px;\n" +
-                        "    -fx-tab-min-height:30px;\n" +
-                        "    -fx-tab-max-height:30px;\n" +
-                        "    -fx-text-fill: black;\n" +
-                        "    -fx-font-size: 17px;");
             }
         });
 

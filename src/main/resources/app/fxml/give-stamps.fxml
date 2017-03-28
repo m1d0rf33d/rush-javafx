@@ -262,17 +262,20 @@
                 </VBox>
             </children>
         </HBox>
-        <HBox alignment="CENTER" maxHeight="100.0" maxWidth="1000.0" minHeight="50.0" prefHeight="50.0" prefWidth="700.0" VBox.vgrow="ALWAYS">
+        <HBox alignment="CENTER_LEFT" maxHeight="100.0" maxWidth="1000.0" minHeight="50.0" prefHeight="50.0" prefWidth="700.0" VBox.vgrow="ALWAYS">
             <children>
-                  <Label alignment="CENTER_RIGHT" maxHeight="50.0" maxWidth="300.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" text="Purchase Amount  " VBox.vgrow="ALWAYS">
+                  <Label maxHeight="50.0" maxWidth="180.0" minWidth="180.0" prefHeight="50.0" prefWidth="180.0" text="Purchase Amount  " VBox.vgrow="ALWAYS">
                       <font>
                           <Font size="17.0" />
                       </font>
                       <VBox.margin>
                           <Insets left="5.0" />
                       </VBox.margin>
+               <HBox.margin>
+                  <Insets left="135.0" />
+               </HBox.margin>
                   </Label>
-                  <TextField fx:id="amountTextField" maxHeight="50.0" maxWidth="300.0" prefHeight="50.0" prefWidth="250.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
+                  <TextField fx:id="amountTextField" maxHeight="50.0" maxWidth="350.0" minWidth="350.0" prefHeight="50.0" prefWidth="350.0" style="-fx-background-radius: 30;" VBox.vgrow="ALWAYS">
                       <font>
                           <Font size="17.0" />
                       </font>
@@ -291,6 +294,9 @@
                     <font>
                         <Font name="System Bold" size="17.0" />
                     </font>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
                 </Button>
                 <Button fx:id="clearButton" maxHeight="50.0" maxWidth="170.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-radius: 30; -fx-background-color: #CDD2D6;" styleClass="cancel-button" text="CLEAR" textFill="#fffbfb" HBox.hgrow="ALWAYS">
                     <cursor>

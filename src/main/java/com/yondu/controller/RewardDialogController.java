@@ -109,6 +109,7 @@ public class RewardDialogController implements Initializable {
             Parent root = fxmlLoader.load();
             Scene scene = new Scene(root, 420,220);
             stage.setScene(scene);
+            scene.getStylesheets().add(App.class.getResource("/app/css/menu.css").toExternalForm());
             stage.setTitle(APP_TITLE);
             stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             stage.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());

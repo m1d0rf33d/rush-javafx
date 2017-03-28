@@ -195,6 +195,7 @@ public class StampsService extends BaseService  {
             RewardDialogController controller = fxmlLoader.getController();
             Scene scene = new Scene(root, 350,520);
             stage.setScene(scene);
+            scene.getStylesheets().add(App.class.getResource("/app/css/menu.css").toExternalForm());
             stage.setTitle("Rush POS Sync");
             stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             stage.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());

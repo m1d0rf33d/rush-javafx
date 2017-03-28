@@ -102,18 +102,26 @@ public class OCRController implements Initializable {
         }
         onToggle.setUserData("on");
         offToggle.setUserData("off");
-        toggleGroup.getToggles().add(onToggle);
-        toggleGroup.getToggles().add(offToggle);
+        onToggle.setToggleGroup(toggleGroup);
+        offToggle.setToggleGroup(toggleGroup);
         toggleGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
             public void changed(ObservableValue<? extends Toggle> ov,
                                 Toggle toggle, Toggle newToggle) {
-                   if(newToggle == onToggle) {
-                       onToggle.setStyle("-fx-background-color: #ffb600");
-                       offToggle.setStyle("-fx-background-color: #333");
-                   } else {
-                       offToggle.setStyle("-fx-background-color: #ffb600");
-                       onToggle.setStyle("-fx-background-color: #333");
-                   }
+
+                if(newToggle == null && toggle == onToggle) {
+                    toggleGroup.selectToggle(offToggle);
+                } else if (newToggle == null && toggle == offToggle){
+                    toggleGroup.selectToggle(onToggle);
+                }
+
+                if (onToggle.isSelected()) {
+                    onToggle.setStyle("-fx-background-color: #ffb600");
+                    offToggle.setStyle("-fx-background-color: #333");
+                }
+                if (offToggle.isSelected()) {
+                    offToggle.setStyle("-fx-background-color: #ffb600");
+                    onToggle.setStyle("-fx-background-color: #333");
+                }
             }
         });
 

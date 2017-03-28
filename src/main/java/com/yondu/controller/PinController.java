@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
 /**
  * Created by lynx on 2/16/17.
  */
-public class PinController implements Initializable {
+public class PinController extends BaseService implements Initializable {
 
     @FXML
     private Button submitButton;
@@ -109,8 +109,12 @@ public class PinController implements Initializable {
                 break;
             }
         }
-
-        loginService.loginEmployee(loginTextField.getText(), selectedBranch, pinTextField.getText());
+        String pin =pinTextField.getText();
+        if (pin == null || (pin != null && pin.isEmpty())) {
+            showPrompt("PIN is required.", "LOGIN", false);
+            return;
+        }
+        loginService.loginEmployee(loginTextField.getText(), selectedBranch, pin);
     }
 
 }

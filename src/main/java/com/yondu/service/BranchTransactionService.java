@@ -18,6 +18,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -169,7 +171,7 @@ public class BranchTransactionService extends BaseService{
             int pageIndex = offlinePagination.getCurrentPageIndex();
             ObservableList<OfflineTransaction> indexFilteredData = FXCollections.observableArrayList();
             for (OfflineTransaction transaction : statusFilter) {
-                int objIndex = textFilteredData.indexOf(transaction);
+                int objIndex = statusFilter.indexOf(transaction);
                 if (objIndex >= (pageIndex * maxEntries)  && objIndex < ((pageIndex + 1) * maxEntries)) {
                     indexFilteredData.add(transaction);
                 }
@@ -211,6 +213,7 @@ public class BranchTransactionService extends BaseService{
 
         TableColumn messageCol = new TableColumn("Message");
         messageCol.setPrefWidth(300);
+        messageCol.setMaxWidth(800);
         messageCol.setCellValueFactory(
                 new PropertyValueFactory<>("message"));
 
@@ -218,6 +221,7 @@ public class BranchTransactionService extends BaseService{
         amountCol.setPrefWidth(100);
         amountCol.setCellValueFactory(
                 new PropertyValueFactory<>("amount"));
+
         tableView.getColumns().clear();
         tableView.getColumns().addAll(dateCol, mobileCol,amountCol, orCol, statusCol, messageCol);
     }
@@ -348,7 +352,7 @@ public class BranchTransactionService extends BaseService{
 
         statusMenuButton.getItems().clear();
         statusMenuButton.getItems().addAll(allItem, pendingItem, submittedItem, failedItem);
-        statusMenuButton.setText("ALL");
+        statusMenuButton.setText("PENDING");
     }
 
 

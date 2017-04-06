@@ -77,7 +77,7 @@ public class OfflineService extends BaseService {
             task.setOnSucceeded((Event e) -> {
                 hideLoadingScreen();
                 showPrompt("Submit offline transactions complete.", "OFFLINE TRANSACTION", true);
-                initialize();
+                 App.appContextHolder.branchTransactionService.initialize();
             });
             new Thread(task).start();
         });
@@ -212,6 +212,7 @@ public class OfflineService extends BaseService {
     public Node createOfflinePage(int pageIndex) {
 
         VBox box = new VBox();
+        box.getChildren().clear();
         box.getChildren().addAll(buildTableView());
         return box;
     }

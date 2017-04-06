@@ -19,7 +19,7 @@
             <Insets left="20.0" />
          </VBox.margin>
       </Line>
-      <Label fx:id="messageLabel" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" styleClass="label-2">
+      <Label fx:id="messageLabel" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" styleClass="label-2" wrapText="true">
          <VBox.margin>
             <Insets left="20.0" />
          </VBox.margin>

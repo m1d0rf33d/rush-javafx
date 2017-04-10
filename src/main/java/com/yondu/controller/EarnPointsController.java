@@ -93,7 +93,8 @@ public class EarnPointsController extends BaseController implements Initializabl
                 Double amount = Double.parseDouble(amountTextField.getText().replaceAll("[,]", ""));
                 PointsRule pointsRule = App.appContextHolder.getPointsRule();
                 if (pointsRule != null) {
-                    pointsTextField.setText(df2.format(amount / pointsRule.getEarningPeso()));
+                    Long amt = amount.longValue();
+                    pointsTextField.setText(String.valueOf(amt / pointsRule.getEarningPeso()));
                 }
             } else {
                 pointsTextField.setText(null);

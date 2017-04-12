@@ -70,6 +70,8 @@ public class RewardDialogController implements Initializable {
         AppState state = App.appContextHolder.getCurrentState();
         if (state.equals(AppState.ISSUE_REWARDS)) {
             lockLabel.setVisible(false);
+            Reward reward = App.appContextHolder.getReward();
+            quantityTextField.setText(reward.getQuantity());
             redeemButton.setText("ISSUE REWARD");
         }
 
@@ -171,7 +173,10 @@ public class RewardDialogController implements Initializable {
 
             plusButton.setOnMouseClicked((Event e)-> {
                 Integer q = Integer.parseInt(quantityTextField.getText());
-                quantityTextField.setText(String.valueOf(++q));
+                if (q < Integer.parseInt(reward.getQuantity())) {
+                    quantityTextField.setText(String.valueOf(++q));
+                }
+
             });
 
             minusButton.setOnMouseClicked((Event e)-> {

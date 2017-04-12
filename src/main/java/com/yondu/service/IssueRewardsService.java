@@ -164,7 +164,7 @@ public class IssueRewardsService extends BaseService {
                 stage.resizableProperty().setValue(Boolean.FALSE);
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REWARDS_DIALOG_SCREEN));
                 Parent root = fxmlLoader.load();
-                Scene scene = new Scene(root, 350,520);
+                Scene scene = new Scene(root, 330,520);
                 scene.getStylesheets().add(App.class.getResource("/app/css/menu.css").toExternalForm());
                 stage.setScene(scene);
                 stage.setTitle(APP_TITLE);

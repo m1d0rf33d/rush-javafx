@@ -12,7 +12,7 @@
    <children>
       <VBox maxHeight="200.0" maxWidth="350.0" minHeight="200.0" minWidth="350.0" prefHeight="200.0" prefWidth="350.0">
          <children>
-            <ImageView fx:id="rewardImageView" fitHeight="200.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS" />
+            <ImageView fx:id="rewardImageView" fitHeight="200.0" fitWidth="350.0" pickOnBounds="true" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
       <VBox maxHeight="300.0" maxWidth="330.0" minHeight="300.0" minWidth="330.0" prefHeight="300.0" prefWidth="330.0">
@@ -33,7 +33,7 @@
                         </Label>
                      </children>
                   </HBox>
-                  <HBox fx:id="quantityHBox" alignment="TOP_RIGHT" maxWidth="200.0" minWidth="200.0" prefWidth="200.0">
+                  <HBox fx:id="quantityHBox" alignment="TOP_RIGHT" maxWidth="190.0" minWidth="190.0" prefWidth="190.0">
                      <children>
                         <TextField fx:id="quantityTextField" maxHeight="50.0" maxWidth="60.0" minHeight="50.0" minWidth="60.0" prefHeight="50.0" prefWidth="60.0" style="-fx-background-radius: 0; -fx-background-insets: 0; -fx-border-color: gray; -fx-border-width: 1;">
                            <HBox.margin>
@@ -43,11 +43,17 @@
                            <font>
                               <Font name="System Bold" size="21.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </Button>
                         <Button fx:id="minusButton" maxHeight="52.0" maxWidth="50.0" minHeight="52.0" minWidth="50.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="50.0" style="-fx-background-radius: 0; -fx-background-color: #ffb600; -fx-border-color: white; -fx-border-width: 1; -fx-background-insets: 0;" text="-" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="21.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </Button>
                      </children>
                   </HBox>

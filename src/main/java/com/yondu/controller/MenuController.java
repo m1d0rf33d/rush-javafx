@@ -128,7 +128,7 @@ public class MenuController implements Initializable {
 
         rootScrollPane.setFitToHeight(true);
         rootScrollPane.setFitToWidth(true);
-        rootScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+       // rootScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         for (Node node : sideBarVBox.getChildren()) {
             node.setVisible(false);

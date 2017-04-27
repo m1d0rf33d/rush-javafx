@@ -8,6 +8,8 @@ import com.yondu.model.constants.AppState;
 import com.yondu.service.IssueRewardsService;
 import com.yondu.service.MemberDetailsService;
 import com.yondu.utils.PropertyBinder;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -26,9 +28,11 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.apache.poi.ss.formula.functions.Even;
+import org.apache.poi.ss.formula.functions.Intercept;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 import static com.yondu.model.constants.AppConfigConstants.APP_TITLE;
@@ -72,6 +76,23 @@ public class RewardDialogController implements Initializable {
             lockLabel.setVisible(false);
             Reward reward = App.appContextHolder.getReward();
             quantityTextField.setText(reward.getQuantity());
+            quantityTextField.textProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    if (newValue.isEmpty()) {
+                        quantityTextField.setText("1");
+                    } else {
+                        if (Integer.parseInt(newValue) > Integer.parseInt(reward.getQuantity())) {
+                            quantityTextField.setText(reward.getQuantity());
+                        }
+                        if (Integer.parseInt(newValue) == 0) {
+                            quantityTextField.setText("1");
+                        }
+                    }
+
+
+                }
+            });
             redeemButton.setText("ISSUE REWARD");
         }
 
@@ -86,6 +107,7 @@ public class RewardDialogController implements Initializable {
                 if (merchant.getMerchantType().equals("loyalty")) {
                     Reward reward = App.appContextHolder.getReward();
                     reward.setQuantityToIssue(quantityTextField.getText());
+
                     issueReward();
                 } else {
                     showPinDialog();
@@ -166,7 +188,6 @@ public class RewardDialogController implements Initializable {
 
         } else {
             PropertyBinder.bindNumberOnly(quantityTextField);
-            PropertyBinder.bindDefaultOne(quantityTextField);
             PropertyBinder.bindVirtualKeyboard(quantityTextField);
 
             quantityTextField.setText("1");

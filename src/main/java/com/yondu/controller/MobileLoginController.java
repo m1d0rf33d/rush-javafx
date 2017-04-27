@@ -29,7 +29,7 @@ import static com.yondu.model.constants.AppConfigConstants.*;
 /**
  * Created by lynx on 2/8/17.
  */
-public class MobileLoginController implements Initializable {
+public class MobileLoginController extends BaseService implements Initializable {
 
     @FXML
     public Button cancelButton;
@@ -103,7 +103,9 @@ public class MobileLoginController implements Initializable {
                 App.appContextHolder.setCurrentState(App.appContextHolder.getPrevState());
 
                 commonService.updateButtonState();
-                Text text = new Text(apiResponse.getMessage());
+                disableMenu();
+                showPrompt("Invalid mobile number", "LOGIN MEMBER", false);
+                /*Text text = new Text(apiResponse.getMessage());
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
                 alert.setTitle(AppConfigConstants.APP_TITLE);
                 alert.initStyle(StageStyle.UTILITY);
@@ -112,7 +114,7 @@ public class MobileLoginController implements Initializable {
                 alert.getDialogPane().setPadding(new Insets(10,10,10,10));
                 alert.getDialogPane().setContent(text);
                 alert.getDialogPane().setPrefWidth(400);
-                alert.show();
+                alert.show();*/
             }
         });
         pause.play();

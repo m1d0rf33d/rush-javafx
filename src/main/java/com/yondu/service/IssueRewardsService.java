@@ -113,14 +113,16 @@ public class IssueRewardsService extends BaseService {
             rewards = customer.getActiveVouchers();
         }
 
-        for (Reward reward : rewards) {
-            Task task = imageLoaderWorker(reward);
-            task.setOnSucceeded((Event e)-> {
-                VBox vbox = (VBox) task.getValue();
-                rewardsFlowPane.getChildren().add(vbox);
-            });
-            new Thread(task).start();
-        }
+       if (rewards != null) {
+           for (Reward reward : rewards) {
+               Task task = imageLoaderWorker(reward);
+               task.setOnSucceeded((Event e)-> {
+                   VBox vbox = (VBox) task.getValue();
+                   rewardsFlowPane.getChildren().add(vbox);
+               });
+               new Thread(task).start();
+           }
+       }
     }
 
     private Task imageLoaderWorker(Reward reward) {

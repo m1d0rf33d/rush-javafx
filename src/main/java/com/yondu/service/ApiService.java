@@ -1,17 +1,12 @@
 package com.yondu.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yondu.model.Token;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -20,9 +15,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import static com.yondu.model.constants.ApiConstants.*;
 
 /** All API calls that will be made going to Rush API should be here / API Module
  *
@@ -76,7 +68,7 @@ public class ApiService  {
             }
             client.close();
             JSONParser parser = new JSONParser();
-            return (JSONObject) parser.parse(result.toString());
+                return (JSONObject) parser.parse(result.toString());
         } catch (ParseException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

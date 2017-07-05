@@ -10,6 +10,12 @@
 
     <profiles>
         <profile>
+            <id>parq</id>
+            <properties>
+                <environment>parq</environment>
+            </properties>
+        </profile>
+        <profile>
             <id>prod</id>
             <properties>
                 <environment>prod</environment>

@@ -291,7 +291,7 @@
             <children>
             <VBox maxHeight="50.0" maxWidth="150.0" minHeight="50.0" minWidth="150.0" prefHeight="50.0" prefWidth="150.0" HBox.hgrow="ALWAYS">
                <children>
-                        <Label alignment="CENTER_RIGHT" maxHeight="50.0" maxWidth="150.0" minHeight="50.0" minWidth="150.0" prefHeight="50.0" prefWidth="150.0" text="OR Number" VBox.vgrow="ALWAYS">
+                        <Label fx:id="orLabel" alignment="CENTER_RIGHT" maxHeight="50.0" maxWidth="150.0" minHeight="50.0" minWidth="150.0" prefHeight="50.0" prefWidth="150.0" text="OR Number" VBox.vgrow="ALWAYS">
                             <font>
                                 <Font size="17.0" />
                             </font>

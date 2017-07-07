@@ -139,10 +139,10 @@ public class StampsService extends BaseService  {
                 for (Reward reward : promo.getRewards()) {
                     if (reward.getStamps() == x) {
                         ImageView starImg = new ImageView();
-                        starImg.setImage(new Image(App.class.getResource("/app/images/star-unredeemed.png").toExternalForm()));
+                        starImg.setImage(new Image(App.class.getResource("/app/images/star-redeemed.png").toExternalForm()));
                         for (Reward rew: customer.getCard().getRewards()) {
                             if (rew.getId().equals(reward.getId())) {
-                                starImg.setImage(new Image(App.class.getResource("/app/images/star-redeemed.png").toExternalForm()));
+                                starImg.setImage(new Image(App.class.getResource("/app/images/star-unredeemed.png").toExternalForm()));
                                 reward.setDate(rew.getDate());
                             }
                         }
@@ -196,6 +196,7 @@ public class StampsService extends BaseService  {
             RewardDialogController controller = fxmlLoader.getController();
             Scene scene = new Scene(root, 350,520);
             stage.setScene(scene);
+            scene.getStylesheets().add(App.class.getResource("/app/css/menu.css").toExternalForm());
             stage.setTitle("Rush POS Sync");
             stage.getIcons().add(new javafx.scene.image.Image(App.class.getResource("/app/images/r_logo.png").toExternalForm()));
             stage.initOwner(App.appContextHolder.getRootContainer().getScene().getWindow());

@@ -169,7 +169,7 @@ public class RewardDialogController implements Initializable {
         this.detailsLabel.setText(reward.getDetails());
 
         Merchant merchant = App.appContextHolder.getMerchant();
-        if (merchant.getMerchantType().equals("punchcard")) {
+        if (merchant.getMerchantType().equalsIgnoreCase("punchcard")) {
             quantityHBox.setVisible(false);
 
             if (App.appContextHolder.getCurrentState().equals(AppState.GIVE_STAMPS)) {

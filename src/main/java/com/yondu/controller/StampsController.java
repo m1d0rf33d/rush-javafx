@@ -79,6 +79,8 @@ public class StampsController  extends BaseController implements Initializable {
     public HBox buttonHbox;
     @FXML
     public Button clearButton;
+    @FXML
+    public Label orLabel;
 
     private StampsService stampsService = App.appContextHolder.stampsService;
     private CommonService commonService = App.appContextHolder.commonService;
@@ -99,13 +101,14 @@ public class StampsController  extends BaseController implements Initializable {
         earnStampsButton.setOnMouseClicked((MouseEvent e) -> {
             String amount = amountTextField.getText();
             String orNumber = orTextField.getText();
-            if (orNumber == null || orNumber != null && orNumber.isEmpty()) {
-                stampsService.showPrompt("OR Number is required", "Earn Stamps", false);
-                return;
-            }
+
 
             String activity = (String) milestoneComboBox.getSelectionModel().getSelectedItem();
             if (activity.contains("Based")) {
+                if (orNumber == null || orNumber != null && orNumber.isEmpty()) {
+                    stampsService.showPrompt("OR Number is required", "Earn Stamps", false);
+                    return;
+                }
                 stampsService.earnStamps(orNumber, amount);
             } else {
                 String id = "";
@@ -142,8 +145,10 @@ public class StampsController  extends BaseController implements Initializable {
                 orTextField.clear();
                 if (!t1.contains("Based")) {
                    amountTextField.setDisable(true);
+                    orLabel.setText("Remarks");
                 } else {
                     amountTextField.setDisable(false);
+                    orLabel.setText("OR Number");
                 }
             }
         });
@@ -155,6 +160,8 @@ public class StampsController  extends BaseController implements Initializable {
             }
         });
         PropertyBinder.bindNumberWitDot(amountTextField);
+        PropertyBinder.bindVirtualKeyboard(amountTextField);
+        PropertyBinder.bindVirtualKeyboard(orTextField);
     }
 
    /* @Override

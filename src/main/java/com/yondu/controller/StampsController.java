@@ -5,8 +5,10 @@ import com.yondu.model.*;
 import com.yondu.service.CommonService;
 import com.yondu.service.MemberDetailsService;
 import com.yondu.service.StampsService;
+import com.yondu.utils.PropertyBinder;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,12 +17,14 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -65,6 +69,16 @@ public class StampsController  extends BaseController implements Initializable {
     public Label availablePointsLabel;
     @FXML
     public Button exitButton;
+    @FXML
+    public ComboBox milestoneComboBox;
+    @FXML
+    public HBox amountHbox;
+    @FXML
+    public TextField orTextField;
+    @FXML
+    public HBox buttonHbox;
+    @FXML
+    public Button clearButton;
 
     private StampsService stampsService = App.appContextHolder.stampsService;
     private CommonService commonService = App.appContextHolder.commonService;
@@ -84,7 +98,26 @@ public class StampsController  extends BaseController implements Initializable {
 
         earnStampsButton.setOnMouseClicked((MouseEvent e) -> {
             String amount = amountTextField.getText();
-            stampsService.earnStamps(amount);
+            String orNumber = orTextField.getText();
+            if (orNumber == null || orNumber != null && orNumber.isEmpty()) {
+                stampsService.showPrompt("OR Number is required", "Earn Stamps", false);
+                return;
+            }
+
+            String activity = (String) milestoneComboBox.getSelectionModel().getSelectedItem();
+            if (activity.contains("Based")) {
+                stampsService.earnStamps(orNumber, amount);
+            } else {
+                String id = "";
+                for (Milestone milestone : App.appContextHolder.getMerchant().getMilestones()) {
+                    if (milestone.getName().equals(activity)) {
+                        id = milestone.getId();
+                    }
+                }
+                stampsService.earnMilestone(orNumber, id);
+            }
+
+
         });
 
         Merchant merchant = App.appContextHolder.getMerchant();
@@ -96,6 +129,32 @@ public class StampsController  extends BaseController implements Initializable {
         exitButton.setOnMouseClicked((MouseEvent e) -> {
             commonService.exitMember();
         });
+        milestoneComboBox.getItems().clear();
+        milestoneComboBox.getItems().add("Based on purchase");
+        for (Milestone milestone : merchant.getMilestones()) {
+            milestoneComboBox.getItems().add(milestone.getName());
+        }
+        milestoneComboBox.getSelectionModel().selectFirst();
+
+        milestoneComboBox.valueProperty().addListener(new ChangeListener<String>() {
+            @Override public void changed(ObservableValue ov, String t, String t1) {
+                amountTextField.clear();
+                orTextField.clear();
+                if (!t1.contains("Based")) {
+                   amountTextField.setDisable(true);
+                } else {
+                    amountTextField.setDisable(false);
+                }
+            }
+        });
+        clearButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                amountTextField.clear();
+                orTextField.clear();
+            }
+        });
+        PropertyBinder.bindNumberWitDot(amountTextField);
     }
 
    /* @Override

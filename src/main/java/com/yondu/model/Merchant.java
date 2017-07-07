@@ -17,6 +17,15 @@ public class Merchant {
     private Boolean withVk;
     private String merchantType;
     private String merchantClassification;
+    private List<Milestone> milestones;
+
+    public List<Milestone> getMilestones() {
+        return milestones;
+    }
+
+    public void setMilestones(List<Milestone> milestones) {
+        this.milestones = milestones;
+    }
 
     private List<Title> titles;
 

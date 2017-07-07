@@ -63,8 +63,14 @@ public class LoginService extends BaseService{
                     if (apiResponse.isSuccess()) {
                         loadOnline();
                     } else {
+                        if (apiResponse.getMessage() != null) {
+                            ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).close();
+                            showPrompt(apiResponse.getMessage(), "", false);
 
-                        loadOffline();
+                        } else {
+                            loadOffline();
+                        }
+
                     }
 
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
@@ -231,6 +237,12 @@ public class LoginService extends BaseService{
                     String url = CMS_URL + WIDGET_INITIALIZE_ENDPOINT.replace(":merchantKey", merchantKey);
                     JSONObject payload = apiService.callWidget(url, null, "get", null);
                     if (payload != null) {
+                        if (payload.get("message") != null) {
+                            apiResponse.setSuccess(false);
+                            apiResponse.setMessage((String) payload.get("message"));
+                            return apiResponse;
+                        }
+
                         JSONObject data = (JSONObject) payload.get("data");
                         List<JSONObject> branchesJSON = (ArrayList) data.get("branches");
                         if (branchesJSON != null) {
@@ -252,6 +264,18 @@ public class LoginService extends BaseService{
                             merchant.setToken((String) merchantJSON.get("token"));
                             merchant.setMerchantType((String) merchantJSON.get("merchant_type"));
                             merchant.setMerchantClassification((String) merchantJSON.get("merchant_class"));
+
+                            if (data.get("milestones") != null) {
+                                List<Milestone> milestones = new ArrayList<>();
+                                List<JSONObject> milestonesJSON = (ArrayList) data.get("milestones");
+                                for (JSONObject json : milestonesJSON) {
+                                    Milestone milestone = new Milestone();
+                                    milestone.setName((String) json.get("name"));
+                                    milestone.setId((String) json.get("id"));
+                                    milestones.add(milestone);
+                                }
+                                merchant.setMilestones(milestones);
+                            }
 
                             File file = new File(RUSH_HOME + DIVIDER + MERCHANT_CONFIG);
                             if (!file.exists()) {
@@ -391,6 +415,7 @@ public class LoginService extends BaseService{
             EARN_STAMP_ENDPOINT = prop.getProperty("earn_stamps_endpoint");
             REDEEM_STAMP_ENDPOINT = prop.getProperty("redeem_stamps_endpoint");
             ISSUE_STAMP_ENDPOINT = prop.getProperty("issue_stamp_endpoint");
+            EARN_MILESTONE_ENDPOINT = prop.getProperty("earn_milestone_endpoint");
         } catch(IOException e) {
             e.printStackTrace();
         }

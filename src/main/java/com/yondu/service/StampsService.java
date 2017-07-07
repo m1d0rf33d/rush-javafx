@@ -15,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -213,9 +214,79 @@ public class StampsService extends BaseService  {
         }
     }
 
-    public void earnStamps(String amount) {
+    public void earnMilestone(String orNumber, String milestoneId) {
+        Task task = earnMilestoneWorker(orNumber, milestoneId);
+        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                ApiResponse apiResponse = (ApiResponse) task.getValue();
+                showPrompt(apiResponse.getMessage(), "EARN MILESTONE", apiResponse.isSuccess());
+                if (apiResponse.isSuccess()) {
+                    initialize();
+                    VBox rootVBox = App.appContextHolder.getRootContainer();
+                    TextField orTextField = (TextField) rootVBox.getScene().lookup("#orTextField");
+                    orTextField.clear();
+                }
+            }
+        });
+        disableMenu();
+        PauseTransition pause = new PauseTransition(
+                Duration.seconds(.01)
+        );
+        pause.setOnFinished(event -> {
+            new Thread(task).start();
+        });
+        pause.play();
+    }
 
-        Task task = earnStampsWorker(amount);
+    public Task earnMilestoneWorker(String orNumber, String milestoneId) {
+        return new Task() {
+            @Override
+            protected Object call() throws Exception {
+                try {
+                    ApiResponse apiResponse = new ApiResponse();
+                    apiResponse.setSuccess(false);
+
+                    Employee employee = App.appContextHolder.getEmployee();
+                    Customer customer = App.appContextHolder.getCustomer();
+                    Merchant merchant = App.appContextHolder.getMerchant();
+
+                    JSONObject requestBody = new JSONObject();
+                    requestBody.put("employee_id", employee.getEmployeeId());
+                    requestBody.put("customer_id", customer.getUuid());
+                    requestBody.put("merchant_key", merchant.getUniqueKey());
+                    requestBody.put("milestone_id", milestoneId);
+                    requestBody.put("or_no", orNumber);
+
+                    String url = CMS_URL + EARN_MILESTONE_ENDPOINT;
+
+                    String token = merchant.getToken();
+                    JSONObject jsonObject =  apiService.callWidget(url, requestBody.toJSONString(), "post", token);
+                    if (jsonObject != null) {
+
+                        String errorCode = (String) jsonObject.get("error_code");
+                        if (errorCode.equals("0x0")) {
+                            apiResponse.setMessage("Earn milestone successful");
+                            apiResponse.setSuccess(true);
+                        } else {
+                            apiResponse.setMessage((String) jsonObject.get("message"));
+                        }
+                    } else {
+                        apiResponse.setMessage("Network connection error.");
+                    }
+
+                    return apiResponse;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+    }
+
+    public void earnStamps(String orNumber, String amount) {
+
+        Task task = earnStampsWorker(orNumber, amount);
         task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
@@ -243,7 +314,7 @@ public class StampsService extends BaseService  {
 
     }
 
-    public Task earnStampsWorker(String amount) {
+    public Task earnStampsWorker(String orNumber, String amount) {
         return new Task() {
             @Override
             protected Object call() throws Exception {
@@ -260,6 +331,7 @@ public class StampsService extends BaseService  {
                     requestBody.put("customer_id", customer.getUuid());
                     requestBody.put("merchant_key", merchant.getUniqueKey());
                     requestBody.put("amount", amount);
+                    requestBody.put("or_no", orNumber);
 
                     String url = CMS_URL + EARN_STAMP_ENDPOINT;
 

@@ -63,14 +63,8 @@ public class LoginService extends BaseService{
                     if (apiResponse.isSuccess()) {
                         loadOnline();
                     } else {
-                        if (apiResponse.getMessage() != null) {
-                            ((Stage) App.appContextHolder.getRootContainer().getScene().getWindow()).close();
-                            showPrompt(apiResponse.getMessage(), "", false);
-
-                        } else {
-                            loadOffline();
-                        }
-
+                        loadOffline();
+                        showPrompt(apiResponse.getMessage(), "", false);
                     }
 
                     App.appContextHolder.getRootContainer().getScene().setCursor(Cursor.DEFAULT);
